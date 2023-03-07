@@ -56,6 +56,8 @@
 		86B169E729B54FCD0024EFFF /* CustomAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86B169E629B54FCD0024EFFF /* CustomAlertView.swift */; };
 		86B908A0297079A9001CAB90 /* WorkOrderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86B9089F297079A9001CAB90 /* WorkOrderViewController.swift */; };
 		86B908A22970854A001CAB90 /* TestingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86B908A12970854A001CAB90 /* TestingViewController.swift */; };
+		86CDBA6629B632D600956B4C /* UploadAnimationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86CDBA6529B632D600956B4C /* UploadAnimationViewController.swift */; };
+		86CDBA6929B653D400956B4C /* UploadAnimationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86CDBA6829B653D400956B4C /* UploadAnimationViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -128,6 +130,8 @@
 		86B169E629B54FCD0024EFFF /* CustomAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAlertView.swift; sourceTree = "<group>"; };
 		86B9089F297079A9001CAB90 /* WorkOrderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkOrderViewController.swift; sourceTree = "<group>"; };
 		86B908A12970854A001CAB90 /* TestingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestingViewController.swift; sourceTree = "<group>"; };
+		86CDBA6529B632D600956B4C /* UploadAnimationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadAnimationViewController.swift; sourceTree = "<group>"; };
+		86CDBA6829B653D400956B4C /* UploadAnimationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadAnimationViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -181,6 +185,7 @@
 		861E6EC82953789B00443F12 /* Acelite */ = {
 			isa = PBXGroup;
 			children = (
+				86CDBA6729B6539800956B4C /* UploadAnimation */,
 				866CDB66298D73A000ADFB50 /* TestingViewController */,
 				866CDB63298CAFF100ADFB50 /* ResusableComponents */,
 				866CDB5D298C202600ADFB50 /* Vehicle */,
@@ -373,6 +378,15 @@
 				86A68D4F29B108C2000F2188 /* BatteryDataFileSubmitModel.swift */,
 			);
 			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		86CDBA6729B6539800956B4C /* UploadAnimation */ = {
+			isa = PBXGroup;
+			children = (
+				86CDBA6529B632D600956B4C /* UploadAnimationViewController.swift */,
+				86CDBA6829B653D400956B4C /* UploadAnimationViewModel.swift */,
+			);
+			path = UploadAnimation;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -571,7 +585,9 @@
 				8639046C29957ED1008D5A0A /* AceLiteBleWriteCallback.swift in Sources */,
 				866CDB512982FCC100ADFB50 /* Constants.swift in Sources */,
 				86636DC729785A14001240FB /* BluetoothServices.swift in Sources */,
+				86CDBA6929B653D400956B4C /* UploadAnimationViewModel.swift in Sources */,
 				86A68D4E29B0350D000F2188 /* MultipartRequest.swift in Sources */,
+				86CDBA6629B632D600956B4C /* UploadAnimationViewController.swift in Sources */,
 				861E6F07295773C100443F12 /* SideMenuCell.swift in Sources */,
 				867BBF7929673D7400DC4842 /* AceliteColors.swift in Sources */,
 				861E6F13295E11BE00443F12 /* ScanBleDevicesViewController.swift in Sources */,
