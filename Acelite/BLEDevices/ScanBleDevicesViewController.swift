@@ -146,6 +146,7 @@ extension ScanBleDevicesViewController: UITableViewDelegate, UITableViewDataSour
 		let deviceModel = self.blePeripheralDevice[sender.tag]
 		self.selectedIndex = IndexPath(row: sender.tag, section: 0)
 		bleServices.connectDevices(peripheral: deviceModel.peripheral)
+		Network.shared.myPeripheral = deviceModel.peripheral
 		self.bleTableView.reloadRows(at: [self.selectedIndex ?? IndexPath()], with: .none)
 		
 	}

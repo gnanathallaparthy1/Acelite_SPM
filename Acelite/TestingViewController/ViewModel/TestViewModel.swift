@@ -6,11 +6,17 @@
 //
 
 import Foundation
+import UIKit
 
 
 protocol GetPreSignedUrlDelegate: AnyObject {
 	func getTransactionIdInfo(viewModel: TestingViewModel)
 	func handleErrorTransactionID()
+	func navigateToAnimationVC()
+}
+
+protocol UploadAndSubmitDataDelegate: AnyObject {
+	func navigateToHealthScoreVC()
 }
 
 class TestingViewModel {
@@ -40,7 +46,7 @@ class TestingViewModel {
 	private var normalCommandsList = [TestCommandExecution]()
 	private var normalCommandsIndex = 0
 	
-	private var sampledCommandsList = [TestCommandExecution]()
+	public var sampledCommandsList = [TestCommandExecution]()
 	private var commandToRunInLoopIndex: Int = 0
 	private var numberOfCellsProvided = 0
 	
@@ -51,18 +57,20 @@ class TestingViewModel {
 	
 	private var instructionTypeIndex: Int = 0
 	private var testCommands: TestCommands?
-	private var vehicleInfo: Vehicle?
+	public var vehicleInfo: Vehicle?
 	//var testCommand: TestCommand?
 	var delegate:BleWriteReadProtocal?
 	let commadQueue = DispatchQueue(label: "serial")
-	private var packVoltageData = [Double]()
-	private var packCurrentData = [Double]()
-	private var packTemperature = [Double]()
-	private var cellVoltageData = [Double]()
+	public var packVoltageData = [Double]()
+	public var packCurrentData = [Double]()
+	public var packTemperatureData = [Double]()
+	public var cellVoltageData = [Double]()
 	private var stateOfCharge: Double?
 	private var odometer: Double?
 	private var transactionId: String?
 	weak var preSignedDelegate: GetPreSignedUrlDelegate? = nil
+	weak var uploadAndSubmitDelegate: UploadAndSubmitDataDelegate? = nil
+	
 	
 	//var bleService = BluetoothServices()
 	
@@ -78,7 +86,7 @@ class TestingViewModel {
 	
 	init(vehicleInfo: Vehicle) {
 		self.vehicleInfo = vehicleInfo
-		handleInstructions()
+		
 		//self.bleService.delegate = self
 		//self.bleService.setDelegateChange(delegate: self)
 	}
@@ -91,7 +99,7 @@ class TestingViewModel {
 		}
 	}
 	
-	private func handleInstructions() {
+	public func handleInstructions() {
 		guard let testCommand = vehicleInfo?.getBatteryTestInstructions, testCommand.count > 0 else {
 			return
 		}
@@ -381,17 +389,17 @@ class TestingViewModel {
 				guard let pid = testCommand.challenge?.pid else { return }
 				let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
 				
-				self.generateTxtCommandLogs(data: "Cell Voltage Header: \(ATSHOdometer_Command)")
+				//self.generateTxtCommandLogs(data: "Cell Voltage Header: \(ATSHOdometer_Command)")
 				Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
 					
-					self.generateTxtCommandLogs(data: data)
+					//self.generateTxtCommandLogs(data: data)
 					let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
-					self.generateTxtCommandLogs(data: "Cell Voltage PID: \(odometerPIDCommand)")
+					//self.generateTxtCommandLogs(data: "Cell Voltage PID: \(odometerPIDCommand)")
 					print("Run Command: In-CellVoltage")
 					Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data in
 						testCommand.deviceReponse = data
 						print("Run Command: Out-CellVoltage")
-						self.generateTxtCommandLogs(data: data)
+						//self.generateTxtCommandLogs(data: data)
 						onCompletion!(testCommand)
 						
 					})
@@ -447,35 +455,40 @@ class TestingViewModel {
 			}
 		} else {
 			// loopCount intial value -1 , delay 25sec , prepare CSV fiels
+			print("TIME BOOL::: ELSE)", loopCount)
 			if loopCount == -1 {
 				print("TIME BOOL:::-runCommandThatNeedToRunInLoopEin ELSE\(Date().description)", isTimeInProgress)
-				
+				self.preSignedDelegate?.navigateToAnimationVC()
+				DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+					self.uploadAndSubmitDelegate?.navigateToHealthScoreVC()
+				}
 			}
 			loopCount += 1
 			
-			if loopCount == (countLoopCommand - 2) {
-				print("*********BLE reponse is finished**********")
-				self.generateTxtCommandLogs(data: "*********BLE reponse is finished**********")
-				// CSV file generation
-				//self.saveLogsIntoTxtFile()
-				self.getTransectionId()
-				self.preparingLogicForCSVFileGeration()
-				self.submitBatteryDataFileWithSOCGraphRequest()
-			}
-			print("Loop Count:::", loopCount)
-			print("TOTAL Count:::countLoopCommand:::>", self.countLoopCommand)
+			//if loopCount == (countLoopCommand - 2) {
+//				print("*********BLE reponse is finished**********")
+//				self.generateTxtCommandLogs(data: "*********BLE reponse is finished**********")
+//				print("*********CALL DELAGATE IN ANIMATION VC**********")
+//				//notification
+//				self.uploadAndSubmitDelegate?.navigateToHealthScoreVC()
+				//Move this to animation VC
+			
+				//self.submitBatteryDataFileWithSOCGraphRequest()
+			//}
+//			print("Loop Count:::", loopCount)
+//			print("TOTAL Count:::countLoopCommand:::>", self.countLoopCommand)
 		}
 	}
 	
 	private func parseResponse(testCommand: TestCommandExecution?, index: Int) {
-		
+		//let group = DispatchGroup()
 		
 		guard let reponseData = testCommand?.deviceReponse, !reponseData.contains("OK") else { return  }
 		
 		//	print("IN PARSE METHOD", testCommand?.type as Any)
 		switch testCommand?.type {
 		case .ODOMETER:
-			
+			//group.enter()
 			if testCommand?.deviceReponse != nil {
 				
 				let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
@@ -484,14 +497,14 @@ class TestingViewModel {
 					self.odometer = value
 					let message = (testCommand?.type?.description ?? "") + "calculated value is \(self.odometer)"
 					NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "BLEResponse"), object: ["BLEResponse": "\(message)"], userInfo: nil)
-					//print("message", message)
+					//group.leave()
 					
 				}
 			}
 			//stopLoopExecution(group: group)
 			break
 		case .STATEOFCHARGE:
-			
+			//group.enter()
 			if testCommand?.deviceReponse != nil {
 				let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
 				if haxValueList.count > 0 {
@@ -500,13 +513,13 @@ class TestingViewModel {
 					let message = (testCommand?.type?.description ?? "") + "calculated value is \(value)"
 					//print(message)
 					NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "BLEResponse"), object: ["BLEResponse": "\(message)"], userInfo: nil)
-					
+					//group.leave()
 				}
 			}
 			//stopLoopExecution(group: group)
 			break
 		case .ENERGY_TO_EMPTY:
-			
+			//group.enter()
 			if testCommand?.deviceReponse != nil {
 				let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
 				if haxValueList.count > 0 {
@@ -514,13 +527,13 @@ class TestingViewModel {
 					let message = (testCommand?.type?.description ?? "") + "calculated value is \(value)"
 					print(message)
 					NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "BLEResponse"), object: ["BLEResponse": "\(message)"], userInfo: nil)
-					
+					//group.leave()
 				}
 			}
 			//stopLoopExecution(group: group)
 			break
 		case .BMS_CAPACITY:
-			
+			//group.enter()
 			if testCommand?.deviceReponse != nil {
 				let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
 				if haxValueList.count > 0 {
@@ -529,28 +542,28 @@ class TestingViewModel {
 					print(message)
 					
 					NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "BLEResponse"), object: ["BLEResponse": "\(message)"], userInfo: nil)
-					
+					//group.leave()
 				}
 			}
 			//stopLoopExecution(group: group)
 			break
 		case .PACK_TEMPERATURE:
-			//dispatchGroup.leave()
+			//group.enter()
 			if testCommand?.deviceReponse != nil {
 				let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
 				if haxValueList.count > 0 {
 					let value = calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)//calculateValueFromStartEndByte(command, hexValuesList)
-					packTemperature.append(value)
+					packTemperatureData.append(value)
 					let message = (testCommand?.type?.description ?? "") + "calculated value is \(value)"
 					//print(message)
 					NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "BLEResponse"), object: ["BLEResponse": "\(message)"], userInfo: nil)
-					
+					//group.leave()
 				}
 			}
 			//stopLoopExecution(group: group)
 			break
 		case .PACK_VOLTAGE:
-			//dispatchGroup.leave()
+			//group.enter()
 			if testCommand?.deviceReponse != nil {
 				let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
 				if haxValueList.count > 0 {
@@ -560,16 +573,17 @@ class TestingViewModel {
 					let message = (testCommand?.type?.description ?? "") + "calculated value is \(value)"
 					//print(message)
 					NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "BLEResponse"), object: ["BLEResponse": "\(message)"], userInfo: nil)
-					
+					//group.leave()
 				}
 			}
 			//stopLoopExecution(group: group)
 			break
 		case .PACK_CURRENT:
-			//dispatchGroup.leave()
+			//group.enter()
+			print(":::PACK-CURRENT::::")
 			if testCommand?.deviceReponse != nil {
 				//let byteArray: [UInt8] = Array(testCommand?.deviceReponse ?? Data())
-				if (testCommand?.deviceReponse?.count ?? 0) > 0 {
+				//if (testCommand?.deviceReponse?.count ?? 0) > 0 {
 					let finalStringBytes = typeCastingByteToString(testCommand: testCommand)
 					
 					let haxValue = findFinalHexValue(haxVal: finalStringBytes, startByete: testCommand?.response?.startByte ?? 0, endByte: testCommand?.response?.endByte ?? 0)
@@ -580,7 +594,7 @@ class TestingViewModel {
 					let multiplier = testCommand?.response?.multiplier ?? 1
 					
 					if decimalValue < sevenfffDecimalValue {
-						let packCurrentValue = (decimalValue * Int(multiplier)) * -1
+						let packCurrentValue = (Double(decimalValue) * multiplier) * -1
 						let constantValue = testCommand?.response?.constant ?? 0.0
 						let finalValue = Double(packCurrentValue) + Double(constantValue)
 						packCurrentData.append(finalValue)
@@ -597,15 +611,16 @@ class TestingViewModel {
 						let message = (testCommand?.type?.description ?? "") + "calculated value is \(finalValue)"
 						//print(message)
 						NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "BLEResponse"), object: ["BLEResponse": "\(message)"], userInfo: nil)
+					//	group.leave()
 					}
 					
 					print("pack current array data::", packCurrentData)
-				}
+				//}
 			}
 			//stopLoopExecution(group: group)
 			break
 		case .CELL_VOLTAGE:
-			//dispatchGroup.leave()
+			//group.enter()
 			if testCommand?.deviceReponse != nil {
 				let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
 				if haxValueList.count > 0 {
@@ -615,14 +630,14 @@ class TestingViewModel {
 					//print(message)
 					NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "BLEResponse"), object: ["BLEResponse": "\(message)"], userInfo: nil)
 					//print("cellVoltagedata:::", cellVoltageData)
-					
+					//group.leave()
 				}
 			}
 			
 			//stopLoopExecution(group: group)
 			break
 		case .BATTERY_AGE:
-			
+			//group.enter()
 			if testCommand?.deviceReponse != nil {
 				let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
 				if haxValueList.count > 0 {
@@ -630,13 +645,13 @@ class TestingViewModel {
 					let message = (testCommand?.type?.description ?? "") + "calculated value is \(value)"
 					//print(message)
 					NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "BLEResponse"), object: ["BLEResponse": "\(message)"], userInfo: nil)
-					
+					//group.leave()
 				}
 			}
 			//stopLoopExecution(group: group)
 			break
 		case .DIAGNOSTIC_SESSION:
-			
+			//group.enter()
 			if testCommand?.deviceReponse != nil {
 				let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
 				if haxValueList.count > 0 {
@@ -644,13 +659,13 @@ class TestingViewModel {
 					let message = (testCommand?.type?.description ?? "") + "calculated value is \(value)"
 					//print(message)
 					NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "BLEResponse"), object: ["BLEResponse": "\(message)"], userInfo: nil)
-					
+					////group.leave()
 				}
 			}
 			//stopLoopExecution(group: group)
 			break
 		case .MISC_COMMANDS:
-			
+			//group.enter()
 			if testCommand?.deviceReponse != nil {
 				let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
 				if haxValueList.count > 0 {
@@ -658,7 +673,7 @@ class TestingViewModel {
 					let message = (testCommand?.type?.description ?? "") + "calculated value is \(value)"
 					//print(message)
 					NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "BLEResponse"), object: ["BLEResponse": "\(message)"], userInfo: nil)
-					
+					//group.leave()
 				}
 			}
 			//stopLoopExecution(group: group)
@@ -668,65 +683,16 @@ class TestingViewModel {
 		case .Other:
 			break
 		}
-		
-		
+//		if self.isTimeInProgress == false {
+//			group.notify(queue: DispatchQueue.global()) {
+//				print("Completed work:")
+//				// Kick off the movies API calls
+//				//PlaygroundPage.current.finishExecution()
+//			}
+//		}
+
 	}
 	
-	
-	func getTransectionId()  {
-		
-		//TO-DO guard
-		
-		Network.shared.apollo.fetch(query: GetS3PreSingedUrlQuery(vin: vehicleInfo?.vin ?? "")) { result in
-			// 3
-			switch result {
-				
-			case .success(let graphQLResult):
-				guard let _ = try? result.get().data else { return }
-				if graphQLResult.data != nil {
-					self.preSignedDelegate?.getTransactionIdInfo(viewModel: self)
-					
-					let getS3PreSingedData = graphQLResult.data?.resultMap["getS3PreSingedURL"]?.jsonValue//getS3PreSingedUrl
-					var preSignedData : Data?
-					do {
-						preSignedData = try JSONSerialization.data(withJSONObject: getS3PreSingedData as Any)
-					} catch {
-						//print("Unexpected error: \(error).")
-					}
-					
-					do {
-						let decoder = JSONDecoder()
-						let preSignedResponse = try decoder.decode(GetS3PreSingedURL.self, from: preSignedData!)
-						self.transactionId = preSignedResponse.transactionID
-						//print("transaction id::", preSignedResponse.transactionID)
-						self.preSignedData = preSignedResponse
-						self.generateTxtCommandLogs(data: "Transection id: \(preSignedResponse.transactionID)")
-						//self.vehicleInformation = messages
-												//self.delegate?.updateVehicleInfo(viewModel: self)
-						//
-					} catch DecodingError.dataCorrupted(let context) {
-						print(context)
-					} catch DecodingError.keyNotFound(let key, let context) {
-						print("Key '\(key)' not found:", context.debugDescription)
-						print("codingPath:", context.codingPath)
-					} catch DecodingError.valueNotFound(let value, let context) {
-						print("Value '\(value)' not found:", context.debugDescription)
-						print("codingPath:", context.codingPath)
-					} catch DecodingError.typeMismatch(let type, let context) {
-						print("Type '\(type)' mismatch:", context.debugDescription)
-						print("codingPath:", context.codingPath)
-					} catch {
-						print("error: ", error)
-					}
-				}
-				
-			case .failure(let error):
-				// 5
-				self.preSignedDelegate?.handleErrorTransactionID()
-				print("Error loading data \(error)")
-			}
-		}
-	}
 	
 	//MARK: - Convert each byte as string (typecasting)
 	private func typeCastingByteToString(testCommand: TestCommandExecution?) -> [String] {
@@ -734,87 +700,87 @@ class TestingViewModel {
 		guard let finalData = testCommand?.deviceReponse  else { return [""] }
 		let trimmed = finalData.trimmingCharacters(in: .whitespacesAndNewlines)
 		//print("trimmed", trimmed)
-		
-		switch testCommand?.type {
-		case .PACK_VOLTAGE:
-			let arrayOfStringBytes = trimmed.components(withMaxLength: 2)
-			//			print("final Array of string Bytes", arrayOfStringBytes)
-			//			print("TYPE::", testCommand?.type as Any)
-			self.generateTxtCommandLogs(data: "\(arrayOfStringBytes)")
-			return arrayOfStringBytes
-		case .none:
-			let arrayOfStringBytes = trimmed.components(withMaxLength: 2)
-			//			print("final Array of string Bytes", arrayOfStringBytes)
-			//			print("TYPE::", testCommand?.type as Any)
-			self.generateTxtCommandLogs(data: "\(arrayOfStringBytes)")
-			return arrayOfStringBytes
-		case .some(.ODOMETER):
-			let arrayOfStringBytes = trimmed.components(withMaxLength: 2)
-			//			print("final Array of string Bytes", arrayOfStringBytes)
-			//			print("TYPE::", testCommand?.type as Any)
-			self.generateTxtCommandLogs(data: "\(arrayOfStringBytes)")
-			return arrayOfStringBytes
-		case .some(.STATEOFCHARGE):
-			let arrayOfStringBytes = trimmed.components(withMaxLength: 2)
-			//			print("final Array of string Bytes", arrayOfStringBytes)
-			//			print("TYPE::", testCommand?.type as Any)
-			self.generateTxtCommandLogs(data: "\(arrayOfStringBytes)")
-			return arrayOfStringBytes
-		case .some(.ENERGY_TO_EMPTY):
-			let arrayOfStringBytes = trimmed.components(withMaxLength: 2)
-			//			print("final Array of string Bytes", arrayOfStringBytes)
-			//			print("TYPE::", testCommand?.type as Any)
-			self.generateTxtCommandLogs(data: "\(arrayOfStringBytes)")
-			return arrayOfStringBytes
-		case .some(.BMS_CAPACITY):
-			let arrayOfStringBytes = trimmed.components(withMaxLength: 2)
-			//			print("final Array of string Bytes", arrayOfStringBytes)
-			//			print("TYPE::", testCommand?.type as Any)
-			self.generateTxtCommandLogs(data: "\(arrayOfStringBytes)")
-			return arrayOfStringBytes
-		case .some(.PACK_TEMPERATURE):
-			let arrayOfStringBytes = trimmed.components(withMaxLength: 2)
-			//			print("final Array of string Bytes", arrayOfStringBytes)
-			//			print("TYPE::", testCommand?.type as Any)
-			self.generateTxtCommandLogs(data: "\(arrayOfStringBytes)")
-			return arrayOfStringBytes
-		case .some(.PACK_CURRENT):
-			let arrayOfStringBytes = trimmed.components(withMaxLength: 2)
-			//			print("final Array of string Bytes", arrayOfStringBytes)
-			//			print("TYPE::", testCommand?.type as Any)
-			self.generateTxtCommandLogs(data: "\(arrayOfStringBytes)")
-			return arrayOfStringBytes
-		case .some(.CELL_VOLTAGE):
-			let arrayOfStringBytes = trimmed.components(withMaxLength: 2)
-			//			print("final Array of string Bytes", arrayOfStringBytes)
-			//			print("TYPE::", testCommand?.type as Any)
-			self.generateTxtCommandLogs(data: "\(arrayOfStringBytes)")
-			return arrayOfStringBytes
-		case .some(.BATTERY_AGE):
-			let arrayOfStringBytes = trimmed.components(withMaxLength: 2)
-			//			print("final Array of string Bytes", arrayOfStringBytes)
-			//			print("TYPE::", testCommand?.type as Any)
-			self.generateTxtCommandLogs(data: "\(arrayOfStringBytes)")
-			return arrayOfStringBytes
-		case .some(.DIAGNOSTIC_SESSION):
-			let arrayOfStringBytes = trimmed.components(withMaxLength: 2)
-			//			print("final Array of string Bytes", arrayOfStringBytes)
-			//			print("TYPE::", testCommand?.type as Any)
-			self.generateTxtCommandLogs(data: "\(arrayOfStringBytes)")
-			return arrayOfStringBytes
-		case .some(.MISC_COMMANDS):
-			let arrayOfStringBytes = trimmed.components(withMaxLength: 2)
-			//			print("final Array of string Bytes", arrayOfStringBytes)
-			//			print("TYPE::", testCommand?.type as Any)
-			self.generateTxtCommandLogs(data: "\(arrayOfStringBytes)")
-			return arrayOfStringBytes
-		case .some(.Other):
-			let arrayOfStringBytes = trimmed.components(withMaxLength: 2)
-			//			print("final Array of string Bytes", arrayOfStringBytes)
-			//			print("TYPE::", testCommand?.type as Any)
-			self.generateTxtCommandLogs(data: "\(arrayOfStringBytes)")
-			return arrayOfStringBytes
-		}
+		return trimmed.components(withMaxLength: 2)
+//		switch testCommand?.type {
+//		case .PACK_VOLTAGE:
+//			let arrayOfStringBytes = trimmed.components(withMaxLength: 2)
+//			//			print("final Array of string Bytes", arrayOfStringBytes)
+//			//			print("TYPE::", testCommand?.type as Any)
+//			//self.generateTxtCommandLogs(data: "\(arrayOfStringBytes)")
+//			return arrayOfStringBytes
+//		case .none:
+//			let arrayOfStringBytes = trimmed.components(withMaxLength: 2)
+//			//			print("final Array of string Bytes", arrayOfStringBytes)
+//			//			print("TYPE::", testCommand?.type as Any)
+//			//self.generateTxtCommandLogs(data: "\(arrayOfStringBytes)")
+//			return arrayOfStringBytes
+//		case .some(.ODOMETER):
+//			let arrayOfStringBytes = trimmed.components(withMaxLength: 2)
+//			//			print("final Array of string Bytes", arrayOfStringBytes)
+//			//			print("TYPE::", testCommand?.type as Any)
+//			//self.generateTxtCommandLogs(data: "\(arrayOfStringBytes)")
+//			return arrayOfStringBytes
+//		case .some(.STATEOFCHARGE):
+//			let arrayOfStringBytes = trimmed.components(withMaxLength: 2)
+//			//			print("final Array of string Bytes", arrayOfStringBytes)
+//			//			print("TYPE::", testCommand?.type as Any)
+//			//self.generateTxtCommandLogs(data: "\(arrayOfStringBytes)")
+//			return arrayOfStringBytes
+//		case .some(.ENERGY_TO_EMPTY):
+//			let arrayOfStringBytes = trimmed.components(withMaxLength: 2)
+//			//			print("final Array of string Bytes", arrayOfStringBytes)
+//			//			print("TYPE::", testCommand?.type as Any)
+//			//self.generateTxtCommandLogs(data: "\(arrayOfStringBytes)")
+//			return arrayOfStringBytes
+//		case .some(.BMS_CAPACITY):
+//			let arrayOfStringBytes = trimmed.components(withMaxLength: 2)
+//			//			print("final Array of string Bytes", arrayOfStringBytes)
+//			//			print("TYPE::", testCommand?.type as Any)
+//			//self.generateTxtCommandLogs(data: "\(arrayOfStringBytes)")
+//			return arrayOfStringBytes
+//		case .some(.PACK_TEMPERATURE):
+//			let arrayOfStringBytes = trimmed.components(withMaxLength: 2)
+//			//			print("final Array of string Bytes", arrayOfStringBytes)
+//			//			print("TYPE::", testCommand?.type as Any)
+//			//self.generateTxtCommandLogs(data: "\(arrayOfStringBytes)")
+//			return arrayOfStringBytes
+//		case .some(.PACK_CURRENT):
+//			let arrayOfStringBytes = trimmed.components(withMaxLength: 2)
+//			//			print("final Array of string Bytes", arrayOfStringBytes)
+//			//			print("TYPE::", testCommand?.type as Any)
+//			//self.generateTxtCommandLogs(data: "\(arrayOfStringBytes)")
+//			return arrayOfStringBytes
+//		case .some(.CELL_VOLTAGE):
+//			let arrayOfStringBytes = trimmed.components(withMaxLength: 2)
+//			//			print("final Array of string Bytes", arrayOfStringBytes)
+//			//			print("TYPE::", testCommand?.type as Any)
+//			//self.generateTxtCommandLogs(data: "\(arrayOfStringBytes)")
+//			return arrayOfStringBytes
+//		case .some(.BATTERY_AGE):
+//			let arrayOfStringBytes = trimmed.components(withMaxLength: 2)
+//			//			print("final Array of string Bytes", arrayOfStringBytes)
+//			//			print("TYPE::", testCommand?.type as Any)
+//			//self.generateTxtCommandLogs(data: "\(arrayOfStringBytes)")
+//			return arrayOfStringBytes
+//		case .some(.DIAGNOSTIC_SESSION):
+//			let arrayOfStringBytes = trimmed.components(withMaxLength: 2)
+//			//			print("final Array of string Bytes", arrayOfStringBytes)
+//			//			print("TYPE::", testCommand?.type as Any)
+//			//self.generateTxtCommandLogs(data: "\(arrayOfStringBytes)")
+//			return arrayOfStringBytes
+//		case .some(.MISC_COMMANDS):
+//			let arrayOfStringBytes = trimmed.components(withMaxLength: 2)
+//			//			print("final Array of string Bytes", arrayOfStringBytes)
+//			//			print("TYPE::", testCommand?.type as Any)
+//			//self.generateTxtCommandLogs(data: "\(arrayOfStringBytes)")
+//			return arrayOfStringBytes
+//		case .some(.Other):
+//			let arrayOfStringBytes = trimmed.components(withMaxLength: 2)
+//			//			print("final Array of string Bytes", arrayOfStringBytes)
+//			//			print("TYPE::", testCommand?.type as Any)
+//			//self.generateTxtCommandLogs(data: "\(arrayOfStringBytes)")
+//			return arrayOfStringBytes
+//		}
 		
 	}
 	
@@ -877,6 +843,7 @@ class TestingViewModel {
 					} catch {
 						print("error: ", error)
 					}*/
+					
 				}
 				
 			case .failure(let error):
@@ -917,156 +884,11 @@ class TestingViewModel {
 		return decimalValue
 	}
 	
-	func preparingLogicForCSVFileGeration() {
-		// TODO clear the min validation
-		let listCount: [Int] = [self.packCurrentData.count, self.packVoltageData.count]
-		let minVlaue = listCount.max() ?? 0
-		print("min value from count array", minVlaue)
-		
-		
-		//TO-DO handle zero size
-		
-		//let finalPackCurrent = packCurrentData[0...minVlaue - 2]
-		self.createPackCurrentCSVFile(data: packCurrentData)
-		
-		//let finalPackVoltage = packVoltageData[0...minVlaue - 2]
-		createPackVoltageCSV(data: packVoltageData)
-
-		let cellVoltageCount = sampledCommandsList.count
-		var result = cellVoltageData.chunked(into: cellVoltageCount)
-		print("result", result)
-		print("before process result count", result.count)
-		guard let resultLastValue = result.last else { return  }
-		
-		if resultLastValue.count < cellVoltageCount {
-			result.removeLast()
-		} else {
-			print("after process result count", result.count)
-		}
-		print("after process result count", result.count)
-		self.createCellVoltageCSV(data: result)
-		
-	}
-	
-	//MARK: Create pack current CSV
-	func createPackCurrentCSVFile(data: [Double] ) {
-		
-		let floatDataArray = Array(data)
-		let pack_Current = CSVFile(csvArray: [floatDataArray], fileName: "Pack_Current_\(self.vehicleInfo?.vin ?? "")")
-		
-		csvDispatchGroup.enter()
-		let pack_CurrentFilePath = pack_Current.generateCSVFile()
-		csvFileUploadingIntoS3Bucket(fileName: pack_CurrentFilePath)
-		self.generateTxtCommandLogs(data: pack_CurrentFilePath)
-	
-	}
-	
-	// MARK: Create pack voltage CSV
-	func createPackVoltageCSV(data: [Double]) {
-		let floatDataArray = Array(data)
-		let pack_Voltage = CSVFile(csvArray: [floatDataArray], fileName: "Pack_Voltage_\(self.vehicleInfo?.vin ?? "")")
-		
-		csvDispatchGroup.enter()
-		let pack_VoltageFilePath = pack_Voltage.generateCSVFile()
-		csvFileUploadingIntoS3Bucket(fileName: pack_VoltageFilePath)
-		self.generateTxtCommandLogs(data: pack_VoltageFilePath)
-		
-	}
-	
-	// MARK: Create Cell Voltage CSV
-	func createCellVoltageCSV(data: [[Double]]) {
-		
-		let cell_voltage = CSVFile(csvArray: data, fileName: "Cell_Volt_\(self.vehicleInfo?.vin ?? "")")
-		
-		csvDispatchGroup.enter()
-		let cellVoltageFilePath = cell_voltage.generateCSVFile()
-		csvFileUploadingIntoS3Bucket(fileName: cellVoltageFilePath)
-		self.generateTxtCommandLogs(data: cellVoltageFilePath)
-	}
-	
-	func csvFileUploadingIntoS3Bucket(fileName: String) {
-		
-		guard let presinedData = self.preSignedData else { return }
-		
-		var multipart = MultipartRequest()
-		for field in [
-			"key": presinedData.fields.key,
-			"AWSAccessKeyId": presinedData.fields.awsAccessKeyID,
-			"x-amz-security-token": presinedData.fields.xamzSecurityToken,
-			"policy": presinedData.fields.policy,
-			"signature": presinedData.fields.signature
-		] {
-			multipart.add(key: field.key, value: field.value)
-		}
-		
-		multipart.add(
-			key: "file",
-			fileName: "\(fileName)",
-			fileMimeType: "text/csv",
-			fileData: "csvData".data(using: .utf8)!
-		)
-		
-		/// Create a regular HTTP URL request & use multipart components
-		let url = URL(string: "\(presinedData.url)")!
-		var request = URLRequest(url: url)
-		request.httpMethod = "POST"
-		request.setValue(multipart.httpContentTypeHeadeValue, forHTTPHeaderField: "Content-Type")
-		request.httpBody = multipart.httpBody
-		
-		/// Fire the request using URL sesson or anything else...
-		let session =  URLSession.shared
-		let dataTask = session.dataTask(with: request) { data, response, error in
-			self.csvDispatchGroup.leave()
-			guard let _ = data else {
-				print("json data response Error")
-				return
-			}
-			print("file uploaded succesfully...")
-		}
-		dataTask.resume()
-		
-		self.csvDispatchGroup.notify(queue: .main) {
-			print("all CSV files uploaded successfully...!")
-			
-		}
-		
-	}
-	
 	func generateTxtCommandLogs(data: String) {
 		print("command data: ", data)
 		textCommands += "\(data)"
 		textCommands += "\n"
 		print("text command:::::>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", textCommands)
-	}
-	
-	func saveLogsIntoTxtFile() -> String {
-		print("Logs::::", self.textCommands)
-		if self.textCommands.count > 2 {
-		let text = self.textCommands
-		let folder = "Acelite"
-		let timeStamp = Date.currentTimeStamp
-		let fileNamed = "\(timeStamp)"
-		guard let path = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first else { return  ""}
-		guard let writePath = NSURL(fileURLWithPath: path).appendingPathComponent(folder) else { return ""}
-		try? FileManager.default.createDirectory(atPath: writePath.path, withIntermediateDirectories: true)
-		let file = writePath.appendingPathComponent(fileNamed + ".txt")
-			print("file path:::", file)
-		try? text.write(to: file, atomically: false, encoding: String.Encoding.utf8)
-			// alert
-			//
-			// generated file stored in your phone file folder with app name.
-			print("file path:::", file)
-		return file.absoluteString
-		
-//		var filesSharing = [Any]()
-//		filesSharing.append(file)
-//		let activityViewController = UIActivityViewController(activityItem: filesSharing, applicationActivities: nil)
-		
-		} else {
-			// alert logs not generated
-			print("logs not generated")
-			return ""
-		}
 	}
 	
 }

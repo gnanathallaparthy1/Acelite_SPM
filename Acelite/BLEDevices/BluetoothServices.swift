@@ -92,6 +92,10 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 		self.myPeripheral.delegate = self
 	}
 	
+	public func disconnectDevice(peripheral: CBPeripheral) {
+		self.centralManager.cancelPeripheralConnection(peripheral)
+	}
+	
 	func centralManagerDidUpdateState(_ central: CBCentralManager) {
 		if central.state == .poweredOn {
 			central.scanForPeripherals(withServices: nil, options: nil)

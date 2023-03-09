@@ -99,7 +99,7 @@ class ViewController: UIViewController {
 			cancelButton.isHidden = false
 			//backButton.backgroundColor = .lightGray
 			//backButton.isUserInteractionEnabled = true
-			imageView.image = UIImage.init(named: "2-5")
+			imageView.image = UIImage.init(named: "Start_The_Car")
 			screenCountLabel.text = "2/5"
 			
 		} else {

@@ -10,13 +10,14 @@ import Foundation
 import Apollo
 import Network
 import UIKit
+import CoreBluetooth
 
 
 class Network {
 	static let shared = Network()
 	var vehicleInformation:  GetBatteryTestInstructionsQuery.Data?
 	var bluetoothService: BluetoothServices?
-	
+	var myPeripheral: CBPeripheral!
   //  lazy var apollo = ApolloClient(url: URL.init(string: "http://countries.trevorblades.com/")!)
 	lazy var apollo: ApolloClient = {
 

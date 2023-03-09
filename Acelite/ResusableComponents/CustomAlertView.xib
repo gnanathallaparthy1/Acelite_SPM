@@ -29,6 +29,11 @@
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <viewLayoutGuide key="safeArea" id="N4g-5E-386"/>
                 </stackView>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" id="EFj-ZQ-YZQ">
+                    <rect key="frame" x="191" y="135" width="110" height="200"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <viewLayoutGuide key="safeArea" id="lF0-Zv-xSE"/>
+                </stackView>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="w1l-p7-SrB">
                     <rect key="frame" x="30" y="144" width="413" height="104"/>
                     <subviews>

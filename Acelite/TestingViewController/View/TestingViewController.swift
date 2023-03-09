@@ -7,7 +7,50 @@
 
 import UIKit
 
-class TestingViewController: UIViewController, GetPreSignedUrlDelegate {
+class TestingViewController: UIViewController, GetPreSignedUrlDelegate, UploadAndSubmitDataDelegate {
+	 @objc func navigateToHealthScoreVC() {
+		 self.notificationCenter.post(name: NSNotification.Name(rawValue: "GotAllData"), object: nil)
+		 //post(name: "GotAllData", object: nil)
+	}
+	
+	func navigateToAnimationVC() {
+		timer?.invalidate()
+		timer = nil
+		//let vm = UploadAnimationViewModel(delegate: self.viewModel?.uploadAndSubmitDelegate)
+		let vc = UploadAnimationViewController()
+		vc.vehicleInfo = viewModel?.vehicleInfo
+		if let sp = viewModel?.sampledCommandsList {
+			vc.sampledCommandsList = sp
+		}
+		if let pc = viewModel?.packCurrentData {
+			vc.packCurrentData = pc
+		}
+		if let pv = viewModel?.packVoltageData {
+			vc.packVoltageData = pv
+		}
+		if let cv = viewModel?.cellVoltageData {
+			vc.cellVoltageData = cv
+		}
+		
+		self.navigationController?.pushViewController(vc, animated: true)
+		//let dialogMessage = UIAlertController(title: "TURN OFF THE CAR", message: "Turn off the car and disconnectthe OBD-II cable", preferredStyle: .alert)
+		
+		
+//		// Create OK button with action handler
+//		let ok = UIAlertAction(title: "Done", style: .default, handler: { (action) -> Void in
+//			
+//			//vc.uploadAndSubmitDelegate = self
+//			//pass delegate
+//			//vc.uploadAndSubmitDelegate = self.viewModel?.uploadAndSubmitDelegate
+//			
+//		})
+//		
+//		//Add OK button to a dialog message
+//		dialogMessage.addAction(ok)
+//		// Present Alert to
+		//self.present(dialogMessage, animated: true, completion: nil)
+		}
+	
 	func getTransactionIdInfo(viewModel: TestingViewModel) {
 		
 	}
@@ -41,50 +84,32 @@ class TestingViewController: UIViewController, GetPreSignedUrlDelegate {
 		}
 	}
 	@IBOutlet weak var timeLabel: UILabel!
-	var secoonds = 15*1
-	var timer = Timer()
-	//var isTimerRunning = false
+	var secoonds = 1 * 60
+	var timer: Timer?
+	
 	
 	@IBOutlet weak var bleResponseTextView: UITextView!
 	var commandResponseString = ""
 	var bluetoothService: BluetoothServices?
 	private let notificationCenter = NotificationCenter.default
 	var delegate:GetPreSignedUrlDelegate?
-//	private lazy var alertView: CustomAlertView = {
-//		let view = CustomAlertView.instanceFromNib()
-//		view.delegate = self
-//		view.translatesAutoresizingMaskIntoConstraints = false
-//		return view
-//	}()
-//	private lazy var backgroundView: UIView = {
-//		let view = UIView()
-//		view.backgroundColor = .black
-//		view.alpha = 0.5
-//		view.translatesAutoresizingMaskIntoConstraints = false
-//		return view
-//	}()
+	var infoPooDelegate: InfoPopAlertViewDelegate? = nil
 
 	
 	override func viewDidLoad() {
         super.viewDidLoad()
+		//runTimer()
 		self.viewModel?.preSignedDelegate = self
-//		self.view.addSubview(backgroundView)
-//		NSLayoutConstraint.activate([
-//					backgroundView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 0),
-//					backgroundView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 0),
-////					backgroundView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 0),
-////					backgroundView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 0)
-////				])
-//		self.view.addSubview(alertView)
+		self.viewModel?.uploadAndSubmitDelegate = self
 		self.viewUpdate()
 		self.notificationCenter.addObserver(self, selector: #selector(self.commandResponseSuccess(_:)), name: NSNotification.Name.init(rawValue: "BLEResponse"), object: nil)
 		
 		let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
 		let vc = storyboard.instantiateViewController(withIdentifier: "InfoPopUpViewController") as! InfoPopUpViewController
 		vc.modalPresentationStyle = .fullScreen
+		vc.delegate = self
 		self.present(vc, animated: true)
-		
-		
+//		self.notificationCenter.addObserver(self, selector: #selector(self.navigateToHealthScoreVC), name: NSNotification.Name.init(rawValue: "GotAllData"), object: nil)
     }
 
 	private func viewUpdate() {
@@ -96,6 +121,7 @@ class TestingViewController: UIViewController, GetPreSignedUrlDelegate {
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {
+		
 		runTimer()
 		self.navigationItem.setHidesBackButton(true, animated:true)
 		
@@ -105,26 +131,63 @@ class TestingViewController: UIViewController, GetPreSignedUrlDelegate {
 		
 		
 		
-		let sahreBarButton = UIBarButtonItem(image: UIImage(systemName: "line.3.horizontal"), style: .plain, target: self, action: #selector(self.shareTxtFile(_ :)))
+		let sahreBarButton = UIBarButtonItem(image: UIImage(systemName: "share"), style: .plain, target: self, action: #selector(self.shareTxtFile(_ :)))
 		sahreBarButton.tintColor = UIColor.appPrimaryColor()
 		self.navigationItem.rightBarButtonItem  = sahreBarButton
 		
 		
 	}
 	
+	override func viewDidDisappear(_ animated: Bool) {
+		super.viewDidDisappear(animated)
+		timer?.invalidate()
+		timer = nil
+	}
+	override func viewWillDisappear(_ animated: Bool) {
+		super.viewWillDisappear(animated)
+		timer?.invalidate()
+		timer = nil
+	}
+	
 	func runTimer() {
-		viewModel?.isTimeInProgress = true
-		 timer = Timer.scheduledTimer(timeInterval: 1, target: self,   selector: (#selector(self.updateTimer)), userInfo: nil, repeats: true)
+//		let timer = Timer.scheduledTimer(timeInterval: 1.0, target: self,
+//		 selector: #selector(updateTimer), userInfo: nil, repeats: true) // sets it on `.default` mode
+//
+//		RunLoop.main.add(timer, forMode: .common)
+		//viewModel?.isTimeInProgress = true
+//		if let tm = self.timer {
+//			self.timer = Timer(timeInterval: 1, repeats: true) { [weak self] _ in
+//				self?.updateTimer()
+//			}
+//			RunLoop.current.add(tm, forMode: .common)
+//		}
+//		self.timer = Timer.scheduledTimer(timeInterval: 1, target: self,   selector: (#selector(self.updateTimer)), userInfo: nil, repeats: true)
+//		if let tm = self.timer {
+//			RunLoop.main.add(tm, forMode: RunLoop.Mode.tracking)
+//		}
+		
+		//DispatchQueue.main.async  {
+//		if let tm = self.timer {
+	//	DispatchQueue.main.async  {
+		//if let tm = self.timer {
+			self.timer = Timer.scheduledTimer(timeInterval: 1, target: self,   selector: (#selector(self.updateTimer)), userInfo: nil, repeats: true)
+		//RunLoop.main.add(tm, forMode: RunLoop.Mode.tracking)
+		//}
 	}
 	
 	@objc func updateTimer() {
 		self.secoonds -= 1
+		let bool = self.viewModel?.isTimeInProgress
 		//This will decrement(count down)the seconds.
-		if self.secoonds == 0 {
-			timer.invalidate()
+		//
+		if self.secoonds == 0 && bool == true  {
+			timer?.invalidate()
 			self.viewModel?.isTimeInProgress = false
 		} else {
-		self.timeLabel.text = timeString(time: TimeInterval(secoonds)) //This will update the label.
+			print("::TIME IN SECONDS",self.secoonds)
+			DispatchQueue.main.async  {
+				self.timeLabel.text = self.timeString(time: TimeInterval(self.secoonds)) //This will update the label.
+			}
 		//timerLabel.text = timeString(time: TimeInterval(seconds))
 		}
 	}
@@ -138,14 +201,14 @@ class TestingViewController: UIViewController, GetPreSignedUrlDelegate {
 	}
 	
 	@IBAction func shareTxtFile(_ sender: UIBarButtonItem) {
-		DispatchQueue.main.async {
-			let sharedFile = self.viewModel?.saveLogsIntoTxtFile()
-			let url = URL(string: sharedFile ?? "")
-					var filesSharing = [Any]()
-			filesSharing.append(url as Any)
-					let activityViewController = UIActivityViewController(activityItems: filesSharing, applicationActivities: nil)
-			self.present(activityViewController, animated: true)
-		}
+//		DispatchQueue.main.async {
+//			//let sharedFile = self.viewModel?.saveLogsIntoTxtFile()
+//			let url = URL(string: sharedFile ?? "")
+//					var filesSharing = [Any]()
+//			filesSharing.append(url as Any)
+//					let activityViewController = UIActivityViewController(activityItems: filesSharing, applicationActivities: nil)
+//			self.present(activityViewController, animated: true)
+//		}
 		
 	}
 	
@@ -223,8 +286,15 @@ extension TimeInterval {
 		Int((self*1000).truncatingRemainder(dividingBy: 1000))
 	}
 }
-extension TestingViewController: CustomAlertViewDelegate {
-	func removeAlert(sender: CustomAlertView) {
-		sender.removeFromSuperview()
+extension TestingViewController: InfoPopAlertViewDelegate {
+	func removeAlert(sender: InfoPopUpViewController) {
+		self.viewModel?.handleInstructions()
+		sender.dismiss(animated: true)
 	}
+	
+//	func removeAlert(sender: InfoPopUpViewController) {
+//		//sender.dismiss(animated: true)
+//		self.viewModel?.handleInstructions()
+//
+//	}
 }

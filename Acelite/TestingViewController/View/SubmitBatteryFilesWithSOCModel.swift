@@ -13,13 +13,13 @@
 import Foundation
 
 // MARK: - SubmitBatteryDataFileWithSOC
-struct SubmitBatteryDataFileWithSOC: Encodable {
+struct SubmitBatteryDataFileWithSOC: Codable {
 	var data: SOCClass
 }
 
 // MARK: - DataClass
 struct SOCClass: Codable {
-	var submitBatteryDataFilesWithStateOfCharge: SubmitBatteryDataFilesWithStateOfCharge
+	var submitBatteryDataFilesWithStateOfCharge: JSONNull?
 }
 
 // MARK: - SubmitBatteryDataFilesWithStateOfCharge

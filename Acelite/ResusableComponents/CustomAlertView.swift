@@ -7,15 +7,12 @@
 
 import Foundation
 import UIKit
-protocol CustomAlertViewDelegate {
-	func removeAlert(sender: CustomAlertView)
-}
+
 class CustomAlertView: UIView {
 	@IBOutlet weak var TitleLabel: UILabel!
 	
 	@IBOutlet weak var leftImageView: UIImageView!
 	@IBOutlet weak var rightImageView: UIImageView!
-	public var delegate: CustomAlertViewDelegate?
 	private func setupView() {
 	self.backgroundColor = .white
 	self.layer.borderColor = UIColor.lightGray.cgColor

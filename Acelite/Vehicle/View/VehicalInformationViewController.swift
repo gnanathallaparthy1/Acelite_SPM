@@ -43,6 +43,19 @@ class VehicalInformationViewController: UIViewController {
 		}
 	}
 	
+	
+	@IBOutlet weak var clearButton: UIButton!{
+		didSet {
+			clearButton.layer.cornerRadius = 5
+			clearButton.layer.borderWidth = 1
+			clearButton.layer.borderColor = UIColor.appCalendarLightGrayColor().cgColor
+		}
+	}
+	@IBOutlet weak var vehicleInfoLabel: UILabel! {
+		didSet {
+			vehicleInfoLabel.font = UIFont.systemFont(ofSize: 18, weight: .medium)
+		}
+	}
 	@IBOutlet weak var carInfoView: UIView! {
 		didSet {
 			//barCodeView.isHidden = true
@@ -164,6 +177,7 @@ extension VehicalInformationViewController: UpdateVehicleInformationDelegate {
 		self.barCodeView.isHidden = true
 		self.carInfoView.isHidden = false
 		self.scanLabel.isHidden = true
+		self.vehicleInfoLabel.text = viewModel.vinNumber
 	}
 	
 	func handleErrorVehicleUpdate() {

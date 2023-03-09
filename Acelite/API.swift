@@ -6269,7 +6269,7 @@ public final class SubmitBatteryFilesWithStateOfChargeMutation: GraphQLMutation 
     }
 
     public struct SubmitBatteryDataFilesWithStateOfCharge: GraphQLSelectionSet {
-      public static let possibleTypes: [String] = ["BatteryHealthResponse"]
+      public static let possibleTypes: [String] = ["SubmitBatteryDataResponse"]
 
       public static var selections: [GraphQLSelection] {
         return [
@@ -6286,7 +6286,7 @@ public final class SubmitBatteryFilesWithStateOfChargeMutation: GraphQLMutation 
       }
 
       public init(estimatedRange: EstimatedRange? = nil, batteryScore: BatteryScore? = nil) {
-        self.init(unsafeResultMap: ["__typename": "BatteryHealthResponse", "estimatedRange": estimatedRange.flatMap { (value: EstimatedRange) -> ResultMap in value.resultMap }, "batteryScore": batteryScore.flatMap { (value: BatteryScore) -> ResultMap in value.resultMap }])
+        self.init(unsafeResultMap: ["__typename": "SubmitBatteryDataResponse", "estimatedRange": estimatedRange.flatMap { (value: EstimatedRange) -> ResultMap in value.resultMap }, "batteryScore": batteryScore.flatMap { (value: BatteryScore) -> ResultMap in value.resultMap }])
       }
 
       public var __typename: String {
@@ -6308,7 +6308,7 @@ public final class SubmitBatteryFilesWithStateOfChargeMutation: GraphQLMutation 
         }
       }
 
-      /// A BatteryScore object containing the score, grade, and health of the given vehicle, and a list of Factors used
+      /// A SubmitResponse object containing the score, grade, and health of the given vehicle, and a list of Factors used
       /// in the calculation.
       public var batteryScore: BatteryScore? {
         get {

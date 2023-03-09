@@ -3574,13 +3574,29 @@
       },
       {
         "kind": "OBJECT",
-        "name": "CommonProblem",
-        "description": null,
+        "name": "ClientError",
+        "description": "The ClientError object for a known user error.",
         "specifiedByUrl": null,
         "fields": [
           {
-            "name": "service",
-            "description": null,
+            "name": "code",
+            "description": "The error code",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "ClientErrorCode",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "message",
+            "description": "The error message",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -3595,8 +3611,78 @@
             "deprecationReason": null
           },
           {
-            "name": "vinCount",
+            "name": "transactionId",
+            "description": "Client provided tranacation id echoed back",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "ENUM",
+        "name": "ClientErrorCode",
+        "description": "The known client error codes",
+        "specifiedByUrl": null,
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "NO_DISCHARGE_DETECTED",
             "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "CommonProblem",
+        "description": null,
+        "specifiedByUrl": null,
+        "fields": [
+          {
+            "name": "service",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": true,
+            "deprecationReason": "No longer supported"
+          },
+          {
+            "name": "commonProblemService",
+            "description": "A CommonProblemService type, containing the UUID and name for the service",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "CommonProblemService",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "vinCount",
+            "description": "The number of times the service was performed for the vehicle",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -3612,7 +3698,7 @@
           },
           {
             "name": "relativePricing",
-            "description": null,
+            "description": "The relative repair cost of the Common Problem, on a scale of 1-4",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -3620,6 +3706,50 @@
               "ofType": {
                 "kind": "SCALAR",
                 "name": "Int",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "CommonProblemService",
+        "description": null,
+        "specifiedByUrl": null,
+        "fields": [
+          {
+            "name": "serviceId",
+            "description": "A UUID for the service",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "serviceName",
+            "description": "The CADS name for the service",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
                 "ofType": null
               }
             },
@@ -4880,6 +5010,94 @@
               "kind": "OBJECT",
               "name": "IndependentPriceRange",
               "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "FairRepairServiceResult",
+        "description": null,
+        "specifiedByUrl": null,
+        "fields": [
+          {
+            "name": "year",
+            "description": "The vehicle's year",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "make",
+            "description": "The vehicle's make",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "model",
+            "description": "The vehicle's model",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "trim",
+            "description": "The vehicle's trim",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "fairRepairService",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "FairRepairService",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -7427,41 +7645,12 @@
         "specifiedByUrl": null,
         "fields": [
           {
-            "name": "submitBatteryDataAsync",
-            "description": "Submit data measuring the current state of a given electric vehicle's battery systems. This serves as the\nasynchronous version of the submission process. The API response will include information about the state of the\nsubmission, but will NOT include any battery health calculation data.\nThis mutation is intended for users at Manheim and SNT.",
-            "args": [
-              {
-                "name": "vehicle",
-                "description": "The BatteryInput object respresents all data recorded from a unique vehicle at a specific datetime.",
-                "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "INPUT_OBJECT",
-                    "name": "BatteryInput",
-                    "ofType": null
-                  }
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              }
-            ],
-            "type": {
-              "kind": "OBJECT",
-              "name": "SubmitBatteryDataAsyncResult",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "submitBatteryData",
-            "description": "Submit data measuring the current state of a given electric vehicle's battery systems. This serves as the\nsynchronous version of the submission process. The API response will include battery health calculation data if a\nvalid battery health score can be calculated using the provided BatteryInput, or a corresponding error message otherwise.",
+            "description": "Submit data measuring the current state of a given electric vehicle's battery systems. The API response will\ninclude battery health calculation data if a valid battery health score can be calculated using the provided\nBatteryInput, or a corresponding error message otherwise.",
             "args": [
               {
                 "name": "vehicle",
-                "description": "The BatteryInput object respresents all data recorded from a unique vehicle at a specific datetime.",
+                "description": "The BatteryInput object represents all data recorded from a unique vehicle at a specific datetime.",
                 "type": {
                   "kind": "NON_NULL",
                   "name": null,
@@ -7508,9 +7697,13 @@
                 "name": "submitBatteryDataFilesProps",
                 "description": "Submit Battery Data Files properties",
                 "type": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "SubmitBatteryDataFilesPropsInput",
-                  "ofType": null
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "SubmitBatteryDataFilesPropsInput",
+                    "ofType": null
+                  }
                 },
                 "defaultValue": null,
                 "isDeprecated": false,
@@ -7535,7 +7728,7 @@
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "BatteryHealthResponse",
+              "name": "SubmitBatteryDataResponse",
               "ofType": null
             },
             "isDeprecated": false,
@@ -7596,7 +7789,7 @@
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "BatteryHealthResponse",
+              "name": "SubmitBatteryDataResponse",
               "ofType": null
             },
             "isDeprecated": false,
@@ -10705,26 +10898,10 @@
           },
           {
             "name": "commonProblems",
-            "description": "An example comment at the Query level that will be included in the schema documentation",
+            "description": "For a given vehicle, retrieve the 10 most common problems sorted by VIN count (greatest to least).",
             "args": [
               {
-                "name": "year",
-                "description": null,
-                "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  }
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              },
-              {
-                "name": "make",
+                "name": "catalogVehicleId",
                 "description": null,
                 "type": {
                   "kind": "NON_NULL",
@@ -10735,23 +10912,7 @@
                     "ofType": null
                   }
                 },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              },
-              {
-                "name": "model",
-                "description": null,
-                "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                "defaultValue": null,
+                "defaultValue": "\"NOOP\"",
                 "isDeprecated": false,
                 "deprecationReason": null
               }
@@ -10851,6 +11012,63 @@
             "deprecationReason": null
           },
           {
+            "name": "fairRepairService",
+            "description": "For a given vehicle (Catalog ID), location (ZIP code), and service, retrieve the price\nranges, for both dealer and independent shops, for the vehicle in the specified location.",
+            "args": [
+              {
+                "name": "catalogVehicleId",
+                "description": "The vehicle's Catalog ID",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "availableServiceId",
+                "description": "The UUID of the repair service, in the format: 123e4567-e89b-12d3-a456-426652340000",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "zipCode",
+                "description": "The ZIP code where the services would be performed. If one is not provided, the location will be set as national.",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "FairRepairServiceResult",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "fairRepairRange",
             "description": "For a given vehicle (Catalog ID), location (ZIP code), and service, retrieve the Fair Repair Range, an\nestimation of the costs (parts and labor) of the repair service for the vehicle in the specified location.",
             "args": [
@@ -10916,8 +11134,8 @@
               "name": "FairRepairRangeResult",
               "ofType": null
             },
-            "isDeprecated": false,
-            "deprecationReason": null
+            "isDeprecated": true,
+            "deprecationReason": "This query returns fair repair range but is now deprecated. Use fairRepairService query."
           },
           {
             "name": "intelligentRouting",
@@ -11962,35 +12180,6 @@
               "ofType": {
                 "kind": "OBJECT",
                 "name": "RepairRecommendation",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "serviceRecommendation",
-            "description": null,
-            "args": [
-              {
-                "name": "vehicle",
-                "description": null,
-                "type": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "ServiceVehicleInput",
-                  "ofType": null
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              }
-            ],
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "ServiceRecommendation",
                 "ofType": null
               }
             },
@@ -13047,126 +13236,6 @@
         "possibleTypes": null
       },
       {
-        "kind": "INPUT_OBJECT",
-        "name": "ServiceInput",
-        "description": null,
-        "specifiedByUrl": null,
-        "fields": null,
-        "inputFields": [
-          {
-            "name": "opCode",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "serviceCategory",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "serviceId",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "dealerCode",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "serviceName",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          }
-        ],
-        "interfaces": null,
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "OBJECT",
-        "name": "ServiceRecommendation",
-        "description": null,
-        "specifiedByUrl": null,
-        "fields": [
-          {
-            "name": "serviceCategory",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "serviceCategoryId",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "correlationScore",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "Int",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          }
-        ],
-        "inputFields": null,
-        "interfaces": [],
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
         "kind": "ENUM",
         "name": "ServiceRepairFacility",
         "description": null,
@@ -13188,102 +13257,6 @@
             "deprecationReason": null
           }
         ],
-        "possibleTypes": null
-      },
-      {
-        "kind": "INPUT_OBJECT",
-        "name": "ServiceVehicleInput",
-        "description": null,
-        "specifiedByUrl": null,
-        "fields": null,
-        "inputFields": [
-          {
-            "name": "vin",
-            "description": null,
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "metaVehicleId",
-            "description": null,
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "mileage",
-            "description": null,
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              }
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "dealerCode",
-            "description": null,
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "services",
-            "description": null,
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "ServiceInput",
-                  "ofType": null
-                }
-              }
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          }
-        ],
-        "interfaces": null,
-        "enumValues": null,
         "possibleTypes": null
       },
       {
@@ -13603,66 +13576,6 @@
         "possibleTypes": null
       },
       {
-        "kind": "OBJECT",
-        "name": "SubmitBatteryDataAsyncResult",
-        "description": "The API response object returned during the async battery data submission process.",
-        "specifiedByUrl": null,
-        "fields": [
-          {
-            "name": "vin",
-            "description": "The given vehicle's VIN.",
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "date",
-            "description": "The date the data was recorded.",
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "submitted",
-            "description": "Whether or not the submitted data succeeded.",
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Boolean",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          }
-        ],
-        "inputFields": null,
-        "interfaces": [],
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
         "kind": "INPUT_OBJECT",
         "name": "SubmitBatteryDataFilesPropsInput",
         "description": null,
@@ -13887,6 +13800,54 @@
           }
         ],
         "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "SubmitBatteryDataResponse",
+        "description": "A SubmitResponse object contains BatteryScore, EstimatedRange data which are calculated by combining data\nmeasuring the current state of the vehicle's battery systems (i.e. \"battery factors\") with pre-determined battery\nfactor weights. It also includes ClientError.",
+        "specifiedByUrl": null,
+        "fields": [
+          {
+            "name": "batteryScore",
+            "description": "A SubmitResponse object containing the score, grade, and health of the given vehicle, and a list of Factors used\nin the calculation.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "BatteryScore",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "estimatedRange",
+            "description": "An EstimatedRange object containing the minimum and maximum estimated range calculated for the given vehicle.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "EstimatedRange",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "clientError",
+            "description": "A known user error.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "ClientError",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
         "enumValues": null,
         "possibleTypes": null
       },
@@ -14971,36 +14932,7 @@
             "deprecationReason": null
           },
           {
-            "name": "submitBatteryDataAsync",
-            "description": null,
-            "args": [
-              {
-                "name": "vehicle",
-                "description": null,
-                "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "INPUT_OBJECT",
-                    "name": "FederatedBatteryInput",
-                    "ofType": null
-                  }
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              }
-            ],
-            "type": {
-              "kind": "OBJECT",
-              "name": "SubmitBatteryDataAsyncResult",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "submitBatteryDataFilesWithBmsCapacity",
+            "name": "submitBatteryDataFilesWithStateOfCharge",
             "description": null,
             "args": [
               {
@@ -15038,14 +14970,14 @@
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "BatteryHealthResponse",
+              "name": "SubmitBatteryDataResponse",
               "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "submitBatteryDataFilesWithStateOfCharge",
+            "name": "submitBatteryDataFilesWithBmsCapacity",
             "description": null,
             "args": [
               {
@@ -15083,7 +15015,7 @@
             ],
             "type": {
               "kind": "OBJECT",
-              "name": "BatteryHealthResponse",
+              "name": "SubmitBatteryDataResponse",
               "ofType": null
             },
             "isDeprecated": false,
@@ -15571,6 +15503,18 @@
             "deprecationReason": null
           },
           {
+            "name": "catalogId",
+            "description": "A unique, permanent numerical identifier for a Cox Automotive catalog vehicle.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "commonProblems",
             "description": null,
             "args": [],
@@ -15582,18 +15526,6 @@
                 "name": "CommonProblem",
                 "ofType": null
               }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "catalogId",
-            "description": "A unique, permanent numerical identifier for a Cox Automotive catalog vehicle.",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -15618,6 +15550,47 @@
             "type": {
               "kind": "OBJECT",
               "name": "FairRepairAvailableServicesResult",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "fairRepairService",
+            "description": null,
+            "args": [
+              {
+                "name": "zipCode",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "availableServiceId",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "OBJECT",
+              "name": "FairRepairServiceResult",
               "ofType": null
             },
             "isDeprecated": false,
@@ -15698,8 +15671,8 @@
               "name": "FairRepairRangeResult",
               "ofType": null
             },
-            "isDeprecated": false,
-            "deprecationReason": null
+            "isDeprecated": true,
+            "deprecationReason": "This query returns fair repair range but is now deprecated. Use fairRepairService query."
           },
           {
             "name": "basicWarrantyDistance",
