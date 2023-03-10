@@ -31,7 +31,6 @@
 		861EDE7529B7AFC0003A1C81 /* ABGaugeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861EDE7129B7AFC0003A1C81 /* ABGaugeView.swift */; };
 		861EDE7629B7AFC0003A1C81 /* ArrayX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861EDE7229B7AFC0003A1C81 /* ArrayX.swift */; };
 		861EDE7829B9104A003A1C81 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861EDE7729B9104A003A1C81 /* API.swift */; };
-		861EDE7A29B95A7A003A1C81 /* CircularProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861EDE7929B95A7A003A1C81 /* CircularProgressBar.swift */; };
 		8639046829940178008D5A0A /* Themes+Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8639046729940178008D5A0A /* Themes+Colors.swift */; };
 		8639046A299557B2008D5A0A /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86390469299557B2008D5A0A /* DataManager.swift */; };
 		8639046C29957ED1008D5A0A /* AceLiteBleWriteCallback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8639046B29957ED0008D5A0A /* AceLiteBleWriteCallback.swift */; };
@@ -112,7 +111,6 @@
 		861EDE7129B7AFC0003A1C81 /* ABGaugeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ABGaugeView.swift; sourceTree = "<group>"; };
 		861EDE7229B7AFC0003A1C81 /* ArrayX.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArrayX.swift; sourceTree = "<group>"; };
 		861EDE7729B9104A003A1C81 /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = API.swift; path = Acelite/API.swift; sourceTree = SOURCE_ROOT; };
-		861EDE7929B95A7A003A1C81 /* CircularProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgressBar.swift; sourceTree = "<group>"; };
 		8639046729940178008D5A0A /* Themes+Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Themes+Colors.swift"; sourceTree = "<group>"; };
 		86390469299557B2008D5A0A /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		8639046B29957ED0008D5A0A /* AceLiteBleWriteCallback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AceLiteBleWriteCallback.swift; sourceTree = "<group>"; };
@@ -325,7 +323,6 @@
 				866CDB502982FCC100ADFB50 /* Constants.swift */,
 				8639046729940178008D5A0A /* Themes+Colors.swift */,
 				867B607F29A937CE0050411C /* ExportAsCSV.swift */,
-				861EDE7929B95A7A003A1C81 /* CircularProgressBar.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -614,7 +611,6 @@
 				861E6EFC29561D1A00443F12 /* VehicalInformationViewController.swift in Sources */,
 				861E6F0D295E08B300443F12 /* ScannerViewController.swift in Sources */,
 				861E6ECC2953789B00443F12 /* SceneDelegate.swift in Sources */,
-				861EDE7A29B95A7A003A1C81 /* CircularProgressBar.swift in Sources */,
 				86B908A22970854A001CAB90 /* TestingViewController.swift in Sources */,
 				867B608029A937CE0050411C /* ExportAsCSV.swift in Sources */,
 				861E6F012957736700443F12 /* SideMenuViewController.swift in Sources */,

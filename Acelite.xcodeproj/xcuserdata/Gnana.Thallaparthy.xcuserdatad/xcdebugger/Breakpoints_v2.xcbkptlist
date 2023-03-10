@@ -14,8 +14,8 @@
             filePath = "Acelite/TestingViewController/ViewModel/TestViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "31"
-            endingLineNumber = "31"
+            startingLineNumber = "37"
+            endingLineNumber = "37"
             landmarkName = "isTimeInProgress"
             landmarkType = "24">
          </BreakpointContent>
@@ -30,26 +30,10 @@
             filePath = "Acelite/TestingViewController/ViewModel/TestViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "37"
-            endingLineNumber = "37"
+            startingLineNumber = "43"
+            endingLineNumber = "43"
             landmarkName = "isTimeInProgress"
             landmarkType = "24">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "E9EFB9AB-EA23-46CA-B9D7-C8FF7AE12912"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Acelite/TestingViewController/ViewModel/TestViewModel.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "908"
-            endingLineNumber = "908"
-            landmarkName = "findFinalHexValue(haxVal:startByete:endByte:)"
-            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -62,8 +46,8 @@
             filePath = "Acelite/TestingViewController/ViewModel/TestViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "488"
-            endingLineNumber = "488"
+            startingLineNumber = "501"
+            endingLineNumber = "501"
             landmarkName = "parseResponse(testCommand:index:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -78,8 +62,8 @@
             filePath = "Acelite/TestingViewController/ViewModel/TestViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "189"
-            endingLineNumber = "189"
+            startingLineNumber = "197"
+            endingLineNumber = "197"
             landmarkName = "initialCommand()"
             landmarkType = "7">
          </BreakpointContent>
@@ -94,8 +78,8 @@
             filePath = "Acelite/TestingViewController/ViewModel/TestViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "225"
-            endingLineNumber = "225"
+            startingLineNumber = "233"
+            endingLineNumber = "233"
             landmarkName = "runProtocolCommand()"
             landmarkType = "7">
          </BreakpointContent>
@@ -110,9 +94,9 @@
             filePath = "Acelite/BLEDevices/BluetoothServices.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "164"
-            endingLineNumber = "164"
-            landmarkName = "peripheral(_:didDiscoverCharacteristicsFor:error:)"
+            startingLineNumber = "168"
+            endingLineNumber = "168"
+            landmarkName = "peripheral(_:didUpdateValueFor:error:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -120,22 +104,6 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "42539CF1-4C14-45B3-B916-E993F6D9D947"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Acelite/TestingViewController/ViewModel/TestViewModel.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "887"
-            endingLineNumber = "887"
-            landmarkName = "submitBatteryDataFileWithSOCGraphRequest()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "FBC1B18C-EAF5-4F14-9AB0-F7777281A927"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
@@ -151,15 +119,15 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "5A18EA15-0D43-4A0D-A80D-41313582CFB3"
+            uuid = "FBC1B18C-EAF5-4F14-9AB0-F7777281A927"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Acelite/TestingViewController/ViewModel/TestViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "851"
-            endingLineNumber = "851"
+            startingLineNumber = "820"
+            endingLineNumber = "820"
             landmarkName = "submitBatteryDataFileWithSOCGraphRequest()"
             landmarkType = "7">
          </BreakpointContent>
@@ -167,16 +135,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "F18F547C-A09C-4EDF-AEB3-E22911769637"
-            shouldBeEnabled = "No"
+            uuid = "5A18EA15-0D43-4A0D-A80D-41313582CFB3"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Acelite/TestingViewController/ViewModel/TestViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "983"
-            endingLineNumber = "983"
-            landmarkName = "createCellVoltageCSV(data:)"
+            startingLineNumber = "817"
+            endingLineNumber = "817"
+            landmarkName = "submitBatteryDataFileWithSOCGraphRequest()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -190,8 +158,8 @@
             filePath = "Acelite/TestingViewController/ViewModel/TestViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "843"
-            endingLineNumber = "843"
+            startingLineNumber = "809"
+            endingLineNumber = "809"
             landmarkName = "submitBatteryDataFileWithSOCGraphRequest()"
             landmarkType = "7">
          </BreakpointContent>
@@ -206,41 +174,9 @@
             filePath = "Acelite/TestingViewController/ViewModel/TestViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "384"
-            endingLineNumber = "384"
+            startingLineNumber = "392"
+            endingLineNumber = "392"
             landmarkName = "runTheCommand(indexValue:testCommand:onCompletion:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "1E6F2422-77D6-4004-8AD4-C36290FE036F"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Acelite/TestingViewController/ViewModel/TestViewModel.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1036"
-            endingLineNumber = "1036"
-            landmarkName = "generateTxtCommandLogs(data:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "FDED6BC8-3A0B-470D-A253-857F9D3837C7"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Acelite/TestingViewController/ViewModel/TestViewModel.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1039"
-            endingLineNumber = "1039"
-            landmarkName = "generateTxtCommandLogs(data:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -254,8 +190,8 @@
             filePath = "Acelite/BLEDevices/ScanBleDevicesViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "169"
-            endingLineNumber = "169"
+            startingLineNumber = "170"
+            endingLineNumber = "170"
             landmarkName = "centralManagerDidUpdateState(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -270,8 +206,8 @@
             filePath = "Acelite/BLEDevices/ScanBleDevicesViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "189"
-            endingLineNumber = "189"
+            startingLineNumber = "190"
+            endingLineNumber = "190"
             landmarkName = "centralManager(_:didDiscover:advertisementData:rssi:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -286,8 +222,8 @@
             filePath = "Acelite/BLEDevices/ScanBleDevicesViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "200"
-            endingLineNumber = "200"
+            startingLineNumber = "201"
+            endingLineNumber = "201"
             landmarkName = "centralManager(_:didConnect:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -302,8 +238,8 @@
             filePath = "Acelite/BLEDevices/ScanBleDevicesViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "223"
-            endingLineNumber = "223"
+            startingLineNumber = "224"
+            endingLineNumber = "224"
             landmarkName = "filterPeripharalNames()"
             landmarkType = "7">
          </BreakpointContent>
@@ -327,16 +263,336 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "4C7EFD60-AD18-4FC4-8BF5-C9FE0CCDB655"
+            uuid = "0D814817-0389-468E-BDFB-346EBF590EDF"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Acelite/BLEDevices/ScanBleDevicesViewController.swift"
+            filePath = "Acelite/TestingViewController/View/TestingViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "49"
-            endingLineNumber = "49"
-            landmarkName = "showScanTimeoutView()"
+            startingLineNumber = "295"
+            endingLineNumber = "295"
+            landmarkName = "TestingViewController"
+            landmarkType = "21">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "C873E52A-CFA5-4036-8754-31A90E0A0ED3"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Acelite/TestingViewController/View/TestingViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "295"
+            endingLineNumber = "295"
+            landmarkName = "TestingViewController"
+            landmarkType = "21">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "19CA00B0-0BA9-4BC1-9DA8-CBDB788E0813"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Acelite/ResusableComponents/UploadAnimationViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "73"
+            endingLineNumber = "73"
+            landmarkName = "navigateToHealthScoreVC()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "9277A557-A4EC-48DE-9B16-93E99613FB01"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Acelite/UploadAnimation/UploadAnimationViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "18"
+            endingLineNumber = "18"
+            landmarkName = "init(delegate:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "9B325446-77BB-4F66-9CFA-CA7198FED0AA"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Acelite/UploadAnimation/UploadAnimationViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "402"
+            endingLineNumber = "402"
+            landmarkName = "submitBatteryDataFileWithSOCGraphRequest()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "1A59B07B-CE6F-4272-8D3B-5BD85AC1B03E"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Acelite/UploadAnimation/UploadAnimationViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "417"
+            endingLineNumber = "417"
+            landmarkName = "submitBatteryDataFileWithSOCGraphRequest()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "9AF1143D-185E-452C-876F-429B3CB1B6F0"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Acelite/API.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "6264"
+            endingLineNumber = "6264"
+            landmarkName = "submitBatteryDataFilesWithStateOfCharge"
+            landmarkType = "24">
+            <Locations>
+               <Location
+                  uuid = "9AF1143D-185E-452C-876F-429B3CB1B6F0 - 898051d916e307ee"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Acelite.SubmitBatteryFilesWithStateOfChargeMutation.Data.submitBatteryDataFilesWithStateOfCharge.getter : Swift.Optional&lt;Acelite.SubmitBatteryFilesWithStateOfChargeMutation.Data.SubmitBatteryDataFilesWithStateOfCharge&gt;"
+                  moduleName = "Acelite"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Gnana.Thallaparthy/Documents/Acelite/Acelite/API.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "6264"
+                  endingLineNumber = "6264"
+                  offsetFromSymbolStart = "44">
+               </Location>
+               <Location
+                  uuid = "9AF1143D-185E-452C-876F-429B3CB1B6F0 - cb12d2a1eea31b5c"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Dictionary&lt;Swift.String, Swift.Optional&lt;Any&gt;&gt;) -&gt; Swift.Optional&lt;Acelite.SubmitBatteryFilesWithStateOfChargeMutation.Data.SubmitBatteryDataFilesWithStateOfCharge&gt; in Acelite.SubmitBatteryFilesWithStateOfChargeMutation.Data.submitBatteryDataFilesWithStateOfCharge.getter : Swift.Optional&lt;Acelite.SubmitBatteryFilesWithStateOfChargeMutation.Data.SubmitBatteryDataFilesWithStateOfCharge&gt;"
+                  moduleName = "Acelite"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Gnana.Thallaparthy/Documents/Acelite/Acelite/API.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "6264"
+                  endingLineNumber = "6264"
+                  offsetFromSymbolStart = "36">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "262C806F-8DC0-437A-881F-DB272BAF972F"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Acelite/UploadAnimation/UploadAnimationViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "387"
+            endingLineNumber = "387"
+            landmarkName = "submitBatteryDataFileWithSOCGraphRequest()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "49BA2339-022F-4CF9-A0CE-190ED36E7BC6"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Acelite/UploadAnimation/UploadAnimationViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "406"
+            endingLineNumber = "406"
+            landmarkName = "submitBatteryDataFileWithSOCGraphRequest()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "49BA2339-022F-4CF9-A0CE-190ED36E7BC6 - 4c711b0166372930"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Result&lt;Apollo.GraphQLResult&lt;Acelite.SubmitBatteryFilesWithStateOfChargeMutation.Data&gt;, Swift.Error&gt;) -&gt; () in Acelite.UploadAnimationViewController.submitBatteryDataFileWithSOCGraphRequest() -&gt; ()"
+                  moduleName = "Acelite"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Gnana.Thallaparthy/Documents/Acelite/Acelite/UploadAnimation/UploadAnimationViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "406"
+                  endingLineNumber = "406"
+                  offsetFromSymbolStart = "1064">
+               </Location>
+               <Location
+                  uuid = "49BA2339-022F-4CF9-A0CE-190ED36E7BC6 - 4c711b0166372930"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Result&lt;Apollo.GraphQLResult&lt;Acelite.SubmitBatteryFilesWithStateOfChargeMutation.Data&gt;, Swift.Error&gt;) -&gt; () in Acelite.UploadAnimationViewController.submitBatteryDataFileWithSOCGraphRequest() -&gt; ()"
+                  moduleName = "Acelite"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Gnana.Thallaparthy/Documents/Acelite/Acelite/UploadAnimation/UploadAnimationViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "406"
+                  endingLineNumber = "406"
+                  offsetFromSymbolStart = "1100">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "8CB8EC7D-8E8F-4700-A978-2385AE7CBE88"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Acelite/UploadAnimation/UploadAnimationViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "380"
+            endingLineNumber = "380"
+            landmarkName = "submitBatteryDataFileWithSOCGraphRequest()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "8C82828F-73B5-4BC0-A377-34BDC088D43C"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Acelite/UploadAnimation/UploadAnimationViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "407"
+            endingLineNumber = "407"
+            landmarkName = "submitBatteryDataFileWithSOCGraphRequest()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "BE34E6FB-4C10-4E08-AD3B-59AF426C6E3E"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Acelite/Utils/ExportAsCSV.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "69"
+            endingLineNumber = "69"
+            landmarkName = "creatCSVForCellVoltage(data:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "A65B4CD8-2914-41FE-8070-3DD42E0B6521"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Acelite/Utils/ExportAsCSV.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "63"
+            endingLineNumber = "63"
+            landmarkName = "creatCSVForCellVoltage(data:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "9AF4EE7C-79C0-42A1-97C7-C1CDC8D86863"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Acelite/UploadAnimation/UploadAnimationViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "397"
+            endingLineNumber = "397"
+            landmarkName = "submitBatteryDataFileWithSOCGraphRequest()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "9AF4EE7C-79C0-42A1-97C7-C1CDC8D86863 - a2eaf27c0ec1a4c0"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Acelite.UploadAnimationViewController.submitBatteryDataFileWithSOCGraphRequest() -&gt; ()"
+                  moduleName = "Acelite"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Gnana.Thallaparthy/Documents/Acelite/Acelite/UploadAnimation/UploadAnimationViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "397"
+                  endingLineNumber = "397"
+                  offsetFromSymbolStart = "13440">
+               </Location>
+               <Location
+                  uuid = "9AF4EE7C-79C0-42A1-97C7-C1CDC8D86863 - 4c711b01663728fe"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Result&lt;Apollo.GraphQLResult&lt;Acelite.SubmitBatteryFilesWithStateOfChargeMutation.Data&gt;, Swift.Error&gt;) -&gt; () in Acelite.UploadAnimationViewController.submitBatteryDataFileWithSOCGraphRequest() -&gt; ()"
+                  moduleName = "Acelite"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Gnana.Thallaparthy/Documents/Acelite/Acelite/UploadAnimation/UploadAnimationViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "400"
+                  endingLineNumber = "400"
+                  offsetFromSymbolStart = "108">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "DF25C214-FD4F-4CBA-82ED-A36F3CA773E1"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../Library/Developer/Xcode/DerivedData/Acelite-exnnbzzrqjctgtglilalbvfwwzti/SourcePackages/checkouts/apollo-ios/Sources/Apollo/ApolloClient.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "116"
+            endingLineNumber = "116"
+            landmarkName = "perform(mutation:publishResultToStore:queue:resultHandler:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
