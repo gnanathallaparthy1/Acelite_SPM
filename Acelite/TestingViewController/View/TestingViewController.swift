@@ -99,6 +99,7 @@ class TestingViewController: UIViewController, GetPreSignedUrlDelegate, UploadAn
 	override func viewDidLoad() {
         super.viewDidLoad()
 		//runTimer()
+		self.navigationItem.hidesBackButton = true
 		self.viewModel?.preSignedDelegate = self
 		self.viewModel?.uploadAndSubmitDelegate = self
 		self.viewUpdate()
