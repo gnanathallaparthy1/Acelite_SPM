@@ -28,7 +28,8 @@ class Constants {
 	static let ATFCSH = "ATFCSH"
 	static let ATFCSD = "ATFCSD"
 	static let ATFCSM1 = "ATFCSM1"
-	
+	static let FF = "FF"
+	static let SEVEN_F = "7F"
 	static let SEVEN_FFF = "7FFF"
 	static let ALL_F = "FFFF"
 	static let NO_DATA = "NO DATA"

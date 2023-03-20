@@ -666,6 +666,7 @@
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" title="Done"/>
                                 <connections>
+                                    <action selector="DoneButtonPressed:" destination="EfU-yL-Bvx" eventType="touchUpInside" id="TPg-oJ-VEu"/>
                                     <action selector="doneButtonPressed:" destination="CFo-Tz-b0m" eventType="touchUpInside" id="wDX-7S-478"/>
                                 </connections>
                             </button>
@@ -682,6 +683,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="DoneBtn" destination="XlP-LR-VHN" id="600-gZ-5P0"/>
                         <outlet property="gaugeView" destination="6kC-FT-UkB" id="6zE-FB-6qu"/>
                         <outlet property="gradeLabel" destination="XN7-5Q-y3I" id="1hk-En-Ktd"/>
                         <outlet property="imageView" destination="pwO-b2-OVY" id="co0-8H-z7Z"/>
@@ -1337,7 +1339,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4yb-xX-YqQ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3358" y="63"/>
+            <point key="canvasLocation" x="3357.971014492754" y="62.946428571428569"/>
         </scene>
     </scenes>
     <resources>

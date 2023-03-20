@@ -110,26 +110,25 @@ class UploadAnimationViewController: UIViewController {
 	 @objc func navigateToHealthS() {
 		print(":::: Upload Calls")
 		 Network.shared.bluetoothService?.disconnectDevice(peripheral: Network.shared.myPeripheral)
-		 let dialogMessage = UIAlertController(title: "TURN OFF THE CAR", message: "Turn off the car and disconnect the OBD-II cable", preferredStyle: .alert)
+		 self.getTransectionId()
+//		 let dialogMessage = UIAlertController(title: "TURN OFF THE CAR", message: "Turn off the car and disconnect the OBD-II cable", preferredStyle: .alert)
 		 
 		 
  //		// Create OK button with action handler
-		 let ok = UIAlertAction(title: "Done", style: .default, handler: { [self] (action) -> Void in
-			 
-			 self.getTransectionId()
-			 
-		
-			 //subit
-			 
-			 let storyBaord = UIStoryboard.init(name: "Main", bundle: nil)
-			 let vc = storyBaord.instantiateViewController(withIdentifier: "BatteryHealthViewController") as! BatteryHealthViewController
-			 self.navigationController?.pushViewController(vc, animated: true)
-			 
-		 })
+//		 let ok = UIAlertAction(title: "Done", style: .default, handler: { [self] (action) -> Void in
+//
+//
+//
+//
+//			 //subit
+//
+//
+//
+//		 })
 
-		 dialogMessage.addAction(ok)
+		// dialogMessage.addAction(ok)
  //		// Present Alert to
-		 self.present(dialogMessage, animated: true, completion: nil)
+		 //self.present(dialogMessage, animated: true, completion: nil)
 	}
 	
 	func getTransectionId()  {
@@ -208,15 +207,19 @@ class UploadAnimationViewController: UIViewController {
 			print("after process result count", result.count)
 		}
 		print("after process result count", result.count)
-		self.createCellVoltageCSV(data: result)
+		
+		print("Cell Voltage Array", result)
 		
 		
 		
 		
-		
-		let listCount: [Int] = [self.packCurrentData.count, self.packVoltageData.count, result.count]
+		let listCount: [Int] = [result.count, self.packCurrentData.count, self.packVoltageData.count, result.count]
 		let minVlaue = listCount.min() ?? 0
 		print("min value from count array", minVlaue)
+		
+		
+		let finalCellVoltage = result[0...minVlaue - 1]
+		self.createCellVoltageCSV(data: Array(finalCellVoltage))
 		
 		
 		//TO-DO handle zero size
@@ -229,6 +232,12 @@ class UploadAnimationViewController: UIViewController {
 		let finalPackVoltage = packVoltageData[0...minVlaue - 1]
 		createPackVoltageCSV(data: Array(finalPackVoltage))
 
+		print("Pack Current Array", packCurrentData)
+		
+		print("Pack voltage Array", packVoltageData)
+		
+		
+		
 		
 		
 	}
@@ -386,7 +395,7 @@ class UploadAnimationViewController: UIViewController {
 		let capacityAtBirth: Double = 1.1 //vehicleProfile.capacityAtBirth else {return}
 		let submitBatteryDataVehicleProfileInput = SubmitBatteryDataVehicleProfileInput(nominalVoltage: nominalVoltage, energyAtBirth: energyAtBirth, batteryType: BatteryType.lithium, capacityAtBirth: capacityAtBirth)
 		
-		let stateOfChargePropsInput = StateOfChargePropsInput(stateOfCharge: self.stateOfCharge ?? 2.0, currentEnergy: 0)
+		let stateOfChargePropsInput = StateOfChargePropsInput(stateOfCharge: 2.0, currentEnergy: 0)
 		//"Cell_Volt_\(self.vehicleInfo?.vin ?? "")"
 		//"Pack_Voltage_\(self.vehicleInfo?.vin ?? "")"
 		let submitBatteryDataFilesPropsInput = SubmitBatteryDataFilesPropsInput(locationCode: LocationCode.aaa, odometer: 12, totalNumberOfCharges: nil, lifetimeCharge: nil, lifetimeDischarge: nil, packVoltageFilename: "Pack_Voltage_\(vinInfo).csv", packCurrentFilename: "Pack_Current_\(vinInfo).csv", cellVoltagesFilename: "Cell_Volt_\(vinInfo).csv", transactionId: self.preSignedData!.transactionID, vehicleProfile: submitBatteryDataVehicleProfileInput)
@@ -408,14 +417,14 @@ class UploadAnimationViewController: UIViewController {
 					//getS3PreSingedUrl
 					var preSignedData : Data?
 //					do {
-//						preSignedData = try JSONSerialization.data(withJSONObject: SubmitBatteryDataFileWithSOC.self)
+//						preSignedData = try JSONSerialization.data(withJSONObject: SZB.self)
 //					} catch {
 //						print("Unexpected error: \(error).")
 //					}
 //					print(getS3PreSingedData.jsonValue)
 //					do {
 //						let decoder = JSONDecoder()
-//						let preSignedResponse = try decoder.decode(SubmitBatteryDataFileWithSOC.self, from: preSignedData!)
+//						let preSignedResponse = try decoder.decode(SubmitBatteryDataFilesWithStateOfCharge.self, from: preSignedData!)
 //						//self.transactionId = preSignedResponse.transactionID
 //						print("preSignedResponse::",preSignedResponse)
 //						//	self.preSignedData = preSignedResponse
@@ -441,6 +450,9 @@ class UploadAnimationViewController: UIViewController {
 //					} catch {
 //						print("error: ", error)
 //					}
+					let storyBaord = UIStoryboard.init(name: "Main", bundle: nil)
+					let vc = storyBaord.instantiateViewController(withIdentifier: "BatteryHealthViewController") as! BatteryHealthViewController
+					self.navigationController?.pushViewController(vc, animated: true)
 					
 				}
 				

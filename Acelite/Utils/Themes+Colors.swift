@@ -54,6 +54,8 @@ extension UIColor {
 		static let headText = "#333333"
 		static let transparent = "#00000000"
 		static let hotRed  = "#FE6358"
+		static let bodySubtitleTextColor = "#2F3138"
+		static let warningColor = "#DB5C58"
 	}
 
 	// MARK: - Initializations -
@@ -133,4 +135,14 @@ extension UIColor {
 	class func appRedColor() -> UIColor {
 		return UIColor(hexString: Colors.hotRed, alpha: 1.0)
 	}
+	
+	class func bodySubtitleTextColor() -> UIColor {
+		return UIColor(hexString: Colors.bodySubtitleTextColor, alpha: 1.0)
+	}
+	class func warningColor() -> UIColor {
+		return UIColor(hexString: Colors.warningColor, alpha: 1.0)
+	}
+	
+	//bodySubtitleTextColor
+	
 }

@@ -18,4 +18,7 @@ class AceliteColors {
 	static let buttonTitleColor = #colorLiteral(red: 0.25, green: 0.25, blue: 0.25, alpha: 0.5)
 	static let buttonTitleColorLight = #colorLiteral(red: 0.0, green: 193, blue: 213, alpha: 0.08)
 	static let buttonTitleColorGray = #colorLiteral(red: 0.0, green: 193, blue: 213, alpha: 1)
+	static let buttonBgColorGray = #colorLiteral(red: 0.5803921569, green: 0.5803921569, blue: 0.5803921569, alpha: 1)
+	static let buttonBgColorGreen =  #colorLiteral(red: 0.08235294118, green: 0.6156862745, blue: 0.5019607843, alpha: 1)
+	//#949494
 }

@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8609394E29BE6E27001DE232 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8609394D29BE6E27001DE232 /* Logger.swift */; };
+		8609395129BF898B001DE232 /* BatteryHealthCheckViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8609395029BF898B001DE232 /* BatteryHealthCheckViewController.swift */; };
+		8609395329BF89A3001DE232 /* BatteryHealthCheckViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8609395229BF89A3001DE232 /* BatteryHealthCheckViewModel.swift */; };
+		8609395529BF8C98001DE232 /* BatteryHealthCheck.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8609395429BF8C98001DE232 /* BatteryHealthCheck.storyboard */; };
 		861E6ECA2953789B00443F12 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861E6EC92953789B00443F12 /* AppDelegate.swift */; };
 		861E6ECC2953789B00443F12 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861E6ECB2953789B00443F12 /* SceneDelegate.swift */; };
 		861E6ECE2953789B00443F12 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861E6ECD2953789B00443F12 /* ViewController.swift */; };
@@ -47,6 +51,7 @@
 		866CDB61298C206E00ADFB50 /* VehicleInformationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866CDB60298C206E00ADFB50 /* VehicleInformationViewModel.swift */; };
 		866CDB65298CB02700ADFB50 /* SpinnerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866CDB64298CB02700ADFB50 /* SpinnerViewController.swift */; };
 		866CDB6A298D743E00ADFB50 /* TestViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866CDB69298D743E00ADFB50 /* TestViewModel.swift */; };
+		8677DBAB29BFA73A001C42CD /* CircularProgressBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8677DBAA29BFA73A001C42CD /* CircularProgressBarView.swift */; };
 		867B608029A937CE0050411C /* ExportAsCSV.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867B607F29A937CE0050411C /* ExportAsCSV.swift */; };
 		867BBF7929673D7400DC4842 /* AceliteColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867BBF7829673D7400DC4842 /* AceliteColors.swift */; };
 		867BBF7B296744CD00DC4842 /* AceliteConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867BBF7A296744CD00DC4842 /* AceliteConstants.swift */; };
@@ -63,6 +68,13 @@
 		86B908A22970854A001CAB90 /* TestingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86B908A12970854A001CAB90 /* TestingViewController.swift */; };
 		86CDBA6629B632D600956B4C /* UploadAnimationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86CDBA6529B632D600956B4C /* UploadAnimationViewController.swift */; };
 		86CDBA6929B653D400956B4C /* UploadAnimationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86CDBA6829B653D400956B4C /* UploadAnimationViewModel.swift */; };
+		86E86B9229C0CA5B007182DB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86E86B9129C0CA5B007182DB /* GoogleService-Info.plist */; };
+		86E86B9529C0CC25007182DB /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 86E86B9429C0CC25007182DB /* FirebaseAnalytics */; };
+		86E86B9729C0CC25007182DB /* FirebaseAnalyticsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 86E86B9629C0CC25007182DB /* FirebaseAnalyticsSwift */; };
+		86E86B9929C0CC25007182DB /* FirebaseAppDistribution-Beta in Frameworks */ = {isa = PBXBuildFile; productRef = 86E86B9829C0CC25007182DB /* FirebaseAppDistribution-Beta */; };
+		86E86B9B29C0CC25007182DB /* FirebaseDatabaseSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 86E86B9A29C0CC25007182DB /* FirebaseDatabaseSwift */; };
+		86E86B9D29C0CC26007182DB /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = 86E86B9C29C0CC26007182DB /* FirebaseRemoteConfig */; };
+		86E86B9F29C0CC26007182DB /* FirebaseRemoteConfigSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 86E86B9E29C0CC26007182DB /* FirebaseRemoteConfigSwift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -83,6 +95,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		8609394D29BE6E27001DE232 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
+		8609395029BF898B001DE232 /* BatteryHealthCheckViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryHealthCheckViewController.swift; sourceTree = "<group>"; };
+		8609395229BF89A3001DE232 /* BatteryHealthCheckViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryHealthCheckViewModel.swift; sourceTree = "<group>"; };
+		8609395429BF8C98001DE232 /* BatteryHealthCheck.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = BatteryHealthCheck.storyboard; sourceTree = "<group>"; };
 		861E6EC62953789B00443F12 /* Acelite.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Acelite.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		861E6EC92953789B00443F12 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		861E6ECB2953789B00443F12 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -126,6 +142,7 @@
 		866CDB60298C206E00ADFB50 /* VehicleInformationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleInformationViewModel.swift; sourceTree = "<group>"; };
 		866CDB64298CB02700ADFB50 /* SpinnerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinnerViewController.swift; sourceTree = "<group>"; };
 		866CDB69298D743E00ADFB50 /* TestViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestViewModel.swift; sourceTree = "<group>"; };
+		8677DBAA29BFA73A001C42CD /* CircularProgressBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgressBarView.swift; sourceTree = "<group>"; };
 		867B607F29A937CE0050411C /* ExportAsCSV.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportAsCSV.swift; sourceTree = "<group>"; };
 		867BBF7829673D7400DC4842 /* AceliteColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AceliteColors.swift; sourceTree = "<group>"; };
 		867BBF7A296744CD00DC4842 /* AceliteConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AceliteConstants.swift; sourceTree = "<group>"; };
@@ -142,6 +159,7 @@
 		86B908A12970854A001CAB90 /* TestingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestingViewController.swift; sourceTree = "<group>"; };
 		86CDBA6529B632D600956B4C /* UploadAnimationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadAnimationViewController.swift; sourceTree = "<group>"; };
 		86CDBA6829B653D400956B4C /* UploadAnimationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadAnimationViewModel.swift; sourceTree = "<group>"; };
+		86E86B9129C0CA5B007182DB /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -149,8 +167,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				86E86B9B29C0CC25007182DB /* FirebaseDatabaseSwift in Frameworks */,
+				86E86B9F29C0CC26007182DB /* FirebaseRemoteConfigSwift in Frameworks */,
+				86E86B9729C0CC25007182DB /* FirebaseAnalyticsSwift in Frameworks */,
 				861E6F11295E118000443F12 /* CoreBluetooth.framework in Frameworks */,
+				86E86B9D29C0CC26007182DB /* FirebaseRemoteConfig in Frameworks */,
+				86E86B9929C0CC25007182DB /* FirebaseAppDistribution-Beta in Frameworks */,
 				866CDB492982E80400ADFB50 /* Apollo in Frameworks */,
+				86E86B9529C0CC25007182DB /* FirebaseAnalytics in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -171,6 +195,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8609394F29BF8958001DE232 /* BatteryHealthCheck */ = {
+			isa = PBXGroup;
+			children = (
+				8609395029BF898B001DE232 /* BatteryHealthCheckViewController.swift */,
+				8609395229BF89A3001DE232 /* BatteryHealthCheckViewModel.swift */,
+				8677DBAA29BFA73A001C42CD /* CircularProgressBarView.swift */,
+			);
+			path = BatteryHealthCheck;
+			sourceTree = "<group>";
+		};
 		861E6EBD2953789B00443F12 = {
 			isa = PBXGroup;
 			children = (
@@ -195,6 +229,7 @@
 		861E6EC82953789B00443F12 /* Acelite */ = {
 			isa = PBXGroup;
 			children = (
+				8609394F29BF8958001DE232 /* BatteryHealthCheck */,
 				861EDE6B29B7A9B4003A1C81 /* BatteryHealthResponse */,
 				86CDBA6729B6539800956B4C /* UploadAnimation */,
 				866CDB66298D73A000ADFB50 /* TestingViewController */,
@@ -215,12 +250,14 @@
 				861E6ED22953789D00443F12 /* Assets.xcassets */,
 				861E6F09295778A000443F12 /* Main.storyboard */,
 				861E6ED42953789D00443F12 /* LaunchScreen.storyboard */,
+				86E86B9129C0CA5B007182DB /* GoogleService-Info.plist */,
 				861E6ED72953789D00443F12 /* Info.plist */,
 				867BBF7829673D7400DC4842 /* AceliteColors.swift */,
 				867BBF7A296744CD00DC4842 /* AceliteConstants.swift */,
 				86B9089F297079A9001CAB90 /* WorkOrderViewController.swift */,
 				86636DC8297B0AA2001240FB /* TerminalViewController.swift */,
 				86AF929329B585AF00FDA4C3 /* InfoPopUpViewController.swift */,
+				8609395429BF8C98001DE232 /* BatteryHealthCheck.storyboard */,
 			);
 			path = Acelite;
 			sourceTree = "<group>";
@@ -374,6 +411,7 @@
 				866CDB64298CB02700ADFB50 /* SpinnerViewController.swift */,
 				86B169E429B549E80024EFFF /* CustomAlertView.xib */,
 				86B169E629B54FCD0024EFFF /* CustomAlertView.swift */,
+				8609394D29BE6E27001DE232 /* Logger.swift */,
 			);
 			path = ResusableComponents;
 			sourceTree = "<group>";
@@ -439,6 +477,12 @@
 			name = Acelite;
 			packageProductDependencies = (
 				866CDB482982E80400ADFB50 /* Apollo */,
+				86E86B9429C0CC25007182DB /* FirebaseAnalytics */,
+				86E86B9629C0CC25007182DB /* FirebaseAnalyticsSwift */,
+				86E86B9829C0CC25007182DB /* FirebaseAppDistribution-Beta */,
+				86E86B9A29C0CC25007182DB /* FirebaseDatabaseSwift */,
+				86E86B9C29C0CC26007182DB /* FirebaseRemoteConfig */,
+				86E86B9E29C0CC26007182DB /* FirebaseRemoteConfigSwift */,
 			);
 			productName = Acelite;
 			productReference = 861E6EC62953789B00443F12 /* Acelite.app */;
@@ -514,6 +558,7 @@
 			mainGroup = 861E6EBD2953789B00443F12;
 			packageReferences = (
 				866CDB472982E80400ADFB50 /* XCRemoteSwiftPackageReference "apollo-ios" */,
+				86E86B9329C0CC25007182DB /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			productRefGroup = 861E6EC72953789B00443F12 /* Products */;
 			projectDirPath = "";
@@ -531,12 +576,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8609395529BF8C98001DE232 /* BatteryHealthCheck.storyboard in Resources */,
 				861E6ED62953789D00443F12 /* LaunchScreen.storyboard in Resources */,
 				866CDB5A298AD44400ADFB50 /* Queries.graphql in Resources */,
 				86B169E529B549E80024EFFF /* CustomAlertView.xib in Resources */,
 				869D86AB2968982500503B9C /* BLETableViewCell.xib in Resources */,
 				861E6F0A295778A100443F12 /* Main.storyboard in Resources */,
 				861E6ED32953789D00443F12 /* Assets.xcassets in Resources */,
+				86E86B9229C0CA5B007182DB /* GoogleService-Info.plist in Resources */,
 				866CDB57298AD3BE00ADFB50 /* schema.json in Resources */,
 				861E6F08295773C100443F12 /* SideMenuCell.xib in Resources */,
 			);
@@ -588,7 +635,9 @@
 				86A68D5029B108C2000F2188 /* BatteryDataFileSubmitModel.swift in Sources */,
 				867BBF7B296744CD00DC4842 /* AceliteConstants.swift in Sources */,
 				86636DC9297B0AA2001240FB /* TerminalViewController.swift in Sources */,
+				8677DBAB29BFA73A001C42CD /* CircularProgressBarView.swift in Sources */,
 				866CDB61298C206E00ADFB50 /* VehicleInformationViewModel.swift in Sources */,
+				8609395329BF89A3001DE232 /* BatteryHealthCheckViewModel.swift in Sources */,
 				866CDB65298CB02700ADFB50 /* SpinnerViewController.swift in Sources */,
 				861E6F032957737D00443F12 /* SideMenuModel.swift in Sources */,
 				861E6ECE2953789B00443F12 /* ViewController.swift in Sources */,
@@ -607,8 +656,10 @@
 				861E6ECA2953789B00443F12 /* AppDelegate.swift in Sources */,
 				861EDE7829B9104A003A1C81 /* API.swift in Sources */,
 				86AF929429B585AF00FDA4C3 /* InfoPopUpViewController.swift in Sources */,
+				8609394E29BE6E27001DE232 /* Logger.swift in Sources */,
 				866CDB6A298D743E00ADFB50 /* TestViewModel.swift in Sources */,
 				861E6EFC29561D1A00443F12 /* VehicalInformationViewController.swift in Sources */,
+				8609395129BF898B001DE232 /* BatteryHealthCheckViewController.swift in Sources */,
 				861E6F0D295E08B300443F12 /* ScannerViewController.swift in Sources */,
 				861E6ECC2953789B00443F12 /* SceneDelegate.swift in Sources */,
 				86B908A22970854A001CAB90 /* TestingViewController.swift in Sources */,
@@ -802,11 +853,12 @@
 				INFOPLIST_FILE = Acelite/Info.plist;
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "We need to access your bluetooth for scanning ble devices.";
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need to access your camera for scanning barcode.";
+				INFOPLIST_KEY_NSDownloadsFolderUsageDescription = "App storing the generated files into folder";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -833,11 +885,12 @@
 				INFOPLIST_FILE = Acelite/Info.plist;
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "We need to access your bluetooth for scanning ble devices.";
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need to access your camera for scanning barcode.";
+				INFOPLIST_KEY_NSDownloadsFolderUsageDescription = "App storing the generated files into folder";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -978,6 +1031,14 @@
 				version = 0.51.2;
 			};
 		};
+		86E86B9329C0CC25007182DB /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -985,6 +1046,36 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 866CDB472982E80400ADFB50 /* XCRemoteSwiftPackageReference "apollo-ios" */;
 			productName = Apollo;
+		};
+		86E86B9429C0CC25007182DB /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 86E86B9329C0CC25007182DB /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		86E86B9629C0CC25007182DB /* FirebaseAnalyticsSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 86E86B9329C0CC25007182DB /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalyticsSwift;
+		};
+		86E86B9829C0CC25007182DB /* FirebaseAppDistribution-Beta */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 86E86B9329C0CC25007182DB /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = "FirebaseAppDistribution-Beta";
+		};
+		86E86B9A29C0CC25007182DB /* FirebaseDatabaseSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 86E86B9329C0CC25007182DB /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabaseSwift;
+		};
+		86E86B9C29C0CC26007182DB /* FirebaseRemoteConfig */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 86E86B9329C0CC25007182DB /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseRemoteConfig;
+		};
+		86E86B9E29C0CC26007182DB /* FirebaseRemoteConfigSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 86E86B9329C0CC25007182DB /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseRemoteConfigSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

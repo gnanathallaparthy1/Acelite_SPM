@@ -7,7 +7,11 @@
 
 import UIKit
 
-class TestingViewController: UIViewController, GetPreSignedUrlDelegate, UploadAndSubmitDataDelegate {
+class TestingViewController: UIViewController {
+	func getTransactionIdInfo(viewModel: BatteryHealthCheckViewModel) {
+		
+	}
+	
 	 @objc func navigateToHealthScoreVC() {
 		 self.notificationCenter.post(name: NSNotification.Name(rawValue: "GotAllData"), object: nil)
 		 //post(name: "GotAllData", object: nil)
@@ -84,7 +88,7 @@ class TestingViewController: UIViewController, GetPreSignedUrlDelegate, UploadAn
 		}
 	}
 	@IBOutlet weak var timeLabel: UILabel!
-	var secoonds = 1 * 60
+	var secoonds = 5 * 60
 	var timer: Timer?
 	
 	
@@ -100,8 +104,8 @@ class TestingViewController: UIViewController, GetPreSignedUrlDelegate, UploadAn
         super.viewDidLoad()
 		//runTimer()
 		self.navigationItem.hidesBackButton = true
-		self.viewModel?.preSignedDelegate = self
-		self.viewModel?.uploadAndSubmitDelegate = self
+//		self.viewModel?.preSignedDelegate = self
+//		self.viewModel?.uploadAndSubmitDelegate = self
 		self.viewUpdate()
 		self.notificationCenter.addObserver(self, selector: #selector(self.commandResponseSuccess(_:)), name: NSNotification.Name.init(rawValue: "BLEResponse"), object: nil)
 		

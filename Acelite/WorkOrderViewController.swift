@@ -66,11 +66,11 @@ class WorkOrderViewController: UIViewController {
 	}
 	
 	@IBAction func nextButtonAction(_ sender: UIButton) {
-		let storyBoard = UIStoryboard.init(name: "Main", bundle: nil)
-		let testingVC = storyBoard.instantiateViewController(withIdentifier: "TestingViewController") as! TestingViewController
+		let storyBoard = UIStoryboard.init(name: "BatteryHealthCheck", bundle: nil)
+		let testingVC = storyBoard.instantiateViewController(withIdentifier: "BatteryHealthCheckViewController") as! BatteryHealthCheckViewController
 		
 		if let vehicleInfo = self.vehicleInfo {
-			let vm = TestingViewModel(vehicleInfo: vehicleInfo)
+			let vm = BatteryHealthCheckViewModel(vehicleInfo: vehicleInfo)
 			testingVC.viewModel = vm
 		}
 			

@@ -45,7 +45,7 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 	override init() {
 		super.init()
 		self.centralManager = CBCentralManager(delegate: self, queue: DispatchQueue.main)
-		//print("delegate:::::", self.delegate)
+		////print("delegate:::::", self.delegate)
 	
 		
 	}
@@ -88,7 +88,7 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 	public func connectDevices(peripheral: CBPeripheral) {
 		self.centralManager.connect(peripheral, options: nil)
 		myPeripheral = peripheral
-		//print("::::::: myperipheral name", peripheral.name ?? "")
+		////print("::::::: myperipheral name", peripheral.name ?? "")
 		self.myPeripheral.delegate = self
 	}
 	
@@ -109,16 +109,16 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 			central.scanForPeripherals(withServices: nil, options: nil)
 		}
 		else {
-			print("Something wrong with BLE")
+			//print("Something wrong with BLE")
 			NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "BLEResponse"), object: ["BLEResponse": "Something wrong with BLE"], userInfo: nil)
 			// Not on, but can have different issues
 		}
 	}
 	
 	func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
-		print(peripheral.name ?? "")
+		//print(peripheral.name ?? "")
 		
-		print(peripheral.ancsAuthorized)
+		//print(peripheral.ancsAuthorized)
 		if let pname =  peripheral.name, pname ==  "CAM101" {
 			bluetoothPeripheral = peripheral
 			centralManager.connect(bluetoothPeripheral!)
@@ -141,16 +141,16 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 	func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
 		
 		if peripheral.services?.count ?? 0 > 0 {
-			print(peripheral.services![0])
+			//print(peripheral.services![0])
 			peripheral.discoverCharacteristics(nil, for: peripheral.services![0])
 		}
 	}
 	
 	func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
 		for characteristic in service.characteristics! {
-			print(characteristic)
+			//print(characteristic)
 			if characteristic.uuid == rxCharacteristicUUID {
-				print("uuid- rx", characteristic.uuid.uuidString)
+				//print("uuid- rx", characteristic.uuid.uuidString)
 				rxCharacteristic = characteristic
 				peripheral.setNotifyValue(true, for: rxCharacteristic!)
 				peripheral.readValue(for: rxCharacteristic!)
@@ -158,7 +158,7 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 				
 			} else if (characteristic.uuid == txCharacteristicUUID) {
 				txCharacteristic = characteristic
-				print("UUID-tx", characteristic.uuid.uuidString)
+				//print("UUID-tx", characteristic.uuid.uuidString)
 				
 			}
 			
@@ -172,15 +172,17 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 			// .txt
 			let byteArray: [UInt8] = Array(value)
 			let stringAbyteArray = "\(byteArray)"
+			//print("********************BytesArray******************", stringAbyteArray)
 			// add to string stringAbyteArray
 			// add new line \n
 			
 			let parseData: String = String.init(data: value, encoding: .utf8) ?? ""
-			
+			//print("********************Byte to string********************", parseData)
 			// add to string parseData
 			// add new line \n
 			
 			if let stringData = String.init(data: value, encoding: .utf8) {
+				
 				if stringData.contains(Constants.QUESTION_MARK) || stringData.contains(Constants.NODATA) || stringData.contains(Constants.NO_DATA) || stringData.contains(Constants.ERROR) || stringData.contains(Constants.CARET) {
 					self.completionHandler?("")
 				} else {
@@ -193,7 +195,7 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 	
 	
 	public func writeBytesData(data: String) {
-		print("Write Command::::::", data)
+		//print("Write Command::::::", data)
 		guard let characterstics = txCharacteristic else {
 			return
 		}
@@ -203,7 +205,7 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 	}
 	
 	func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
-		print(characteristic)
+		//print(characteristic)
 	}
 	
 	func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?) {
