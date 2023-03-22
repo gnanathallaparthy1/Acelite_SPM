@@ -125,10 +125,19 @@ class BatteryHealthCheckViewModel {
 			
 			
 			let stateOfCharge = command.testCommands?.stateOfHealthCommands?.stateOfCharge
+			let bms = command.testCommands?.stateOfHealthCommands?.bmsCapacity
+			if let elmProtocol  = stateOfCharge?.odometerProtocol, let chal = stateOfCharge?.challenge, let res = stateOfCharge?.response, let val = stateOfCharge?.validation {
+				let stateOfChargeCommands = TestCommandExecution(type: .STATEOFCHARGE , resProtocal: elmProtocol, challenge: chal, response: res, validation: val)
+				normalCommandsList.append(stateOfChargeCommands)
+			}
 			
-			let stateOfChargeCommands = TestCommandExecution(type: .STATEOFCHARGE , resProtocal: (stateOfCharge?.odometerProtocol)!, challenge: (stateOfCharge?.challenge)!, response: stateOfCharge!.response, validation: stateOfCharge!.validation)
+		if let elmProtocol  = bms?.odometerProtocol, let chal = bms?.challenge, let res = bms?.response, let val = bms?.validation {
 			
-			normalCommandsList.append(stateOfChargeCommands)
+			let bmsComands = TestCommandExecution(type: .BMS_CAPACITY , resProtocal: elmProtocol, challenge: chal, response: res, validation: val)
+				normalCommandsList.append(bmsComands)
+			}
+			
+			
 			
 			//////print("Normal Command List", normalCommandsList)
 			if let sp = command.testCommands?.sampledCommands {
@@ -327,10 +336,36 @@ class BatteryHealthCheckViewModel {
 			
 			
 		case .ENERGY_TO_EMPTY:
-			//todod
+			
 			break
 		case .BMS_CAPACITY:
-			//todo
+			if let header = testCommand.challenge?.header {
+				guard let pid = testCommand.challenge?.pid else { return }
+				let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
+               print("BMS Header:", ATSHOdometer_Command)
+				self.generateTxtCommandLogs(data: "BMS Header: \(ATSHOdometer_Command)")
+				
+				DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
+					//sleep(1)
+					Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
+						//self.generateTxtCommandLogs(data: data)
+	//					////print("StateOfCharge: SOC-Header", data)
+						let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
+						//////print("Run Command: In-StateOfCharge")
+						self.generateTxtCommandLogs(data: "BMS PID: \(odometerPIDCommand)")
+						DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+						//sleep(2)
+						Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data in
+							//////print("Run Command: Out-StateOfCharge")
+							//self.generateTxtCommandLogs(data: data)
+							testCommand.deviceReponse = data
+							onCompletion!(testCommand)
+						})
+						})
+					})
+				})
+				
+			}
 			break
 		case .PACK_TEMPERATURE:
 			if let header = testCommand.challenge?.header {

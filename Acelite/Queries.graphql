@@ -336,3 +336,24 @@ mutation SubmitBatteryFilesWithStateOfCharge(
 		}
 	}
 }
+mutation (
+    $Vehicle: SubmitBatteryDataFilesVehicleInput!
+    $submitBatteryDataFilesProps: SubmitBatteryDataFilesPropsInput!
+    $bmsCapacityProps: BMSCapacityPropsInput!
+){
+    submitBatteryDataFilesWithBmsCapacity(Vehicle: $Vehicle, submitBatteryDataFilesProps: $submitBatteryDataFilesProps, bmsCapacityProps: $bmsCapacityProps){
+        estimatedRange{
+            estimatedRangeMin
+            estimatedRangeMax
+        }
+        batteryScore{
+            score
+            grade
+            health
+            factorsUsed{
+                name
+                type
+            }
+        }
+    }
+}

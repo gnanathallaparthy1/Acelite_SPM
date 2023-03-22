@@ -40,7 +40,24 @@ struct TestCommands: Codable {
 	let odometer: Odometer?
 	let stateOfHealthCommands: StateOfHealthCommands?
 	let sampledCommands: SampledCommands
-	let batteryAge, diagnosticSession, miscCommands: JSONNull?
+	let diagnosticSession: DiagnosticSession?
+	let batteryAge, miscCommands: JSONNull?
+}
+
+// MARK: - DiagnosticSession
+struct DiagnosticSession: Codable {
+	let diagnosticSessionProtocol: ProtocolClass
+	let challenge: DiagnosticSessionChallenge
+
+	enum CodingKeys: String, CodingKey {
+		case diagnosticSessionProtocol = "protocol"
+		case challenge
+	}
+}
+
+// MARK: - DiagnosticSessionChallenge
+struct DiagnosticSessionChallenge: Codable {
+	let header, pid: String
 }
 
 enum ItemType: String, Decodable {
@@ -133,6 +150,7 @@ struct PackTemperatureResponse: Codable {
 
 // MARK: - StateOfHealthCommands
 struct StateOfHealthCommands: Codable {
+	let bmsCapacity: Odometer?
 	let stateOfCharge: Odometer?
 	let energyToEmpty: Double?
 }
