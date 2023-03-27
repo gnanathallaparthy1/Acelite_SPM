@@ -75,7 +75,7 @@ class MainViewController: UIViewController {
 		
 		
 		// Default Main View Controller
-		showViewController(viewController: UINavigationController.self, storyboardId: "HomeNavID")
+		showViewController(viewController: UINavigationController.self, storyboardId: "HomeNavID", storyboardName: "Main")
 		
 	}
 	// Keep the state of the side menu (expanded or collapse) in rotation
@@ -94,8 +94,34 @@ extension MainViewController: SideMenuViewControllerDelegate {
 		switch row {
 		case 0:
 			// Home
-			self.showViewController(viewController: UINavigationController.self, storyboardId: "HomeNavID")
+			self.showViewController(viewController: UINavigationController.self, storyboardId: "HomeNavID", storyboardName: "Main")
+		case 1:
 			
+			//TestableModelsViewController
+//            self.showViewController(viewController: UINavigationController.self, storyboardId: "BatteryNavId", storyboardName: "BatteryHealthCheck")
+
+			DispatchQueue.main.async {
+			let storyBaord = UIStoryboard.init(name: "BatteryHealthCheck", bundle: nil)
+			let vc = storyBaord.instantiateViewController(withIdentifier: "ScanHistoryViewController") as! ScanHistoryViewController
+			let navigationController = UINavigationController(rootViewController: vc)
+				navigationController.modalPresentationStyle = .fullScreen
+			   // self.navigationController?.pushViewController(navigationController, animated: true)
+			self.present(navigationController, animated: true, completion: nil)
+			}
+			break
+			
+		case 2:
+			/*
+			 vc = self.storyboard?.instantiateViewControllerWithIdentifier("YourViewController") as! YourViewController
+					let navigationController = UINavigationController(rootViewController: vc)
+					self.presentViewController(navigationController, animated: true, completion: nil)
+			 */
+			//let vc =
+			let storyBaord = UIStoryboard.init(name: "BatteryHealthCheck", bundle: nil)
+			let vc = storyBaord.instantiateViewController(withIdentifier: "TestableModelsViewController") as! TestableModelsViewController
+			let navigationController = UINavigationController(rootViewController: vc)
+			navigationController.modalPresentationStyle = .fullScreen
+			self.present(navigationController, animated: true, completion: nil)
 		default:
 			break
 		}
@@ -103,15 +129,15 @@ extension MainViewController: SideMenuViewControllerDelegate {
 		// Collapse side menu with animation
 		DispatchQueue.main.async { self.sideMenuState(expanded: false) }
 	}
-	
-	func showViewController<T: UIViewController>(viewController: T.Type, storyboardId: String) -> () {
+	func showViewController<T: UIViewController>(viewController: T.Type, storyboardId: String, storyboardName: String) -> () {
 		// Remove the previous View
 		for subview in view.subviews {
 			if subview.tag == 99 {
 				subview.removeFromSuperview()
 			}
 		}
-		let storyboard = UIStoryboard(name: "Main", bundle: nil)
+		//
+		let storyboard = UIStoryboard(name:storyboardName , bundle: nil)
 		let vc = storyboard.instantiateViewController(withIdentifier: storyboardId) as! T
 		vc.view.tag = 99
 		view.insertSubview(vc.view, at: self.revealSideMenuOnTop ? 0 : 1)

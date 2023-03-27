@@ -258,6 +258,58 @@
             </objects>
             <point key="canvasLocation" x="1036.7441860465117" y="-2.5751072961373391"/>
         </scene>
+        <!--Testable Models View Controller-->
+        <scene sceneID="yqh-PF-15a">
+            <objects>
+                <tableViewController storyboardIdentifier="TestableModelsViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Zpl-l2-Aeq" customClass="TestableModelsViewController" customModule="Acelite" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" id="m6h-jS-u4F">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <sections/>
+                        <connections>
+                            <outlet property="dataSource" destination="Zpl-l2-Aeq" id="kyR-tH-is3"/>
+                            <outlet property="delegate" destination="Zpl-l2-Aeq" id="3gw-Fo-MJ9"/>
+                        </connections>
+                    </tableView>
+                    <connections>
+                        <outlet property="modelTableView" destination="m6h-jS-u4F" id="Va6-IJ-dS7"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="116-Ac-VCL" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1814" y="-13"/>
+        </scene>
+        <!--Scan History View Controller-->
+        <scene sceneID="iLa-ax-MQT">
+            <objects>
+                <viewController storyboardIdentifier="ScanHistoryViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="ABm-7v-Z0Y" customClass="ScanHistoryViewController" customModule="Acelite" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="BQe-Ky-AM8">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="JdS-CX-D1U">
+                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </tableView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="O3X-9O-g0M"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="JdS-CX-D1U" firstAttribute="top" secondItem="BQe-Ky-AM8" secondAttribute="top" id="6On-P2-ysw"/>
+                            <constraint firstItem="O3X-9O-g0M" firstAttribute="trailing" secondItem="JdS-CX-D1U" secondAttribute="trailing" id="6rL-cf-OAp"/>
+                            <constraint firstAttribute="bottom" secondItem="JdS-CX-D1U" secondAttribute="bottom" id="mm8-d9-Gw4"/>
+                            <constraint firstItem="JdS-CX-D1U" firstAttribute="leading" secondItem="O3X-9O-g0M" secondAttribute="leading" id="xCW-3J-QTT"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="historyTableView" destination="JdS-CX-D1U" id="ZR3-nf-AMZ"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="HQJ-W1-Mhw" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3044" y="8"/>
+        </scene>
     </scenes>
     <resources>
         <image name="Snow" width="29" height="32"/>

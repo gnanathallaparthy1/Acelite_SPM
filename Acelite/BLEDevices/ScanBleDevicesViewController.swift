@@ -28,6 +28,11 @@ class ScanBleDevicesViewController: UIViewController {
 		uiUpdates()
 	}
 	
+	override func viewDidDisappear(_ animated: Bool) {
+		super.viewDidDisappear(animated)
+		scanTimer.invalidate()
+	}
+	
 	private func uiUpdates() {
 		bleTableView.delegate = self
 		bleTableView.dataSource = self
@@ -49,7 +54,7 @@ class ScanBleDevicesViewController: UIViewController {
 			print("20 sec completed")
 			
 			
-			if self.bleServices.isPeripheralIdentified == true {
+			if self.bleServices.isPeripheralIdentified == false{
 				
 				self.view.activityStopAnimating()
 				// Create new Alert
@@ -89,7 +94,7 @@ class ScanBleDevicesViewController: UIViewController {
 		}
 		self.view.activityStartAnimating(activityColor: UIColor.white, backgroundColor: UIColor.black.withAlphaComponent(0.5))
 		DispatchQueue.main.async {
-			self.scanTimer = Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: #selector(self.showScanTimeoutView), userInfo: nil, repeats: false)
+			self.scanTimer = Timer.scheduledTimer(timeInterval: 20.0, target: self, selector: #selector(self.showScanTimeoutView), userInfo: nil, repeats: false)
 		}
 		self.bleServices.callBack = { devices in
 			self.blePeripheralDevice.removeAll()

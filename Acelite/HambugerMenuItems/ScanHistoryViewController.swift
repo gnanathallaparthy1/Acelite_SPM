@@ -1,0 +1,68 @@
+//
+//  ScanHistoryViewController.swift
+//  Acelite
+//
+//  Created by NagaKumar Ganja on 24/03/23.
+//
+
+import UIKit
+
+class ScanHistoryViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+   
+    
+
+    @IBOutlet weak var historyTableView: UITableView!
+	var vinDataArray = [[String: String]]()
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        historyTableView.delegate = self
+        historyTableView.dataSource = self
+		let strings = userDefaults.object(forKey: "myKey") as? [[String:String]]
+		print(strings)
+        //modelTableView.register(TestableTableViewCell.self, forCellReuseIdentifier: "TestableTableViewCell")
+        // Register TableView Cell
+        self.historyTableView.register(UINib(nibName: "ScanHistoryTableViewCell", bundle: nil), forCellReuseIdentifier: "ScanHistoryCell")
+        // Update TableView with the data
+		loadDataIntoVinArray()
+        // Do any additional setup after loading the view.
+    }
+	
+	private func loadDataIntoVinArray() {
+		vinDataArray = userDefaults.object(forKey: "myKey") as? [[String : String]] ?? [[String: String]]()
+		self.historyTableView.reloadData()
+	}
+	
+	
+	override func viewWillAppear(_ animated: Bool) {
+		
+		self.navigationItem.setHidesBackButton(true, animated:true)
+		let menuBarButton = UIBarButtonItem(image: UIImage(systemName: "xmark"), style: .plain, target: self, action: #selector(self.menuButtonAction(_ :)))
+		menuBarButton.tintColor = UIColor.appPrimaryColor()
+		self.navigationItem.leftBarButtonItem  = menuBarButton
+		
+	}
+	
+	@IBAction func menuButtonAction(_ sender: UIBarButtonItem) {
+		self.navigationController?.dismiss(animated: true)
+	}
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+		return vinDataArray.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ScanHistoryCell") as? ScanHistoryTableViewCell
+		let vinData = vinDataArray[indexPath.row]
+		cell?.makeLabel.text = vinData["Make"]
+		cell?.yearLabelValue.text = vinData["Year"]
+		cell?.dateTimeLabelValue.text = vinData["Date-Time"]
+		
+		
+        return cell ?? UITableViewCell()
+        
+    }
+    
+    
+}

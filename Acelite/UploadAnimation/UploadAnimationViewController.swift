@@ -213,7 +213,7 @@ class UploadAnimationViewController: UIViewController {
 		
 		
 		
-		let listCount: [Int] = [result.count, self.packCurrentData.count, self.packVoltageData.count, result.count]
+		let listCount: [Int] = [result.count, self.packCurrentData.count, self.packVoltageData.count]
 		let minVlaue = listCount.min() ?? 0
 		print("min value from count array", minVlaue)
 		
@@ -228,6 +228,8 @@ class UploadAnimationViewController: UIViewController {
 		self.createPackCurrentCSVFile(data: Array(finalPackCurrent))
 		
 		print("Pack current data", packCurrentData)
+		
+		print("pack voltage data", packVoltageData)
 		
 		let finalPackVoltage = packVoltageData[0...minVlaue - 1]
 		createPackVoltageCSV(data: Array(finalPackVoltage))
@@ -452,6 +454,9 @@ class UploadAnimationViewController: UIViewController {
 //					}
 					let storyBaord = UIStoryboard.init(name: "Main", bundle: nil)
 					let vc = storyBaord.instantiateViewController(withIdentifier: "BatteryHealthViewController") as! BatteryHealthViewController
+					if let vInfo = self.vehicleInfo {
+						vc.viewModel = BatteryHealthViewModel(vehicleInfo: vInfo)
+					}
 					self.navigationController?.pushViewController(vc, animated: true)
 					
 				}

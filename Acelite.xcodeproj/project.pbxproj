@@ -34,6 +34,13 @@
 		861EDE7429B7AFC0003A1C81 /* ColorX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861EDE7029B7AFC0003A1C81 /* ColorX.swift */; };
 		861EDE7529B7AFC0003A1C81 /* ABGaugeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861EDE7129B7AFC0003A1C81 /* ABGaugeView.swift */; };
 		861EDE7629B7AFC0003A1C81 /* ArrayX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861EDE7229B7AFC0003A1C81 /* ArrayX.swift */; };
+		8636D41129CE201C0045BD53 /* ScanHistoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8636D40B29CE201B0045BD53 /* ScanHistoryTableViewCell.swift */; };
+		8636D41229CE201C0045BD53 /* ScanHistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8636D40C29CE201B0045BD53 /* ScanHistoryViewController.swift */; };
+		8636D41329CE201C0045BD53 /* TestableTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8636D40D29CE201B0045BD53 /* TestableTableViewCell.xib */; };
+		8636D41429CE201C0045BD53 /* TestableModelsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8636D40E29CE201C0045BD53 /* TestableModelsViewController.swift */; };
+		8636D41529CE201C0045BD53 /* ScanHistoryTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8636D40F29CE201C0045BD53 /* ScanHistoryTableViewCell.xib */; };
+		8636D41629CE201C0045BD53 /* TestableTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8636D41029CE201C0045BD53 /* TestableTableViewCell.swift */; };
+		8636D41829D1430D0045BD53 /* BatteryHealthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8636D41729D1430D0045BD53 /* BatteryHealthViewModel.swift */; };
 		8639046829940178008D5A0A /* Themes+Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8639046729940178008D5A0A /* Themes+Colors.swift */; };
 		8639046A299557B2008D5A0A /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86390469299557B2008D5A0A /* DataManager.swift */; };
 		8639046C29957ED1008D5A0A /* AceLiteBleWriteCallback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8639046B29957ED0008D5A0A /* AceLiteBleWriteCallback.swift */; };
@@ -126,6 +133,13 @@
 		861EDE7029B7AFC0003A1C81 /* ColorX.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorX.swift; sourceTree = "<group>"; };
 		861EDE7129B7AFC0003A1C81 /* ABGaugeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ABGaugeView.swift; sourceTree = "<group>"; };
 		861EDE7229B7AFC0003A1C81 /* ArrayX.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArrayX.swift; sourceTree = "<group>"; };
+		8636D40B29CE201B0045BD53 /* ScanHistoryTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanHistoryTableViewCell.swift; sourceTree = "<group>"; };
+		8636D40C29CE201B0045BD53 /* ScanHistoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanHistoryViewController.swift; sourceTree = "<group>"; };
+		8636D40D29CE201B0045BD53 /* TestableTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TestableTableViewCell.xib; sourceTree = "<group>"; };
+		8636D40E29CE201C0045BD53 /* TestableModelsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestableModelsViewController.swift; sourceTree = "<group>"; };
+		8636D40F29CE201C0045BD53 /* ScanHistoryTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ScanHistoryTableViewCell.xib; sourceTree = "<group>"; };
+		8636D41029CE201C0045BD53 /* TestableTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestableTableViewCell.swift; sourceTree = "<group>"; };
+		8636D41729D1430D0045BD53 /* BatteryHealthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryHealthViewModel.swift; sourceTree = "<group>"; };
 		8639046729940178008D5A0A /* Themes+Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Themes+Colors.swift"; sourceTree = "<group>"; };
 		86390469299557B2008D5A0A /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		8639046B29957ED0008D5A0A /* AceLiteBleWriteCallback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AceLiteBleWriteCallback.swift; sourceTree = "<group>"; };
@@ -229,6 +243,7 @@
 		861E6EC82953789B00443F12 /* Acelite */ = {
 			isa = PBXGroup;
 			children = (
+				8651312329CB88C400886134 /* HambugerMenuItems */,
 				8609394F29BF8958001DE232 /* BatteryHealthCheck */,
 				861EDE6B29B7A9B4003A1C81 /* BatteryHealthResponse */,
 				86CDBA6729B6539800956B4C /* UploadAnimation */,
@@ -345,6 +360,19 @@
 			path = GreatView;
 			sourceTree = "<group>";
 		};
+		8651312329CB88C400886134 /* HambugerMenuItems */ = {
+			isa = PBXGroup;
+			children = (
+				8636D40B29CE201B0045BD53 /* ScanHistoryTableViewCell.swift */,
+				8636D40F29CE201C0045BD53 /* ScanHistoryTableViewCell.xib */,
+				8636D40C29CE201B0045BD53 /* ScanHistoryViewController.swift */,
+				8636D40E29CE201C0045BD53 /* TestableModelsViewController.swift */,
+				8636D41029CE201C0045BD53 /* TestableTableViewCell.swift */,
+				8636D40D29CE201B0045BD53 /* TestableTableViewCell.xib */,
+			);
+			path = HambugerMenuItems;
+			sourceTree = "<group>";
+		};
 		866CDB4A2982F60300ADFB50 /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -452,6 +480,7 @@
 			isa = PBXGroup;
 			children = (
 				861EDE6C29B7A9F3003A1C81 /* BatteryHealthViewController.swift */,
+				8636D41729D1430D0045BD53 /* BatteryHealthViewModel.swift */,
 				86CDBA6529B632D600956B4C /* UploadAnimationViewController.swift */,
 				86CDBA6829B653D400956B4C /* UploadAnimationViewModel.swift */,
 			);
@@ -577,6 +606,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8609395529BF8C98001DE232 /* BatteryHealthCheck.storyboard in Resources */,
+				8636D41329CE201C0045BD53 /* TestableTableViewCell.xib in Resources */,
 				861E6ED62953789D00443F12 /* LaunchScreen.storyboard in Resources */,
 				866CDB5A298AD44400ADFB50 /* Queries.graphql in Resources */,
 				86B169E529B549E80024EFFF /* CustomAlertView.xib in Resources */,
@@ -586,6 +616,7 @@
 				86E86B9229C0CA5B007182DB /* GoogleService-Info.plist in Resources */,
 				866CDB57298AD3BE00ADFB50 /* schema.json in Resources */,
 				861E6F08295773C100443F12 /* SideMenuCell.xib in Resources */,
+				8636D41529CE201C0045BD53 /* ScanHistoryTableViewCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -634,6 +665,10 @@
 				8639046829940178008D5A0A /* Themes+Colors.swift in Sources */,
 				86A68D5029B108C2000F2188 /* BatteryDataFileSubmitModel.swift in Sources */,
 				867BBF7B296744CD00DC4842 /* AceliteConstants.swift in Sources */,
+				8636D41129CE201C0045BD53 /* ScanHistoryTableViewCell.swift in Sources */,
+				8636D41829D1430D0045BD53 /* BatteryHealthViewModel.swift in Sources */,
+				8636D41629CE201C0045BD53 /* TestableTableViewCell.swift in Sources */,
+				8636D41429CE201C0045BD53 /* TestableModelsViewController.swift in Sources */,
 				86636DC9297B0AA2001240FB /* TerminalViewController.swift in Sources */,
 				8677DBAB29BFA73A001C42CD /* CircularProgressBarView.swift in Sources */,
 				866CDB61298C206E00ADFB50 /* VehicleInformationViewModel.swift in Sources */,
@@ -665,6 +700,7 @@
 				867B608029A937CE0050411C /* ExportAsCSV.swift in Sources */,
 				861E6F012957736700443F12 /* SideMenuViewController.swift in Sources */,
 				861E6EFF2957733000443F12 /* MainViewController.swift in Sources */,
+				8636D41229CE201C0045BD53 /* ScanHistoryViewController.swift in Sources */,
 				8651312229CAAF9F00886134 /* API.swift in Sources */,
 				861EDE6D29B7A9F3003A1C81 /* BatteryHealthViewController.swift in Sources */,
 				866CDB542982FD3400ADFB50 /* AceLiteServices.swift in Sources */,
