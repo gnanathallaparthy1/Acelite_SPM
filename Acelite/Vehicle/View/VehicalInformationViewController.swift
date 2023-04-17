@@ -150,14 +150,21 @@ extension VehicalInformationViewController: ScannerViewDelegate {
 extension VehicalInformationViewController: UITextFieldDelegate {
 	
 	func textFieldDidBeginEditing(_ textField: UITextField) {
-		self.barcodeTextField?.text = "3FA6P0SU1KR191846"
+		self.barcodeTextField?.text = "1N4BZ0CP4GC311050"
+		//singleframeVin
+		//"3FA6P0LU8JR142415"
+		//MultiFrame with BMS
+		//"1N4BZ1CP3LC310701"
+		//MultiFrame with SOC
+		//1N4BZ0CP4GC311050
+		//1N4AZ0CP3FC331073
 	}
 	
 	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
 		if textField == self.barcodeTextField {
 			//make call from view model
 			self.view.activityStartAnimating(activityColor: UIColor.white, backgroundColor: UIColor.black.withAlphaComponent(0.5))
-			self.viewModel?.fetchVehicalInformation(vim: "3FA6P0SU1KR191846")
+			self.viewModel?.fetchVehicalInformation(vim: "1N4BZ0CP4GC311050")
 			
 		}
 		textField.resignFirstResponder()
@@ -168,16 +175,33 @@ extension VehicalInformationViewController: UITextFieldDelegate {
 extension VehicalInformationViewController: UpdateVehicleInformationDelegate {
 	func updateVehicleInfo(viewModel: VehicleInformationViewModel) {
 		self.view.activityStopAnimating()
-		self.vimTitle.text = viewModel.vehicleInformation?.title
-		self.vimModel.text = viewModel.vehicleInformation?.modelName
-		self.vimName.text = viewModel.vehicleInformation?.vin
-		let yr = viewModel.vehicleInformation?.year
-		self.vimYear.text = "\(String(describing: yr))"
-		self.vimBodyStyle.text = viewModel.vehicleInformation?.bodyStyle
-		self.barCodeView.isHidden = true
-		self.carInfoView.isHidden = false
-		self.scanLabel.isHidden = true
-		self.vehicleInfoLabel.text = viewModel.vinNumber
+		if (viewModel.vehicleInformation?.getBatteryTestInstructions) != nil {
+			self.vimTitle.text = viewModel.vehicleInformation?.title
+			self.vimModel.text = viewModel.vehicleInformation?.modelName
+			self.vimName.text = viewModel.vehicleInformation?.vin
+			let yr = viewModel.vehicleInformation?.year
+			self.vimYear.text = "\(String(describing: yr))"
+			self.vimBodyStyle.text = viewModel.vehicleInformation?.bodyStyle
+			self.barCodeView.isHidden = true
+			self.carInfoView.isHidden = false
+			self.scanLabel.isHidden = true
+			self.vehicleInfoLabel.text = viewModel.vinNumber
+			self.nextButton.isUserInteractionEnabled = true
+			self.nextButton.isEnabled = true
+		} else {
+			let dialogMessage = UIAlertController(title: "Alert!", message: "There is a problem retreiving vehicle data. Please try again", preferredStyle: .alert)
+			// Create OK button with action handler
+			let ok = UIAlertAction(title: "Ok", style: .default, handler: { (action) -> Void in
+	
+			})
+			self.nextButton.isUserInteractionEnabled = false
+			self.nextButton.isEnabled = false
+			//Add OK button to a dialog message
+			dialogMessage.addAction(ok)
+			// Present Alert to
+			self.present(dialogMessage, animated: true, completion: nil)
+		}
+
 	}
 	
 	func handleErrorVehicleUpdate() {

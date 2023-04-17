@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import FirebaseDatabase
 
 class UploadAnimationViewController: UIViewController {
 	private let stackView: UIStackView = {
@@ -30,9 +31,11 @@ class UploadAnimationViewController: UIViewController {
 	public var packCurrentData = [Double]()
 	public var packTemperatureData = [Double]()
 	public var cellVoltageData = [Double]()
-	private var stateOfCharge: Double?
+	public var stateOfCharge: Double?
+	public var bmsCapacity: Double?
 	private var odometer: Double?
 	private var transactionId: String?
+	private var healthScore: Int = 1
 	var csvDispatchGroup = DispatchGroup()
 	var preSignedData: GetS3PreSingedURL?
 	var textCommands = ""
@@ -253,8 +256,6 @@ class UploadAnimationViewController: UIViewController {
 		csvDispatchGroup.enter()
 	
 		csvFileUploadingIntoS3Bucket(fileName: pack_CurrentFilePath.absoluteString)
-		self.generateTxtCommandLogs(data: pack_CurrentFilePath.absoluteString)
-	
 	}
 	
 	// MARK: Create pack voltage CSV
@@ -265,8 +266,6 @@ class UploadAnimationViewController: UIViewController {
 		csvDispatchGroup.enter()
 		let pack_VoltageFilePath = pack_Voltage.creatCSVForArray(data: data)
 		csvFileUploadingIntoS3Bucket(fileName: pack_VoltageFilePath.absoluteString)
-		self.generateTxtCommandLogs(data: pack_VoltageFilePath.absoluteString)
-		
 	}
 	
 	// MARK: Create Cell Voltage CSV
@@ -277,7 +276,6 @@ class UploadAnimationViewController: UIViewController {
 		csvDispatchGroup.enter()
 		let cellVoltageFilePath = cell_voltage.creatCSVForCellVoltage(data: data)
 		csvFileUploadingIntoS3Bucket(fileName: cellVoltageFilePath.absoluteString)
-		self.generateTxtCommandLogs(data: cellVoltageFilePath.absoluteString)
 	}
 	
 	func csvFileUploadingIntoS3Bucket(fileName: String) {
@@ -329,15 +327,22 @@ class UploadAnimationViewController: UIViewController {
 			self.csvDispatchGroup.notify(queue: .main) {
 				if fileName.contains("Cell_Volt") {
 					print("file uploaded succesfully...")
-					self.submitBatteryDataFileWithSOCGraphRequest()
+					guard let testCommand = self.vehicleInfo?.getBatteryTestInstructions, testCommand.count > 0 else {
+						return
+					}
+					for command in testCommand {
+						let stateOfCharge = command.testCommands?.stateOfHealthCommands?.stateOfCharge
+						if stateOfCharge != nil {
+							self.submitBatteryDataFileWithSOCGraphRequest()
+						} else {
+							self.submitBatteryDataFileWithBMSGraphRequest()
+						}
+					}
 				}
 				
 			}
 		}
-		dataTask.resume()
-		
-		
-		
+		dataTask.resume()	
 	}
 	
 	func saveLogsIntoTxtFile() -> String {
@@ -369,15 +374,175 @@ class UploadAnimationViewController: UIViewController {
 			return ""
 		}
 	}
-	
-	func generateTxtCommandLogs(data: String) {
-		print("command data: ", data)
-		textCommands += "\(data)"
-		textCommands += "\n"
-		print("text command:::::>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", textCommands)
-	}
 
 	private func submitBatteryDataFileWithSOCGraphRequest() {
+		//SubmitBatteryDataFileWithSOC
+	
+	
+		
+		guard let vinInfo = vehicleInfo?.vin else { return  }
+		guard let vinMake = vehicleInfo?.make else { return  }
+		guard let vinYear = vehicleInfo?.year else {return}
+		guard let vinModels = vehicleInfo?.modelName else {return}
+		let years: Int = Int(vinYear)
+		
+		
+		let vehicalBatteryDataFile = SubmitBatteryDataFilesVehicleInput.init(vin: "3FA6P0SU1KR191846", make: "", model: vinModels, year: years)
+		let batteryInstr = vehicleInfo?.getBatteryTestInstructions
+		
+		guard let vehicleProfile = batteryInstr?[0].testCommands?.vehicleProfile else {return}
+		guard let stateOfHealth = batteryInstr?[0].testCommands?.stateOfHealthCommands else {return}
+		guard let nominalVoltage: Double = vehicleProfile.nominalVoltage else { return  }
+		guard let energyAtBirth: Double = vehicleProfile.energyAtBirth else { return  }
+		guard let capacityAtBirth: Double = vehicleProfile.capacityAtBirth else {return}
+		let submitBatteryDataVehicleProfileInput = SubmitBatteryDataVehicleProfileInput(nominalVoltage: 245, energyAtBirth: 1.6, batteryType: BatteryType.lithium, capacityAtBirth: 6.5)
+		
+		let stateOfChargePropsInput = StateOfChargePropsInput(stateOfCharge: self.stateOfCharge ?? 3, currentEnergy: 41.904)
+		//"Cell_Volt_\(self.vehicleInfo?.vin ?? "")"
+		//"Pack_Voltage_\(self.vehicleInfo?.vin ?? "")"
+		print("State of charge", stateOfChargePropsInput)
+		let submitBatteryDataFilesPropsInput = SubmitBatteryDataFilesPropsInput(locationCode: LocationCode(rawValue: "AAA"), odometer: 5000, totalNumberOfCharges: 5, lifetimeCharge: 20.5, lifetimeDischarge: 10.5, packVoltageFilename: "Pack_Voltage_\(vinInfo).csv", packCurrentFilename: "Pack_Current_\(vinInfo).csv", cellVoltagesFilename: "Cell_Volt_\(vinInfo).csv", transactionId: self.preSignedData!.transactionID, vehicleProfile: submitBatteryDataVehicleProfileInput)
+		print("sunmit battery data file props input :", submitBatteryDataFilesPropsInput)
+		print("Transection: ID", self.preSignedData!.transactionID)
+	
+		let mutation = SubmitBatteryFilesWithStateOfChargeMutation(Vehicle:vehicalBatteryDataFile, submitBatteryDataFilesProps: submitBatteryDataFilesPropsInput, stateOfChargeProps: stateOfChargePropsInput)
+		
+		
+		
+		Network.shared.apollo.perform(mutation: mutation) { result in
+			
+			switch result {
+			case .success(let graphQLResults):
+				guard let data = try? result.get().data else { return }
+				print("data ::", data)
+				if graphQLResults.data != nil {
+					if graphQLResults.errors?.count ?? 0 > 0 {
+						print("Error::", graphQLResults.errors!)
+						//TODO Stop Animation and show alert
+						return
+					}
+					let submitData =  graphQLResults.data?.resultMap["submitBatteryDataFilesWithStateOfCharge"]
+					if submitData == nil {
+						return
+					} else {
+						print("Submitted data::::" ,submitData)
+						let jsonObject = submitData.jsonValue
+						print("submited battery data", jsonObject)
+						//getS3PreSingedUrl
+						//var preSignedData : Data?
+						do {
+							let  preSignedData = try JSONSerialization.data(withJSONObject: jsonObject)
+							do {
+								let decoder = JSONDecoder()
+								let submitBatteryData = try decoder.decode(SubmitBatteryDataFilesWithStateOfCharge.self, from: preSignedData)
+								print("submit battery data::",submitBatteryData)
+							let storyBaord = UIStoryboard.init(name: "Main", bundle: nil)
+							let vc = storyBaord.instantiateViewController(withIdentifier: "BatteryHealthViewController") as! BatteryHealthViewController
+							if let vInfo = self.vehicleInfo {
+								vc.viewModel = BatteryHealthViewModel(vehicleInfo: vInfo, transactionID: self.transactionId ?? "", healthScore: 1)
+							}
+							self.navigationController?.pushViewController(vc, animated: true)
+
+							} catch DecodingError.dataCorrupted(let context) {
+								print(context)
+								return
+							}
+						} catch {
+							print("Unexpected error: \(error).")
+						}
+
+					}
+				} else {
+					
+				}
+				break
+			case .failure(let error):
+				break
+			}
+		
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+//		Network.shared.apollo.perform(mutation: mutation) { result in
+//			switch result {
+//
+//			case .success(let graphQLResult):
+//				guard let data = try? result.get().data else { return }
+//				print("data ::", data)
+//				if graphQLResult.data != nil {
+//					if graphQLResult.errors?.count ?? 0 > 0 {
+//						print("Error::", graphQLResult.errors!)
+//						//TODO Stop Animation and show alert
+//						return
+//					}
+//					let submitData =  graphQLResult.data?.resultMap["submitBatteryDataFilesWithStateOfCharge"]
+//					if submitData == nil {
+//						return
+//					} else {
+//
+//						print("Submitted data::::" ,submitData)
+//						let jsonObject = submitData.jsonValue
+//						print("submited battery data", jsonObject)
+//						//getS3PreSingedUrl
+//						var preSignedData : Data?
+//						do {
+//							preSignedData = try JSONSerialization.data(withJSONObject: jsonObject)
+//						} catch {
+//							print("Unexpected error: \(error).")
+//						}
+//
+//						do {
+//							let decoder = JSONDecoder()
+//							let submitBatteryData = try decoder.decode(SubmitBatteryDataFilesWithStateOfCharge.self, from: preSignedData!)
+//							print("submit battery data::",submitBatteryData)
+//
+//						} catch DecodingError.dataCorrupted(let context) {
+//							print(context)
+//						}
+//
+//					}
+//
+//
+//
+//
+//					let storyBaord = UIStoryboard.init(name: "Main", bundle: nil)
+//					let vc = storyBaord.instantiateViewController(withIdentifier: "BatteryHealthViewController") as! BatteryHealthViewController
+//					if let vInfo = self.vehicleInfo {
+//						vc.viewModel = BatteryHealthViewModel(vehicleInfo: vInfo, transactionID: self.transactionId ?? "", healthScore: 1)
+//					}
+//					self.navigationController?.pushViewController(vc, animated: true)
+//
+//				}
+//
+//			case .failure(let error):
+//				if let transactionId = self.preSignedData?.transactionID {
+////					let rootRef = Database.database().reference()
+////					let ref = rootRef.child("submit_error_details").childByAutoId()
+////					let vinBatteryInfo: [String: String] = ["make": vinMake, "message": error., "model": vinModels, "time_stamp": Constants().currentDateTime(), "transaction_id": String(transactionId), "vin_number": vinInfo, "year": String(vinYear), "device_type": "iOS"]
+////					ref.setValue(vinBatteryInfo) {
+////						(error:Error?, ref:DatabaseReference) in
+////						if let error = error {
+////							print("Data could not be saved: \(error).")
+////						} else {
+////							print("Fail data saved successfully!")
+////						}
+////					}
+//					print("Error loading data \(error)")
+//				}
+//				break
+//			}
+//			//print("submitBatteryDataFileWithSOCGraphRequest::::>",result)
+//		}
+		
+	}
+	
+	private func submitBatteryDataFileWithBMSGraphRequest() {
 		//SubmitBatteryDataFileWithSOC
 		
 		guard let vinInfo = vehicleInfo?.vin else { return  }
@@ -392,19 +557,19 @@ class UploadAnimationViewController: UIViewController {
 		
 		guard let vehicleProfile = batteryInstr?[0].testCommands?.vehicleProfile else {return}
 		guard let stateOfHealth = batteryInstr?[0].testCommands?.stateOfHealthCommands else {return}
-		let nominalVoltage: Double = 349.0  //vehicleProfile.nominalVoltage else { return  }
-		let energyAtBirth: Double = 40.0 //vehicleProfile.energyAtBirth else { return  }
-		let capacityAtBirth: Double = 1.1 //vehicleProfile.capacityAtBirth else {return}
+		guard let nominalVoltage: Double = vehicleProfile.nominalVoltage else { return  }
+		guard let energyAtBirth: Double = vehicleProfile.energyAtBirth else { return  }
+		guard let capacityAtBirth: Double = vehicleProfile.capacityAtBirth else {return}
+		guard let bmsCapacity: Double = self.bmsCapacity else {return}
 		let submitBatteryDataVehicleProfileInput = SubmitBatteryDataVehicleProfileInput(nominalVoltage: nominalVoltage, energyAtBirth: energyAtBirth, batteryType: BatteryType.lithium, capacityAtBirth: capacityAtBirth)
 		
-		let stateOfChargePropsInput = StateOfChargePropsInput(stateOfCharge: 2.0, currentEnergy: 0)
-		//"Cell_Volt_\(self.vehicleInfo?.vin ?? "")"
-		//"Pack_Voltage_\(self.vehicleInfo?.vin ?? "")"
-		let submitBatteryDataFilesPropsInput = SubmitBatteryDataFilesPropsInput(locationCode: LocationCode.aaa, odometer: 12, totalNumberOfCharges: nil, lifetimeCharge: nil, lifetimeDischarge: nil, packVoltageFilename: "Pack_Voltage_\(vinInfo).csv", packCurrentFilename: "Pack_Current_\(vinInfo).csv", cellVoltagesFilename: "Cell_Volt_\(vinInfo).csv", transactionId: self.preSignedData!.transactionID, vehicleProfile: submitBatteryDataVehicleProfileInput)
+		let bmsCapacityPropsInput = BMSCapacityPropsInput(bmsCapacity: bmsCapacity)
+		let submitBatteryDataFilesPropsInput = SubmitBatteryDataFilesPropsInput(locationCode: LocationCode.aaa, odometer: 5000, totalNumberOfCharges: nil, lifetimeCharge: nil, lifetimeDischarge: nil, packVoltageFilename: "Pack_Voltage_\(vinInfo).csv", packCurrentFilename: "Pack_Current_\(vinInfo).csv", cellVoltagesFilename: "Cell_Volt_\(vinInfo).csv", transactionId: self.preSignedData!.transactionID, vehicleProfile: submitBatteryDataVehicleProfileInput)
 		print("sunmit battery data file props input :", submitBatteryDataFilesPropsInput)
 		print("Transection: ID", self.preSignedData!.transactionID)
 	
-		var mutation = SubmitBatteryFilesWithStateOfChargeMutation(Vehicle:vehicalBatteryDataFile, submitBatteryDataFilesProps: submitBatteryDataFilesPropsInput, stateOfChargeProps: stateOfChargePropsInput)
+		let mutation = SubmitBatteryFilesWithBmsCapacityMutation(Vehicle: vehicalBatteryDataFile, submitBatteryDataFilesProps: submitBatteryDataFilesPropsInput, bmsCapacityProps: bmsCapacityPropsInput)
+	
 		Network.shared.apollo.perform(mutation: mutation) { result in
 			switch result {
 				
@@ -413,49 +578,49 @@ class UploadAnimationViewController: UIViewController {
 				if graphQLResult.data != nil {
 					//  self.preSignedDelegate?.getTransactionIdInfo(viewModel: self)
 					guard let data = try? result.get().data else { return }
-					print(data.resultMap["submitBatteryDataFilesWithStateOfCharge"]?.jsonValue)
-					let getS3PreSingedData = graphQLResult.data?.resultMap["submitBatteryDataFilesWithStateOfCharge"].jsonValue
+					print(data)
+					let getS3PreSingedData = graphQLResult.data?.resultMap["submitBatteryDataFilesWithBmsCapacity"].jsonValue
 					print("submited battery data", getS3PreSingedData)
 					//getS3PreSingedUrl
 					var preSignedData : Data?
-//					do {
-//						preSignedData = try JSONSerialization.data(withJSONObject: SZB.self)
-//					} catch {
-//						print("Unexpected error: \(error).")
-//					}
-//					print(getS3PreSingedData.jsonValue)
-//					do {
-//						let decoder = JSONDecoder()
-//						let preSignedResponse = try decoder.decode(SubmitBatteryDataFilesWithStateOfCharge.self, from: preSignedData!)
-//						//self.transactionId = preSignedResponse.transactionID
-//						print("preSignedResponse::",preSignedResponse)
-//						//	self.preSignedData = preSignedResponse
-//						//self.vehicleInformation = messages
-//
-//						//self.delegate?.updateVehicleInfo(viewModel: self)
-//						// CSV file generation
-//
-//						//self.preparingLogicForCSVFileGeration()
-//
-//						//
-//					} catch DecodingError.dataCorrupted(let context) {
-//						print(context)
-//					} catch DecodingError.keyNotFound(let key, let context) {
-//						print("Key '\(key)' not found:", context.debugDescription)
-//						print("codingPath:", context.codingPath)
-//					} catch DecodingError.valueNotFound(let value, let context) {
-//						print("Value '\(value)' not found:", context.debugDescription)
-//						print("codingPath:", context.codingPath)
-//					} catch DecodingError.typeMismatch(let type, let context) {
-//						print("Type '\(type)' mismatch:", context.debugDescription)
-//						print("codingPath:", context.codingPath)
-//					} catch {
-//						print("error: ", error)
-//					}
+					do {
+						//preSignedData = try JSONSerialization.data(withJSONObject: SZB.self)
+					} catch {
+						print("Unexpected error: \(error).")
+					}
+					print(getS3PreSingedData.jsonValue)
+					do {
+						let decoder = JSONDecoder()
+						let preSignedResponse = try decoder.decode(SubmitBatteryDataWithStateOfCharge.self, from: preSignedData!)
+						//self.transactionId = preSignedResponse.transactionID
+						print("preSignedResponse::",preSignedResponse)
+						//	self.preSignedData = preSignedResponse
+						//self.vehicleInformation = messages
+
+						//self.delegate?.updateVehicleInfo(viewModel: self)
+						// CSV file generation
+
+						//self.preparingLogicForCSVFileGeration()
+
+						//
+					} catch DecodingError.dataCorrupted(let context) {
+						print(context)
+					} catch DecodingError.keyNotFound(let key, let context) {
+						print("Key '\(key)' not found:", context.debugDescription)
+						print("codingPath:", context.codingPath)
+					} catch DecodingError.valueNotFound(let value, let context) {
+						print("Value '\(value)' not found:", context.debugDescription)
+						print("codingPath:", context.codingPath)
+					} catch DecodingError.typeMismatch(let type, let context) {
+						print("Type '\(type)' mismatch:", context.debugDescription)
+						print("codingPath:", context.codingPath)
+					} catch {
+						print("error: ", error)
+					}
 					let storyBaord = UIStoryboard.init(name: "Main", bundle: nil)
 					let vc = storyBaord.instantiateViewController(withIdentifier: "BatteryHealthViewController") as! BatteryHealthViewController
 					if let vInfo = self.vehicleInfo {
-						vc.viewModel = BatteryHealthViewModel(vehicleInfo: vInfo)
+						vc.viewModel = BatteryHealthViewModel(vehicleInfo: vInfo, transactionID: self.transactionId ?? "", healthScore: self.healthScore)
 					}
 					self.navigationController?.pushViewController(vc, animated: true)
 					

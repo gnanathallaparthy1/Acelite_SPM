@@ -22,43 +22,31 @@ protocol UploadAndSubmitDataDelegate: AnyObject {
 class BatteryHealthCheckViewModel {
 	
 	private var elm327ProtocolPreset: String?
-	/*
-	 var item = "initial value" {
-	 didSet { //called when item changes
-	 ////print("changed")
-	 }
-	 willSet {
-	 ////print("about to change")
-	 }
-	 }
-	 */
-	public var isTimeInProgress: Bool = false {
-		didSet { //called when item changes
-			////print("changed")
-			
+	
+	public var isTimeInProgress: Bool = true {
+		didSet {
 			self.stopTimer()
 		}
 		willSet {
-			
-			////print("about to change")
+
 		}
 	}
 	
-	public var isLoopingTimeInProgress: Bool = false {
-		didSet { //called when item changes
-			////print("changed")
-			
-			self.stopTimer()
-		}
-		willSet {
-			
-			////print("about to change")
-		}
-	}
+	private var isDiagnosticSession: Bool = false
+	
+//	public var isLoopingTimeInProgress: Bool = false {
+//		didSet {
+//			self.stopTimer()
+//		}
+//		willSet {
+//	
+//		}
+//	}
 	private var normalCommandsList = [TestCommandExecution]()
 	private var normalCommandsIndex = 0
 	
 	public var sampledCommandsList = [TestCommandExecution]()
+	public var diagnosticCommand: TestCommandDiagnosticExecution?
 	public var commandToRunInLoopIndex: Int = 0
 	private var numberOfCellsProvided = 0
 	
@@ -77,7 +65,8 @@ class BatteryHealthCheckViewModel {
 	public var packCurrentData = [Double]()
 	public var packTemperatureData = [Double]()
 	public var cellVoltageData = [Double]()
-	private var stateOfCharge: Double?
+	public var stateOfCharge: Double?
+	public var bms: Double?
 	private var odometer: Double?
 	private var transactionId: String?
 	weak var preSignedDelegate: GetPreSignedUrlDelegate? = nil
@@ -96,27 +85,27 @@ class BatteryHealthCheckViewModel {
 	var textCommands = ""
 	var runLoopCommandIndex: Int = 0
 	
+	//Flowcontrol
+	private var previousFlowControlHeader: String? = nil
+	private var previousFlowControlData: String? = nil
+	
 	init(vehicleInfo: Vehicle) {
 		self.vehicleInfo = vehicleInfo
-		
-		//self.bleService.delegate = self
-		//self.bleService.setDelegateChange(delegate: self)
 	}
 	
 	
 	private func stopTimer() {
-		if self.isTimeInProgress == true {
+		if self.isTimeInProgress == false {
 			self.runCommandThatNeedToRunInLoop()
 			
 		}
 	}
 	
 	public func handleInstructions() {
-		guard let testCommand = vehicleInfo?.getBatteryTestInstructions, testCommand.count > 0 else {
+		guard let testCommand = self.vehicleInfo?.getBatteryTestInstructions, testCommand.count > 0 else {
 			return
 		}
 		for command in testCommand {
-			
 			let odometer = command.testCommands?.odometer
 			
 			let commandCalss = TestCommandExecution(type: .ODOMETER , resProtocal: (odometer?.odometerProtocol)!, challenge: (odometer?.challenge)!, response: odometer!.response, validation: odometer!.validation)
@@ -131,18 +120,21 @@ class BatteryHealthCheckViewModel {
 				normalCommandsList.append(stateOfChargeCommands)
 			}
 			
-		if let elmProtocol  = bms?.odometerProtocol, let chal = bms?.challenge, let res = bms?.response, let val = bms?.validation {
-			
-			let bmsComands = TestCommandExecution(type: .BMS_CAPACITY , resProtocal: elmProtocol, challenge: chal, response: res, validation: val)
+			if let elmProtocol  = bms?.odometerProtocol, let chal = bms?.challenge, let res = bms?.response, let val = bms?.validation {
+				
+				let bmsComands = TestCommandExecution(type: .BMS_CAPACITY , resProtocal: elmProtocol, challenge: chal, response: res, validation: val)
 				normalCommandsList.append(bmsComands)
 			}
 			
-			
-			
-			//////print("Normal Command List", normalCommandsList)
+			let diagnosticSession = command.testCommands?.diagnosticSession
+			if let diaChal = diagnosticSession?.challenge, let pro = diagnosticSession?.diagnosticSessionProtocol {
+				isDiagnosticSession = true
+				let diagno = TestCommandDiagnosticExecution(type: .DIAGNOSTIC_SESSION, resProtocal: pro, challenge: diaChal)
+				self.diagnosticCommand = diagno
+				
+			}
+		
 			if let sp = command.testCommands?.sampledCommands {
-				//sampledCommandsList = sp
-				//WHY?????
 				//MARK: - PackVoltage
 				let packVoltage = sp.packVoltage
 				let packVoltageTestCommand = TestCommandExecution(type: .PACK_VOLTAGE, resProtocal: sp.sampledCommandsProtocol, challenge: (packVoltage.challenge)!, response: packVoltage.response, validation: packVoltage.validation)
@@ -158,8 +150,10 @@ class BatteryHealthCheckViewModel {
 				//MARK: - PackTemparature
 				let packTemparature = sp.packTemperature
 				for item in packTemparature {
-					//////print("PID:::::", item.challenge.pid)
-					let response = OdometerResponse(startByte: item.response.startByte, endByte: item.response.endByte, multiplier: Double(item.response.multiplier), constant: Double(item.response.constant))
+					let response = OdometerResponse(startByte: item.response.startByte, endByte: item.response.endByte, numberOfCells: 0, bytesPerCell: 0, startCellCount: 0, endCellCount: 0, bytesPaddedBetweenCells: 0, multiplier: Double(item.response.multiplier), constant: item.response.constant)
+					
+					//let response = OdometerResponse(startByte: item.response.startByte, endByte: item.response.endByte, multiplier: Double(item.response.multiplier), constant: Double(item.response.constant))
+					
 					let packTempTestCommand = TestCommandExecution(type: .PACK_TEMPERATURE, resProtocal: sp.sampledCommandsProtocol, challenge: item.challenge, response: response, validation: item.validation)
 					packTempTestCommand.reqeustByteInString = item.challenge.pid
 					sampledCommandsList.append(packTempTestCommand)
@@ -168,8 +162,8 @@ class BatteryHealthCheckViewModel {
 				//MARK: - CellVoltage
 				let cellVoltage = sp.cellVoltage
 				for item in cellVoltage {
-					//////print("PID:::::", item.challenge.pid)
-					let response = OdometerResponse(startByte: item.response.startByte, endByte: item.response.endByte, multiplier: Double(item.response.multiplier), constant: Double(item.response.constant))
+					let response = OdometerResponse(startByte: item.response.startByte, endByte: item.response.endByte, numberOfCells: item.response.numberOfCells, bytesPerCell: item.response.bytesPerCell, startCellCount: item.response.startCellCount, endCellCount: item.response.endCellCount, bytesPaddedBetweenCells: item.response.bytesPaddedBetweenCells, multiplier: Double(item.response.multiplier), constant: item.response.constant)
+					//let response = OdometerResponse(startByte: item.response.startByte, endByte: item.response.endByte, multiplier: Double(item.response.multiplier), constant: Double(item.response.constant))
 					let cellVoltageTestCommand = TestCommandExecution(type: .CELL_VOLTAGE, resProtocal: sp.sampledCommandsProtocol, challenge: item.challenge, response: response, validation: item.validation)
 					cellVoltageTestCommand.reqeustByteInString = item.challenge.pid
 					sampledCommandsList.append(cellVoltageTestCommand)
@@ -218,10 +212,10 @@ class BatteryHealthCheckViewModel {
 	private func initialCommand() {
 		
 		let ATZ_Command = Constants.ATZ + Constants.NEW_LINE_CHARACTER
-		//print("Inital Commands", Date(), to: &logger)
+		////print("Inital Commands", Date(), to: &logger)
 		//print("about to perform ATZ command write", Date(), to: &logger)
 		Network.shared.bluetoothService?.writeBytesData(data: ATZ_Command, completionHandler: { data in
-			//////print("atz")
+			NSLog("Initial command Log........")
 			self.runATE0Command()
 		})
 	}
@@ -230,7 +224,8 @@ class BatteryHealthCheckViewModel {
 		let ATE0_Command = Constants.ATE0 + Constants.NEW_LINE_CHARACTER
 		//print("about to perform ATE0 command write", Date(), to: &logger)
 		Network.shared.bluetoothService?.writeBytesData(data: ATE0_Command, completionHandler: { data in
-			self.generateTxtCommandLogs(data: data)
+			//self.generateTxtCommandLogs(data: data)
+			NSLog("ATEO Log........")
 			self.runATS0Command()
 		})
 	}
@@ -239,7 +234,7 @@ class BatteryHealthCheckViewModel {
 		let ATS0_Command =  Constants.ATS0 + Constants.NEW_LINE_CHARACTER
 		//print("about to perform ATSO command write", Date(), to: &logger)
 		Network.shared.bluetoothService?.writeBytesData(data: ATS0_Command, completionHandler: { data in
-			
+			NSLog("ATSO Log........")
 			self.runProtocolCommand()
 		})
 	}
@@ -249,15 +244,48 @@ class BatteryHealthCheckViewModel {
 		let ATSP_Command = Constants.ATSP + "\(elmValue ?? Constants.DEFAULT_PROTOCOL)" + Constants.NEW_LINE_CHARACTER
 		//print("about to perform ATSP command write", Date(), to: &logger)
 		Network.shared.bluetoothService?.writeBytesData(data: ATSP_Command, completionHandler: { data in
-		
+			NSLog("Protocol Log........")
+			if self.isDiagnosticSession == true {
+				self.runDiagnosticCommand()
+			}
 			self.runNormalCommands()
 		})
 	}
 	
 	// MARK: - Normal Commands
-	//odo, state charge
-	private func runNormalCommands() {
+	private func runDiagnosticCommand() {
+//		NSLog("Normal Log........")
+//		let totalNumberOfCommands = normalCommandsList.count
+//		if (isTimeInProgress) {
+//			if (normalCommandsIndex < totalNumberOfCommands) {
+//				let command = normalCommandsList[normalCommandsIndex]
+//				self.runTheCommand(indexValue: normalCommandsIndex, testCommand: command) { command in
+//					self.parseResponse(testCommand: command, index: self.normalCommandsIndex)
+//					if (self.normalCommandsIndex == totalNumberOfCommands - 1){
+//						self.runCommandThatNeedToRunInLoop()
+//					} else {
+//						self.normalCommandsIndex += 1
+//						self.runNormalCommands()
+//					}
+//				}
+//			}
+//		}
+		if let header = diagnosticCommand?.challenge?.header {
+			guard let pid = diagnosticCommand?.challenge?.pid else { return }
+			let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
+			Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
+				let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
+				Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data1 in
+					//onCompletion!(testCommand)
+				})
+			})
+			
+		}
 		
+	}
+
+	private func runNormalCommands() {
+		NSLog("Normal Log........")
 		let totalNumberOfCommands = normalCommandsList.count
 		if (isTimeInProgress) {
 			if (normalCommandsIndex < totalNumberOfCommands) {
@@ -266,216 +294,312 @@ class BatteryHealthCheckViewModel {
 					self.parseResponse(testCommand: command, index: self.normalCommandsIndex)
 					if (self.normalCommandsIndex == totalNumberOfCommands - 1){
 						self.runCommandThatNeedToRunInLoop()
-						
 					} else {
 						self.normalCommandsIndex += 1
 						self.runNormalCommands()
 					}
 				}
-				
 			}
 		}
 	}
 	
-	
-	
 	private func runTheCommand(indexValue: Int, testCommand: TestCommandExecution, onCompletion: ((_ command : TestCommandExecution?) -> ())?) {
-		
+		//Network.shared.byteDataArray.removeAll()
 		switch testCommand.type {
-		
 		case .ODOMETER:
-			if let header = testCommand.challenge?.header {
-				guard let pid = testCommand.challenge?.pid else { return }
-				let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
-				self.generateTxtCommandLogs(data: "Odometer Header: \(ATSHOdometer_Command)")
-				Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
-					let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
-					////print("Run Command: In-ODOMETER")
-					self.generateTxtCommandLogs(data: data)
-					self.generateTxtCommandLogs(data: "Odometer PID: \(odometerPIDCommand)")
-					Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data in
-						self.generateTxtCommandLogs(data: data)
-						testCommand.deviceReponse = data
-						////print("Run Command: Out-ODOMETER")
+			if let flowControl = testCommand.challenge?.flowControl {
+				self.runFlowControlHeaderAndData(flowControl: flowControl, testCommand: testCommand) { command in
+					if let header = testCommand.challenge?.header {
+						guard let pid = testCommand.challenge?.pid else { return }
+						let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
+						Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
+							let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
+							Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data1 in
+								testCommand.deviceReponse = data1
+								NSLog("Odomoter Log........")
+								//print("\(Constants().currentDateTime()):Odometer Data: \(data)", to: &logger)
+								onCompletion!(testCommand)
+							})
+						})
 						
-						onCompletion!(testCommand)
+					}
+				}
+			} else {
+				if let header = testCommand.challenge?.header {
+					guard let pid = testCommand.challenge?.pid else { return }
+					let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
+					Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
+						let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
+						Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data1 in
+							testCommand.deviceReponse = data1
+							//print("\(Constants().currentDateTime()):Odometer Data: \(data)", to: &logger)
+							onCompletion!(testCommand)
+						})
 					})
-				})
-				
+					
+				}
 			}
 			
 		case .STATEOFCHARGE:
 			//TODO Handle Flow Comtrol Data
-			if let header = testCommand.challenge?.header {
-				guard let pid = testCommand.challenge?.pid else { return }
-				let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
-//				////print("ATSH State Of Charge", ATSHOdometer_Command)
-				self.generateTxtCommandLogs(data: "State of charge Header: \(ATSHOdometer_Command)")
-				
-				DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
-					//sleep(1)
-					Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
-						//self.generateTxtCommandLogs(data: data)
-	//					////print("StateOfCharge: SOC-Header", data)
-						let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
-						//////print("Run Command: In-StateOfCharge")
-						self.generateTxtCommandLogs(data: "State of charge PID: \(odometerPIDCommand)")
-						DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
-						//sleep(2)
-						Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data in
-							//////print("Run Command: Out-StateOfCharge")
-							//self.generateTxtCommandLogs(data: data)
-							testCommand.deviceReponse = data
-							onCompletion!(testCommand)
-						})
-						})
-					})
-				})
-				
-			}
-			
-			
-		case .ENERGY_TO_EMPTY:
-			
-			break
-		case .BMS_CAPACITY:
-			if let header = testCommand.challenge?.header {
-				guard let pid = testCommand.challenge?.pid else { return }
-				let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
-               print("BMS Header:", ATSHOdometer_Command)
-				self.generateTxtCommandLogs(data: "BMS Header: \(ATSHOdometer_Command)")
-				
-				DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
-					//sleep(1)
-					Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
-						//self.generateTxtCommandLogs(data: data)
-	//					////print("StateOfCharge: SOC-Header", data)
-						let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
-						//////print("Run Command: In-StateOfCharge")
-						self.generateTxtCommandLogs(data: "BMS PID: \(odometerPIDCommand)")
-						DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
-						//sleep(2)
-						Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data in
-							//////print("Run Command: Out-StateOfCharge")
-							//self.generateTxtCommandLogs(data: data)
-							testCommand.deviceReponse = data
-							onCompletion!(testCommand)
-						})
-						})
-					})
-				})
-				
-			}
-			break
-		case .PACK_TEMPERATURE:
-			if let header = testCommand.challenge?.header {
-				guard let pid = testCommand.challenge?.pid else { return }
-				let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
-				//self.generateTxtCommandLogs(data: "Pack Temerature Header: \(ATSHOdometer_Command)")
-				//usleep(200000)
-				//DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
-					Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
-						
-						
-						self.generateTxtCommandLogs(data: data)
-						
-						let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
-						//////print("Run Command: In-PackTemperature")
-						//usleep(200000)
-						self.generateTxtCommandLogs(data: "Pack Temparature PID: \(odometerPIDCommand)")
-						Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data in
-							////print("Run Command: Out-PackTemperature")
-							self.generateTxtCommandLogs(data: data)
-							testCommand.deviceReponse = data
-							
-							onCompletion!(testCommand)
-						})
-					})
-				//})
-				
-				
-			}
-			
-			break
-		case .PACK_VOLTAGE:
-			if let header = testCommand.challenge?.header {
-				guard let pid = testCommand.challenge?.pid else { return }
-				let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
-				//self.generateTxtCommandLogs(data: "Pack Voltage Header: \(ATSHOdometer_Command)")
-				//usleep(200000)
-					DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+			if let flowControl = testCommand.challenge?.flowControl {
+				self.runFlowControlHeaderAndData(flowControl: flowControl, testCommand: testCommand) { command in
+					if let header = testCommand.challenge?.header {
+						guard let pid = testCommand.challenge?.pid else { return }
+						let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
 						Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
-							
-							self.generateTxtCommandLogs(data: data)
-							
 							let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
-							////print("Run Command: In-PackVoltage")
-							
-							self.generateTxtCommandLogs(data: "Pack Voltage PID: \(odometerPIDCommand)")
-							//usleep(200000)
-							Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data in
-								////print("Run Command: Out-PackVoltage")
-								self.generateTxtCommandLogs(data: data)
-								testCommand.deviceReponse = data
-								
-								onCompletion!(testCommand)
-								
-							})
-						})
-					})
-				
-			}
-			
-			break
-		case .PACK_CURRENT:
-			if let header = testCommand.challenge?.header {
-				guard let pid = testCommand.challenge?.pid else { return }
-				let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
-				//self.generateTxtCommandLogs(data: "Pack Current Header: \(ATSHOdometer_Command)")
-				//usleep(200000)
-						DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
-							Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
-								//usleep(200000)
-								//self.generateTxtCommandLogs(data: data)
-								let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
-								////print("Run Command: In-PackCurrent")
-								//self.generateTxtCommandLogs(data: "Pack current PID: \(odometerPIDCommand)")
-								Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data in
-									
-						self.generateTxtCommandLogs(data: data)
-									testCommand.deviceReponse = data
-									//////print("Run Command: Out-PackCurrent")
+							DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+								Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data1 in
+									testCommand.deviceReponse = data1
 									
 									onCompletion!(testCommand)
 								})
 							})
 						})
+					}
+				}
+			} else {
 				
+				if let header = testCommand.challenge?.header {
+					guard let pid = testCommand.challenge?.pid else { return }
+					let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
+					Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
+						let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
+						DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+							Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data1 in
+								testCommand.deviceReponse = data1
+								
+								onCompletion!(testCommand)
+							})
+						})
+					})
+				}
 			}
 			
+			
+		case .ENERGY_TO_EMPTY:
+			//todod
 			break
-		case .CELL_VOLTAGE:
-			if let header = testCommand.challenge?.header {
-				guard let pid = testCommand.challenge?.pid else { return }
-				let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
-				//usleep(200000)
-				//self.generateTxtCommandLogs(data: "Cell Voltage Header: \(ATSHOdometer_Command)")
-							DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
-								Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
-									//usleep(200000)
-									//self.generateTxtCommandLogs(data: data)
-									let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
-									//self.generateTxtCommandLogs(data: "Cell Voltage PID: \(odometerPIDCommand)")
-									////print("Run Command: In-CellVoltage")
+		case .BMS_CAPACITY:
+			//todo
+			// flowcontrol
+			if let flowControl = testCommand.challenge?.flowControl {
+				self.runFlowControlHeaderAndData(flowControl: flowControl, testCommand: testCommand) { command in
+					//onCompletion!(testCommand)
+					print("Flow-control-bms capacity completion")
+					if let header = testCommand.challenge?.header {
+						guard let pid = testCommand.challenge?.pid else { return }
+						let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
+						DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
+							Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
+								let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
+								DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+									//sleep(2)
 									Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data in
 										testCommand.deviceReponse = data
-										////print("Run Command: Out-CellVoltage")
-										//self.generateTxtCommandLogs(data: data)
+										//print("\(Constants().currentDateTime()):BMS Data: \(data)", to: &logger)
 										onCompletion!(testCommand)
-										
 									})
 								})
 							})
+						})
+					}
+				}
+			} else {
+				if let header = testCommand.challenge?.header {
+					guard let pid = testCommand.challenge?.pid else { return }
+					let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
+					DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
+						Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
+							let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
+							DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+								//sleep(2)
+								Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data in
+									testCommand.deviceReponse = data
+									//print("\(Constants().currentDateTime()):BMS Data: \(data)", to: &logger)
+									onCompletion!(testCommand)
+								})
+							})
+						})
+					})
+				}
+			}
+			
+			
+			break
+		case .PACK_TEMPERATURE:
+			// flowcontrol
+			
+			if let flowControl = testCommand.challenge?.flowControl {
+				self.runFlowControlHeaderAndData(flowControl: flowControl, testCommand: testCommand) { command in
+					//onCompletion!(testCommand)
+					//print("Flow-control-pack_temperature completion")
+					if let header = testCommand.challenge?.header {
+						guard let pid = testCommand.challenge?.pid else { return }
+						let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
+						DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+							Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
+								let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
+								Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data in
+									testCommand.deviceReponse = data
+									//print("\(Constants().currentDateTime()):Pack temperature Data: \(data)", to: &logger)
+									onCompletion!(testCommand)
+								})
+							})
+						})
+					}
+				}
+			} else {
+				if let header = testCommand.challenge?.header {
+					guard let pid = testCommand.challenge?.pid else { return }
+					let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
+					DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+						Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
+							let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
+							Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data in
+								testCommand.deviceReponse = data
+								//print("\(Constants().currentDateTime()):Pack temperature Data: \(data)", to: &logger)
+								onCompletion!(testCommand)
+							})
+						})
+					})
+				}
+			}
+			break
+		case .PACK_VOLTAGE:
+			// flowcontrol
+			if let flowControl = testCommand.challenge?.flowControl {
+				self.runFlowControlHeaderAndData(flowControl: flowControl, testCommand: testCommand) { command in
+					//onCompletion!(testCommand)
+					print("Flow-control-pack_voltage completion")
+					if let header = testCommand.challenge?.header {
+						guard let pid = testCommand.challenge?.pid else { return }
+						let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
+						DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+							Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
+								let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
+								print("Pack Voltage pid", odometerPIDCommand)
+								//self.generateTxtCommandLogs(data: "Pack Voltage PID: \(odometerPIDCommand)")
+								Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data in
+									testCommand.deviceReponse = data
+									////print("\(Constants().currentDateTime()):Pack Voltage Data: \(data)", to: &logger)
+									onCompletion!(testCommand)
+								})
+							})
+						})
+					}
+				}
+			} else {
+				if let header = testCommand.challenge?.header {
+					guard let pid = testCommand.challenge?.pid else { return }
+					let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
+					print("Pack Voltage header", ATSHOdometer_Command)
+					DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+						Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
+							let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
+							print("Pack Voltage pid", odometerPIDCommand)
+							//self.generateTxtCommandLogs(data: "Pack Voltage PID: \(odometerPIDCommand)")
+							Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data in
+								testCommand.deviceReponse = data
+								////print("\(Constants().currentDateTime()):Pack Voltage Data: \(data)", to: &logger)
+								onCompletion!(testCommand)
+							})
+						})
+					})
+				}
+			}
+			
+			
+			
+			break
+		case .PACK_CURRENT:
+			// flowcontrol
+			if let flowControl = testCommand.challenge?.flowControl {
+				self.runFlowControlHeaderAndData(flowControl: flowControl, testCommand: testCommand) { command in
+					//onCompletion!(testCommand)
+					print("Flow-control-pack_current completion")
+					if let header = testCommand.challenge?.header {
+						guard let pid = testCommand.challenge?.pid else { return }
+						let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
+						print("Pack current header", ATSHOdometer_Command)
+						DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+							Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
+								let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
+								print("Pack current pid", odometerPIDCommand)
+								Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data in
+									testCommand.deviceReponse = data
+									////print("\(Constants().currentDateTime()):Pack Current Data: \(data)", to: &logger)
+									onCompletion!(testCommand)
+								})
+							})
+						})
+					}
+				}
+			} else {
+				if let header = testCommand.challenge?.header {
+					guard let pid = testCommand.challenge?.pid else { return }
+					let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
+					print("Pack current header", ATSHOdometer_Command)
+					DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+						Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
+							let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
+							print("Pack current pid", odometerPIDCommand)
+							Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data in
+								testCommand.deviceReponse = data
+								////print("\(Constants().currentDateTime()):Pack Current Data: \(data)", to: &logger)
+								onCompletion!(testCommand)
+							})
+						})
+					})
+				}
+				
+			}
+			
+			
+			
+			break
+		case .CELL_VOLTAGE:
+			// flowcontrol
+			
+			if let flowControl = testCommand.challenge?.flowControl {
+				self.runFlowControlHeaderAndData(flowControl: flowControl, testCommand: testCommand) { command in
+					//onCompletion!(testCommand)
+					print("Flow-control-cell_voltage completion")
+					if let header = testCommand.challenge?.header {
+						guard let pid = testCommand.challenge?.pid else { return }
+						let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
+						print("Cell voltage header",ATSHOdometer_Command )
+						DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+							Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
+								let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
+								print("Cell voltage pid", odometerPIDCommand)
+								Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data in
+									testCommand.deviceReponse = data
+									onCompletion!(testCommand)
+								})
+							})
+						})
+					}
+				}
+			} else {
+				if let header = testCommand.challenge?.header {
+					guard let pid = testCommand.challenge?.pid else { return }
+					let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
+					print("Cell voltage header",ATSHOdometer_Command )
+					DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+						Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
+							let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
+							print("Cell voltage pid", odometerPIDCommand)
+							
+							Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data in
+								testCommand.deviceReponse = data
+								////print("\(Constants().currentDateTime()):Cell Voltage Data: \(data)", to: &logger)
+								onCompletion!(testCommand)
+							})
+						})
+					})
+				}
 			}
 			
 			break
@@ -492,48 +616,106 @@ class BatteryHealthCheckViewModel {
 		}
 	}
 	
+	private func runFlowControlHeaderAndData(flowControl: FlowControl, testCommand: TestCommandExecution , onCompletion: ((_ command : TestCommandExecution?) -> ())?) {
+		var isFlowControlChanged: Bool = false
+		
+//		if previousFlowControlHeader != flowControl.flowControlHeader {
+			isFlowControlChanged = true
+			previousFlowControlHeader = flowControl.flowControlHeader
+			print("flow control commands")
+			let flowcontrolHeader = Constants.ATFCSH + flowControl.flowControlHeader! + Constants.NEW_LINE_CHARACTER
+			print("flow Control header", flowcontrolHeader)
+			Network.shared.bluetoothService?.writeBytesData(data: flowcontrolHeader, completionHandler: { data in
+//				if self.previousFlowControlData != flowControl.flowControlData {
+					print("flow control data")
+					isFlowControlChanged = true
+					self.previousFlowControlData = flowControl.flowControlData
+					let flowControlData = Constants.ATFCSD + flowControl.flowControlData! + Constants.NEW_LINE_CHARACTER
+					print("flow control data command", flowControlData)
+					DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+						Network.shared.bluetoothService?.writeBytesData(data: flowControlData, completionHandler: { data in
+							if isFlowControlChanged {
+								let flowControlChangedCommand = Constants.ATFCSM1 + Constants.NEW_LINE_CHARACTER
+								print("Flow control change", flowControlChangedCommand)
+								Network.shared.bluetoothService?.writeBytesData(data: flowControlChangedCommand, completionHandler: { data in
+									onCompletion!(testCommand)
+								})
+							} else {
+								onCompletion!(testCommand)
+							}
+						})
+					})
+//				}
+			})
+//		} else {
+//			onCompletion!(testCommand)
+//		}
+//		else {
+//
+//
+//				self.previousFlowControlData = flowControl.flowControlData
+//				let flowControlData = Constants.ATFCSD + flowControl.flowControlData! + Constants.NEW_LINE_CHARACTER
+//				Network.shared.bluetoothService?.writeBytesData(data: flowControlData, completionHandler: { data in
+//					testCommand.deviceReponse = data
+//					if isFlowControlChanged {
+//						let flowControlChangedCommand = Constants.ATFCSM1 + Constants.NEW_LINE_CHARACTER
+//						Network.shared.bluetoothService?.writeBytesData(data: flowControlChangedCommand, completionHandler: { data in
+//							 onCompletion!(testCommand)
+//						})
+//					} else {
+//						onCompletion!(testCommand)
+//					}
+//				})
+//
+//		}
+	
+	}
+	private func isNewFlowControlCommand(flowControlChanged: Bool, testCommand: TestCommandExecution) {
+		
+	}
+	
 	private func runCommandThatNeedToRunInLoop() {
 		let totalNumberOfCommands: Int = sampledCommandsList.count
 		// to decide final completion
 		if (isTimeInProgress == true) {
-			if isLoopingTimeInProgress == true {
+			//if isLoopingTimeInProgress == true {
 				if (commandToRunInLoopIndex < totalNumberOfCommands) {
 					let command = sampledCommandsList[commandToRunInLoopIndex]
 					//self.countLoopCommand += 1
-					//print("INDEX BEFORE RUN",commandToRunInLoopIndex)
-					DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
+					////print("INDEX BEFORE RUN",commandToRunInLoopIndex)
+					//DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
 						self.runTheCommand(indexValue: self.commandToRunInLoopIndex, testCommand: command , onCompletion: { [self]command in
 							self.totalNumberOfPidCommandsRan += 1
 							self.parseResponse(testCommand: command, index: commandToRunInLoopIndex)
 							if (self.commandToRunInLoopIndex == totalNumberOfCommands - 1) {
 								self.numberOfLogicsParsed += 1
-								//////print("NUMBER OF LOGICS RUN", self.numberOfLogicsParsed)
+								////////print("NUMBER OF LOGICS RUN", self.numberOfLogicsParsed)
 								self.commandToRunInLoopIndex  = 0
 							} else {
-								if self.isLoopingTimeInProgress == true {
+								//if self.isLoopingTimeInProgress == true {
 									self.commandToRunInLoopIndex += 1
-								}
-								//////print("NUMBER PIDS IN LOOP RUN", self.commandToRunInLoopIndex)
+								//}
+								////////print("NUMBER PIDS IN LOOP RUN", self.commandToRunInLoopIndex)
 							}
-							//////print("GOOD ONE")
+							////////print("GOOD ONE")
 							//self.runLoopCommandIndex = self.commandToRunInLoopIndex
 							self.runCommandThatNeedToRunInLoop()
 						})
-					})
+					//})
 				}
-			}  else {
-				//print("ELSE  of isLoopingTimeInProgress:::", isLoopingTimeInProgress)
-				//self.commandToRunInLoopIndex = self.runLoopCommandIndex
-				//print("command index::in else conditon", self.commandToRunInLoopIndex)
-				return
-			}
-
+//			}  else {
+//				////print("ELSE  of isLoopingTimeInProgress:::", isLoopingTimeInProgress)
+//				//self.commandToRunInLoopIndex = self.runLoopCommandIndex
+//				////print("command index::in else conditon", self.commandToRunInLoopIndex)
+//				return
+//			}
+			
 		} else {
 			// loopCount intial value -1 , delay 25sec , prepare CSV fiels
-			////print("TIME BOOL::: ELSE)", loopCount)
+			//////print("TIME BOOL::: ELSE)", loopCount)
 			if loopCount == -1 {
-				////print("TIME BOOL:::-runCommandThatNeedToRunInLoopEin ELSE\(Date().description)", isTimeInProgress)
-				//print("*********BLE reponse is finished**********")
+				//////print("TIME BOOL:::-runCommandThatNeedToRunInLoopEin ELSE\(Date().description)", isTimeInProgress)
+				////print("*********BLE reponse is finished**********")
 				self.preSignedDelegate?.navigateToAnimationVC()
 				DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
 					self.uploadAndSubmitDelegate?.navigateToHealthScoreVC()
@@ -544,247 +726,252 @@ class BatteryHealthCheckViewModel {
 	}
 	
 	private func parseResponse(testCommand: TestCommandExecution?, index: Int) {
-		//let group = DispatchGroup()
-		
 		guard let reponseData = testCommand?.deviceReponse, reponseData.count > 0 else { return  }
+		if reponseData.contains(Constants.QUESTION_MARK) || reponseData.contains(Constants.NODATA) || reponseData.contains(Constants.NO_DATA) || reponseData.contains(Constants.ERROR) {
+			return
+		}
 		
-//		if !reponseData.contains("OK") {
-//			return
-//		}
-		
-		//	////print("IN PARSE METHOD", testCommand?.type as Any)
 		switch testCommand?.type {
 		case .ODOMETER:
-			//group.enter()
-			if testCommand?.deviceReponse != nil {
-				
-				let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
-				if haxValueList.count > 0 {
-					let value = calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)//calculateValueFromStartEndByte(command, hexValuesList)
-					self.odometer = value
-					let message = (testCommand?.type?.description ?? "") + "calculated value is \(self.odometer)"
-					NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "BLEResponse"), object: ["BLEResponse": "\(message)"], userInfo: nil)
-					//group.leave()
-					
+			if let _ = testCommand?.challenge?.flowControl {
+				print("::::::::::Multi frame::::::")
+				let odometerMulVal = self.handlingMultiframeString(testCommand: testCommand)
+			print("Odometer value",odometerMulVal)
+			}else {
+				print(":::::::Single Frame::::::::")
+				if testCommand?.deviceReponse != nil {
+					let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
+					if haxValueList.count > 0 {
+						let value = calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
+						self.odometer = value
+					}
 				}
 			}
-			//stopLoopExecution(group: group)
 			break
 		case .STATEOFCHARGE:
-			//group.enter()
-			if testCommand?.deviceReponse != nil {
-				let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
-				if haxValueList.count > 0 {
-					let value = calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
-					self.stateOfCharge = value
-					let message = (testCommand?.type?.description ?? "") + "calculated value is \(value)"
-					//////print(message)
-					NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "BLEResponse"), object: ["BLEResponse": "\(message)"], userInfo: nil)
-					//group.leave()
+			if let _ = testCommand?.challenge?.flowControl {
+			
+			}else {
+				if testCommand?.deviceReponse != nil {
+					let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
+					if haxValueList.count > 0 {
+						let value = calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
+						self.stateOfCharge = value
+					}
 				}
 			}
-			//stopLoopExecution(group: group)
 			break
 		case .ENERGY_TO_EMPTY:
-			//group.enter()
-			if testCommand?.deviceReponse != nil {
-				let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
-				if haxValueList.count > 0 {
-					let value = calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)//calculateValueFromStartEndByte(command, hexValuesList)
-					let message = (testCommand?.type?.description ?? "") + "calculated value is \(value)"
-					////print(message)
-					NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "BLEResponse"), object: ["BLEResponse": "\(message)"], userInfo: nil)
-					//group.leave()
+			if let _ = testCommand?.challenge?.flowControl {
+				
+			}else {
+				if testCommand?.deviceReponse != nil {
+					let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
+					if haxValueList.count > 0 {
+						let _ = calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
+					}
 				}
 			}
-			//stopLoopExecution(group: group)
 			break
 		case .BMS_CAPACITY:
-			//group.enter()
-			if testCommand?.deviceReponse != nil {
-				let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
-				if haxValueList.count > 0 {
-					let value = calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)//calculateValueFromStartEndByte(command, hexValuesList)
-					let message = (testCommand?.type?.description ?? "") + "calculated value is \(value)"
-					////print(message)
-					
-					NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "BLEResponse"), object: ["BLEResponse": "\(message)"], userInfo: nil)
-					//group.leave()
+			if let _ = testCommand?.challenge?.flowControl {
+
+			}else {
+				if testCommand?.deviceReponse != nil {
+					let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
+					if haxValueList.count > 0 {
+						let value = calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
+						self.bms = value
+					}
 				}
 			}
-			//stopLoopExecution(group: group)
 			break
 		case .PACK_TEMPERATURE:
-			//group.enter()
-			if testCommand?.deviceReponse != nil {
-				let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
-				//print("PACK_TEMPERATURE ByteArray:::", haxValueList)
-				if haxValueList.count > 0 {
-					let value = calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)//calculateValueFromStartEndByte(command, hexValuesList)
-					packTemperatureData.append(value)
-					let message = (testCommand?.type?.description ?? "") + "calculated value is \(value)"
-					////print("Pack Temerature::::::::", message)
-					NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "BLEResponse"), object: ["BLEResponse": "\(message)"], userInfo: nil)
-					//group.leave()
+			if let _ = testCommand?.challenge?.flowControl {
+				let packTemp = self.processDataAndGetFinalHexValues(testCommand: testCommand)
+				
+			}else {
+				if testCommand?.deviceReponse != nil {
+					let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
+					if haxValueList.count > 0 {
+						let value = calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
+						packTemperatureData.append(value)
+					}
 				}
 			}
-			//stopLoopExecution(group: group)
 			break
 		case .PACK_VOLTAGE:
-			//group.enter()
-			if testCommand?.deviceReponse != nil {
-				let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
-				//print("PACK_VOLTAGE ByteArray:::", haxValueList)
-				if haxValueList.count > 0 {
-					let value = calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)//calculateValueFromStartEndByte(command, hexValuesList)
-					packVoltageData.append(value)
-					//////print("packVoltage:::::", packVoltageData)
-					let message = (testCommand?.type?.description ?? "") + "calculated value is \(value)"
-					//////print(message)
-					NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "BLEResponse"), object: ["BLEResponse": "\(message)"], userInfo: nil)
-					//group.leave()
+			if let _ = testCommand?.challenge?.flowControl {
+				let packVoltage = self.processDataAndGetFinalHexValues(testCommand: testCommand)
+			}else {
+				if testCommand?.deviceReponse != nil {
+					let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
+					if haxValueList.count > 0 {
+						let value = calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
+						packVoltageData.append(value)
+					}
 				}
 			}
-			//stopLoopExecution(group: group)
 			break
 		case .PACK_CURRENT:
-			//group.enter()
-			print(":::PACK-CURRENT::::")
-			print("Response String pack current", reponseData)
-			
-			if testCommand?.deviceReponse != nil {
-				guard let packCurrent = testCommand?.deviceReponse, packCurrent.count > 0   else { return  }
-				
-				//let byteArray: [UInt8] = Array(testCommand?.deviceReponse ?? Data())
-				//if (testCommand?.deviceReponse?.count ?? 0) > 0 {
-				let finalStringBytes = typeCastingByteToString(testCommand: testCommand)
-				print("string in bytes", finalStringBytes)
-				let startByte = testCommand?.response?.startByte ?? 0
-				let endByte = testCommand?.response?.endByte ?? 0
-				
-				let numberOfBytesDifference = endByte - startByte
-				print("numberOfBytesDifference",numberOfBytesDifference)
-				let haxValue = findFinalHexValue(haxVal: finalStringBytes, startByete: testCommand?.response?.startByte ?? 0, endByte: testCommand?.response?.endByte ?? 0)
-				let decimalValue = fromHaxToDecimal(haxValue: haxValue)
-				print("Decimal Value", decimalValue)
-				var comparisonValue = ""
-				
-				if (numberOfBytesDifference == 0) {
-					comparisonValue = Constants.SEVEN_F
-				} else {
-					//let paddedStr = str.padding(toLength: 20, withPad: " ", startingAt: 0)
-					comparisonValue =
-					Constants.SEVEN_F.padding(toLength: ((numberOfBytesDifference + 1) * 2), withPad: "F", startingAt: 0)
-					
-					//.padEnd((numberOfBytesDifference + 1) * 2, 'F')
-				}
-				print("7F comparison Value::::::::", comparisonValue)
-				
-				let multiplier = testCommand?.response?.multiplier ?? 1.0
-				var packCurrentValue = 0.0
-				
-				if (decimalValue < fromHaxToDecimal(haxValue: comparisonValue)) {
-					packCurrentValue = Double(decimalValue) * multiplier * -1
-				} else {
-					var valueFromWhichToSubtract = ""
+			if let _ = testCommand?.challenge?.flowControl {
+				let packCurrent = self.processDataAndGetFinalHexValues(testCommand: testCommand)
+			} else {
+				if testCommand?.deviceReponse != nil {
+					guard let packCurrent = testCommand?.deviceReponse, packCurrent.count > 0   else { return  }
+					let finalStringBytes = typeCastingByteToString(testCommand: testCommand)
+					let startByte = testCommand?.response?.startByte ?? 0
+					let endByte = testCommand?.response?.endByte ?? 0
+					let numberOfBytesDifference = endByte - startByte
+					let haxValue = findFinalHexValue(haxVal: finalStringBytes, startByete: testCommand?.response?.startByte ?? 0, endByte: testCommand?.response?.endByte ?? 0)
+					let decimalValue = fromHaxToDecimal(haxValue: haxValue)
+					var comparisonValue = ""
 					if (numberOfBytesDifference == 0) {
-						valueFromWhichToSubtract = Constants.FF
+						comparisonValue = Constants.SEVEN_F
 					} else {
-						valueFromWhichToSubtract = Constants.FF.padding(toLength: ((numberOfBytesDifference + 1) * 2), withPad: "F", startingAt: 1)
-						
-						//padEnd((numberOfBytesDifference + 1) * 2, 'F')
+						comparisonValue =
+						Constants.SEVEN_F.padding(toLength: ((numberOfBytesDifference + 1) * 2), withPad: "F", startingAt: 0)
 					}
-					print("valueFromWhichToSubtract::", valueFromWhichToSubtract)
-					packCurrentValue = Double((fromHaxToDecimal(haxValue: valueFromWhichToSubtract) - decimalValue)) * multiplier
-					print("packCurrentValue::::", packCurrentValue)
+					let multiplier = testCommand?.response?.multiplier ?? 1.0
+					var packCurrentValue = 0.0
+					
+					if (decimalValue < fromHaxToDecimal(haxValue: comparisonValue)) {
+						packCurrentValue = Double(decimalValue) * multiplier * -1
+					} else {
+						var valueFromWhichToSubtract = ""
+						if (numberOfBytesDifference == 0) {
+							valueFromWhichToSubtract = Constants.FF
+						} else {
+							valueFromWhichToSubtract = Constants.FF.padding(toLength: ((numberOfBytesDifference + 1) * 2), withPad: "F", startingAt: 1)
+						}
+						packCurrentValue = Double((fromHaxToDecimal(haxValue: valueFromWhichToSubtract) - decimalValue)) * multiplier
+						print("packCurrentValue::::", packCurrentValue)
+					}
+					
+					let constantValue = testCommand?.response?.constant ?? 0
+					let finalValue = packCurrentValue + Double(constantValue)
+					print("finalValue-pack current", finalValue)
+					packCurrentData.append(finalValue)
 				}
-				
-				let constantValue = testCommand?.response?.constant ?? 0.0
-				let finalValue = packCurrentValue + constantValue
-				//print("finalValue-pack current", finalValue)
-				packCurrentData.append(finalValue)
-				////print("pack Current data::", packCurrentData)
-				let message = (testCommand?.type?.description ?? "") + "calculated value is \(finalValue)"
-				////print(message)
-				NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "BLEResponse"), object: ["BLEResponse": "\(message)"], userInfo: nil)
-				
-				
 			}
-			//stopLoopExecution(group: group)
 			break
 		case .CELL_VOLTAGE:
-			//group.enter()
-			if testCommand?.deviceReponse != nil {
-				let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
-				//print("CELL_VOLTAGE ByteArray:::", haxValueList)
-				if haxValueList.count > 0 {
-					let value = calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)//calculateValueFromStartEndByte(command, hexValuesList)
-					cellVoltageData.append(value)
-					let message = (testCommand?.type?.description ?? "") + "calculated value is \(value)"
-					//////print(message)
-					NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "BLEResponse"), object: ["BLEResponse": "\(message)"], userInfo: nil)
-					//////print("cellVoltagedata:::", cellVoltageData)
-					//group.leave()
+
+			if let _ = testCommand?.challenge?.flowControl {
+				print("::::::::::Multi frame::::::")
+		let _ = self.handlingMultiframeString(testCommand: testCommand)
+				
+			} else {
+				print("::::::::Single Frame::::::::::")
+				if testCommand?.deviceReponse != nil {
+					let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
+					if haxValueList.count > 0 {
+						let value = calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
+						print("Final value of cell voltage data", value)
+						cellVoltageData.append(value)
+					}
 				}
 			}
-			
-			//stopLoopExecution(group: group)
 			break
 		case .BATTERY_AGE:
-			//group.enter()
-			if testCommand?.deviceReponse != nil {
-				let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
-				if haxValueList.count > 0 {
-					let value = calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)//calculateValueFromStartEndByte(command, hexValuesList)
-					let message = (testCommand?.type?.description ?? "") + "calculated value is \(value)"
-					//////print(message)
-					NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "BLEResponse"), object: ["BLEResponse": "\(message)"], userInfo: nil)
-					//group.leave()
+			if let _ = testCommand?.challenge?.flowControl {
+			
+			}else {
+				if testCommand?.deviceReponse != nil {
+					let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
+					if haxValueList.count > 0 {
+						let _ = calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
+					}
 				}
 			}
-			//stopLoopExecution(group: group)
 			break
 		case .DIAGNOSTIC_SESSION:
-			//group.enter()
-			if testCommand?.deviceReponse != nil {
-				let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
-				if haxValueList.count > 0 {
-					let value = calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)//calculateValueFromStartEndByte(command, hexValuesList)
-					let message = (testCommand?.type?.description ?? "") + "calculated value is \(value)"
-					//////print(message)
-					NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "BLEResponse"), object: ["BLEResponse": "\(message)"], userInfo: nil)
-					////group.leave()
+			if let _ = testCommand?.challenge?.flowControl {
+
+			} else {
+				if testCommand?.deviceReponse != nil {
+					let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
+					if haxValueList.count > 0 {
+						let _ = calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
+					}
 				}
 			}
-			//stopLoopExecution(group: group)
 			break
 		case .MISC_COMMANDS:
-			//group.enter()
-			if testCommand?.deviceReponse != nil {
-				let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
-				if haxValueList.count > 0 {
-					let value = calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)//calculateValueFromStartEndByte(command, hexValuesList)
-					let message = (testCommand?.type?.description ?? "") + "calculated value is \(value)"
-					//////print(message)
-					NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "BLEResponse"), object: ["BLEResponse": "\(message)"], userInfo: nil)
-					//group.leave()
+			if let _ = testCommand?.challenge?.flowControl {
+				
+			}else {
+				if testCommand?.deviceReponse != nil {
+					let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
+					if haxValueList.count > 0 {
+						let _ = calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
+					}
 				}
 			}
-			//stopLoopExecution(group: group)
 			break
 		case .none:
 			break
 		case .Other:
 			break
 		}
-//		if self.isTimeInProgress == false {
-//			group.notify(queue: DispatchQueue.global()) {
-//				////print("Completed work:")
-//				// Kick off the movies API calls
-//				//PlaygroundPage.current.finishExecution()
-//			}
-//		}
-
+	}
+	
+	
+	func processDataAndGetFinalHexValues(testCommand: TestCommandExecution?) {
+		if let deviceByteArray = testCommand?.deviceReponse, deviceByteArray.count > 0 {
+			let startByte = testCommand?.response?.startByte ?? 0
+			print("Start Byte", startByte)
+			let endByte = testCommand?.response?.endByte ?? 0
+			print("end byte", endByte)
+			let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
+			if (haxValueList.count - 1) < endByte {
+				return
+			}
+			let haxValue = FlowfindFinalHexValue(haxVal: haxValueList, startByete: startByte, endByte: endByte)
+			print("Final Byte Array:", haxValue)
+			let chunkArray = haxValue.chunked(into: testCommand?.response?.bytesPerCell ?? 0)
+			print("Divided in chunk", chunkArray)
+		}
+	}
+	
+	//MARK: - MultiFrame handling
+	
+	private func handlingMultiframeString(testCommand: TestCommandExecution?) -> [Double] {
+	
+		if let deviceByteArray = testCommand?.deviceReponse, deviceByteArray.count > 0 {
+			let startByte = testCommand?.response?.startByte ?? 0
+			print("Start Byte", startByte)
+			let endByte = testCommand?.response?.endByte ?? 0
+			print("end byte", endByte)
+			let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
+			let haxValue = FlowfindFinalHexValue(haxVal: haxValueList, startByete: startByte, endByte: endByte)
+			print("Final Byte Array:", haxValue)
+			let chunkArray = haxValue.chunked(into: testCommand?.response?.bytesPerCell ?? 0)
+			print("Divided in chunk", chunkArray)
+			
+			let totalCells = testCommand?.response?.numberOfCells
+			var finalValues = [Double]()
+			if chunkArray.count == totalCells {
+				for item in chunkArray {
+					print("Each cheunk array:", item.joined())
+					let finalByte = item.joined()
+							let decimalValue = fromHaxToDecimal(haxValue: finalByte)
+							print("decimal Value", decimalValue)
+							let multiplierValue = Double(decimalValue) * (Double(testCommand?.response?.multiplier ?? 1.0))
+							print("after multiplier : ", multiplierValue)
+							let constantValue = testCommand?.response?.constant ?? 0
+							let finalValue = multiplierValue + Double(constantValue)
+							print("Calculated Value:", finalValue)
+					finalValues.append(finalValue)
+					cellVoltageData.append(finalValue)
+					let message = (testCommand?.type?.description ?? "") + "calculated value is \(finalValue)"
+					NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "BLEResponse"), object: ["BLEResponse": "\(message)"], userInfo: nil)
+				}
+			}
+			return finalValues
+		} else {
+			return [0.0]
+		}
 	}
 	
 	
@@ -798,87 +985,29 @@ class BatteryHealthCheckViewModel {
 		return arrBytes.components(withMaxLength: 2)
 	}
 	
-	private func submitBatteryDataFileWithSOCGraphRequest() {
-		//SubmitBatteryDataFileWithSOC
-		let vehicalBatteryDataFile = SubmitBatteryDataFilesVehicleInput.init(vin: vehicleInfo?.vin ?? "", make: vehicleInfo?.make ?? "", model: vehicleInfo?.modelName ?? "", year: vehicleInfo?.year ?? 0)
-		let batteryInstr = vehicleInfo?.getBatteryTestInstructions
+	
 		
-		guard let vehicleProfile = batteryInstr?[0].testCommands?.vehicleProfile else {return}
-		guard let stateOfHealth = batteryInstr?[0].testCommands?.stateOfHealthCommands else {return}
-		let submitBatteryDataVehicleProfileInput = SubmitBatteryDataVehicleProfileInput(nominalVoltage: vehicleProfile.nominalVoltage ?? 1.0, energyAtBirth:vehicleProfile.energyAtBirth ?? 1.0, batteryType: BatteryType.lithium, capacityAtBirth: vehicleProfile.capacityAtBirth ?? 1.0)
-		
-		let stateOfChargePropsInput = StateOfChargePropsInput(stateOfCharge: self.stateOfCharge ?? 0.0, currentEnergy: stateOfHealth.energyToEmpty)
-		let submitBatteryDataFilesPropsInput = SubmitBatteryDataFilesPropsInput(locationCode: LocationCode.init(rawValue: "AAA"), odometer: Int(self.odometer ?? 0), totalNumberOfCharges: nil, lifetimeCharge: nil, lifetimeDischarge: nil, packVoltageFilename: "Pack_Voltage_\(self.vehicleInfo?.vin ?? "")", packCurrentFilename: "Pack_Current_\(self.vehicleInfo?.vin ?? "")", cellVoltagesFilename: "Cell_Volt_\(self.vehicleInfo?.vin ?? "")", transactionId: self.transactionId ?? "", vehicleProfile: submitBatteryDataVehicleProfileInput)
-		
-		Network.shared.apollo.perform(mutation: SubmitBatteryFilesWithStateOfChargeMutation(Vehicle: vehicalBatteryDataFile, submitBatteryDataFilesProps: submitBatteryDataFilesPropsInput, stateOfChargeProps: stateOfChargePropsInput)) { result in
-			switch result {
-				
-			case .success(let graphQLResult):
-				guard let _ = try? result.get().data else { return }
-				if graphQLResult.data != nil {
-					//  self.preSignedDelegate?.getTransactionIdInfo(viewModel: self)
-					/*
-					let getS3PreSingedData = graphQLResult.data?.resultMap["submitBatteryDataFilesWithStateOfCharge"]
-					//getS3PreSingedUrl
-					var preSignedData : Data?
-					do {
-						preSignedData = try JSONSerialization.data(withJSONObject: SubmitBatteryDataFileWithSOC.self)
-					} catch {
-						////print("Unexpected error: \(error).")
-					}
-					////print(getS3PreSingedData.jsonValue)
-					do {
-						let decoder = JSONDecoder()
-						//let preSignedResponse = try decoder.decode(SubmitBatteryDataFileWithSOC.self, from: preSignedData!)
-						//self.transactionId = preSignedResponse.transactionID
-						//////print("transaction id::", preSignedResponse.transactionID)
-						//	self.preSignedData = preSignedResponse
-						//self.vehicleInformation = messages
-						
-						//self.delegate?.updateVehicleInfo(viewModel: self)
-						// CSV file generation
-						
-						//self.preparingLogicForCSVFileGeration()
-						
-						//
-					} catch DecodingError.dataCorrupted(let context) {
-						////print(context)
-					} catch DecodingError.keyNotFound(let key, let context) {
-						////print("Key '\(key)' not found:", context.debugDescription)
-						////print("codingPath:", context.codingPath)
-					} catch DecodingError.valueNotFound(let value, let context) {
-						////print("Value '\(value)' not found:", context.debugDescription)
-						////print("codingPath:", context.codingPath)
-					} catch DecodingError.typeMismatch(let type, let context) {
-						////print("Type '\(type)' mismatch:", context.debugDescription)
-						////print("codingPath:", context.codingPath)
-					} catch {
-						////print("error: ", error)
-					}*/
-					
-				}
-				
-			case .failure(let error):
-				// 5
-				self.preSignedDelegate?.handleErrorTransactionID()
-				////print("Error loading data \(error)")
-			}
-			//////print("submitBatteryDataFileWithSOCGraphRequest::::>",result)
-		}
-		
-	}
+//		private func multiframeTypeCastingByteToString(testCommand: [UInt8]) -> String {
+//			var joinString = ""
+//			for item in testCommand {
+//				joinString += "\(item)"
+//			}
+//
+//			return joinString
+//		}
+
 	
 	private func calculateValueFromStartEndByte(command: TestCommandExecution?, hexValuesList: [String]) -> Double {
 		
 		let haxValue = findFinalHexValue(haxVal: hexValuesList, startByete: command?.response?.startByte ?? 0, endByte: command?.response?.endByte ?? 0)
-		//print("hex value in calculateValueFromStartEndByte", ("\(String(describing: command?.type))" + haxValue))
+		//print("\(Constants().currentDateTime()):Calculated Hex Value for \(command?.type): \(haxValue))", to: &logger)
 		let decimalValue = fromHaxToDecimal(haxValue: haxValue)
-		//print("decimal value calculated", decimalValue)
+		//print("\(Constants().currentDateTime()):Calculated Decimal Value for \(command?.type): \(decimalValue))", to: &logger)
 		let multiplierValue = Double(decimalValue) * (Double(command?.response?.multiplier ?? 1.0))
-		//print("after multiplier : ", multiplierValue)
-		let constantValue = command?.response?.constant ?? 0.0
+		//print("\(Constants().currentDateTime()):Multiplier Value for \(command?.type): \(multiplierValue))", to: &logger)
+		let constantValue = command?.response?.constant ?? 0
 		let finalValue = multiplierValue + Double(constantValue)
-		//print("Final value :", finalValue)
+		//print("\(Constants().currentDateTime()):Final Value for \(command?.type): \(finalValue))", to: &logger)
 		return finalValue
 		
 	}
@@ -893,20 +1022,21 @@ class BatteryHealthCheckViewModel {
 		return bytesInstring
 	}
 	
+	func FlowfindFinalHexValue(haxVal: [String], startByete: Int, endByte: Int) -> [String] {
+		
+		let rageArray = haxVal[startByete...endByte]
+		var arrayString = [String]()
+		for item in rageArray {
+			arrayString.append(item)
+		}
+		return arrayString
+	}
 	
 	
 	func fromHaxToDecimal(haxValue: String) -> Int {
 		let decimalValue = Int(haxValue, radix: 16) ?? 0
 		return decimalValue
 	}
-	
-	func generateTxtCommandLogs(data: String) {
-		////print("command data: ", data)
-		textCommands += "\(data)"
-		textCommands += "\n"
-		////print("text command:::::>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", textCommands)
-	}
-	
 }
 
 extension String {

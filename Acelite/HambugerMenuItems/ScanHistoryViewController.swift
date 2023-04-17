@@ -15,17 +15,11 @@ class ScanHistoryViewController: UIViewController, UITableViewDelegate, UITableV
 	var vinDataArray = [[String: String]]()
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         historyTableView.delegate = self
         historyTableView.dataSource = self
-		let strings = userDefaults.object(forKey: "myKey") as? [[String:String]]
-		print(strings)
-        //modelTableView.register(TestableTableViewCell.self, forCellReuseIdentifier: "TestableTableViewCell")
-        // Register TableView Cell
         self.historyTableView.register(UINib(nibName: "ScanHistoryTableViewCell", bundle: nil), forCellReuseIdentifier: "ScanHistoryCell")
         // Update TableView with the data
 		loadDataIntoVinArray()
-        // Do any additional setup after loading the view.
     }
 	
 	private func loadDataIntoVinArray() {
@@ -35,12 +29,10 @@ class ScanHistoryViewController: UIViewController, UITableViewDelegate, UITableV
 	
 	
 	override func viewWillAppear(_ animated: Bool) {
-		
 		self.navigationItem.setHidesBackButton(true, animated:true)
 		let menuBarButton = UIBarButtonItem(image: UIImage(systemName: "xmark"), style: .plain, target: self, action: #selector(self.menuButtonAction(_ :)))
 		menuBarButton.tintColor = UIColor.appPrimaryColor()
 		self.navigationItem.leftBarButtonItem  = menuBarButton
-		
 	}
 	
 	@IBAction func menuButtonAction(_ sender: UIBarButtonItem) {
@@ -58,8 +50,13 @@ class ScanHistoryViewController: UIViewController, UITableViewDelegate, UITableV
 		cell?.makeLabel.text = vinData["Make"]
 		cell?.yearLabelValue.text = vinData["Year"]
 		cell?.dateTimeLabelValue.text = vinData["Date-Time"]
-		
-		
+		cell?.transectionIdLabelValue.text = vinData["Transaction ID"]
+		cell?.bodyStyleLabelValue.text = vinData["Body Style"]
+		cell?.vinNumberLabelValue.text = vinData["Vin number"]
+		cell?.modelLabelValue.text = vinData["Model"]
+		cell?.workOrderLabelValue.text = vinData["Work order"]
+		cell?.healthLabelValue.text = vinData["Health"]
+		cell?.vehicleTitleLabel.text = vinData["Title"]
         return cell ?? UITableViewCell()
         
     }

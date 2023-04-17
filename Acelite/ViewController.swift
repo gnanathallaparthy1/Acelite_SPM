@@ -63,7 +63,6 @@ class ViewController: UIViewController {
 		cancelButton.addTarget(self, action: #selector(self.cancelButtonAction(_:)), for: .touchUpInside)
 	
 		uiViewUpdate()
-		//getTransectionId()
 		
 	}
 

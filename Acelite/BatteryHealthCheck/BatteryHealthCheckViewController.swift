@@ -172,21 +172,21 @@ class BatteryHealthCheckViewController: UIViewController {
 		case .startTheCar:
 			// both booleans are true
 				self.viewModel?.handleInstructions()
-			    self.viewModel?.isLoopingTimeInProgress = true
+			   // self.viewModel?.isLoopingTimeInProgress = true
 			    self.viewModel?.commandToRunInLoopIndex += 1
 			    self.viewModel?.isTimeInProgress = true
 			self.timer = Timer.scheduledTimer(timeInterval: 1, target: self,   selector:(#selector(updateTimerforStartCar)), userInfo: nil, repeats: true)
 		case .startClimateControls:
 			self.updateBodyContentView(batteryHealthInstruction: .testInProgresInitial)
 			updateViewWithRCValues()
-			self.viewModel?.isLoopingTimeInProgress = true
+			//self.viewModel?.isLoopingTimeInProgress = true
 			self.viewModel?.commandToRunInLoopIndex += 1
 			self.timer = Timer.scheduledTimer(timeInterval: 1, target: self,   selector:(#selector(updateTimerforStartClimateControls)), userInfo: nil, repeats: true)
 		case .testInProgresInitial:
 			self.timer = Timer.scheduledTimer(timeInterval: 1, target: self,   selector:(#selector(updateTimerforTestInProgressInitial)), userInfo: nil, repeats: true)
 		case .turnOffClimateControls:
 			self.updateBodyContentView(batteryHealthInstruction: .testInprogressFinal)
-			self.viewModel?.isLoopingTimeInProgress = true
+			//self.viewModel?.isLoopingTimeInProgress = true
 			self.viewModel?.commandToRunInLoopIndex += 1
 			self.timer = Timer.scheduledTimer(timeInterval: 1, target: self,   selector:(#selector(updateTimerforTurnOffClimateControls)), userInfo: nil, repeats: true)
 		case .testInprogressFinal:
@@ -342,7 +342,7 @@ class BatteryHealthCheckViewController: UIViewController {
 	@objc func updateTimerforStartCar() {
 		if self.secoonds == 0  {
 			timer?.invalidate()
-			self.viewModel?.isLoopingTimeInProgress = false
+			//self.viewModel?.isLoopingTimeInProgress = false
 			self.startButton.isUserInteractionEnabled = true
 			self.updateBodyContentView(batteryHealthInstruction: .startClimateControls)
 			self.batteryHealthInstruction = .startClimateControls
@@ -365,7 +365,7 @@ class BatteryHealthCheckViewController: UIViewController {
 		if self.secoonds == 0  {
 			timer?.invalidate()
 			self.startButton.isUserInteractionEnabled = true
-			self.viewModel?.isLoopingTimeInProgress = false
+			//self.viewModel?.isLoopingTimeInProgress = false
 			self.updateBodyContentView(batteryHealthInstruction: .turnOffClimateControls)
 			self.batteryHealthInstruction = .turnOffClimateControls
 			self.startButton.setTitle("Start", for: .normal)
@@ -400,7 +400,7 @@ class BatteryHealthCheckViewController: UIViewController {
 		if self.secoonds == 0  {
 			timer?.invalidate()
 			self.startButton.isUserInteractionEnabled = true
-			self.viewModel?.isLoopingTimeInProgress = false
+			//self.viewModel?.isLoopingTimeInProgress = false
 			self.viewModel?.isTimeInProgress = false
 //			self.updateBodyContentView(batteryHealthInstruction: .testInprogressFinal)
 			self.batteryHealthInstruction = .testInprogressFinal
@@ -452,6 +452,12 @@ extension BatteryHealthCheckViewController: GetPreSignedUrlDelegate, UploadAndSu
 	   }
 	   if let cv = viewModel?.cellVoltageData {
 		   vc.cellVoltageData = cv
+	   }
+	   if let soc = viewModel?.stateOfCharge {
+		   vc.stateOfCharge = soc
+	   }
+	   if let bms = viewModel?.bms {
+		   vc.bmsCapacity = bms
 	   }
 	   
 	   self.navigationController?.pushViewController(vc, animated: true)

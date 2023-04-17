@@ -33,16 +33,24 @@ class Constants {
 	static let SEVEN_FFF = "7FFF"
 	static let ALL_F = "FFFF"
 	static let NO_DATA = "NO DATA"
+	static let OK = "OK"
 	
 	static let DELAY_BETWEEN_COMMANDS = 50
 	/**
 	 * Default protocol value.
 	 */
-	static let DEFAULT_PROTOCOL = "0"
+	static let DEFAULT_PROTOCOL = "6"
 	
 	static let CARET = ">"
 	static let QUESTION_MARK = "?"
 	static let NODATA = "NODATA"
 	static let ERROR = "ERROR"
 
+	func currentDateTime() -> String {
+		let dateFormatter : DateFormatter = DateFormatter()
+		dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+		let date = Date()
+		let dateString = dateFormatter.string(from: date)
+		return dateString
+	}
 }

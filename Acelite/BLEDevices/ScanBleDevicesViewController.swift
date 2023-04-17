@@ -54,7 +54,7 @@ class ScanBleDevicesViewController: UIViewController {
 			print("20 sec completed")
 			
 			
-			if self.bleServices.isPeripheralIdentified == false{
+			if self.bleServices.isPeripheralIdentified == false {
 				
 				self.view.activityStopAnimating()
 				// Create new Alert

@@ -25,6 +25,7 @@ public class ABGaugeView: UIView {
 	
 	@IBInspectable public var circleColor: UIColor = UIColor.black
 	@IBInspectable public var shadowColor: UIColor = UIColor.clear
+	public var healthScoreIndex: Int?
 	
 	var firstAngle = CGFloat()
 	var capStyle = CGLineCap.square

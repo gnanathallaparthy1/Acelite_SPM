@@ -18,6 +18,8 @@ class Network {
 	var vehicleInformation:  GetBatteryTestInstructionsQuery.Data?
 	var bluetoothService: BluetoothServices?
 	var myPeripheral: CBPeripheral!
+	public var byteDataArray: [UInt8] = []
+	public var arrayOfBytesData: String = ""
   //  lazy var apollo = ApolloClient(url: URL.init(string: "http://countries.trevorblades.com/")!)
 	lazy var apollo: ApolloClient = {
 

@@ -178,7 +178,8 @@ class TestCommandExecution {
 	var validation: Validation?
 	var deviceReponse: String?
 	var reqeustByteInString: String = ""
-	
+	var isFlowController: Bool = false
+	var deviceByteArray = [UInt8]()
 	
 	init(type: CommandType, resProtocal: ProtocolClass, challenge: Challenge, response: OdometerResponse, validation: Validation) {
 		self.type = type
@@ -186,7 +187,24 @@ class TestCommandExecution {
 		self.challenge = challenge
 		self.response = response
 		self.validation = validation
-		
+		if challenge.flowControl != nil {
+			self.isFlowController = true
+		}
 	}
 	
 }
+
+class TestCommandDiagnosticExecution {
+
+	var type: CommandType?
+	var resProtocol : ProtocolClass?
+	var challenge: DiagnosticSessionChallenge?
+	var deviceByteArray = [UInt8]()
+	
+	init(type: CommandType, resProtocal: ProtocolClass, challenge: DiagnosticSessionChallenge) {
+		self.type = type
+		self.resProtocol = resProtocal
+		self.challenge = challenge
+	}
+}
+
