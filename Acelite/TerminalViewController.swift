@@ -58,7 +58,7 @@ class TerminalViewController: UIViewController {
 			return
 		}
 		
-		self.bluetoothService?.writeBytesData(data: commandData)
+		//self.bluetoothService?.writeBytesData(data: commandData, completionHandler: <#((String) -> ())?#>)
 		commandTextFiled.resignFirstResponder()
 	}
 }

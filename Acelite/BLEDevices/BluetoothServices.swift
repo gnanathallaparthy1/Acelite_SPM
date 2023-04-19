@@ -10,11 +10,11 @@ import CoreBluetooth
 import UIKit
 
 
-protocol BleWriteReadProtocal: AnyObject {
-	func blewriteResponse(data: Data, commandType: CommandType)
-	func bleReonse(data: Data)
-
-}
+//protocol BleWriteReadProtocal: AnyObject {
+//	func blewriteResponse(data: Data, commandType: CommandType)
+//	func bleReonse(data: Data)
+//
+//}
 
 
 class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegate {
@@ -30,7 +30,7 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 	var txCharacteristic: CBCharacteristic? = nil
 	var rxCharacteristic: CBCharacteristic? = nil
 	var callBack: (([DeviceModel]) -> Void)?
-	var delegate: BleWriteReadProtocal? = nil
+//	var delegate: BleWriteReadProtocal? = nil
 	var commandType: CommandType = .ODOMETER
 	//	 var commandCallBack: (((Data, BLECommand))->Void)?
 	//	var commandType: BLECommand = .NONE
@@ -54,22 +54,22 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 		
 	
 	
-	func setDelegateChange(delegate: BleWriteReadProtocal?) {
-		self.delegate = delegate
-	}
+//	func setDelegateChange(delegate: BleWriteReadProtocal?) {
+//		self.delegate = delegate
+//	}
 	
-	public func writeBytesDatas(data: String, completionHandler: ((String)->())?, delegate: BleWriteReadProtocal?, commandType: CommandType ) {
-		self.delegate = delegate
-		self.commandType = commandType
-		self.completionHandler = completionHandler
-		guard let characterstics = txCharacteristic else {
-			return
-		}
-		print("request data:::::", data)
-		let dataToSend: Data = data.data(using: .utf8)!
-		bluetoothPeripheral!.writeValue(dataToSend, for: characterstics, type: .withResponse)
-		bluetoothPeripheral?.setNotifyValue(true, for: rxCharacteristic!)
-	}
+//	public func writeBytesDatas(data: String, completionHandler: ((String)->())?, delegate: BleWriteReadProtocal?, commandType: CommandType ) {
+////		self.delegate = delegate
+//		self.commandType = commandType
+//		self.completionHandler = completionHandler
+//		guard let characterstics = txCharacteristic else {
+//			return
+//		}
+//		print("request data:::::", data)
+//		let dataToSend: Data = data.data(using: .utf8)!
+//		bluetoothPeripheral!.writeValue(dataToSend, for: characterstics, type: .withResponse)
+//		bluetoothPeripheral?.setNotifyValue(true, for: rxCharacteristic!)
+//	}
 	
 	public func writeBytesData(data: String, completionHandler: ((String)->())? ) {
 		// self.commandType = .Other
@@ -120,9 +120,6 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 	}
 	
 	func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
-		//print(peripheral.name ?? "")
-		
-		//print(peripheral.ancsAuthorized)
 		if let pname =  peripheral.name, pname ==  "CAM101" || pname ==  "CAM144" {
 			bluetoothPeripheral = peripheral
 			centralManager.connect(bluetoothPeripheral!)
@@ -135,7 +132,6 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 		} else {
 		
 		}
-		
 	}
 	
 	func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
@@ -173,10 +169,8 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 		if let value = characteristic.value {
 			print("value::::", value)
 			var byteArray: [UInt8] = Array(value)
-			//			let stringAbyteArray = "\(byteArray)"
 			let parseData: String = String.init(data: value, encoding: .utf8) ?? ""
 			print("PARSE DATA",parseData)
-			
 			if  parseData.contains(":") {
 				let removeSpaces = parseData.trimmingCharacters(in: .whitespacesAndNewlines)
 				let splitString = removeSpaces.components(separatedBy: "\r")
@@ -185,8 +179,6 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 					let sliptWithColen = newitem.components(separatedBy: ":")
 					print("sliptWithColen", sliptWithColen)
 					if sliptWithColen.count == 2 {
-						print("After remove", newitem)
-						//let stringFromFirstFlowControl = typeCastingByteToString(testCommand: sliptWithColen[1])
 						print("adding space between two chars", sliptWithColen[1])
 						Network.shared.arrayOfBytesData.append(sliptWithColen[1])
 						print("total string", Network.shared.arrayOfBytesData)
@@ -198,26 +190,10 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 			
 			} else {
 				let removeSpaces = parseData.trimmingCharacters(in: .whitespacesAndNewlines)
-			
 				Network.shared.arrayOfBytesData.append(removeSpaces)
-				//print("total string", Network.shared.arrayOfBytesData)
-				
-//				let byteArrayToString = String(bytes: byteArray, encoding: .utf8)
-//				print("byteArrayToString", byteArrayToString)
-//				for fruit in byteArray {
-//					Network.shared.byteDataArray.append(fruit)
-//				}
 			}
-			
-			//numbers.flatMap { $0 }
-			
 			if let stringData = String.init(data: value, encoding: .utf8) {
 				if  stringData.contains(Constants.CARET) {
-//					for item in Network.shared.arrayOfBytesData{
-//						Network.shared.byteDataArray.append(item)
-//					}
-					//Network.shared.arrayOfBytesData
-					
 					self.completionHandler?(Network.shared.arrayOfBytesData)
 					Network.shared.arrayOfBytesData.removeAll()
 				
@@ -225,14 +201,6 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 				} else if stringData.contains(Constants.QUESTION_MARK) || stringData.contains(Constants.NODATA) || stringData.contains(Constants.NO_DATA) || stringData.contains(Constants.ERROR)   {
 					print("Data byte array finished", parseData)
 					
-//					for item in Network.shared.arrayOfBytesData{
-//						Network.shared.byteDataArray.append(item)
-//					}
-					// Network.shared.arrayOfBytesData
-//					self.completionHandler?(Network.shared.arrayOfBytesData)
-//					Network.shared.arrayOfBytesData.removeAll()
-//					Network.shared.byteDataArray.removeAll()
-					//
 				} else if stringData.contains(Constants.OK) {
 					self.completionHandler?(Network.shared.arrayOfBytesData)
 					Network.shared.arrayOfBytesData.removeAll()
@@ -243,7 +211,6 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 			}
 				
 			}
-		//}
 	}
 	private func typeCastingByteToString(testCommand: String) -> String {
 
@@ -252,18 +219,17 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 		
 	}
 	
-	public func writeBytesData(data: String) {
-		//print("Write Command::::::", data)
-		guard let characterstics = txCharacteristic else {
-			return
-		}
-		let dataToSend: Data = data.data(using: .utf8)!
-		bluetoothPeripheral!.writeValue(dataToSend, for: characterstics, type: .withResponse)
-		bluetoothPeripheral?.setNotifyValue(true, for: rxCharacteristic!)
-	}
+//	public func writeBytesData(data: String) {
+//		guard let characterstics = txCharacteristic else {
+//			return
+//		}
+//		let dataToSend: Data = data.data(using: .utf8)!
+//		bluetoothPeripheral!.writeValue(dataToSend, for: characterstics, type: .withResponse)
+//		bluetoothPeripheral?.setNotifyValue(true, for: rxCharacteristic!)
+//	}
 	
 	func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
-		//print(characteristic)
+		print(characteristic)
 	}
 	
 	func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?) {

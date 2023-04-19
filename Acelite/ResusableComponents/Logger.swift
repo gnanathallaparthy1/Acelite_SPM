@@ -1,45 +1,33 @@
-////
-////  Logger.swift
-////  Acelite
-////
-////  Created by Gnana Thallaparthy on 3/12/23.
-////
 //
-//import Foundation
+//  Logger.swift
+//  Acelite
 //
-//struct Log: TextOutputStream {
-//	
-//	func write(_ string: String) {
-//		
-//		let text = string
-//		let folder = "Acelite"
-//		
-//		/*let timeStamp = Date.currentTimeStamp
-//		
-//		guard let path = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first else { return }
-//		guard let writePath = NSURL(fileURLWithPath: path).appendingPathComponent(folder) else { return }
-//		try? FileManager.default.createDirectory(atPath: writePath.path, withIntermediateDirectories: true)
-//		let file = writePath.appendingPathComponent(fileNamed + ".txt")
-//		try? text.write(to: file, atomically: false, encoding: String.Encoding.utf8)
-//		// alert
-//		//
-//		// generated file stored in your phone file folder with app name.
-//		 */
-//		
-//		let fm = FileManager.default
-//		let log = fm.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("log.txt")
-//		//let fileNamed = "bleCommandlogs"
-//		if let handle = try? FileHandle(forWritingTo: log) {
-//			handle.seekToEndOfFile()
-//			handle.write(string.data(using: .utf8)!)
-//			handle.closeFile()
-//		} else {
-//			try? string.data(using: .utf8)?.write(to: log)
-//		}
-//	}
-//	
-//}
+//  Created by Gnana Thallaparthy on 3/12/23.
 //
-//var logger = Log()
-//
-//
+
+import Foundation
+
+class Log: TextOutputStream {
+
+	func write(_ string: String) {
+		
+		let fileManager = FileManager.default
+		do {
+			let path = try? fileManager.url(for: .documentDirectory, in: .allDomainsMask, appropriateFor: nil, create: false)
+			let fileURL: URL = (path?.appendingPathComponent("log.txt"))!
+			
+			
+			//let fm = FileManager.default
+			//let log = fm.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("log.txt")
+			if let handle = try? FileHandle(forWritingTo: fileURL) {
+				handle.seekToEndOfFile()
+				handle.write(string.data(using: .utf8)!)
+				handle.closeFile()
+			} else {
+				try? string.data(using: .utf8)?.write(to: fileURL)
+			}
+		}
+	}
+	static var log: Log = Log()
+	private init() {} // we are sure, nobody else could create it
+}

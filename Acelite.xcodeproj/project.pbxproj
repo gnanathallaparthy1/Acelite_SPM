@@ -42,7 +42,6 @@
 		8636D41629CE201C0045BD53 /* TestableTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8636D41029CE201C0045BD53 /* TestableTableViewCell.swift */; };
 		8636D41829D1430D0045BD53 /* BatteryHealthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8636D41729D1430D0045BD53 /* BatteryHealthViewModel.swift */; };
 		8636D41E29D362FE0045BD53 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8636D41D29D362FE0045BD53 /* API.swift */; };
-		8636D42029DB420D0045BD53 /* vinData.json in Resources */ = {isa = PBXBuildFile; fileRef = 8636D41F29DB3D230045BD53 /* vinData.json */; };
 		8636D42229DC88EE0045BD53 /* SubmitBatteryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8636D42129DC88EE0045BD53 /* SubmitBatteryModel.swift */; };
 		8639046829940178008D5A0A /* Themes+Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8639046729940178008D5A0A /* Themes+Colors.swift */; };
 		8639046A299557B2008D5A0A /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86390469299557B2008D5A0A /* DataManager.swift */; };
@@ -143,7 +142,6 @@
 		8636D41029CE201C0045BD53 /* TestableTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestableTableViewCell.swift; sourceTree = "<group>"; };
 		8636D41729D1430D0045BD53 /* BatteryHealthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryHealthViewModel.swift; sourceTree = "<group>"; };
 		8636D41D29D362FE0045BD53 /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = API.swift; path = ../../../../Downloads/API.swift; sourceTree = "<group>"; };
-		8636D41F29DB3D230045BD53 /* vinData.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = vinData.json; sourceTree = "<group>"; };
 		8636D42129DC88EE0045BD53 /* SubmitBatteryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubmitBatteryModel.swift; sourceTree = "<group>"; };
 		8639046729940178008D5A0A /* Themes+Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Themes+Colors.swift"; sourceTree = "<group>"; };
 		86390469299557B2008D5A0A /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
@@ -271,7 +269,6 @@
 				861E6ED42953789D00443F12 /* LaunchScreen.storyboard */,
 				86E86B9129C0CA5B007182DB /* GoogleService-Info.plist */,
 				861E6ED72953789D00443F12 /* Info.plist */,
-				8636D41F29DB3D230045BD53 /* vinData.json */,
 				867BBF7829673D7400DC4842 /* AceliteColors.swift */,
 				867BBF7A296744CD00DC4842 /* AceliteConstants.swift */,
 				86B9089F297079A9001CAB90 /* WorkOrderViewController.swift */,
@@ -619,7 +616,6 @@
 				869D86AB2968982500503B9C /* BLETableViewCell.xib in Resources */,
 				861E6F0A295778A100443F12 /* Main.storyboard in Resources */,
 				861E6ED32953789D00443F12 /* Assets.xcassets in Resources */,
-				8636D42029DB420D0045BD53 /* vinData.json in Resources */,
 				86E86B9229C0CA5B007182DB /* GoogleService-Info.plist in Resources */,
 				866CDB57298AD3BE00ADFB50 /* schema.json in Resources */,
 				861E6F08295773C100443F12 /* SideMenuCell.xib in Resources */,
@@ -891,9 +887,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = ZGGV82GHKB;
+				DEVELOPMENT_TEAM = QMYQQM43B7;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Acelite/Info.plist;
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "We need to access your bluetooth for scanning ble devices.";
@@ -910,9 +907,13 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 0.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.cox.acelite;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -924,9 +925,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = ZGGV82GHKB;
+				DEVELOPMENT_TEAM = QMYQQM43B7;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Acelite/Info.plist;
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "We need to access your bluetooth for scanning ble devices.";
@@ -943,9 +945,13 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 0.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.cox.acelite;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

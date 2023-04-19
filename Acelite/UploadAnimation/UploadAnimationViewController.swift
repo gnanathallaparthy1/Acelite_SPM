@@ -387,7 +387,7 @@ class UploadAnimationViewController: UIViewController {
 		let years: Int = Int(vinYear)
 		
 		
-		let vehicalBatteryDataFile = SubmitBatteryDataFilesVehicleInput.init(vin: "3FA6P0SU1KR191846", make: "", model: vinModels, year: years)
+		let vehicalBatteryDataFile = SubmitBatteryDataFilesVehicleInput.init(vin: vinInfo, make: "", model: vinModels, year: years)
 		let batteryInstr = vehicleInfo?.getBatteryTestInstructions
 		
 		guard let vehicleProfile = batteryInstr?[0].testCommands?.vehicleProfile else {return}
