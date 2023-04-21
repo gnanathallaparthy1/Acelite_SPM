@@ -20,6 +20,7 @@ class ScanBleDevicesViewController: UIViewController {
 	private var myPeripheral: CBPeripheral!
 	private var blePeripheralDevice = [DeviceModel]()
 	private var selectedIndex: IndexPath?
+	private var selectedRow: Int?
 	var bleServices: BluetoothServices!
 	var scanTimer = Timer()
 	
@@ -52,9 +53,9 @@ class ScanBleDevicesViewController: UIViewController {
 	@objc func showScanTimeoutView()  {
 		DispatchQueue.main.async {
 			print("20 sec completed")
+			print(self.bleServices.isPeripheralIdentified)
 			
-			
-			if self.bleServices.isPeripheralIdentified == false {
+			if self.blePeripheralDevice.count == 0 {
 				
 				self.view.activityStopAnimating()
 				// Create new Alert
@@ -135,26 +136,68 @@ extension ScanBleDevicesViewController: UITableViewDelegate, UITableViewDataSour
 		let deviceModel = self.blePeripheralDevice[indexPath.row]
 		cell?.bleNameLable.text = deviceModel.peripheral.name
 		cell?.connectButton.tag = indexPath.row
-		if let _ = self.selectedIndex {
-			cell?.connectButton.setTitle("Disconnected", for: .normal)
-			cell?.testButton.isHidden = false
-			cell?.testButton.addTarget(self, action: #selector(self.testbuttonAction(_ :)), for: .touchUpInside)
-		} else {
-			cell?.connectButton.setTitle("Connect", for: .normal)
-			cell?.testButton.isHidden = true
-		}
+		
+		
+		
+		
+		cell?.connectButton.setTitle("Connect", for: .normal)
+		cell?.testButton.isHidden = true
+		
+//		if  self.selectedIndex == indexPath {
+//			if cell?.connectButton.titleLabel?.text == "Disconnected" {
+//				cell?.connectButton.setTitle("Connect", for: .normal)
+//				cell?.testButton.isHidden = false
+//			} else {
+//				cell?.connectButton.setTitle("Disconnected", for: .normal)
+//				cell?.testButton.isHidden = true
+//			}
+//			//cell?.connectButton.setTitle("Disconnected", for: .normal)
+//			cell?.testButton.isHidden = false
+//			cell?.testButton.addTarget(self, action: #selector(self.testbuttonAction(_ :)), for: .touchUpInside)
+//		} else {
+//			cell?.connectButton.setTitle("Connect", for: .normal)
+//			cell?.testButton.isHidden = true
+//		}
 		cell?.connectButton.addTarget(self, action: #selector(self.connectBleDevice(_ :)), for: .touchUpInside)
 		return cell ?? UITableViewCell()
 	}
 	
 	@IBAction func connectBleDevice(_ sender: UIButton) {
 		let deviceModel = self.blePeripheralDevice[sender.tag]
-		self.selectedIndex = IndexPath(row: sender.tag, section: 0)
-		bleServices.connectDevices(peripheral: deviceModel.peripheral)
-		Network.shared.myPeripheral = deviceModel.peripheral
-		self.bleTableView.reloadRows(at: [self.selectedIndex ?? IndexPath()], with: .none)
+		self.selectedRow = sender.tag
+		if self.selectedIndex == IndexPath(row: sender.tag, section: 0) {
+			self.selectedIndex = IndexPath(row: sender.tag, section: 0)
+			bleServices.disconnectDevice(peripheral: deviceModel.peripheral)
+		} else {
+			disconnectPreviousConnectedDevices()
+			self.selectedIndex = IndexPath(row: sender.tag, section: 0)
+			bleServices.bluetoothPeripheral = deviceModel.peripheral
+			bleServices.connectDevices(peripheral: deviceModel.peripheral)
+			Network.shared.myPeripheral = deviceModel.peripheral
+		}
+		//self.bleTableView.reloadData()
+		let cell = bleTableView.cellForRow(at: self.selectedIndex ?? IndexPath()) as! BLETableViewCell
+		//print(cell.connectButton?.titleLabel?.text)
 		
+		if cell.connectButton?.titleLabel?.text == "Connect" {
+			cell.connectButton.setTitle("Disconnected", for: .normal)
+			cell.testButton.isHidden = false
+			cell.testButton.addTarget(self, action: #selector(self.testbuttonAction(_ :)), for: .touchUpInside)
+		} else {
+			cell.connectButton.setTitle("Connect", for: .normal)
+			cell.testButton.isHidden = true
+		}
+		
+		//self.bleTableView.reloadRows(at: [self.selectedIndex ?? IndexPath()], with: .none)
 	}
+	
+	func disconnectPreviousConnectedDevices() {
+		guard let previousDevice = Network.shared.myPeripheral  else { return  }
+		bleServices.disconnectDevice(peripheral: previousDevice)
+		//TODO update UI state
+	}
+	
+	
 	
 	@IBAction func testbuttonAction(_ sender: UIButton) {
 		let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
@@ -162,12 +205,14 @@ extension ScanBleDevicesViewController: UITableViewDelegate, UITableViewDataSour
 		//testVC.bluetoothService(bleServices: self.bleServices)
 		
 		let viVC = storyboard.instantiateViewController(withIdentifier: "VehicalInformationViewController") as! VehicalInformationViewController
-		let vm = VehicleInformationViewModel(vinNumber: "3FA6P0SU1KR191846")
+		let vm = VehicleInformationViewModel(vinNumber: "")
 //		 viVC = VehicalInformationViewController(viewModel: vm)
 		viVC.viewModel = vm
 		//viVC.delegate = 
 		self.navigationController?.pushViewController(viVC, animated: true)
 	}
+	
+	
 }
 
 extension ScanBleDevicesViewController:  CBPeripheralDelegate, CBCentralManagerDelegate {

@@ -48,7 +48,7 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
 			captureSession.addOutput(metadataOutput)
 			//Set delegate and use default dispatch queue to execute the call back
 			metadataOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
-			metadataOutput.metadataObjectTypes = [.ean8, .ean13, .pdf417]
+			metadataOutput.metadataObjectTypes = [.code128, .code39]
 		} else {
 			failed()
 			return

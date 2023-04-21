@@ -150,7 +150,7 @@ extension VehicalInformationViewController: ScannerViewDelegate {
 extension VehicalInformationViewController: UITextFieldDelegate {
 	
 	func textFieldDidBeginEditing(_ textField: UITextField) {
-		self.barcodeTextField?.text = "1N4BZ0CP4GC311050"
+		//self.barcodeTextField?.text = "1N4BZ1CP3LC310701"
 		//singleframeVin
 		//"3FA6P0LU8JR142415"
 		//MultiFrame with BMS
@@ -161,10 +161,9 @@ extension VehicalInformationViewController: UITextFieldDelegate {
 	}
 	
 	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-		if textField == self.barcodeTextField {
-			//make call from view model
-			self.view.activityStartAnimating(activityColor: UIColor.white, backgroundColor: UIColor.black.withAlphaComponent(0.5))
-			self.viewModel?.fetchVehicalInformation(vim: "1N4BZ0CP4GC311050")
+		if textField == self.barcodeTextField && textField.text?.count ?? 0 > 0 {
+				self.view.activityStartAnimating(activityColor: UIColor.white, backgroundColor: UIColor.black.withAlphaComponent(0.5))
+				self.viewModel?.fetchVehicalInformation(vim: textField.text ?? "N/A")
 			
 		}
 		textField.resignFirstResponder()

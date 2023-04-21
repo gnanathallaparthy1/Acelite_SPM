@@ -5,7 +5,32 @@
 
 import Foundation
 import UIKit
-@IBDesignable
+//@IBDesignable
+
+enum VehicleGrade: String {
+	case A
+	case B
+	case C
+	case D
+	case E
+	
+	var title: String {
+		get {
+			switch self {
+			case .A:
+				return "A"
+			case .B:
+				return "B"
+			case .C:
+				return  "C"
+			case .D:
+				return "D"
+			case .E:
+				return "E"
+			}
+		}
+	}
+}
 public class ABGaugeView: UIView {
 	
 
@@ -25,7 +50,7 @@ public class ABGaugeView: UIView {
 	
 	@IBInspectable public var circleColor: UIColor = UIColor.black
 	@IBInspectable public var shadowColor: UIColor = UIColor.clear
-	public var healthScoreIndex: Int?
+	 var grade: VehicleGrade = .A
 	
 	var firstAngle = CGFloat()
 	var capStyle = CGLineCap.square
@@ -81,12 +106,40 @@ public class ABGaugeView: UIView {
 		arcs[1].arcCap = self.capStyle
 		arcs[2].arcCap = self.capStyle
 		for i in 0..<arcs.count {
-			//based on the health score
-			if i == 1 {
-				createArcWith(startAngle: arcs[i].startAngle, endAngle: arcs[i].endAngle, arcCap: arcs[i].arcCap, strokeColor: arcs[i].strokeColor, center: arcs[i].center, pathWidth: 16)
-			} else {
-				createArcWith(startAngle: arcs[i].startAngle, endAngle: arcs[i].endAngle, arcCap: arcs[i].arcCap, strokeColor: arcs[i].strokeColor, center: arcs[i].center, pathWidth: 12)
+			switch grade {
+			case .A:
+				if i == 1 {
+					createArcWith(startAngle: arcs[i].startAngle, endAngle: arcs[i].endAngle, arcCap: arcs[i].arcCap, strokeColor: arcs[i].strokeColor, center: arcs[i].center, pathWidth: 18)
+				} else {
+					createArcWith(startAngle: arcs[i].startAngle, endAngle: arcs[i].endAngle, arcCap: arcs[i].arcCap, strokeColor: arcs[i].strokeColor, center: arcs[i].center, pathWidth: 12)
+				}
+			case .B:
+				if i == 3 {
+					createArcWith(startAngle: arcs[i].startAngle, endAngle: arcs[i].endAngle, arcCap: arcs[i].arcCap, strokeColor: arcs[i].strokeColor, center: arcs[i].center, pathWidth: 16)
+				} else {
+					createArcWith(startAngle: arcs[i].startAngle, endAngle: arcs[i].endAngle, arcCap: arcs[i].arcCap, strokeColor: arcs[i].strokeColor, center: arcs[i].center, pathWidth: 12)
+				}
+			case .C:
+				if i == 4 {
+					createArcWith(startAngle: arcs[i].startAngle, endAngle: arcs[i].endAngle, arcCap: arcs[i].arcCap, strokeColor: arcs[i].strokeColor, center: arcs[i].center, pathWidth: 16)
+				} else {
+					createArcWith(startAngle: arcs[i].startAngle, endAngle: arcs[i].endAngle, arcCap: arcs[i].arcCap, strokeColor: arcs[i].strokeColor, center: arcs[i].center, pathWidth: 12)
+				}
+			case .D:
+				if i == 5 {
+					createArcWith(startAngle: arcs[i].startAngle, endAngle: arcs[i].endAngle, arcCap: arcs[i].arcCap, strokeColor: arcs[i].strokeColor, center: arcs[i].center, pathWidth: 16)
+				} else {
+					createArcWith(startAngle: arcs[i].startAngle, endAngle: arcs[i].endAngle, arcCap: arcs[i].arcCap, strokeColor: arcs[i].strokeColor, center: arcs[i].center, pathWidth: 12)
+				}
+			case .E:
+				if i == 2 {
+					createArcWith(startAngle: arcs[i].startAngle, endAngle: arcs[i].endAngle, arcCap: arcs[i].arcCap, strokeColor: arcs[i].strokeColor, center: arcs[i].center, pathWidth: 16)
+				} else {
+					createArcWith(startAngle: arcs[i].startAngle, endAngle: arcs[i].endAngle, arcCap: arcs[i].arcCap, strokeColor: arcs[i].strokeColor, center: arcs[i].center, pathWidth: 12)
+				}
 			}
+			//based on the health score
+		
 			
 		}
 		

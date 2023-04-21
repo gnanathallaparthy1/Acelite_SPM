@@ -79,7 +79,7 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 		}
 		print("request data:::::", data)
 		let dataToSend: Data = data.data(using: .utf8)!
-		bluetoothPeripheral!.writeValue(dataToSend, for: characterstics, type: .withResponse)
+		bluetoothPeripheral?.writeValue(dataToSend, for: characterstics, type: .withResponse)
 		// sleep(1)
 		bluetoothPeripheral?.setNotifyValue(true, for: rxCharacteristic!)
 		
@@ -120,22 +120,26 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 	}
 	
 	func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
-		if let pname =  peripheral.name, pname ==  "CAM101" || pname ==  "CAM144" {
-			bluetoothPeripheral = peripheral
-			centralManager.connect(bluetoothPeripheral!)
-			bluetoothPeripheral!.delegate = self
-			centralManager.stopScan()
-			self.isPeripheralIdentified = false
-			let deviceModel = DeviceModel(id:  pname, peripheral: peripheral)
-			self.blePeripheralDevice.append(deviceModel)
-			filterPeripharalNames()
+		if let pname =  peripheral.name {
+			if pname.contains("cox") || pname.contains("CAM") {
+				//, pname ==  "CAM101" || pname ==  "CAM144" {
+				//bluetoothPeripheral = peripheral
+				//centralManager.connect(bluetoothPeripheral!)
+				//bluetoothPeripheral!.delegate = self
+				//centralManager.stopScan()
+				//self.isPeripheralIdentified = true
+				let deviceModel = DeviceModel(id:  pname, peripheral: peripheral)
+				self.blePeripheralDevice.append(deviceModel)
+				filterPeripharalNames()
+			}
+			print("scanned device name:::", pname)
 		} else {
 		
 		}
 	}
 	
 	func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
-		bluetoothPeripheral!.discoverServices([bluetoothServiceUUID])
+		bluetoothPeripheral?.discoverServices([bluetoothServiceUUID])
 	}
 	
 	func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {

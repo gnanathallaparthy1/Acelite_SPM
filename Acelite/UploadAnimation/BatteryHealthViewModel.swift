@@ -9,13 +9,15 @@ import Foundation
 
 class BatteryHealthViewModel {
 	
-	init(vehicleInfo: Vehicle, transactionID: String, healthScore: Int) {
+	public var vehicleInfo: Vehicle?
+	public var transactionId: String?
+	public var grade: VehicleGrade?
+	public var healthScore : String?
+	
+	init(vehicleInfo: Vehicle, transactionID: String, healthScore: String, grade: VehicleGrade) {
 		self.vehicleInfo = vehicleInfo
 		self.transactionId = transactionID
 		self.healthScore = healthScore
+		self.grade = grade
 	}
-	
-	public var vehicleInfo: Vehicle?
-	public var transactionId: String?
-	public var healthScore: Int?
 }

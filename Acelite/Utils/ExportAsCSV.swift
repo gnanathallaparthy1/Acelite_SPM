@@ -50,15 +50,17 @@ class CSVFile {
 	
 // MARK: CSV file creating
  
-	func creatCSVForCellVoltage(data: [[Double]]) -> URL {
+	func creatCSVForCellVoltage(data: [[[Double]]]) -> URL {
 		var csvText = ""
 		var newLine = ""
-		for item in data {
-			for value in item {
-				newLine += "\(value),"
+		for mulArray  in data {
+			for item in mulArray {
+				for value in item {
+					newLine += "\(value),"
+				}
+				newLine.remove(at: newLine.index(before: newLine.endIndex))
+				newLine += "\n"
 			}
-			newLine.remove(at: newLine.index(before: newLine.endIndex))
-			newLine += "\n"
 		}
 		csvText.append(newLine)
 		let fileManager = FileManager.default

@@ -39,6 +39,7 @@ class BatteryHealthCheckViewModel {
 	private var isDiagnosticSession: Bool = false
 	public var diagnosticCommand: TestCommandDiagnosticExecution?
 	public var vehicleInfo: Vehicle?
+	public var numberOfCells: Int?
 	public var packVoltageData = [Double]()
 	public var packCurrentData = [Double]()
 	public var packTemperatureData = [Double]()
@@ -131,6 +132,7 @@ class BatteryHealthCheckViewModel {
 					let response = OdometerResponse(startByte: item.response.startByte, endByte: item.response.endByte, numberOfCells: item.response.numberOfCells, bytesPerCell: item.response.bytesPerCell, startCellCount: item.response.startCellCount, endCellCount: item.response.endCellCount, bytesPaddedBetweenCells: item.response.bytesPaddedBetweenCells, multiplier: Double(item.response.multiplier), constant: item.response.constant)
 					//let response = OdometerResponse(startByte: item.response.startByte, endByte: item.response.endByte, multiplier: Double(item.response.multiplier), constant: Double(item.response.constant))
 					let cellVoltageTestCommand = TestCommandExecution(type: .CELL_VOLTAGE, resProtocal: sp.sampledCommandsProtocol, challenge: item.challenge, response: response, validation: item.validation)
+					self.numberOfCells = response.numberOfCells
 					cellVoltageTestCommand.reqeustByteInString = item.challenge.pid
 					sampledCommandsList.append(cellVoltageTestCommand)
 				}
@@ -327,8 +329,6 @@ class BatteryHealthCheckViewModel {
 			
 			
 		case .ENERGY_TO_EMPTY:
-			break
-		case .BMS_CAPACITY:
 			if let flowControl = testCommand.challenge?.flowControl {
 				self.runFlowControlHeaderAndData(flowControl: flowControl, testCommand: testCommand) { command in
 					if let header = testCommand.challenge?.header {
@@ -346,6 +346,45 @@ class BatteryHealthCheckViewModel {
 								})
 							})
 						})
+					}
+				}
+			} else {
+				if let header = testCommand.challenge?.header {
+					guard let pid = testCommand.challenge?.pid else { return }
+					let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
+					DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
+						Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
+							let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
+							DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+								Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data in
+									testCommand.deviceReponse = data
+									print(Date(), "BMS PID response\(data)", to: &Log.log)
+									onCompletion!(testCommand)
+								})
+							})
+						})
+					})
+				}
+			}
+			break
+		case .BMS_CAPACITY:
+			if let flowControl = testCommand.challenge?.flowControl {
+				self.runFlowControlHeaderAndData(flowControl: flowControl, testCommand: testCommand) { command in
+					if let header = testCommand.challenge?.header {
+						guard let pid = testCommand.challenge?.pid else { return }
+						let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
+						//DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
+							Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data1 in
+								let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
+							//	DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+									Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data in
+										testCommand.deviceReponse = data
+										print(Date(), "BMS PID response\(data)", to: &Log.log)
+										onCompletion!(testCommand)
+									})
+								//})
+							})
+						//})
 					}
 				}
 			} else {

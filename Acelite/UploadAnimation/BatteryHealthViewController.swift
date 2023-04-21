@@ -43,6 +43,7 @@ class BatteryHealthViewController: UIViewController {
 	override func viewDidLoad() {
         super.viewDidLoad()
 		self.navigationItem.hidesBackButton = true
+		self.gradeLabel.text = viewModel?.grade?.title
 		let vehicle = viewModel?.vehicleInfo
 		guard let vinInfo = vehicle?.vin else { return  }
 		guard let vinMake = vehicle?.make else { return  }
@@ -71,7 +72,10 @@ class BatteryHealthViewController: UIViewController {
     }
 	
 	override func viewWillAppear(_ animated: Bool) {
-		self.gaugeView.healthScoreIndex = viewModel?.healthScore
+		if let grades = viewModel?.grade {
+			self.gaugeView.grade = grades
+		}
+		
 		self.gaugeView.layoutSubviews()
 	}
    

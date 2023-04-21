@@ -13,8 +13,9 @@ import UIKit
 
 class UploadAnimationViewModel {
 	public var delegate: UploadAndSubmitDataDelegate?
-
-	init(delegate: UploadAndSubmitDataDelegate?) {
+	public var numberOfCells: Int?
+	init(delegate: UploadAndSubmitDataDelegate?, numberOfCells: Int) {
 		self.delegate = delegate
+		self.numberOfCells = numberOfCells
 	}
 }
