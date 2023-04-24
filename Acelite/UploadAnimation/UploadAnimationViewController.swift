@@ -33,6 +33,7 @@ class UploadAnimationViewController: UIViewController {
 	public var cellVoltageData = [Double]()
 	public var stateOfCharge: Double?
 	public var numberofCells: Int?
+	public var multiCellVoltageData = [[Double]]()
 	public var bmsCapacity: Double?
 	private var odometer: Double?
 	private var transactionId: String?
@@ -40,22 +41,9 @@ class UploadAnimationViewController: UIViewController {
 	var csvDispatchGroup = DispatchGroup()
 	var preSignedData: GetS3PreSingedURL?
 	var textCommands = ""
+	//var gradeTest:VehicleGrade = .C
 	public var sampledCommandsList = [TestCommandExecution]()
 	//========================
-	
-	//public var uploadAndSubmitDelegate: uploadAndSubmitDataDelegate? = nil
-	
-	//	
-	//	init(viewModel: UploadAnimationViewModel) {
-	//	    super.init(nibName: nil, bundle: nil)
-	//		self.viewModel = viewModel
-	//	}
-	
-	//	required init?(coder: NSCoder) {
-	//		//form = Form()
-	//		super.init(coder: coder)
-	//	}
-	
 	
 	
 	func animate() {
@@ -193,60 +181,43 @@ class UploadAnimationViewController: UIViewController {
 	
 	func preparingLogicForCSVFileGeration() {
 		// TODO clear the min validation
-		
-		
-		
 		let cellVoltageList = sampledCommandsList.filter { testCommand in
 			return testCommand.type == .CELL_VOLTAGE
 		}
-		var result = cellVoltageData.chunked(into: cellVoltageList.count)
-		print("result", result)
-		print("before process result count", result.count)
-		
-		guard let resultLastValue = result.last else { return  }
-		
-		if resultLastValue.count < cellVoltageList.count {
-			result.removeLast()
-		} else {
+		var minVlaue: Int = 0
+		if cellVoltageData.count > 0 {
+			var result = cellVoltageData.chunked(into: cellVoltageList.count)
+			guard let resultLastValue = result.last else { return  }
+			if resultLastValue.count < cellVoltageList.count {
+				result.removeLast()
+			} else {
+				print("after process result count", result.count)
+			}
 			print("after process result count", result.count)
+			print("Cell Voltage Array", result)
+			let listCount: [Int] = [result.count,  self.packCurrentData.count, self.packVoltageData.count]
+			 minVlaue = listCount.min() ?? 0
+			print("min value from count array", minVlaue)
+			let finalCellVoltage = result[0...minVlaue - 1]
+			self.createCellVoltageCSV(data: Array(finalCellVoltage))
+		} else {
+			let listCount: [Int] = [multiCellVoltageData.count,  self.packCurrentData.count, self.packVoltageData.count]
+			 minVlaue = listCount.min() ?? 0
+			print("min value from count array", minVlaue)
+			let finalCellVoltage = multiCellVoltageData[0...minVlaue - 1]
+			print("Multi frame count :::::", finalCellVoltage.count)
+			print("Multi frame :::::", multiCellVoltageData.count)
+			self.createCellVoltageCSV(data: Array(finalCellVoltage))
 		}
-		print("after process result count", result.count)
-		
-		print("Cell Voltage Array", result)
-		
-		
-		
-		
-		let listCount: [Int] = [result.count, self.packCurrentData.count, self.packVoltageData.count]
-		let minVlaue = listCount.min() ?? 0
-		print("min value from count array", minVlaue)
-		
-		
-		let finalCellVoltage = result[0...minVlaue - 1]
-		let finalArrayInChunk = result.chunked(into: 96)
-		self.createCellVoltageCSV(data: finalArrayInChunk)
-		
-		
 		//TO-DO handle zero size
-		
 		let finalPackCurrent = packCurrentData[0...minVlaue - 1]
 		self.createPackCurrentCSVFile(data: Array(finalPackCurrent))
-		
 		print("Pack current data", packCurrentData)
-		
 		print("pack voltage data", packVoltageData)
-		
 		let finalPackVoltage = packVoltageData[0...minVlaue - 1]
 		createPackVoltageCSV(data: Array(finalPackVoltage))
-		
 		print("Pack Current Array", packCurrentData)
-		
-		print("Pack voltage Array", packVoltageData)
-		
-		
-		
-		
-		
+		print("Pack voltage Array", packVoltageData)	
 	}
 	
 	//MARK: Create pack current CSV
@@ -271,14 +242,16 @@ class UploadAnimationViewController: UIViewController {
 	}
 	
 	// MARK: Create Cell Voltage CSV
-	func createCellVoltageCSV(data: [[[Double]]]) {
+	func createCellVoltageCSV(data: [[Double]]) {
 		print("cell-Voltage", data)
+		//let fileName = self.creatCSV(data: data)
 		let cell_voltage = CSVFile(fileName: "Cell_Volt_\(self.vehicleInfo?.vin ?? "")")
-		
 		csvDispatchGroup.enter()
-		let cellVoltageFilePath = cell_voltage.creatCSVForCellVoltage(data: data)
+		let cellVoltageFilePath = cell_voltage.createMultiframeCSV(data: data)
 		csvFileUploadingIntoS3Bucket(fileName: cellVoltageFilePath.absoluteString)
 	}
+	
+
 	
 	func csvFileUploadingIntoS3Bucket(fileName: String) {
 		
@@ -437,8 +410,11 @@ class UploadAnimationViewController: UIViewController {
 								let storyBaord = UIStoryboard.init(name: "Main", bundle: nil)
 								let vc = storyBaord.instantiateViewController(withIdentifier: "BatteryHealthViewController") as! BatteryHealthViewController
 								if let vInfo = self.vehicleInfo,let grade = submitBatteryData.batteryScore?.grade,let health = submitBatteryData.batteryScore?.health  {
-									vc.viewModel = BatteryHealthViewModel(vehicleInfo: vInfo, transactionID: self.transactionId ?? "", healthScore: health , grade: VehicleGrade(rawValue: grade) ?? .A)
+									let vm = BatteryHealthViewModel(vehicleInfo: vInfo, transactionID: self.transactionId ?? "", healthScore: health, grade: VehicleGrade(rawValue: VehicleGrade(rawValue: grade)?.title ??  "N/A") ?? .A)
+									vc.viewModel = vm
 								}
+//								let vm = BatteryHealthViewModel(healthScore: "4.8", grade: VehicleGrade(rawValue: self.gradeTest.title) ?? .E)
+//								vc.viewModel = vm
 								self.navigationController?.pushViewController(vc, animated: true)
 								
 							} catch DecodingError.dataCorrupted(let context) {
@@ -519,9 +495,9 @@ class UploadAnimationViewController: UIViewController {
 								print("submit battery data::",submitBatteryData)
 								let storyBaord = UIStoryboard.init(name: "Main", bundle: nil)
 								let vc = storyBaord.instantiateViewController(withIdentifier: "BatteryHealthViewController") as! BatteryHealthViewController
-								if let vInfo = self.vehicleInfo,let grade = submitBatteryData.batteryScore?.grade,let health = submitBatteryData.batteryScore?.health  {
-									vc.viewModel = BatteryHealthViewModel(vehicleInfo: vInfo, transactionID: self.transactionId ?? "", healthScore: health , grade: VehicleGrade(rawValue: grade) ?? .A)
-								}
+//								if let vInfo = self.vehicleInfo,let grade = submitBatteryData.batteryScore?.grade,let health = submitBatteryData.batteryScore?.health  {
+//									vc.viewModel = BatteryHealthViewModel(vehicleInfo: vInfo, transactionID: self.transactionId ?? "", healthScore: health , grade: VehicleGrade(rawValue: grade) ?? .A)
+//								}
 								self.navigationController?.pushViewController(vc, animated: true)
 								
 							} catch DecodingError.dataCorrupted(let context) {

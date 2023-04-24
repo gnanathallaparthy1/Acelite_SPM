@@ -462,6 +462,9 @@ extension BatteryHealthCheckViewController: GetPreSignedUrlDelegate, UploadAndSu
 	   if let numberofCell = viewModel?.numberOfCells {
 		   vc.numberofCells = numberofCell
 	   }
+	   if let multiCellVoltageData = viewModel?.multiCellVoltageData {
+		   vc.multiCellVoltageData = multiCellVoltageData
+	   }
 	   self.navigationController?.pushViewController(vc, animated: true)
 
 	   }

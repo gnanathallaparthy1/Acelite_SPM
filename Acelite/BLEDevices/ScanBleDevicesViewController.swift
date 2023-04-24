@@ -200,6 +200,7 @@ extension ScanBleDevicesViewController: UITableViewDelegate, UITableViewDataSour
 	
 	
 	@IBAction func testbuttonAction(_ sender: UIButton) {
+		Network.shared.bluetoothService?.centralManager.stopScan()
 		let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
 		//let testVC = storyboard.instantiateViewController(withIdentifier: "TerminalViewController") as! TerminalViewController
 		//testVC.bluetoothService(bleServices: self.bleServices)
@@ -215,75 +216,75 @@ extension ScanBleDevicesViewController: UITableViewDelegate, UITableViewDataSour
 	
 }
 
-extension ScanBleDevicesViewController:  CBPeripheralDelegate, CBCentralManagerDelegate {
-	
-	func centralManagerDidUpdateState(_ central: CBCentralManager) {
-		if central.state == .poweredOn {
-			central.scanForPeripherals(withServices: nil, options: nil)
-			print("Scanning...")
-		}
-		
-		
-		if central.state == CBManagerState.poweredOn {
-			print("BLE powered on")
-			
-			// Turned on
-			central.scanForPeripherals(withServices: nil, options: nil)
-			
-		}
-		else {
-			print("Something wrong with BLE")
-			// Not on, but can have different issues
-		}
-	}
-	
-	func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
-		print(peripheral)
-		print(advertisementData)
-		
-		if let pname = peripheral.name {
-			let deviceModel = DeviceModel(id: pname, peripheral: peripheral)
-			self.blePeripheralDevice.append(deviceModel)
-			filterPeripharalNames()
-		}
-	}
-	
-	func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
-		if let peripheral = self.myPeripheral {
-		print("Connected peripheral::::::", peripheral.name ?? "")
-		self.myPeripheral.discoverServices(nil)
-		}
-		
-		if self.myPeripheral.state == .connected {
-			DispatchQueue.main.async {
-				let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
-				let viVC = storyboard.instantiateViewController(withIdentifier: "VehicalInformationViewController") as! VehicalInformationViewController
-				self.navigationController?.pushViewController(viVC, animated: true)
-			}
-		}
-	}
-	
-	func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
-		//print("Disconver services", peripheral.services)
-	}
-	
-	func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
-		//print("characterstics", service.characteristics)
-	}
-	
-	func filterPeripharalNames()  {
-		var alreadyThere = Set<DeviceModel>()
-		let uniquePosts = blePeripheralDevice.compactMap { (post) -> DeviceModel? in
-			guard !alreadyThere.contains(post) else { return nil }
-			alreadyThere.insert(post)
-			return post
-		}
-		self.blePeripheralDevice.removeAll()
-		self.blePeripheralDevice = uniquePosts
-		self.bleTableView.reloadData()
-
-	}
-}
+//extension ScanBleDevicesViewController:  CBPeripheralDelegate, CBCentralManagerDelegate {
+//
+//	func centralManagerDidUpdateState(_ central: CBCentralManager) {
+//		if central.state == .poweredOn {
+//			central.scanForPeripherals(withServices: nil, options: nil)
+//			print("Scanning...")
+//		}
+//
+//
+//		if central.state == CBManagerState.poweredOn {
+//			print("BLE powered on")
+//
+//			// Turned on
+//			central.scanForPeripherals(withServices: nil, options: nil)
+//
+//		}
+//		else {
+//			print("Something wrong with BLE")
+//			// Not on, but can have different issues
+//		}
+//	}
+//
+//	func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
+//		print(peripheral)
+//		print(advertisementData)
+//
+//		if let pname = peripheral.name {
+//			let deviceModel = DeviceModel(id: pname, peripheral: peripheral)
+//			self.blePeripheralDevice.append(deviceModel)
+//			filterPeripharalNames()
+//		}
+//	}
+//
+//	func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
+//		if let peripheral = self.myPeripheral {
+//		print("Connected peripheral::::::", peripheral.name ?? "")
+//		self.myPeripheral.discoverServices(nil)
+//		}
+//
+//		if self.myPeripheral.state == .connected {
+//			DispatchQueue.main.async {
+//				let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
+//				let viVC = storyboard.instantiateViewController(withIdentifier: "VehicalInformationViewController") as! VehicalInformationViewController
+//				self.navigationController?.pushViewController(viVC, animated: true)
+//			}
+//		}
+//	}
+//
+//	func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
+//		//print("Disconver services", peripheral.services)
+//	}
+//
+//	func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
+//		//print("characterstics", service.characteristics)
+//	}
+//
+//	func filterPeripharalNames()  {
+//		var alreadyThere = Set<DeviceModel>()
+//		let uniquePosts = blePeripheralDevice.compactMap { (post) -> DeviceModel? in
+//			guard !alreadyThere.contains(post) else { return nil }
+//			alreadyThere.insert(post)
+//			return post
+//		}
+//		self.blePeripheralDevice.removeAll()
+//		self.blePeripheralDevice = uniquePosts
+//		self.bleTableView.reloadData()
+//
+//	}
+//}
 
 
 struct DeviceModel: Hashable, Identifiable {

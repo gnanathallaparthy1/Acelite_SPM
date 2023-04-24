@@ -44,6 +44,7 @@ class BatteryHealthCheckViewModel {
 	public var packCurrentData = [Double]()
 	public var packTemperatureData = [Double]()
 	public var cellVoltageData = [Double]()
+	public var multiCellVoltageData = [[Double]]()
 	public var stateOfCharge: Double?
 	public var bms: Double?
 	private var odometer: Double?
@@ -864,7 +865,7 @@ class BatteryHealthCheckViewModel {
 			print("Divided in chunk", chunkArray)
 			print(Date(), "Divided in chunks of Array\(chunkArray)", to: &Log.log)
 			let totalCells = testCommand?.response?.numberOfCells
-			var finalValues = [Double]()
+			var finalValuesArray = [Double]()
 			if chunkArray.count == totalCells {
 				for item in chunkArray {
 					print("Each chunk array:", item.joined())
@@ -880,13 +881,14 @@ class BatteryHealthCheckViewModel {
 					let finalValue = multiplierValue + Double(constantValue)
 					print("Calculated Value:", finalValue)
 					print(Date(), "Final Calculated value\(finalValue)", to: &Log.log)
-					finalValues.append(finalValue)
-					cellVoltageData.append(finalValue)
+					finalValuesArray.append(finalValue)
+					
 					let message = (testCommand?.type?.description ?? "") + "calculated value is \(finalValue)"
 					NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "BLEResponse"), object: ["BLEResponse": "\(message)"], userInfo: nil)
 				}
 			}
-			return finalValues
+			multiCellVoltageData.append(finalValuesArray)
+			return finalValuesArray
 		} else {
 			return [0.0]
 		}

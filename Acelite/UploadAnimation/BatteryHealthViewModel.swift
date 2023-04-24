@@ -20,4 +20,8 @@ class BatteryHealthViewModel {
 		self.healthScore = healthScore
 		self.grade = grade
 	}
+//	init(healthScore: String, grade: VehicleGrade) {
+//		self.healthScore = healthScore
+//		self.grade = grade
+//	}
 }

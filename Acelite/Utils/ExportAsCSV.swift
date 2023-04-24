@@ -50,18 +50,18 @@ class CSVFile {
 	
 // MARK: CSV file creating
  
-	func creatCSVForCellVoltage(data: [[[Double]]]) -> URL {
+	func creatCSVForCellVoltage(data: [[Double]]) -> URL {
 		var csvText = ""
 		var newLine = ""
-		for mulArray  in data {
-			for item in mulArray {
+
+			for item in data {
 				for value in item {
 					newLine += "\(value),"
 				}
 				newLine.remove(at: newLine.index(before: newLine.endIndex))
 				newLine += "\n"
 			}
-		}
+		
 		csvText.append(newLine)
 		let fileManager = FileManager.default
 		do {
@@ -74,4 +74,33 @@ class CSVFile {
 			return URL.init(fileURLWithPath: "")
 		}
 	}
+	func createMultiframeCSV(data: [[Double]]) -> URL {
+			var csvText = ""
+			var newLine = ""
+
+			for item in data {
+				for task in item {
+					//TO-DO Survey measurments will add
+					print(task)
+					 newLine += "\(task),"
+				}
+				newLine.remove(at: newLine.index(before: newLine.endIndex))
+				print(newLine)
+				print("\n")
+				newLine += "\n"
+				print(newLine)
+			}
+			csvText.append(newLine)
+
+			let fileManager = FileManager.default
+			do {
+				let path = try fileManager.url(for: .documentDirectory, in: .allDomainsMask, appropriateFor: nil, create: false)
+				let fileURL = path.appendingPathComponent("\(self.fileName ?? "nofilename").csv")
+				try csvText.write(to: fileURL, atomically: true, encoding: .utf8)
+				return fileURL
+			} catch {
+				print("error creating file")
+				return URL.init(fileURLWithPath: "")
+			}
+		}
 }

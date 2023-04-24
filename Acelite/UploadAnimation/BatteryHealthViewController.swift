@@ -20,6 +20,7 @@ class BatteryHealthViewController: UIViewController {
 	
 	@IBOutlet weak var DoneBtn: UIButton!
 	
+	@IBOutlet weak var scoreLabel: UILabel!
 	public var viewModel: BatteryHealthViewModel?
 	
 	@IBAction func DoneButtonPressed(_ sender: Any) {
@@ -44,7 +45,10 @@ class BatteryHealthViewController: UIViewController {
         super.viewDidLoad()
 		self.navigationItem.hidesBackButton = true
 		self.gradeLabel.text = viewModel?.grade?.title
+		self.scoreLabel.text = viewModel?.healthScore
 		let vehicle = viewModel?.vehicleInfo
+		self.modelNameLabel.text = vehicle?.modelName
+		self.vinLabel.text = vehicle?.vin
 		guard let vinInfo = vehicle?.vin else { return  }
 		guard let vinMake = vehicle?.make else { return  }
 		guard let vinYear = vehicle?.year else {return}
@@ -53,7 +57,6 @@ class BatteryHealthViewController: UIViewController {
 		guard let bodyStyle = vehicle?.bodyStyle else {return}
 		guard let workOrder = vehicle?.trimName else {return}
 		guard let trasctionID = viewModel?.transactionId else {return}
-		NSLog("Third Log........")
 		//timestamp
 		 dictionary = [
 			"Title": title,
