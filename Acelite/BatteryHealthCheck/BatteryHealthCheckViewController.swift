@@ -132,7 +132,6 @@ class BatteryHealthCheckViewController: UIViewController {
 		self.navigationItem.hidesBackButton = true
 		self.viewModel?.preSignedDelegate = self
 		self.viewModel?.uploadAndSubmitDelegate = self
-		self.notificationCenter.addObserver(self, selector: #selector(self.commandResponseSuccess(_:)), name: NSNotification.Name.init(rawValue: "BLEResponse"), object: nil)
 		setUpCircularProgressBarView()
 		self.updateBodyContentView(batteryHealthInstruction: .startTheCar)
 		setDefaultRemoteConfigDefaults()
@@ -142,19 +141,6 @@ class BatteryHealthCheckViewController: UIViewController {
 	
 	@objc func addTapped() {
 		self.navigationController?.popViewController(animated: true)
-	}
-	
-	@objc func commandResponseSuccess(_ notification: Notification) {
-		
-//		let notificationobject = notification.object as? [String: Any] ?? [:]
-//		let commandResponse = notificationobject["BLEResponse"]
-//		print("command Response::::::", commandResponse ?? "")
-//		guard let commandResponse: String = notificationobject["BLEResponse"] as? String, commandResponse.count > 0 else {
-//			return
-//		}
-//		self.commandResponseString += commandResponse
-//		self.commandResponseString += "\n"
-//		updateTextView()
 	}
 	
 	func updateView() {
@@ -290,7 +276,6 @@ class BatteryHealthCheckViewController: UIViewController {
 				print("Got an error fetching remote values: \(String(describing: error))")
 				return
 			}
-			print("Hooray! Retreived Values")
 			RemoteConfig.remoteConfig().fetchAndActivate()
 			self.updateViewWithRCValues()
 		}

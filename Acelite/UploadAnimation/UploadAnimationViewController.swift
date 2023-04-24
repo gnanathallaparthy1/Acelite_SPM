@@ -100,27 +100,8 @@ class UploadAnimationViewController: UIViewController {
 		
 	}
 	@objc func navigateToHealthS() {
-		print(":::: Upload Calls")
 		Network.shared.bluetoothService?.disconnectDevice(peripheral: Network.shared.myPeripheral)
 		self.getTransectionId()
-		//		 let dialogMessage = UIAlertController(title: "TURN OFF THE CAR", message: "Turn off the car and disconnect the OBD-II cable", preferredStyle: .alert)
-		
-		
-		//		// Create OK button with action handler
-		//		 let ok = UIAlertAction(title: "Done", style: .default, handler: { [self] (action) -> Void in
-		//
-		//
-		//
-		//
-		//			 //subit
-		//
-		//
-		//
-		//		 })
-		
-		// dialogMessage.addAction(ok)
-		//		// Present Alert to
-		//self.present(dialogMessage, animated: true, completion: nil)
 	}
 	
 	func getTransectionId()  {
@@ -134,27 +115,21 @@ class UploadAnimationViewController: UIViewController {
 			case .success(let graphQLResult):
 				guard let _ = try? result.get().data else { return }
 				if graphQLResult.data != nil {
-					//self.preSignedDelegate?.getTransactionIdInfo(viewModel: self)
 					
 					let getS3PreSingedData = graphQLResult.data?.resultMap["getS3PreSingedURL"]?.jsonValue//getS3PreSingedUrl
 					var preSignedData : Data?
 					do {
 						preSignedData = try JSONSerialization.data(withJSONObject: getS3PreSingedData as Any)
 					} catch {
-						//print("Unexpected error: \(error).")
+						print("Unexpected error: \(error).")
 					}
 					
 					do {
 						let decoder = JSONDecoder()
 						let preSignedResponse = try decoder.decode(GetS3PreSingedURL.self, from: preSignedData!)
-						print("QA:::")
 						self.transactionId = preSignedResponse.transactionID
-						//print("transaction id::", preSignedResponse.transactionID)
 						self.preSignedData = preSignedResponse
-						//						self.generateTxtCommandLogs(data: "Transection id: \(preSignedResponse.transactionID)")
-						//self.vehicleInformation = messages
-						self.preparingLogicForCSVFileGeration()			//self.delegate?.updateVehicleInfo(viewModel: self)
-						//
+						self.preparingLogicForCSVFileGeration()
 					} catch DecodingError.dataCorrupted(let context) {
 						print(context)
 					} catch DecodingError.keyNotFound(let key, let context) {
@@ -180,7 +155,6 @@ class UploadAnimationViewController: UIViewController {
 	}
 	
 	func preparingLogicForCSVFileGeration() {
-		// TODO clear the min validation
 		let cellVoltageList = sampledCommandsList.filter { testCommand in
 			return testCommand.type == .CELL_VOLTAGE
 		}
@@ -193,8 +167,6 @@ class UploadAnimationViewController: UIViewController {
 			} else {
 				print("after process result count", result.count)
 			}
-			print("after process result count", result.count)
-			print("Cell Voltage Array", result)
 			let listCount: [Int] = [result.count,  self.packCurrentData.count, self.packVoltageData.count]
 			 minVlaue = listCount.min() ?? 0
 			print("min value from count array", minVlaue)
@@ -203,21 +175,14 @@ class UploadAnimationViewController: UIViewController {
 		} else {
 			let listCount: [Int] = [multiCellVoltageData.count,  self.packCurrentData.count, self.packVoltageData.count]
 			 minVlaue = listCount.min() ?? 0
-			print("min value from count array", minVlaue)
 			let finalCellVoltage = multiCellVoltageData[0...minVlaue - 1]
-			print("Multi frame count :::::", finalCellVoltage.count)
-			print("Multi frame :::::", multiCellVoltageData.count)
 			self.createCellVoltageCSV(data: Array(finalCellVoltage))
 		}
 		//TO-DO handle zero size
 		let finalPackCurrent = packCurrentData[0...minVlaue - 1]
 		self.createPackCurrentCSVFile(data: Array(finalPackCurrent))
-		print("Pack current data", packCurrentData)
-		print("pack voltage data", packVoltageData)
 		let finalPackVoltage = packVoltageData[0...minVlaue - 1]
 		createPackVoltageCSV(data: Array(finalPackVoltage))
-		print("Pack Current Array", packCurrentData)
-		print("Pack voltage Array", packVoltageData)	
 	}
 	
 	//MARK: Create pack current CSV
@@ -338,11 +303,6 @@ class UploadAnimationViewController: UIViewController {
 			// generated file stored in your phone file folder with app name.
 			print("file path:::", file)
 			return file.absoluteString
-			
-			//		var filesSharing = [Any]()
-			//		filesSharing.append(file)
-			//		let activityViewController = UIActivityViewController(activityItem: filesSharing, applicationActivities: nil)
-			
 		} else {
 			// alert logs not generated
 			print("logs not generated")
@@ -396,25 +356,19 @@ class UploadAnimationViewController: UIViewController {
 					if submitData == nil {
 						return
 					} else {
-						print("Submitted data::::" ,submitData)
 						let jsonObject = submitData.jsonValue
-						print("submited battery data", jsonObject)
-						//getS3PreSingedUrl
-						//var preSignedData : Data?
 						do {
 							let  preSignedData = try JSONSerialization.data(withJSONObject: jsonObject)
 							do {
 								let decoder = JSONDecoder()
 								let submitBatteryData = try decoder.decode(SubmitBatteryDataFilesWithStateOfCharge.self, from: preSignedData)
-								print("submit battery data::",submitBatteryData)
+								//print("submit battery data::",submitBatteryData)
 								let storyBaord = UIStoryboard.init(name: "Main", bundle: nil)
 								let vc = storyBaord.instantiateViewController(withIdentifier: "BatteryHealthViewController") as! BatteryHealthViewController
 								if let vInfo = self.vehicleInfo,let grade = submitBatteryData.batteryScore?.grade,let health = submitBatteryData.batteryScore?.health  {
 									let vm = BatteryHealthViewModel(vehicleInfo: vInfo, transactionID: self.transactionId ?? "", healthScore: health, grade: VehicleGrade(rawValue: VehicleGrade(rawValue: grade)?.title ??  "N/A") ?? .A)
 									vc.viewModel = vm
 								}
-//								let vm = BatteryHealthViewModel(healthScore: "4.8", grade: VehicleGrade(rawValue: self.gradeTest.title) ?? .E)
-//								vc.viewModel = vm
 								self.navigationController?.pushViewController(vc, animated: true)
 								
 							} catch DecodingError.dataCorrupted(let context) {
@@ -439,8 +393,6 @@ class UploadAnimationViewController: UIViewController {
 	}
 	
 	private func submitBatteryDataFileWithBMSGraphRequest() {
-		//SubmitBatteryDataFileWithSOC
-		
 		guard let vinInfo = vehicleInfo?.vin else { return  }
 		guard let vinMake = vehicleInfo?.make else { return  }
 		guard let vinYear = vehicleInfo?.year else {return}

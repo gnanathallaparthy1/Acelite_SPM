@@ -445,14 +445,12 @@ class BatteryHealthCheckViewModel {
 		case .PACK_VOLTAGE:
 			if let flowControl = testCommand.challenge?.flowControl {
 				self.runFlowControlHeaderAndData(flowControl: flowControl, testCommand: testCommand) { command in
-					print("Flow-control-pack_voltage completion")
 					if let header = testCommand.challenge?.header {
 						guard let pid = testCommand.challenge?.pid else { return }
 						let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
 						DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
 							Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
 								let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
-								print("Pack Voltage pid", odometerPIDCommand)
 								Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data in
 									testCommand.deviceReponse = data
 									print(Date(), "Pack Voltage PID response\(data)", to: &Log.log)
@@ -482,15 +480,12 @@ class BatteryHealthCheckViewModel {
 		case .PACK_CURRENT:
 			if let flowControl = testCommand.challenge?.flowControl {
 				self.runFlowControlHeaderAndData(flowControl: flowControl, testCommand: testCommand) { command in
-					print("Flow-control-pack_current completion")
 					if let header = testCommand.challenge?.header {
 						guard let pid = testCommand.challenge?.pid else { return }
 						let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
-						print("Pack current header", ATSHOdometer_Command)
 						DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
 							Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
 								let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
-								print("Pack current pid", odometerPIDCommand)
 								Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data in
 									testCommand.deviceReponse = data
 									print(Date(), "Pack Current PID response\(data)", to: &Log.log)
@@ -504,11 +499,9 @@ class BatteryHealthCheckViewModel {
 				if let header = testCommand.challenge?.header {
 					guard let pid = testCommand.challenge?.pid else { return }
 					let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
-					print("Pack current header", ATSHOdometer_Command)
 					DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
 						Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
 							let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
-							print("Pack current pid", odometerPIDCommand)
 							Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data in
 								testCommand.deviceReponse = data
 								print(Date(), "Pack Current PID response\(data)", to: &Log.log)
@@ -522,15 +515,12 @@ class BatteryHealthCheckViewModel {
 		case .CELL_VOLTAGE:
 			if let flowControl = testCommand.challenge?.flowControl {
 				self.runFlowControlHeaderAndData(flowControl: flowControl, testCommand: testCommand) { command in
-					print("Flow-control-cell_voltage completion")
 					if let header = testCommand.challenge?.header {
 						guard let pid = testCommand.challenge?.pid else { return }
 						let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
-						print("Cell voltage header",ATSHOdometer_Command )
 						DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
 							Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
 								let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
-								print("Cell voltage pid", odometerPIDCommand)
 								Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data in
 									testCommand.deviceReponse = data
 									print(Date(), "Cell Voltage PID response\(data)", to: &Log.log)
@@ -544,11 +534,9 @@ class BatteryHealthCheckViewModel {
 				if let header = testCommand.challenge?.header {
 					guard let pid = testCommand.challenge?.pid else { return }
 					let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
-					print("Cell voltage header",ATSHOdometer_Command )
 					DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
 						Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
 							let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
-							print("Cell voltage pid", odometerPIDCommand)
 							Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data in
 								testCommand.deviceReponse = data
 								print(Date(), "Cell Voltage PID response\(data)", to: &Log.log)
@@ -607,11 +595,8 @@ class BatteryHealthCheckViewModel {
 						self.numberOfLogicsParsed += 1
 						self.commandToRunInLoopIndex  = 0
 					} else {
-						//if self.isLoopingTimeInProgress == true {
 						self.commandToRunInLoopIndex += 1
-						//}
 					}
-					//self.runLoopCommandIndex = self.commandToRunInLoopIndex
 					self.runCommandThatNeedToRunInLoop()
 				})
 			}
@@ -641,114 +626,61 @@ class BatteryHealthCheckViewModel {
 			if (haxValueList.count - 1) < endByte {
 				return
 			}
-			print(haxValueList)
 			print(Date(), "Hex Value\(haxValueList)", to: &Log.log)
-//            let haxValue = FlowfindFinalHexValue(haxVal: haxValueList, startByete: startByte, endByte: endByte)
-//            print("Final Byte Array:", haxValue)
-//            let chunkArray = haxValue.chunked(into: testCommand?.response?.bytesPerCell ?? 0)
-//            print("Divided in chunk", chunkArray)
-			
+
 			switch testCommand?.type {
 			case .ODOMETER:
-				
-//                if let _ = testCommand?.challenge?.flowControl {
-//                    let odometerMulVal = self.handlingMultiframeString(testCommand: testCommand)
-//                    print("Odometer value",odometerMulVal)
-//                }else {
-//                    print(":::::::Single Frame::::::::")
-//                    if testCommand?.deviceReponse != nil {
-//                        let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
 						if haxValueList.count > 0 {
 							let value = calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
 							self.odometer = value
 							print(Date(), "Final Odmeter \(value)", to: &Log.log)
 						}
-//                    }
-//                }
+
 				break
 			case .STATEOFCHARGE:
-//                if let _ = testCommand?.challenge?.flowControl {
-//
-//                }else {
-//                    if testCommand?.deviceReponse != nil {
-//                        let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
+
 						if haxValueList.count > 0 {
 							let value = calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
 							self.stateOfCharge = value
 							print(Date(), "Final State of Charge \(value)", to: &Log.log)
 						}
-//                    }
-//                }
 				break
 			case .ENERGY_TO_EMPTY:
-//                if let _ = testCommand?.challenge?.flowControl {
-//
-//                }else {
-//                    if testCommand?.deviceReponse != nil {
-//                        let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
 						if haxValueList.count > 0 {
 							let value = calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
 							print(Date(), "Final Energy to empty \(value)", to: &Log.log)
 						}
-//                    }
-//                }
 				break
 			case .BMS_CAPACITY:
-//                if let _ = testCommand?.challenge?.flowControl {
-//
-//                }else {
-//                    if testCommand?.deviceReponse != nil {
-//                        let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
 						if haxValueList.count > 0 {
 							let value = calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
 							self.bms = value
 							print(Date(), "Final BMS value \(value)", to: &Log.log)
 						}
-//                    }
-//                }
 				break
 			case .PACK_TEMPERATURE:
-//                if let _ = testCommand?.challenge?.flowControl {
-//
-//                }else {
-//                    if testCommand?.deviceReponse != nil {
-//                        let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
 						if haxValueList.count > 0 {
 							let value = calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
 							packTemperatureData.append(value)
 							print(Date(), "Final Pack Temperature Value \(value)", to: &Log.log)
 						}
-//                    }
-//                }
 				break
 			case .PACK_VOLTAGE:
-//                if let _ = testCommand?.challenge?.flowControl {
-//                }else {
-//                    if testCommand?.deviceReponse != nil {
-//                        let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
 						if haxValueList.count > 0 {
 							let value = calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
 							packVoltageData.append(value)
 							print(Date(), "Final Pack Voltage Value \(value)", to: &Log.log)
 						}
-//                    }
-//                }
 				break
 			case .PACK_CURRENT:
-//				if let _ = testCommand?.challenge?.flowControl {
-//				} else {
 					if testCommand?.deviceReponse != nil {
 						guard let packCurrent = testCommand?.deviceReponse, packCurrent.count > 0   else { return  }
 						let finalStringBytes = typeCastingByteToString(testCommand: testCommand)
-						print("pack current final string", finalStringBytes)
 						let startByte = testCommand?.response?.startByte ?? 0
 						let endByte = testCommand?.response?.endByte ?? 0
 						let numberOfBytesDifference = endByte - startByte
-						print("pack current bytes diff", numberOfBytesDifference)
 						let haxValue = findFinalHexValue(haxVal: finalStringBytes, startByete: testCommand?.response?.startByte ?? 0, endByte: testCommand?.response?.endByte ?? 0)
-						print("pack Current hax value", haxValue)
 						let decimalValue = fromHaxToDecimal(haxValue: haxValue)
-						print("pack Current Decimal Value ", decimalValue)
 						var comparisonValue = ""
 						if (numberOfBytesDifference == 0) {
 							comparisonValue = Constants.SEVEN_F
@@ -766,7 +698,6 @@ class BatteryHealthCheckViewModel {
 							if (numberOfBytesDifference == 0) {
 								valueFromWhichToSubtract = Constants.FF
 							} else {
-								//valueFromWhichToSubtract = Constants.FF.padding(toLength: <#T##Int#>, withPad: <#T##StringProtocol#>, startingAt: <#T##Int#>)
 								valueFromWhichToSubtract = Constants.FF.padding(toLength: ((numberOfBytesDifference + 1) * 2), withPad: "F", startingAt: 0)
 							}
 							packCurrentValue = Double((fromHaxToDecimal(haxValue: valueFromWhichToSubtract) - decimalValue)) * multiplier
@@ -774,67 +705,34 @@ class BatteryHealthCheckViewModel {
 						
 						let constantValue = testCommand?.response?.constant ?? 0
 						let finalValue = packCurrentValue + Double(constantValue)
-						print("finalValue-pack current", finalValue)
 						print(Date(), "Final Pack Current Value \(finalValue)", to: &Log.log)
 						packCurrentData.append(finalValue)
-//					}
 				}
 				break
 			case .CELL_VOLTAGE:
-				
                 if let _ = testCommand?.challenge?.flowControl {
-                    print("::::::::::Multi frame::::::")
                     let _ = self.handlingMultiframeString(testCommand: testCommand)
 
                 } else {
-//                    print("::::::::Single Frame::::::::::")
-//                    if testCommand?.deviceReponse != nil {
-//                        let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
 						if haxValueList.count > 0 {
 							let value = calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
-							print("Final value of cell voltage data", value)
 							print(Date(), "Final Cell Voltage Value \(value)", to: &Log.log)
 							cellVoltageData.append(value)
 						}
                     }
-//                }
 				break
 			case .BATTERY_AGE:
-//                if let _ = testCommand?.challenge?.flowControl {
-//
-//                }else {
-//                    if testCommand?.deviceReponse != nil {
-//                        let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
 						if haxValueList.count > 0 {
 							let value = calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
 							print(Date(), "Final Battery Age Value \(value)", to: &Log.log)
 						}
-//                    }
-//                }
 				break
 			case .DIAGNOSTIC_SESSION:
-//                if let _ = testCommand?.challenge?.flowControl {
-//
-//                }else {
-//                    if testCommand?.deviceReponse != nil {
-//                        let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
-//						if haxValueList.count > 0 {
-//							let _ = calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
-//						}
-//                    }
-//                }
 				break
 			case .MISC_COMMANDS:
-//                if let _ = testCommand?.challenge?.flowControl {
-//
-//                }else {
-//                    if testCommand?.deviceReponse != nil {
-//                        let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
 						if haxValueList.count > 0 {
 							let _ = calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
 						}
-//                    }
-//                }
 				break
 			case .none:
 				break
@@ -852,34 +750,26 @@ class BatteryHealthCheckViewModel {
 		
 		if let deviceByteArray = testCommand?.deviceReponse, deviceByteArray.count > 0 {
 			let startByte = testCommand?.response?.startByte ?? 0
-			print("Start Byte", startByte)
 			print(Date(), "Start Byte \(startByte)", to: &Log.log)
 			let endByte = testCommand?.response?.endByte ?? 0
-			print("end byte", endByte)
 			print(Date(), "End Byte \(endByte)", to: &Log.log)
 			let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
 			let haxValue = FlowfindFinalHexValue(haxVal: haxValueList, startByete: startByte, endByte: endByte)
-			print("Final Byte Array:", haxValue)
 			print(Date(), "Final Byte Array\(endByte)", to: &Log.log)
 			let chunkArray = haxValue.chunked(into: testCommand?.response?.bytesPerCell ?? 0)
-			print("Divided in chunk", chunkArray)
 			print(Date(), "Divided in chunks of Array\(chunkArray)", to: &Log.log)
 			let totalCells = testCommand?.response?.numberOfCells
 			var finalValuesArray = [Double]()
 			if chunkArray.count == totalCells {
 				for item in chunkArray {
-					print("Each chunk array:", item.joined())
 					print(Date(), "Each chunk array:\(chunkArray)", to: &Log.log)
 					let finalByte = item.joined()
 					let decimalValue = fromHaxToDecimal(haxValue: finalByte)
-					print("decimal Value", decimalValue)
 					print(Date(), "Decimal Value\(decimalValue)", to: &Log.log)
 					let multiplierValue = Double(decimalValue) * (Double(testCommand?.response?.multiplier ?? 1.0))
-					print("after multiplier : ", multiplierValue)
 					print(Date(), "After Multiplier\(multiplierValue)", to: &Log.log)
 					let constantValue = testCommand?.response?.constant ?? 0
 					let finalValue = multiplierValue + Double(constantValue)
-					print("Calculated Value:", finalValue)
 					print(Date(), "Final Calculated value\(finalValue)", to: &Log.log)
 					finalValuesArray.append(finalValue)
 					
@@ -908,16 +798,12 @@ class BatteryHealthCheckViewModel {
 	private func calculateValueFromStartEndByte(command: TestCommandExecution?, hexValuesList: [String]) -> Double {
 		
 		let haxValue = findFinalHexValue(haxVal: hexValuesList, startByete: command?.response?.startByte ?? 0, endByte: command?.response?.endByte ?? 0)
-		print("haxValue:::", haxValue)
 		print(Date(), "String After Modification\(haxValue)", to: &Log.log)
 		let decimalValue = fromHaxToDecimal(haxValue: haxValue)
-		print("decimalValue:::",decimalValue)
 		print(Date(), "Decimal Value\(decimalValue)", to: &Log.log)
 		let multiplierValue = Double(decimalValue) * (Double(command?.response?.multiplier ?? 1.0))
-		print("multiplierValue:::",multiplierValue)
 		print(Date(), "Multiplier Value\(multiplierValue)", to: &Log.log)
 		let constantValue = command?.response?.constant ?? 0
-		print("constantValue:::", constantValue)
 		let finalValue = multiplierValue + Double(constantValue)
 		return finalValue
 		
