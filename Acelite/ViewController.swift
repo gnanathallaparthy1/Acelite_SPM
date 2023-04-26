@@ -9,8 +9,9 @@ import UIKit
 
 enum ScreenState {
 case ConnectOBDdevice
-case StartCar
-case VehicalInfo
+//case StartCar
+//	//scan
+//case VehicalInfo
 }
 
 
@@ -74,6 +75,15 @@ class ViewController: UIViewController {
 	
 	
 	override func viewWillAppear(_ animated: Bool) {
+		imageTitleLabel.text = "Connect The OBD-II Device"
+		cancelButton.backgroundColor = .lightGray
+		cancelButton.isUserInteractionEnabled = false
+		cancelButton.isHidden = true
+		//backButton.isHidden = true
+//			backButton.backgroundColor = .lightGray
+//			backButton.isUserInteractionEnabled = false
+		imageView.image = UIImage.init(named: "1-5")
+		screenCountLabel.text = "1/5"
 		//self.navigationItem.setHidesBackButton(true, animated: true)
 			//setNavigationBar(bgColor: UIColor(red: 0.00, green: 0.76, blue: 0.84, alpha: 1.00), TitleColor: UIColor.white, title: "" ,imageLeft: UIImage(named: "menu")!,imageRight: UIImage(named: "menu")!, leftbarImageisHide: false, rightbarImageisHide: true, popView: false)
 		}
@@ -81,7 +91,7 @@ class ViewController: UIViewController {
 	private func uiViewUpdate()  {
 		nextButton.backgroundColor = UIColor.appPrimaryColor()
 		if screenState == .ConnectOBDdevice {
-			imageTitleLabel.text = "CONNECT THE OBD-II DEVICE"
+			imageTitleLabel.text = "Connect The OBD-II Device"
 			cancelButton.backgroundColor = .lightGray
 			cancelButton.isUserInteractionEnabled = false
 			cancelButton.isHidden = true
@@ -90,17 +100,6 @@ class ViewController: UIViewController {
 //			backButton.isUserInteractionEnabled = false
 			imageView.image = UIImage.init(named: "1-5")
 			screenCountLabel.text = "1/5"
-		} else if screenState == .StartCar  {
-			imageTitleLabel.text = "START THE CAR"
-			cancelButton.backgroundColor = .lightGray
-			cancelButton.isUserInteractionEnabled = true
-			//backButton.isHidden = true
-			cancelButton.isHidden = false
-			//backButton.backgroundColor = .lightGray
-			//backButton.isUserInteractionEnabled = true
-			imageView.image = UIImage.init(named: "Start_The_Car")
-			screenCountLabel.text = "2/5"
-			
 		} else {
 			
 			let storyBoard = UIStoryboard.init(name: "Main", bundle: nil)
@@ -122,17 +121,39 @@ class ViewController: UIViewController {
 	}
 	
 	@IBAction func nextButtonAction(_ sender: UIButton) {
-		if screenState == .ConnectOBDdevice {
-			screenState = .StartCar
-		} else if screenState == .StartCar {
-			screenState = .VehicalInfo
-		} else {
-			screenState = .ConnectOBDdevice
-		}
-		uiViewUpdate()
+		
+		
+		/*
+		 let storyboard = UIStoryboard.init(name: "BatteryHealthCheck", bundle: nil)
+				 let vc = storyboard.instantiateViewController(withIdentifier: "ErrorAlertDailogViewController") as! ErrorAlertDailogViewController
+				 vc.modalPresentationStyle = .fullScreen
+		 vc.popoverPresentationController?.delegate = self
+		 self.navigationController?.present(vc, animated: true)
+		 */
+	
+				//self.present(vc, animated: true)
+		
+//		if screenState == .ConnectOBDdevice {
+//			screenState = .StartCar
+//		} else if screenState == .StartCar {
+//			screenState = .VehicalInfo
+//		} else {
+//			screenState = .ConnectOBDdevice
+//		}
+//		uiViewUpdate()
+		let storyBoard = UIStoryboard.init(name: "Main", bundle: nil)
+		let vehicalVC = storyBoard.instantiateViewController(withIdentifier: "ScanBleDevicesViewController") as! ScanBleDevicesViewController
+		self.navigationController?.pushViewController(vehicalVC, animated: false)
 	}
 
 }
+
+extension ViewController: UIPopoverPresentationControllerDelegate {
+	public func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
+		return .none
+	}
+}
+
 extension UINavigationController {
 
 	func setStatusBar(backgroundColor: UIColor) {

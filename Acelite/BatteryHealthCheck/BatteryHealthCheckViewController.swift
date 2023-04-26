@@ -423,6 +423,7 @@ extension BatteryHealthCheckViewController: GetPreSignedUrlDelegate, UploadAndSu
    func navigateToAnimationVC() {
 	   timer?.invalidate()
 	   timer = nil
+	   
 	   //let vm = UploadAnimationViewModel(delegate: self.viewModel?.uploadAndSubmitDelegate)
 	   let vc = UploadAnimationViewController()
 	   vc.vehicleInfo = viewModel?.vehicleInfo
@@ -450,7 +451,15 @@ extension BatteryHealthCheckViewController: GetPreSignedUrlDelegate, UploadAndSu
 	   if let multiCellVoltageData = viewModel?.multiCellVoltageData {
 		   vc.multiCellVoltageData = multiCellVoltageData
 	   }
-	   self.navigationController?.pushViewController(vc, animated: true)
+	   let dialogMessage = UIAlertController(title: "TURN OFF THE CAR", message: "Turn off the car and disconnect the OBD-II cable.", preferredStyle: .alert)
+	   // Create OK button with action handler
+	   let ok = UIAlertAction(title: "Done", style: .default, handler: { (action) -> Void in
+		   self.navigationController?.pushViewController(vc, animated: true)
+	   })
+	   //Add OK button to a dialog message
+	   dialogMessage.addAction(ok)
+	   // Present Alert to
+	   self.present(dialogMessage, animated: true, completion: nil)
 
 	   }
    

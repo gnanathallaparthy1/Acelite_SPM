@@ -120,6 +120,7 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 	}
 	
 	func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
+		print("peripheral data", central)
 		if let pname =  peripheral.name {
 			if pname.contains("cox") || pname.contains("CAM") {
 				//, pname ==  "CAM101" || pname ==  "CAM144" {
@@ -132,7 +133,6 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 				self.blePeripheralDevice.append(deviceModel)
 				filterPeripharalNames()
 			}
-			print("scanned device name:::", pname)
 		} else {
 		
 		}
@@ -172,9 +172,11 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 	func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
 		if let value = characteristic.value {
 			print("value::::", value)
+			print(Date(), "Value\(value)", to: &Log.log)
 			var byteArray: [UInt8] = Array(value)
 			let parseData: String = String.init(data: value, encoding: .utf8) ?? ""
 			print("PARSE DATA",parseData)
+			print(Date(), "Parse Data\(parseData)", to: &Log.log)
 			if  parseData.contains(":") {
 				let removeSpaces = parseData.trimmingCharacters(in: .whitespacesAndNewlines)
 				let splitString = removeSpaces.components(separatedBy: "\r")
@@ -182,35 +184,41 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 					let newitem = item.trimmingCharacters(in: .whitespacesAndNewlines)
 					let sliptWithColen = newitem.components(separatedBy: ":")
 					print("sliptWithColen", sliptWithColen)
+					print(Date(), "Data Split With Colon\(sliptWithColen)", to: &Log.log)
 					if sliptWithColen.count == 2 {
 						print("adding space between two chars", sliptWithColen[1])
 						Network.shared.arrayOfBytesData.append(sliptWithColen[1])
 						print("total string", Network.shared.arrayOfBytesData)
+						print(Date(), "Total String\(Network.shared.arrayOfBytesData)", to: &Log.log)
 						
 					} else {
+						
 						print("::::::::::::", newitem)
+						print(Date(), "Single Frame", to: &Log.log)
 					}
 				}
 			
 			} else {
 				let removeSpaces = parseData.trimmingCharacters(in: .whitespacesAndNewlines)
 				Network.shared.arrayOfBytesData.append(removeSpaces)
+				
 			}
 			if let stringData = String.init(data: value, encoding: .utf8) {
 				if  stringData.contains(Constants.CARET) {
+					print(Date(), "Caret)", to: &Log.log)
 					self.completionHandler?(Network.shared.arrayOfBytesData)
 					Network.shared.arrayOfBytesData.removeAll()
 				
-					Network.shared.byteDataArray.removeAll()
 				} else if stringData.contains(Constants.QUESTION_MARK) || stringData.contains(Constants.NODATA) || stringData.contains(Constants.NO_DATA) || stringData.contains(Constants.ERROR)   {
+					print(Date(), "Write Data Error)", to: &Log.log)
 					print("Data byte array finished", parseData)
 					
 				} else if stringData.contains(Constants.OK) {
+					print(Date(), "OK)", to: &Log.log)
 					self.completionHandler?(Network.shared.arrayOfBytesData)
 					Network.shared.arrayOfBytesData.removeAll()
-					Network.shared.byteDataArray.removeAll()
 				} else {
-					
+					print(Date(), "Something Else)", to: &Log.log)
 				}
 			}
 				

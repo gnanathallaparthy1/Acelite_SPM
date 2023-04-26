@@ -602,6 +602,8 @@ class BatteryHealthCheckViewModel {
 			}
 		} else {
 			if loopCount == -1 {
+				
+			// ALert to turn off car
 				self.preSignedDelegate?.navigateToAnimationVC()
 				DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
 					self.uploadAndSubmitDelegate?.navigateToHealthScoreVC()
@@ -755,14 +757,14 @@ class BatteryHealthCheckViewModel {
 			print(Date(), "End Byte \(endByte)", to: &Log.log)
 			let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
 			let haxValue = FlowfindFinalHexValue(haxVal: haxValueList, startByete: startByte, endByte: endByte)
-			print(Date(), "Final Byte Array\(endByte)", to: &Log.log)
+			//print(Date(), "Final Byte Array\(endByte)", to: &Log.log)
 			let chunkArray = haxValue.chunked(into: testCommand?.response?.bytesPerCell ?? 0)
-			print(Date(), "Divided in chunks of Array\(chunkArray)", to: &Log.log)
+			//print(Date(), "Divided in chunks of Array\(chunkArray)", to: &Log.log)
 			let totalCells = testCommand?.response?.numberOfCells
 			var finalValuesArray = [Double]()
 			if chunkArray.count == totalCells {
 				for item in chunkArray {
-					print(Date(), "Each chunk array:\(chunkArray)", to: &Log.log)
+					//print(Date(), "Each chunk array:\(chunkArray)", to: &Log.log)
 					let finalByte = item.joined()
 					let decimalValue = fromHaxToDecimal(haxValue: finalByte)
 					print(Date(), "Decimal Value\(decimalValue)", to: &Log.log)

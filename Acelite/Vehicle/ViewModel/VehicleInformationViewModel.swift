@@ -22,8 +22,9 @@ class VehicleInformationViewModel {
 	//var getBatteryinstructions: [GetBatteryTestInstruction]?
 	//var callback: ((Bool)->())?
 	//var dataManger: DataManager?
-	init(vinNumber: String?) {
+	init(vinNumber: String?, vehicleInformation: Vehicle) {
 		self.vinNumber = vinNumber
+		self.vehicleInformation = vehicleInformation
 	}
 	 func fetchVehicalInformation(vim: String)  {
 		Network.shared.apollo.fetch(query: GetBatteryTestInstructionsQuery(vin: vim)) { result in

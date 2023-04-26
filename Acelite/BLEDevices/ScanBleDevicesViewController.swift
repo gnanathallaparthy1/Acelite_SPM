@@ -70,7 +70,7 @@ class ScanBleDevicesViewController: UIViewController {
 				
 				//Add OK button to a dialog message
 				dialogMessage.addAction(ok)
-				self.scanButton.setTitle("Start Scanning", for: .normal)
+				self.scanButton.setTitle("START SCANNING FOR OBD II DEVICES", for: .normal)
 				// Present Alert to
 				self.present(dialogMessage, animated: true, completion: nil)
 				//}
@@ -89,7 +89,7 @@ class ScanBleDevicesViewController: UIViewController {
 		if self.scanButton.titleLabel?.text == "Stop Scanning" {
 			if let cbManager = self.bleServices.centralManager {
 				cbManager.stopScan()
-				self.scanButton.setTitle("Start Scanning", for: .normal)
+				self.scanButton.setTitle("START SCANNING FOR OBD II DEVICES", for: .normal)
 				return
 			}
 		}
@@ -116,10 +116,10 @@ class ScanBleDevicesViewController: UIViewController {
 //			print("Not Connected::::::::::::::::")
 //		}
 //		centralManager = CBCentralManager(delegate: self, queue: nil)
-		if self.scanButton.titleLabel?.text == "Start Scanning" {
-		self.scanButton.setTitle("Stop Scanning", for: .normal)
+		if self.scanButton.titleLabel?.text == "START SCANNING FOR OBD II DEVICES" {
+		self.scanButton.setTitle("STOP SCANNING FOR OBD II DEVICES", for: .normal)
 		} else {
-			self.scanButton.setTitle("Start Scanning", for: .normal)
+			self.scanButton.setTitle("START SCANNING FOR OBD II DEVICES", for: .normal)
 		}
 	}
 		
@@ -135,6 +135,7 @@ extension ScanBleDevicesViewController: UITableViewDelegate, UITableViewDataSour
 												 for: indexPath) as? BLETableViewCell
 		let deviceModel = self.blePeripheralDevice[indexPath.row]
 		cell?.bleNameLable.text = deviceModel.peripheral.name
+		//cell?.bleAddress.text = "\(deviceModel.peripheral.identifier)"
 		cell?.connectButton.tag = indexPath.row
 		
 		
@@ -180,7 +181,7 @@ extension ScanBleDevicesViewController: UITableViewDelegate, UITableViewDataSour
 		//print(cell.connectButton?.titleLabel?.text)
 		
 		if cell.connectButton?.titleLabel?.text == "Connect" {
-			cell.connectButton.setTitle("Disconnected", for: .normal)
+			cell.connectButton.setTitle("Disconnect", for: .normal)
 			cell.testButton.isHidden = false
 			cell.testButton.addTarget(self, action: #selector(self.testbuttonAction(_ :)), for: .touchUpInside)
 		} else {
@@ -205,12 +206,18 @@ extension ScanBleDevicesViewController: UITableViewDelegate, UITableViewDataSour
 		//let testVC = storyboard.instantiateViewController(withIdentifier: "TerminalViewController") as! TerminalViewController
 		//testVC.bluetoothService(bleServices: self.bleServices)
 		
-		let viVC = storyboard.instantiateViewController(withIdentifier: "VehicalInformationViewController") as! VehicalInformationViewController
-		let vm = VehicleInformationViewModel(vinNumber: "")
-//		 viVC = VehicalInformationViewController(viewModel: vm)
-		viVC.viewModel = vm
-		//viVC.delegate = 
-		self.navigationController?.pushViewController(viVC, animated: true)
+//		let viVC = storyboard.instantiateViewController(withIdentifier: "VehicalInformationViewController") as! VehicalInformationViewController
+//		let vm = VehicleInformationViewModel(vinNumber: "")
+////		 viVC = VehicalInformationViewController(viewModel: vm)
+//		viVC.viewModel = vm
+//		//viVC.delegate =
+//		self.navigationController?.pushViewController(viVC, animated: true)
+		let vm = VehicleVinScannerViewModel()
+	////		 viVC = VehicalInformationViewController(viewModel: vm)
+		let vehicleVinScan = storyboard.instantiateViewController(withIdentifier: "VehicalVINScannerViewController") as! VehicalVINScannerViewController
+		//vehicleVinScan.vehicleInfo = viewModel?.vehicleInformation
+		vehicleVinScan.viewModel = vm
+		self.navigationController?.pushViewController(vehicleVinScan, animated: true)
 	}
 	
 	

@@ -24,6 +24,78 @@
             </objects>
             <point key="canvasLocation" x="110.68702290076335" y="-2.1126760563380285"/>
         </scene>
+        <!--Error Alert Dailog View Controller-->
+        <scene sceneID="bXP-Qa-HOf">
+            <objects>
+                <viewController storyboardIdentifier="ErrorAlertDailogViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="hCm-5L-0Kg" customClass="ErrorAlertDailogViewController" customModule="Acelite" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="mOC-9V-Qao">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6hQ-ht-f6B">
+                                <rect key="frame" x="21.666666666666657" y="336" width="350" height="180"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="TURN OFF THE CAR" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6wf-Yx-Bx4">
+                                        <rect key="frame" x="20" y="19.999999999999996" width="310" height="33.666666666666657"/>
+                                        <fontDescription key="fontDescription" name="PingFangHK-Semibold" family="PingFang HK" pointSize="24"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Turn off the car and disconnect the OBD-II cable." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FIa-Uc-9KY">
+                                        <rect key="frame" x="20" y="63.666666666666686" width="310" height="47.666666666666657"/>
+                                        <fontDescription key="fontDescription" name="PingFangHK-Regular" family="PingFang HK" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yec-9N-e4u">
+                                        <rect key="frame" x="190" y="120" width="140" height="40"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="40" id="MuO-4j-S5M"/>
+                                            <constraint firstAttribute="width" constant="140" id="uMH-dt-CLa"/>
+                                        </constraints>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain" title="Done">
+                                            <fontDescription key="titleFontDescription" type="system" pointSize="16"/>
+                                            <color key="baseForegroundColor" systemColor="labelColor"/>
+                                        </buttonConfiguration>
+                                        <connections>
+                                            <action selector="doneButtonAction:" destination="hCm-5L-0Kg" eventType="touchUpInside" id="LPH-Gn-C4f"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="FIa-Uc-9KY" secondAttribute="trailing" constant="20" id="2Vl-i7-2Vq"/>
+                                    <constraint firstAttribute="bottom" secondItem="yec-9N-e4u" secondAttribute="bottom" constant="20" id="671-ic-LrE"/>
+                                    <constraint firstAttribute="trailing" secondItem="yec-9N-e4u" secondAttribute="trailing" constant="20" id="77W-vR-Qr8"/>
+                                    <constraint firstAttribute="trailing" secondItem="6wf-Yx-Bx4" secondAttribute="trailing" constant="20" id="BP6-n5-PhA"/>
+                                    <constraint firstItem="FIa-Uc-9KY" firstAttribute="leading" secondItem="6hQ-ht-f6B" secondAttribute="leading" constant="20" id="IxE-e9-gS1"/>
+                                    <constraint firstItem="6wf-Yx-Bx4" firstAttribute="leading" secondItem="6hQ-ht-f6B" secondAttribute="leading" constant="20" id="RBK-Dg-3wQ"/>
+                                    <constraint firstAttribute="height" constant="180" id="SaO-oM-Xls"/>
+                                    <constraint firstItem="6wf-Yx-Bx4" firstAttribute="top" secondItem="6hQ-ht-f6B" secondAttribute="top" constant="20" id="UOy-gk-zHA"/>
+                                    <constraint firstAttribute="width" constant="350" id="eqL-vL-xfR"/>
+                                    <constraint firstItem="FIa-Uc-9KY" firstAttribute="top" secondItem="6wf-Yx-Bx4" secondAttribute="bottom" constant="10" id="hH6-yk-stU"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="L6S-iQ-Qen"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.51655629139072845" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="6hQ-ht-f6B" firstAttribute="centerY" secondItem="mOC-9V-Qao" secondAttribute="centerY" id="Mcc-3K-Kw6"/>
+                            <constraint firstItem="6hQ-ht-f6B" firstAttribute="centerX" secondItem="mOC-9V-Qao" secondAttribute="centerX" id="Nwm-4y-mTv"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="alertSubtitle" destination="FIa-Uc-9KY" id="2ae-Lh-61h"/>
+                        <outlet property="alertTitle" destination="6wf-Yx-Bx4" id="5es-37-AIH"/>
+                        <outlet property="doneButton" destination="yec-9N-e4u" id="RrK-jz-2W6"/>
+                        <outlet property="popUpView" destination="6hQ-ht-f6B" id="PDZ-Zm-lHo"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Pew-Bx-d1w" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="403.81679389312973" y="775.35211267605632"/>
+        </scene>
         <!--Battery Health Check View Controller-->
         <scene sceneID="zQH-7A-XN2">
             <objects>
@@ -314,6 +386,9 @@
     <resources>
         <image name="Snow" width="29" height="32"/>
         <image name="Sun" width="32" height="32"/>
+        <systemColor name="labelColor">
+            <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

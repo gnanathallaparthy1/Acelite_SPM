@@ -31,17 +31,6 @@ class VehicalInformationViewController: UIViewController {
 	var delegate:UpdateVehicleInformationDelegate?
 	public var viewModel: VehicleInformationViewModel?
 	
-	@IBOutlet weak var scanLabel: UILabel! {
-		didSet {
-			//scanLabel.isHidden = false
-		}
-	}
-	
-	@IBOutlet weak var barCodeView: UIView! {
-		didSet {
-			//barCodeView.isHidden = false
-		}
-	}
 	
 	
 	@IBOutlet weak var clearButton: UIButton!{
@@ -73,12 +62,7 @@ class VehicalInformationViewController: UIViewController {
 			cancelButton.layer.cornerRadius = 8
 		}
 	}
-	@IBOutlet weak var backButton: UIButton! {
-		didSet {
-			backButton.layer.cornerRadius = 8
-			
-		}
-	}
+
 	@IBOutlet weak var nextButton: UIButton! {
 		didSet {
 			nextButton.layer.cornerRadius = 8
@@ -97,8 +81,17 @@ class VehicalInformationViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 		viewModel?.delegate = self
-		self.barcodeTextField.delegate = self
-		carInfoView.isHidden = true
+		//self.barcodeTextField.delegate = self
+		carInfoView.isHidden = false
+		self.vimTitle.text = viewModel?.vehicleInformation?.title
+		self.vimModel.text = viewModel?.vehicleInformation?.modelName
+		self.vimName.text = viewModel?.vehicleInformation?.vin
+		let yr = viewModel?.vehicleInformation?.year
+		self.vimYear.text = "\(String(describing: yr))"
+		self.vimBodyStyle.text = viewModel?.vehicleInformation?.bodyStyle
+		self.vehicleInfoLabel.text = viewModel?.vinNumber
+//		self.nextButton.isUserInteractionEnabled = true
+//		self.nextButton.isEnabled = true
 		nextButton.addTarget(self, action: #selector(self.nextButtonAction(_:)), for: .touchUpInside)
 //		backButton.addTarget(self, action: #selector(self.backButtonAction(_:)), for: .touchUpInside)
 		cancelButton.addTarget(self, action: #selector(self.cancelButtonAction(_:)), for: .touchUpInside)
@@ -181,9 +174,6 @@ extension VehicalInformationViewController: UpdateVehicleInformationDelegate {
 			let yr = viewModel.vehicleInformation?.year
 			self.vimYear.text = "\(String(describing: yr))"
 			self.vimBodyStyle.text = viewModel.vehicleInformation?.bodyStyle
-			self.barCodeView.isHidden = true
-			self.carInfoView.isHidden = false
-			self.scanLabel.isHidden = true
 			self.vehicleInfoLabel.text = viewModel.vinNumber
 			self.nextButton.isUserInteractionEnabled = true
 			self.nextButton.isEnabled = true

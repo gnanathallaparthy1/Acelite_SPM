@@ -46,6 +46,9 @@
 		8639046A299557B2008D5A0A /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86390469299557B2008D5A0A /* DataManager.swift */; };
 		8639046C29957ED1008D5A0A /* AceLiteBleWriteCallback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8639046B29957ED0008D5A0A /* AceLiteBleWriteCallback.swift */; };
 		8639046E29957F43008D5A0A /* AceLiteBleNotifyCallback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8639046D29957F43008D5A0A /* AceLiteBleNotifyCallback.swift */; };
+		8639CDB329F6FCF8004E813D /* VehicalVINScannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8639CDB229F6FCF8004E813D /* VehicalVINScannerViewController.swift */; };
+		8639CDB629F7FFF5004E813D /* VehicleVinScannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8639CDB529F7FFF5004E813D /* VehicleVinScannerViewModel.swift */; };
+		8639CDB929F852A9004E813D /* ErrorAlertDailogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8639CDB829F852A9004E813D /* ErrorAlertDailogViewController.swift */; };
 		86636DC729785A14001240FB /* BluetoothServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86636DC629785A14001240FB /* BluetoothServices.swift */; };
 		86636DC9297B0AA2001240FB /* TerminalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86636DC8297B0AA2001240FB /* TerminalViewController.swift */; };
 		866CDB492982E80400ADFB50 /* Apollo in Frameworks */ = {isa = PBXBuildFile; productRef = 866CDB482982E80400ADFB50 /* Apollo */; };
@@ -146,6 +149,9 @@
 		86390469299557B2008D5A0A /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		8639046B29957ED0008D5A0A /* AceLiteBleWriteCallback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AceLiteBleWriteCallback.swift; sourceTree = "<group>"; };
 		8639046D29957F43008D5A0A /* AceLiteBleNotifyCallback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AceLiteBleNotifyCallback.swift; sourceTree = "<group>"; };
+		8639CDB229F6FCF8004E813D /* VehicalVINScannerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicalVINScannerViewController.swift; sourceTree = "<group>"; };
+		8639CDB529F7FFF5004E813D /* VehicleVinScannerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleVinScannerViewModel.swift; sourceTree = "<group>"; };
+		8639CDB829F852A9004E813D /* ErrorAlertDailogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorAlertDailogViewController.swift; sourceTree = "<group>"; };
 		86636DC629785A14001240FB /* BluetoothServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothServices.swift; sourceTree = "<group>"; };
 		86636DC8297B0AA2001240FB /* TerminalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalViewController.swift; sourceTree = "<group>"; };
 		866CDB4B2982F63700ADFB50 /* VehicalDetailsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicalDetailsModel.swift; sourceTree = "<group>"; };
@@ -245,6 +251,8 @@
 		861E6EC82953789B00443F12 /* Acelite */ = {
 			isa = PBXGroup;
 			children = (
+				8639CDB729F85268004E813D /* Alerts */,
+				8639CDB429F7FF75004E813D /* VehicleScan */,
 				8651312329CB88C400886134 /* HambugerMenuItems */,
 				8609394F29BF8958001DE232 /* BatteryHealthCheck */,
 				861EDE6B29B7A9B4003A1C81 /* BatteryHealthResponse */,
@@ -360,6 +368,23 @@
 				861EDE7029B7AFC0003A1C81 /* ColorX.swift */,
 			);
 			path = GreatView;
+			sourceTree = "<group>";
+		};
+		8639CDB429F7FF75004E813D /* VehicleScan */ = {
+			isa = PBXGroup;
+			children = (
+				8639CDB229F6FCF8004E813D /* VehicalVINScannerViewController.swift */,
+				8639CDB529F7FFF5004E813D /* VehicleVinScannerViewModel.swift */,
+			);
+			path = VehicleScan;
+			sourceTree = "<group>";
+		};
+		8639CDB729F85268004E813D /* Alerts */ = {
+			isa = PBXGroup;
+			children = (
+				8639CDB829F852A9004E813D /* ErrorAlertDailogViewController.swift */,
+			);
+			path = Alerts;
 			sourceTree = "<group>";
 		};
 		8651312329CB88C400886134 /* HambugerMenuItems */ = {
@@ -674,12 +699,14 @@
 				8636D42229DC88EE0045BD53 /* SubmitBatteryModel.swift in Sources */,
 				8636D41429CE201C0045BD53 /* TestableModelsViewController.swift in Sources */,
 				86636DC9297B0AA2001240FB /* TerminalViewController.swift in Sources */,
+				8639CDB329F6FCF8004E813D /* VehicalVINScannerViewController.swift in Sources */,
 				8677DBAB29BFA73A001C42CD /* CircularProgressBarView.swift in Sources */,
 				866CDB61298C206E00ADFB50 /* VehicleInformationViewModel.swift in Sources */,
 				8609395329BF89A3001DE232 /* BatteryHealthCheckViewModel.swift in Sources */,
 				866CDB65298CB02700ADFB50 /* SpinnerViewController.swift in Sources */,
 				861E6F032957737D00443F12 /* SideMenuModel.swift in Sources */,
 				861E6ECE2953789B00443F12 /* ViewController.swift in Sources */,
+				8639CDB929F852A9004E813D /* ErrorAlertDailogViewController.swift in Sources */,
 				861EDE7529B7AFC0003A1C81 /* ABGaugeView.swift in Sources */,
 				869D86AA2968982500503B9C /* BLETableViewCell.swift in Sources */,
 				8639046E29957F43008D5A0A /* AceLiteBleNotifyCallback.swift in Sources */,
@@ -697,6 +724,7 @@
 				86AF929429B585AF00FDA4C3 /* InfoPopUpViewController.swift in Sources */,
 				8609394E29BE6E27001DE232 /* Logger.swift in Sources */,
 				866CDB6A298D743E00ADFB50 /* TestViewModel.swift in Sources */,
+				8639CDB629F7FFF5004E813D /* VehicleVinScannerViewModel.swift in Sources */,
 				861E6EFC29561D1A00443F12 /* VehicalInformationViewController.swift in Sources */,
 				8609395129BF898B001DE232 /* BatteryHealthCheckViewController.swift in Sources */,
 				861E6F0D295E08B300443F12 /* ScannerViewController.swift in Sources */,

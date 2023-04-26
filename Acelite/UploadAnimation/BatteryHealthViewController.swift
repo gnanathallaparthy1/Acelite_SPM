@@ -12,6 +12,16 @@ let userDefaults = UserDefaults.standard
 var dictionary = [String : String]()
 
 class BatteryHealthViewController: UIViewController {
+	
+	init(viewModel: BatteryHealthViewModel) {
+		super.init(nibName: nil, bundle: nil)
+		self.viewModel = viewModel
+		//super.init()
+	}
+
+	required init?(coder: NSCoder) {
+		super.init(coder: coder)
+	}
 	@IBOutlet weak var gaugeView: ABGaugeView!
 	@IBOutlet weak var imageView: UIImageView!
 	@IBOutlet weak var gradeLabel: UILabel!
@@ -47,7 +57,7 @@ class BatteryHealthViewController: UIViewController {
 		self.gradeLabel.text = viewModel?.grade?.title
 		self.scoreLabel.text = viewModel?.healthScore
 		let vehicle = viewModel?.vehicleInfo
-		self.modelNameLabel.text = vehicle?.modelName
+		self.modelNameLabel.text = vehicle?.title
 		self.vinLabel.text = vehicle?.vin
 		guard let vinInfo = vehicle?.vin else { return  }
 		guard let vinMake = vehicle?.make else { return  }
