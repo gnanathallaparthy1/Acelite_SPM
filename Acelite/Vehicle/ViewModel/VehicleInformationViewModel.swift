@@ -35,33 +35,45 @@ class VehicleInformationViewModel {
 				print(data)
 				
 				if graphQLResult.data != nil {
+					
+					if graphQLResult.errors?.count ?? 0 > 0 {
+						print("Error::", graphQLResult.errors!)
+						print(Date(), "SOC:submit API Error :\(String(describing: graphQLResult.errors))", to: &Log.log)
+						self.delegate?.handleErrorVehicleUpdate()
+						return
+					}
+					
 					let vehicle = graphQLResult.data?.resultMap["vehicle"]?.jsonValue
 					var vehicleData : Data?
 					do {
 						vehicleData = try JSONSerialization.data(withJSONObject: vehicle as Any)
 					} catch {
 							print("Unexpected error: \(error).")
+						self.delegate?.handleErrorVehicleUpdate()
 					}
 										
 					do {
 						let decoder = JSONDecoder()
 						let messages = try decoder.decode(Vehicle.self, from: vehicleData!)
-						self.vehicleInformation = messages
-						
+						self.vehicleInformation = messages						
 						self.delegate?.updateVehicleInfo(viewModel: self)
 					} catch DecodingError.dataCorrupted(let context) {
 						print(context)
 					} catch DecodingError.keyNotFound(let key, let context) {
 						print("Key '\(key)' not found:", context.debugDescription)
 						print("codingPath:", context.codingPath)
+						self.delegate?.handleErrorVehicleUpdate()
 					} catch DecodingError.valueNotFound(let value, let context) {
 						print("Value '\(value)' not found:", context.debugDescription)
 						print("codingPath:", context.codingPath)
+						self.delegate?.handleErrorVehicleUpdate()
 					} catch DecodingError.typeMismatch(let type, let context) {
 						print("Type '\(type)' mismatch:", context.debugDescription)
 						print("codingPath:", context.codingPath)
+						self.delegate?.handleErrorVehicleUpdate()
 					} catch {
 						print("error: ", error)
+						self.delegate?.handleErrorVehicleUpdate()
 					}
 				}
 					

@@ -35,6 +35,7 @@ class UploadAnimationViewController: UIViewController {
 	public var numberofCells: Int?
 	public var multiCellVoltageData = [[Double]]()
 	public var bmsCapacity: Double?
+	public var testInstructionsId: String?
 	private var odometer: Double?
 	private var transactionId: String?
 	private var healthScore: String?
@@ -168,17 +169,32 @@ class UploadAnimationViewController: UIViewController {
 				print("after process result count", result.count)
 			}
 			let listCount: [Int] = [result.count,  self.packCurrentData.count, self.packVoltageData.count]
-			 minVlaue = listCount.min() ?? 0
+			minVlaue = listCount.min() ?? 0
 			print("min value from count array", minVlaue)
+			if minVlaue == 0 {
+				print(Date(), "Min Count of the Data Files Not Fullfilled", to: &Log.log)
+				showDataInsufficientError()
+				return
+			}
 			let finalCellVoltage = result[0...minVlaue - 1]
 			self.createCellVoltageCSV(data: Array(finalCellVoltage))
 		} else {
 			let listCount: [Int] = [multiCellVoltageData.count,  self.packCurrentData.count, self.packVoltageData.count]
-			 minVlaue = listCount.min() ?? 0
+			minVlaue = listCount.min() ?? 0
+			if minVlaue == 0 {
+				print(Date(), "Min Count of the Data Files Not Fullfilled", to: &Log.log)
+				showDataInsufficientError()
+				return
+			}
 			let finalCellVoltage = multiCellVoltageData[0...minVlaue - 1]
 			self.createCellVoltageCSV(data: Array(finalCellVoltage))
 		}
 		//TO-DO handle zero size
+		if minVlaue == 0 {
+			print(Date(), "Min Count of the Data Files Not Fullfilled", to: &Log.log)
+			showDataInsufficientError()
+			return
+		}
 		let finalPackCurrent = packCurrentData[0...minVlaue - 1]
 		self.createPackCurrentCSVFile(data: Array(finalPackCurrent))
 		let finalPackVoltage = packVoltageData[0...minVlaue - 1]
@@ -216,7 +232,7 @@ class UploadAnimationViewController: UIViewController {
 		csvFileUploadingIntoS3Bucket(fileName: cellVoltageFilePath.absoluteString)
 	}
 	
-
+	
 	
 	func csvFileUploadingIntoS3Bucket(fileName: String) {
 		
@@ -282,7 +298,7 @@ class UploadAnimationViewController: UIViewController {
 				
 			}
 		}
-		dataTask.resume()	
+		dataTask.resume()
 	}
 	
 	func saveLogsIntoTxtFile() -> String {
@@ -324,27 +340,27 @@ class UploadAnimationViewController: UIViewController {
 		
 		guard let vehicleProfile = batteryInstr?[0].testCommands?.vehicleProfile else {
 			print(Date(), "SOC:Submit API failed due to Vehicle Profile", to: &Log.log)
-			self.showSubmitAPIError()
+			self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:Submit API failed due to Vehicle Profile", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinModels, year: years)
 			return}
 		print(Date(), "SOC:Vehicle Profile\(vehicleProfile)", to: &Log.log)
 		guard let stateOfHealth = batteryInstr?[0].testCommands?.stateOfHealthCommands else {
 			print(Date(), "SOC:Submit API failed due to state Of Health", to: &Log.log)
-			self.showSubmitAPIError()
+			self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:Submit API failed due to state Of Health", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinModels, year: years)
 			return}
 		print(Date(), "SOC:State of Health\(stateOfHealth)", to: &Log.log)
-    	guard let nominalVoltage: Double = vehicleProfile.nominalVoltage else {
+		guard let nominalVoltage: Double = vehicleProfile.nominalVoltage else {
 			print(Date(), "SOC:Submit API failed due to Nominal Volatge", to: &Log.log)
-			self.showSubmitAPIError()
+			self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:Submit API failed due to Nominal Volatge", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinModels, year: years)
 			return  }
 		print(Date(), "SOC:Nominal Voltage\(nominalVoltage)", to: &Log.log)
 		guard let energyAtBirth: Double = vehicleProfile.energyAtBirth else {
 			print(Date(), "SOC:Submit API failed due to state Of energyAtBirth", to: &Log.log)
-			self.showSubmitAPIError()
+			self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:Submit API failed due to state Of energyAtBirth", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinModels, year: years)
 			return  }
 		print(Date(), "SOC:energyAtBirth\(energyAtBirth)", to: &Log.log)
 		guard let capacityAtBirth: Double = vehicleProfile.capacityAtBirth else {
 			print(Date(), "SOC:Submit API failed due to state Of capacityAtBirth", to: &Log.log)
-			self.showSubmitAPIError()
+			self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:Submit API failed due to state Of capacityAtBirth", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinModels, year: years)
 			return}
 		print(Date(), "SOC:capacityAtBirth\(capacityAtBirth)", to: &Log.log)
 		let submitBatteryDataVehicleProfileInput = SubmitBatteryDataVehicleProfileInput(nominalVoltage: nominalVoltage, energyAtBirth: energyAtBirth, batteryType: BatteryType.lithium, capacityAtBirth: capacityAtBirth)
@@ -354,8 +370,8 @@ class UploadAnimationViewController: UIViewController {
 		let submitBatteryDataFilesPropsInput = SubmitBatteryDataFilesPropsInput(locationCode: LocationCode(rawValue: "AAA"), odometer: Int(self.odometer ?? 5000), totalNumberOfCharges: 5, lifetimeCharge: 20.5, lifetimeDischarge: 10.5, packVoltageFilename: "Pack_Voltage_\(vinInfo).csv", packCurrentFilename: "Pack_Current_\(vinInfo).csv", cellVoltagesFilename: "Cell_Volt_\(vinInfo).csv", transactionId: self.preSignedData!.transactionID, vehicleProfile: submitBatteryDataVehicleProfileInput)
 		print(Date(), "SOC:submit battery data file props input \(submitBatteryDataFilesPropsInput)", to: &Log.log)
 		print(Date(), "SOC:Transaction ID\(self.preSignedData!.transactionID)", to: &Log.log)
-//		print("sunmit battery data file props input :", submitBatteryDataFilesPropsInput)
-//		print("Transection: ID", self.preSignedData!.transactionID)
+		//		print("sunmit battery data file props input :", submitBatteryDataFilesPropsInput)
+		//		print("Transection: ID", self.preSignedData!.transactionID)
 		
 		let mutation = SubmitBatteryFilesWithStateOfChargeMutation(Vehicle:vehicalBatteryDataFile, submitBatteryDataFilesProps: submitBatteryDataFilesPropsInput, stateOfChargeProps: stateOfChargePropsInput)
 		
@@ -369,13 +385,13 @@ class UploadAnimationViewController: UIViewController {
 					if graphQLResults.errors?.count ?? 0 > 0 {
 						print("Error::", graphQLResults.errors!)
 						print(Date(), "SOC:submit API Error :\(String(describing: graphQLResults.errors))", to: &Log.log)
-						self.showSubmitAPIError()
+						self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:submit API Error :\(String(describing: graphQLResults.errors))", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinModels, year: years)
 						return
 					}
 					let submitData =  graphQLResults.data?.resultMap["submitBatteryDataFilesWithStateOfCharge"]
 					if submitData == nil {
 						print(Date(), "SOC:submit API result Map Error :\(String(describing: graphQLResults.errors))", to: &Log.log)
-						self.showSubmitAPIError()
+						self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "\(String(describing: graphQLResults.errors))", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinModels, year: years)
 						return
 					} else {
 						let jsonObject = submitData.jsonValue
@@ -388,21 +404,20 @@ class UploadAnimationViewController: UIViewController {
 								print(Date(), "SOC:submit API Decode Sucessful :\(String(describing: submitBatteryData))", to: &Log.log)
 								let storyBaord = UIStoryboard.init(name: "Main", bundle: nil)
 								let vc = storyBaord.instantiateViewController(withIdentifier: "BatteryHealthViewController") as! BatteryHealthViewController
-//								if let vInfo = self.vehicleInfo,let grade = submitBatteryData.batteryScore?.grade,let health = submitBatteryData.batteryScore?.health  {
-								let vm = BatteryHealthViewModel(vehicleInfo: veh, transactionID: self.transactionId ?? "", healthScore: submitBatteryData.batteryScore?.health ?? "N/A", grade: VehicleGrade(rawValue: VehicleGrade(rawValue: submitBatteryData.batteryScore?.grade ?? "N/A")?.title ??  "N/A") ?? .A)
-									
-									vc.viewModel = vm
-								//}
+								self.submitSuccessForSubmitAPI(transactionID: self.transactionId ?? "", vinMake: vinMake, score: "\(submitBatteryData.batteryScore?.score ?? 0)", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: vinYear)
+								let vm = BatteryHealthViewModel(vehicleInfo: veh, transactionID: self.transactionId ?? "", healthScore: submitBatteryData.batteryScore?.score ?? 0, grade: VehicleGrade(rawValue: VehicleGrade(rawValue: submitBatteryData.batteryScore?.grade ?? "N/A")?.title ??  "N/A") ?? .A, health: submitBatteryData.batteryScore?.health ?? "N/A")
+								
+								vc.viewModel = vm
 								self.navigationController?.pushViewController(vc, animated: true)
 								
 							} catch DecodingError.dataCorrupted(let context) {
 								//print(context)
 								print(Date(), "SOC:submit API Error :\(context)", to: &Log.log)
-								self.showSubmitAPIError()
+								self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:submit API Error :\(context)", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinModels, year: years)
 								return
 							}
 						} catch {
-							self.showSubmitAPIError()
+							self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:submit API Error :\(error)", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinModels, year: years)
 							print(Date(), "SOC:submit API Error :\(error)", to: &Log.log)
 							//print("Unexpected error: \(error).")
 						}
@@ -413,7 +428,9 @@ class UploadAnimationViewController: UIViewController {
 				}
 				break
 			case .failure(let error):
-				self.showSubmitAPIError()
+				if let transactionId = self.preSignedData?.transactionID {
+					self.showSubmitAPIError(transactionID: transactionId , vinMake: vinMake, message: error.localizedDescription, vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinModels, year: years)
+				}
 				print(Date(), "SOC:submit API Error :\(error)", to: &Log.log)
 				break
 			}
@@ -436,36 +453,36 @@ class UploadAnimationViewController: UIViewController {
 		
 		guard let vehicleProfile = batteryInstr?[0].testCommands?.vehicleProfile else {
 			print(Date(), "BMS:Submit API failed due to Vehicle Profile", to: &Log.log)
-			self.showSubmitAPIError()
+			self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "BMS:Submit API failed due to Vehicle Profile", vinModels: vinModels, submitType: "BMS_CAPACITY", vinNumber: vinModels, year: years)
 			return }
 		print(Date(), "Vehicle Profile\(vehicleProfile)", to: &Log.log)
 		guard let stateOfHealth = batteryInstr?[0].testCommands?.stateOfHealthCommands else {
 			print(Date(), "BMS:Submit API failed due to stateOfHealth", to: &Log.log)
-			self.showSubmitAPIError()
+			self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "BMS:Submit API failed due to stateOfHealth", vinModels: vinModels, submitType: "BMS_CAPACITY", vinNumber: vinModels, year: years)
 			return
 		}
 		print(Date(), "BMS:stateOfHealth\(stateOfHealth)", to: &Log.log)
 		guard let nominalVoltage: Double = vehicleProfile.nominalVoltage else {
 			print(Date(), "BMS:Submit API failed due to Nominal Voltage", to: &Log.log)
-			self.showSubmitAPIError()
+			self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "BMS:Submit API failed due to Nominal Voltage", vinModels: vinModels, submitType: "BMS_CAPACITY", vinNumber: vinModels, year: years)
 			return
 		}
 		print(Date(), "BMS:Nominal Voltage\(nominalVoltage)", to: &Log.log)
 		guard let energyAtBirth: Double = vehicleProfile.energyAtBirth else {
 			print(Date(), "BMS: Submit API failed due to Energy At Birth", to: &Log.log)
-			self.showSubmitAPIError()
+			self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "BMS: Submit API failed due to Energy At Birth", vinModels: vinModels, submitType: "BMS_CAPACITY", vinNumber: vinModels, year: years)
 			return
 		}
 		print(Date(), " Energy At Birth\(energyAtBirth)", to: &Log.log)
 		guard let capacityAtBirth: Double = vehicleProfile.capacityAtBirth else {
 			print(Date(), "BMS: Submit API failed due to Capacity At Birth", to: &Log.log)
-			self.showSubmitAPIError()
+			self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:Submit API failed due to Vehicle Profile", vinModels: vinModels, submitType: "BMS_CAPACITY", vinNumber: vinModels, year: years)
 			return
 		}
 		print(Date(), "BMS:Capacity At Birth\(capacityAtBirth)", to: &Log.log)
 		guard let bmsCapacitys: Double = self.bmsCapacity else {
 			print(Date(), "BMS:Submit API failed due to BMS", to: &Log.log)
-			self.showSubmitAPIError()
+			self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "BMS:Submit API failed due to BMS", vinModels: vinModels, submitType: "BMS_CAPACITY", vinNumber: vinModels, year: years)
 			return}
 		print(Date(), "BMS Value\(bmsCapacitys)", to: &Log.log)
 		let submitBatteryDataVehicleProfileInput = SubmitBatteryDataVehicleProfileInput(nominalVoltage: nominalVoltage, energyAtBirth: energyAtBirth, batteryType: BatteryType.lithium, capacityAtBirth: capacityAtBirth)
@@ -488,12 +505,12 @@ class UploadAnimationViewController: UIViewController {
 						print("Error::", graphQLResults.errors!)
 						print(Date(), "BMS:submit API Error :\(String(describing: graphQLResults.errors))", to: &Log.log)
 						//TODO Stop Animation and show alert
-						self.showSubmitAPIError()
+						self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "BMS:submit API Error :\(String(describing: graphQLResults.errors))", vinModels: vinModels, submitType: "BMS_CAPACITY", vinNumber: vinModels, year: years)
 						return
 					}
 					let submitData =  graphQLResults.data?.resultMap["submitBatteryDataFilesWithBmsCapacity"].jsonValue
 					if submitData == nil {
-						self.showSubmitAPIError()
+						self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "BMS:submit API Result Map error :\(String(describing: submitData))", vinModels: vinModels, submitType: "BMS_CAPACITY", vinNumber: vinModels, year: years)
 						print(Date(), "BMS:submit API Result Map error :\(String(describing: submitData))", to: &Log.log)
 						return
 					} else {
@@ -511,21 +528,20 @@ class UploadAnimationViewController: UIViewController {
 								print(Date(), "BMS:submit API Decode Sucessful :\(String(describing: submitBatteryData))", to: &Log.log)
 								let storyBaord = UIStoryboard.init(name: "Main", bundle: nil)
 								let vc = storyBaord.instantiateViewController(withIdentifier: "BatteryHealthViewController") as! BatteryHealthViewController
-//								if let vInfo = self.vehicleInfo,let grade = submitBatteryData.batteryScore?.grade,let health = submitBatteryData.batteryScore?.health  {
-//									vc.viewModel = BatteryHealthViewModel(vehicleInfo: vInfo, transactionID: self.transactionId ?? "", healthScore: health , grade: VehicleGrade(rawValue: grade) ?? .A)
-//								}
-								let vm = BatteryHealthViewModel(vehicleInfo: veh, transactionID: self.transactionId ?? "", healthScore: submitBatteryData.batteryScore?.health ?? "N/A", grade: VehicleGrade(rawValue: VehicleGrade(rawValue: submitBatteryData.batteryScore?.grade ?? "N/A")?.title ??  "N/A") ?? .A)
+								self.submitSuccessForSubmitAPI(transactionID: self.transactionId ?? "", vinMake: vinMake, score: "\(submitBatteryData.batteryScore?.score ?? 0)", vinModels: vinModels, submitType: "BMS_Capacity", vinNumber: vinInfo, year: vinYear)
+								let vm = BatteryHealthViewModel(vehicleInfo: veh, transactionID: self.transactionId ?? "", healthScore: submitBatteryData.batteryScore?.score ?? 0, grade: VehicleGrade(rawValue: VehicleGrade(rawValue: submitBatteryData.batteryScore?.grade ?? "N/A")?.title ??  "N/A") ?? .A, health: submitBatteryData.batteryScore?.health ?? "N/A")
+								
 								vc.viewModel = vm
 								self.navigationController?.pushViewController(vc, animated: true)
 								
 							} catch DecodingError.dataCorrupted(let context) {
-								self.showSubmitAPIError()
+								self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "BMS:submit API error :\(context)", vinModels: vinModels, submitType: "BMS_CAPACITY", vinNumber: vinModels, year: years)
 								print(Date(), "BMS:submit API error :\(context)", to: &Log.log)
 								print(context)
 								return
 							}
 						} catch {
-							self.showSubmitAPIError()
+							self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "BMS:submit API error :\(error)", vinModels: vinModels, submitType: "BMS_CAPACITY", vinNumber: vinModels, year: years)
 							print(Date(), "BMS:submit API error :\(error)", to: &Log.log)
 							print("Unexpected error: \(error).")
 						}
@@ -536,8 +552,10 @@ class UploadAnimationViewController: UIViewController {
 				}
 				break
 			case .failure(let error):
-				print(Date(), "BMS:submit API error :\(error)", to: &Log.log)
-				self.showSubmitAPIError()
+				if let transactionId = self.preSignedData?.transactionID {
+					print(Date(), "BMS:submit API error :\(error)", to: &Log.log)
+					self.showSubmitAPIError(transactionID: transactionId, vinMake: vinMake, message: "BMS:submit API error :\(error)", vinModels: vinModels, submitType: "BMS_CAPACITY", vinNumber: vinModels, year: years)
+				}
 				break
 			}
 			
@@ -545,7 +563,34 @@ class UploadAnimationViewController: UIViewController {
 		
 	}
 	
-	func showSubmitAPIError() {
+	func submitSuccessForSubmitAPI(transactionID: String, vinMake: String, score: String, vinModels: String, submitType: String, vinNumber: String, year: Int) {
+		let rootRef = Database.database().reference()
+		let ref = rootRef.child("successful_transaction_ids").childByAutoId()
+		//if let batteryInstr =
+		let vinBatteryInfo: [String: String?] = ["battery_test_instructions_id": self.testInstructionsId,"make": vinMake, "score": score, "model": vinModels, "platform": "iOS", "submit_type": submitType, "time_stamp": Constants().currentDateTime(), "transaction_id": transactionID, "vin_number": vinNumber, "year": String(year)]
+		ref.setValue(vinBatteryInfo) {
+			(error:Error?, ref:DatabaseReference) in
+			if let error = error {
+				print("Data could not be saved: \(error).")
+			} else {
+				print("Fail data saved successfully!")
+			}
+		}
+	}
+	
+	func showSubmitAPIError(transactionID: String, vinMake: String, message: String, vinModels: String, submitType: String, vinNumber: String, year: Int) {
+		let rootRef = Database.database().reference()
+		let ref = rootRef.child("submit_error_details").childByAutoId()
+		//if let batteryInstr =
+		let vinBatteryInfo: [String: String?] = ["battery_test_instructions_id": self.testInstructionsId,"make": vinMake, "message": message, "model": vinModels, "platform": "iOS", "submit_type": submitType, "time_stamp": Constants().currentDateTime(), "transaction_id": transactionID, "vin_number": vinNumber, "year": String(year)]
+		ref.setValue(vinBatteryInfo) {
+			(error:Error?, ref:DatabaseReference) in
+			if let error = error {
+				print("Data could not be saved: \(error).")
+			} else {
+				print("Fail data saved successfully!")
+			}
+		}
 		self.stackView.removeFromSuperview()
 		let dialogMessage = UIAlertController(title: "Error", message: "Sorry,something went wrong.Please try again", preferredStyle: .alert)
 		// Create OK button with action handler
@@ -564,6 +609,40 @@ class UploadAnimationViewController: UIViewController {
 		dialogMessage.addAction(ok)
 		// Present Alert to
 		self.present(dialogMessage, animated: true, completion: nil)
+	}
+	
+	func showDataInsufficientError() {
+		let rootRef = Database.database().reference()
+		let ref = rootRef.child("submit_error_details").childByAutoId()
+		//if let batteryInstr =
+		let vinBatteryInfo: [String: String?] = ["battery_test_instructions_id": self.testInstructionsId,"make": "", "message": "Min Count of the Data Files Not Fullfilled", "model": "", "platform": "iOS", "submit_type": "", "time_stamp": Constants().currentDateTime(), "transaction_id": self.transactionId, "vin_number": "", "year": ""]
+		ref.setValue(vinBatteryInfo) {
+			(error:Error?, ref:DatabaseReference) in
+			if let error = error {
+				print("Data could not be saved: \(error).")
+			} else {
+				print("Fail data saved successfully!")
+			}
+		}
+		self.stackView.removeFromSuperview()
+		let dialogMessage = UIAlertController(title: "Error", message: "Sorry,something went wrong.Please try again", preferredStyle: .alert)
+		// Create OK button with action handler
+		let ok = UIAlertAction(title: "GOT IT", style: .default, handler: { (action) -> Void in
+			guard let viewControllers = self.navigationController?.viewControllers else {
+				return
+			}
+			for workOrderVc in viewControllers {
+				if workOrderVc is WorkOrderViewController {
+					self.navigationController?.popToViewController(workOrderVc, animated: true)
+					break
+				}
+			}
+		})
+		//Add OK button to a dialog message
+		dialogMessage.addAction(ok)
+		// Present Alert to
+		self.present(dialogMessage, animated: true, completion: nil)
+		
 	}
 }
 

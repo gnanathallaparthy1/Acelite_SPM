@@ -156,8 +156,11 @@ extension VehicalInformationViewController: UITextFieldDelegate {
 	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
 		if textField == self.barcodeTextField && textField.text?.count ?? 0 > 0 {
 				self.view.activityStartAnimating(activityColor: UIColor.white, backgroundColor: UIColor.black.withAlphaComponent(0.5))
-				self.viewModel?.fetchVehicalInformation(vim: textField.text ?? "N/A")
-			
+			guard let vinNumber = textField.text, vinNumber.count > 0 else {
+				self.showAlertMessage(message: "Please enter valid VIN number.")
+				return true
+			}
+				self.viewModel?.fetchVehicalInformation(vim: vinNumber)
 		}
 		textField.resignFirstResponder()
 		return true
@@ -178,19 +181,22 @@ extension VehicalInformationViewController: UpdateVehicleInformationDelegate {
 			self.nextButton.isUserInteractionEnabled = true
 			self.nextButton.isEnabled = true
 		} else {
-			let dialogMessage = UIAlertController(title: "Alert!", message: "There is a problem retreiving vehicle data. Please try again", preferredStyle: .alert)
-			// Create OK button with action handler
-			let ok = UIAlertAction(title: "Ok", style: .default, handler: { (action) -> Void in
-	
-			})
-			self.nextButton.isUserInteractionEnabled = false
-			self.nextButton.isEnabled = false
-			//Add OK button to a dialog message
-			dialogMessage.addAction(ok)
-			// Present Alert to
-			self.present(dialogMessage, animated: true, completion: nil)
+			self.showAlertMessage(message: "There is a problem retreiving vehicle data. Please try again")
 		}
 
+	}
+	private func showAlertMessage(message: String) {
+		let dialogMessage = UIAlertController(title: "Alert!", message: message, preferredStyle: .alert)
+		// Create OK button with action handler
+		let ok = UIAlertAction(title: "Ok", style: .default, handler: { (action) -> Void in
+
+		})
+		self.nextButton.isUserInteractionEnabled = false
+		self.nextButton.isEnabled = false
+		//Add OK button to a dialog message
+		dialogMessage.addAction(ok)
+		// Present Alert to
+		self.present(dialogMessage, animated: true, completion: nil)
 	}
 	
 	func handleErrorVehicleUpdate() {

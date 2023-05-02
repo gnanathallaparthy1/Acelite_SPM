@@ -114,16 +114,43 @@ class VehicalVINScannerViewController: UIViewController {
     }
     
     @IBAction func nextButtonAction(_ sender: UIButton) {
-		if self.barcodeTextField.text?.count ?? 0 > 0 {
+		if let textFieldData = barcodeTextField.text, textFieldData.count <= 17,  isValidVinNumber(textFieldData) == true {
 			self.view.activityStartAnimating(activityColor: UIColor.white, backgroundColor: UIColor.black.withAlphaComponent(0.5))
+			//regex validation for vin
 			self.viewModel?.fetchVehicalInformation(vim: self.barcodeTextField?.text ?? "N/A")
+		} else {
+			let dialogMessage = UIAlertController(title: "WHOOPS!", message: "Please enter a Valid Vin Number ", preferredStyle: .alert)
+			// Create OK button with action handler
+			let ok = UIAlertAction(title: "Ok", style: .default, handler: { (action) -> Void in
+			})
+			self.nextButton.isUserInteractionEnabled = false
+			self.nextButton.isEnabled = false
+			//Add OK button to a dialog message
+			dialogMessage.addAction(ok)
+			// Present Alert to
+			self.present(dialogMessage, animated: true, completion: nil)
 		}
     }
 
 }
 extension VehicalVINScannerViewController: ScannerViewDelegate {
     func didFindScannedText(text: String) {
-        self.barcodeTextField?.text = text
+		//regex validation for vin
+		if  text.count <= 17,  isValidVinNumber(text) == true {
+			self.barcodeTextField?.text = text
+		} else {
+			let dialogMessage = UIAlertController(title: "WHOOPS!", message: "Please enter a Valid Vin Number ", preferredStyle: .alert)
+			// Create OK button with action handler
+			let ok = UIAlertAction(title: "Ok", style: .default, handler: { (action) -> Void in
+			})
+			self.nextButton.isUserInteractionEnabled = false
+			self.nextButton.isEnabled = false
+			//Add OK button to a dialog message
+			dialogMessage.addAction(ok)
+			// Present Alert to
+			self.present(dialogMessage, animated: true, completion: nil)
+		}
+       
     }
     
     
@@ -133,7 +160,7 @@ extension VehicalVINScannerViewController: UITextFieldDelegate {
     
 
 	func textFieldDidBeginEditing(_ textField: UITextField) {
-		//self.barcodeTextField?.text = "1N4BZ0CP4GC311050"
+		self.barcodeTextField?.text = "1N4BZ0CP4GC311050"
 		//singleframeVin
 		//"3FA6P0LU8JR142415"
 		//MultiFrame with BMS
@@ -144,17 +171,43 @@ extension VehicalVINScannerViewController: UITextFieldDelegate {
 	}
 	
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if textField == self.barcodeTextField && textField.text?.count ?? 0 > 0 {
+	
+		if let textFieldData = textField.text, textFieldData.count <= 17,  isValidVinNumber(textFieldData) == true {
             self.view.activityStartAnimating(activityColor: UIColor.white, backgroundColor: UIColor.black.withAlphaComponent(0.5))
 			self.viewModel?.fetchVehicalInformation(vim: textField.text ?? "N/A")
             
-        }
+		} else {
+			let dialogMessage = UIAlertController(title: "WHOOPS!", message: "Please enter a valid Vin number", preferredStyle: .alert)
+			// Create OK button with action handler
+			let ok = UIAlertAction(title: "GOT IT", style: .default, handler: { (action) -> Void in
+			})
+			self.nextButton.isUserInteractionEnabled = false
+			self.nextButton.isEnabled = false
+			//Add OK button to a dialog message
+			dialogMessage.addAction(ok)
+			// Present Alert to
+			self.present(dialogMessage, animated: true, completion: nil)
+		}
         textField.resignFirstResponder()
         return true
     }
 }
 
 extension VehicalVINScannerViewController: PassVehicleInformationDelegate {
+	func handleErrorVehicleInfoUpdate(message: String) {
+		self.view.activityStopAnimating()
+		let dialogMessage = UIAlertController(title: "WHOOPS!", message: "This vehicle is not supported to run the test. Check testable vehicles.", preferredStyle: .alert)
+		// Create OK button with action handler
+		let ok = UIAlertAction(title: "GOT IT", style: .default, handler: { (action) -> Void in
+		})
+		self.nextButton.isUserInteractionEnabled = false
+		self.nextButton.isEnabled = false
+		//Add OK button to a dialog message
+		dialogMessage.addAction(ok)
+		// Present Alert to
+		self.present(dialogMessage, animated: true, completion: nil)
+	}
+	
 	func updateVehicleInfo(viewModel: VehicleVinScannerViewModel) {
 		self.view.activityStopAnimating()
 		nextButton.isUserInteractionEnabled = true
@@ -181,18 +234,11 @@ extension VehicalVINScannerViewController: PassVehicleInformationDelegate {
 		}
 	}
 	
-	func handleErrorVehicleInfoUpdate() {
-		self.view.activityStopAnimating()
-		let dialogMessage = UIAlertController(title: "WHOOPS!", message: "This vehicle is not supported to run the test. Check testable vehicles.", preferredStyle: .alert)
-		// Create OK button with action handler
-		let ok = UIAlertAction(title: "GOT IT", style: .default, handler: { (action) -> Void in
-		})
-		self.nextButton.isUserInteractionEnabled = false
-		self.nextButton.isEnabled = false
-		//Add OK button to a dialog message
-		dialogMessage.addAction(ok)
-		// Present Alert to
-		self.present(dialogMessage, animated: true, completion: nil)
+	func isValidVinNumber(_ vinNumber: String) -> Bool {
+		let emailRegEx = "(?=.*\\d|=.*[A-Z])(?=.*[A-Z])[A-Z0-9]{17}"
+
+		let emailPred = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
+		return emailPred.evaluate(with: vinNumber)
 	}
 	
 	

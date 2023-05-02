@@ -55,7 +55,7 @@ class ViewController: UIViewController {
 		menuBarButton.tintColor = UIColor.appPrimaryColor()
 		self.navigationItem.leftBarButtonItem  = menuBarButton
 		//sideMenuBtn.target = revealViewController()
-				//sideMenuBtn.action = #selector(revealViewController()?.revealSideMenu)
+		//sideMenuBtn.action = #selector(revealViewController()?.revealSideMenu)
 		
 		nextButton.addTarget(self, action: #selector(self.nextButtonAction(_:)), for: .touchUpInside)
 		

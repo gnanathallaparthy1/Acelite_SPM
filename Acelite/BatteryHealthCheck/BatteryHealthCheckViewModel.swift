@@ -47,6 +47,7 @@ class BatteryHealthCheckViewModel {
 	public var multiCellVoltageData = [[Double]]()
 	public var stateOfCharge: Double?
 	public var bms: Double?
+	public var batteryTestInstructionId: String?
 	private var odometer: Double?
 	private var transactionId: String?
 	weak var preSignedDelegate: GetPreSignedUrlDelegate? = nil
@@ -72,8 +73,9 @@ class BatteryHealthCheckViewModel {
 		guard let testCommand = self.vehicleInfo?.getBatteryTestInstructions, testCommand.count > 0 else {
 			return
 		}
+		
 		for command in testCommand {
-			
+			self.batteryTestInstructionId = command.testCommands?.id
 			let odometer = command.testCommands?.odometer
 			
 			let commandCalss = TestCommandExecution(type: .ODOMETER , resProtocal: (odometer?.odometerProtocol)!, challenge: (odometer?.challenge)!, response: odometer!.response, validation: odometer!.validation)
@@ -335,10 +337,10 @@ class BatteryHealthCheckViewModel {
 					if let header = testCommand.challenge?.header {
 						guard let pid = testCommand.challenge?.pid else { return }
 						let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
-						DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
+//						DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
 							Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
 								let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
-								DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+								DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
 									Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data in
 										testCommand.deviceReponse = data
 										print(Date(), "BMS PID response\(data)", to: &Log.log)
@@ -346,17 +348,17 @@ class BatteryHealthCheckViewModel {
 									})
 								})
 							})
-						})
+//						})
 					}
 				}
 			} else {
 				if let header = testCommand.challenge?.header {
 					guard let pid = testCommand.challenge?.pid else { return }
 					let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
-					DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
+//					DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
 						Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
 							let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
-							DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+							DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
 								Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data in
 									testCommand.deviceReponse = data
 									print(Date(), "BMS PID response\(data)", to: &Log.log)
@@ -364,7 +366,7 @@ class BatteryHealthCheckViewModel {
 								})
 							})
 						})
-					})
+//					})
 				}
 			}
 			break
@@ -377,13 +379,13 @@ class BatteryHealthCheckViewModel {
 						//DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
 							Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data1 in
 								let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
-							//	DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+								DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
 									Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data in
 										testCommand.deviceReponse = data
 										print(Date(), "BMS PID response\(data)", to: &Log.log)
 										onCompletion!(testCommand)
 									})
-								//})
+								})
 							})
 						//})
 					}
@@ -392,10 +394,10 @@ class BatteryHealthCheckViewModel {
 				if let header = testCommand.challenge?.header {
 					guard let pid = testCommand.challenge?.pid else { return }
 					let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
-					DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
+//					DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
 						Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
 							let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
-							DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+							DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
 								Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data in
 									testCommand.deviceReponse = data
 									print(Date(), "BMS PID response\(data)", to: &Log.log)
@@ -403,7 +405,7 @@ class BatteryHealthCheckViewModel {
 								})
 							})
 						})
-					})
+//					})
 				}
 			}
 			break
@@ -413,9 +415,9 @@ class BatteryHealthCheckViewModel {
 					if let header = testCommand.challenge?.header {
 						guard let pid = testCommand.challenge?.pid else { return }
 						let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
-						DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
 							Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
 								let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
+								DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
 								Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data in
 									testCommand.deviceReponse = data
 									print(Date(), "Pack Temperature PID response\(data)", to: &Log.log)
@@ -429,9 +431,10 @@ class BatteryHealthCheckViewModel {
 				if let header = testCommand.challenge?.header {
 					guard let pid = testCommand.challenge?.pid else { return }
 					let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
-					DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+					
 						Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
 							let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
+							DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
 							Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data in
 								testCommand.deviceReponse = data
 								print(Date(), "Pack Temperature PID response\(data)", to: &Log.log)
@@ -448,9 +451,10 @@ class BatteryHealthCheckViewModel {
 					if let header = testCommand.challenge?.header {
 						guard let pid = testCommand.challenge?.pid else { return }
 						let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
-						DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+						
 							Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
 								let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
+								DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
 								Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data in
 									testCommand.deviceReponse = data
 									print(Date(), "Pack Voltage PID response\(data)", to: &Log.log)
@@ -464,9 +468,9 @@ class BatteryHealthCheckViewModel {
 				if let header = testCommand.challenge?.header {
 					guard let pid = testCommand.challenge?.pid else { return }
 					let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
-					DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
 						Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
 							let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
+							DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
 							Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data in
 								testCommand.deviceReponse = data
 								print(Date(), "Pack Voltage PID response\(data)", to: &Log.log)
@@ -483,9 +487,9 @@ class BatteryHealthCheckViewModel {
 					if let header = testCommand.challenge?.header {
 						guard let pid = testCommand.challenge?.pid else { return }
 						let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
-						DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
 							Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
 								let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
+								DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
 								Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data in
 									testCommand.deviceReponse = data
 									print(Date(), "Pack Current PID response\(data)", to: &Log.log)
@@ -499,9 +503,10 @@ class BatteryHealthCheckViewModel {
 				if let header = testCommand.challenge?.header {
 					guard let pid = testCommand.challenge?.pid else { return }
 					let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
-					DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+					
 						Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
 							let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
+							DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
 							Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data in
 								testCommand.deviceReponse = data
 								print(Date(), "Pack Current PID response\(data)", to: &Log.log)
@@ -518,9 +523,10 @@ class BatteryHealthCheckViewModel {
 					if let header = testCommand.challenge?.header {
 						guard let pid = testCommand.challenge?.pid else { return }
 						let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
-						DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+						
 							Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
 								let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
+								DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
 								Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data in
 									testCommand.deviceReponse = data
 									print(Date(), "Cell Voltage PID response\(data)", to: &Log.log)
@@ -534,9 +540,10 @@ class BatteryHealthCheckViewModel {
 				if let header = testCommand.challenge?.header {
 					guard let pid = testCommand.challenge?.pid else { return }
 					let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
-					DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+					
 						Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
 							let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
+							DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
 							Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data in
 								testCommand.deviceReponse = data
 								print(Date(), "Cell Voltage PID response\(data)", to: &Log.log)
@@ -568,7 +575,7 @@ class BatteryHealthCheckViewModel {
 			isFlowControlChanged = true
 			self.previousFlowControlData = flowControl.flowControlData
 			let flowControlData = Constants.ATFCSD + flowControl.flowControlData! + Constants.NEW_LINE_CHARACTER
-			DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+			DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
 				Network.shared.bluetoothService?.writeBytesData(data: flowControlData, completionHandler: { data in
 					if isFlowControlChanged {
 						let flowControlChangedCommand = Constants.ATFCSM1 + Constants.NEW_LINE_CHARACTER
@@ -590,10 +597,12 @@ class BatteryHealthCheckViewModel {
 				let command = sampledCommandsList[commandToRunInLoopIndex]
 				self.runTheCommand(indexValue: self.commandToRunInLoopIndex, testCommand: command , onCompletion: { [self]command in
 					self.totalNumberOfPidCommandsRan += 1
+					print(Date(), "PID command run value \(totalNumberOfPidCommandsRan)", to: &Log.log)
 					self.parseResponse(testCommand: command, index: commandToRunInLoopIndex)
 					if (self.commandToRunInLoopIndex == totalNumberOfCommands - 1) {
 						self.numberOfLogicsParsed += 1
 						self.commandToRunInLoopIndex  = 0
+						print(Date(), "Number of logic parsed\(numberOfLogicsParsed)", to: &Log.log)
 					} else {
 						self.commandToRunInLoopIndex += 1
 					}
@@ -614,6 +623,8 @@ class BatteryHealthCheckViewModel {
 	}
 	
 	private func parseResponse(testCommand: TestCommandExecution?, index: Int) {
+		DispatchQueue.global(qos: .background).async {
+			
 		guard let reponseData = testCommand?.deviceReponse, reponseData.count > 0 else { return  }
 		if reponseData.contains(Constants.QUESTION_MARK) || reponseData.contains(Constants.NODATA) || reponseData.contains(Constants.NO_DATA) || reponseData.contains(Constants.ERROR) {
 			return
@@ -629,11 +640,11 @@ class BatteryHealthCheckViewModel {
 				return
 			}
 			print(Date(), "Hex Value\(haxValueList)", to: &Log.log)
-
+			print("HEX Value  :  Command",haxValueList, testCommand?.type )
 			switch testCommand?.type {
 			case .ODOMETER:
 						if haxValueList.count > 0 {
-							let value = calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
+							let value = self.calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
 							self.odometer = value
 							print(Date(), "Final Odmeter \(value)", to: &Log.log)
 						}
@@ -642,47 +653,47 @@ class BatteryHealthCheckViewModel {
 			case .STATEOFCHARGE:
 
 						if haxValueList.count > 0 {
-							let value = calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
+							let value = self.calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
 							self.stateOfCharge = value
 							print(Date(), "Final State of Charge \(value)", to: &Log.log)
 						}
 				break
 			case .ENERGY_TO_EMPTY:
 						if haxValueList.count > 0 {
-							let value = calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
+							let value = self.calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
 							print(Date(), "Final Energy to empty \(value)", to: &Log.log)
 						}
 				break
 			case .BMS_CAPACITY:
 						if haxValueList.count > 0 {
-							let value = calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
+							let value = self.calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
 							self.bms = value
 							print(Date(), "Final BMS value \(value)", to: &Log.log)
 						}
 				break
 			case .PACK_TEMPERATURE:
 						if haxValueList.count > 0 {
-							let value = calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
-							packTemperatureData.append(value)
+							let value = self.calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
+							self.packTemperatureData.append(value)
 							print(Date(), "Final Pack Temperature Value \(value)", to: &Log.log)
 						}
 				break
 			case .PACK_VOLTAGE:
 						if haxValueList.count > 0 {
-							let value = calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
-							packVoltageData.append(value)
+							let value = self.calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
+							self.packVoltageData.append(value)
 							print(Date(), "Final Pack Voltage Value \(value)", to: &Log.log)
 						}
 				break
 			case .PACK_CURRENT:
 					if testCommand?.deviceReponse != nil {
 						guard let packCurrent = testCommand?.deviceReponse, packCurrent.count > 0   else { return  }
-						let finalStringBytes = typeCastingByteToString(testCommand: testCommand)
+						let finalStringBytes = self.typeCastingByteToString(testCommand: testCommand)
 						let startByte = testCommand?.response?.startByte ?? 0
 						let endByte = testCommand?.response?.endByte ?? 0
 						let numberOfBytesDifference = endByte - startByte
-						let haxValue = findFinalHexValue(haxVal: finalStringBytes, startByete: testCommand?.response?.startByte ?? 0, endByte: testCommand?.response?.endByte ?? 0)
-						let decimalValue = fromHaxToDecimal(haxValue: haxValue)
+						let haxValue = self.findFinalHexValue(haxVal: finalStringBytes, startByete: testCommand?.response?.startByte ?? 0, endByte: testCommand?.response?.endByte ?? 0)
+						let decimalValue = self.fromHaxToDecimal(haxValue: haxValue)
 						var comparisonValue = ""
 						if (numberOfBytesDifference == 0) {
 							comparisonValue = Constants.SEVEN_F
@@ -693,7 +704,7 @@ class BatteryHealthCheckViewModel {
 						let multiplier = testCommand?.response?.multiplier ?? 1.0
 						var packCurrentValue = 0.0
 						
-						if (decimalValue < fromHaxToDecimal(haxValue: comparisonValue)) {
+						if (decimalValue < self.fromHaxToDecimal(haxValue: comparisonValue)) {
 							packCurrentValue = Double(decimalValue) * multiplier * -1
 						} else {
 							var valueFromWhichToSubtract = ""
@@ -702,30 +713,31 @@ class BatteryHealthCheckViewModel {
 							} else {
 								valueFromWhichToSubtract = Constants.FF.padding(toLength: ((numberOfBytesDifference + 1) * 2), withPad: "F", startingAt: 0)
 							}
-							packCurrentValue = Double((fromHaxToDecimal(haxValue: valueFromWhichToSubtract) - decimalValue)) * multiplier
+							packCurrentValue = Double((self.fromHaxToDecimal(haxValue: valueFromWhichToSubtract) - decimalValue)) * multiplier
 						}
 						
 						let constantValue = testCommand?.response?.constant ?? 0
 						let finalValue = packCurrentValue + Double(constantValue)
 						print(Date(), "Final Pack Current Value \(finalValue)", to: &Log.log)
-						packCurrentData.append(finalValue)
+						self.packCurrentData.append(finalValue)
 				}
 				break
 			case .CELL_VOLTAGE:
                 if let _ = testCommand?.challenge?.flowControl {
-                    let _ = self.handlingMultiframeString(testCommand: testCommand)
+                    let cellVoltArray = self.handlingMultiframeString(testCommand: testCommand)
+					print("cell volt array", cellVoltArray)
 
                 } else {
 						if haxValueList.count > 0 {
-							let value = calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
+							let value = self.calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
 							print(Date(), "Final Cell Voltage Value \(value)", to: &Log.log)
-							cellVoltageData.append(value)
+							self.cellVoltageData.append(value)
 						}
                     }
 				break
 			case .BATTERY_AGE:
 						if haxValueList.count > 0 {
-							let value = calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
+							let value = self.calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
 							print(Date(), "Final Battery Age Value \(value)", to: &Log.log)
 						}
 				break
@@ -733,7 +745,7 @@ class BatteryHealthCheckViewModel {
 				break
 			case .MISC_COMMANDS:
 						if haxValueList.count > 0 {
-							let _ = calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
+							let _ = self.calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
 						}
 				break
 			case .none:
@@ -741,6 +753,7 @@ class BatteryHealthCheckViewModel {
 			case .Other:
 				break
 			}
+		}
 		}
 	}
 	

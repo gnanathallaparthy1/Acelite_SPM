@@ -14,10 +14,41 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 		// Override point for customization after application launch.
-		FirebaseApp.configure()
+		
+		
+//		#if PROD
+//		print("PROD")
+//
+//		#elseif DEV
+//		print("DEV")
+//		
+//		#endif
+        #if PROD
+		
+		setupFirebaseConfigFiles(fileName: "GoogleService-Info-Prod")
+		
+		#elseif DEV
+		setupFirebaseConfigFiles(fileName: "GoogleService-Info")
+	   
+		#endif
+		
+		
+		
+		//FirebaseApp.configure()
 		UIApplication.shared.isIdleTimerDisabled = true
 		return true
 	}
+	
+	private func setupFirebaseConfigFiles(fileName: String) {
+			//load a named file
+			let filePath = Bundle.main.path(forResource: fileName, ofType: "plist")
+			guard let fileopts = FirebaseOptions(contentsOfFile: filePath!)  else {
+				print("file not found")
+				return
+				
+			}
+			FirebaseApp.configure(options: fileopts)
+		}
 
 	// MARK: UISceneSession Lifecycle
 

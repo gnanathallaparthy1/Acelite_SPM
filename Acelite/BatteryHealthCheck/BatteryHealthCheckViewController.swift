@@ -159,21 +159,21 @@ class BatteryHealthCheckViewController: UIViewController {
 			// both booleans are true
 				self.viewModel?.handleInstructions()
 			   // self.viewModel?.isLoopingTimeInProgress = true
-			    self.viewModel?.commandToRunInLoopIndex += 1
+			   // self.viewModel?.commandToRunInLoopIndex += 1
 			    self.viewModel?.isTimeInProgress = true
 			self.timer = Timer.scheduledTimer(timeInterval: 1, target: self,   selector:(#selector(updateTimerforStartCar)), userInfo: nil, repeats: true)
 		case .startClimateControls:
 			self.updateBodyContentView(batteryHealthInstruction: .testInProgresInitial)
 			updateViewWithRCValues()
 			//self.viewModel?.isLoopingTimeInProgress = true
-			self.viewModel?.commandToRunInLoopIndex += 1
+			//self.viewModel?.commandToRunInLoopIndex += 1
 			self.timer = Timer.scheduledTimer(timeInterval: 1, target: self,   selector:(#selector(updateTimerforStartClimateControls)), userInfo: nil, repeats: true)
 		case .testInProgresInitial:
 			self.timer = Timer.scheduledTimer(timeInterval: 1, target: self,   selector:(#selector(updateTimerforTestInProgressInitial)), userInfo: nil, repeats: true)
 		case .turnOffClimateControls:
 			self.updateBodyContentView(batteryHealthInstruction: .testInprogressFinal)
 			//self.viewModel?.isLoopingTimeInProgress = true
-			self.viewModel?.commandToRunInLoopIndex += 1
+			//self.viewModel?.commandToRunInLoopIndex += 1
 			self.timer = Timer.scheduledTimer(timeInterval: 1, target: self,   selector:(#selector(updateTimerforTurnOffClimateControls)), userInfo: nil, repeats: true)
 		case .testInprogressFinal:
 			updateViewWithRCValues()
@@ -288,7 +288,7 @@ class BatteryHealthCheckViewController: UIViewController {
 			//timerValue = 5000
 			timerValue = RemoteConfig.remoteConfig().configValue(forKey: "firstStepTimeInMs").numberValue
 		case .startClimateControls:
-			// timerValue = 10000
+			 //timerValue = 10000
 			timerValue = RemoteConfig.remoteConfig().configValue(forKey: "secondStepTimeInMs").numberValue
 			self.view.layoutSubviews()
 		case .testInProgresInitial:
@@ -296,11 +296,11 @@ class BatteryHealthCheckViewController: UIViewController {
 			timerValue = RemoteConfig.remoteConfig().configValue(forKey: "firstStepTimeInMs").numberValue
 			self.view.layoutSubviews()
 		case .turnOffClimateControls:
-			 //timerValue = 10000
+			// timerValue = 10000
 			timerValue = RemoteConfig.remoteConfig().configValue(forKey: "firstStepTimeInMs").numberValue
 		case .testInprogressFinal:
 			self.updateBodyContentView(batteryHealthInstruction: .testInprogressFinal)
-			// timerValue = 5000
+			//timerValue = 5000
 			timerValue = RemoteConfig.remoteConfig().configValue(forKey: "firstStepTimeInMs").numberValue
 		}
 	
@@ -450,6 +450,9 @@ extension BatteryHealthCheckViewController: GetPreSignedUrlDelegate, UploadAndSu
 	   }
 	   if let multiCellVoltageData = viewModel?.multiCellVoltageData {
 		   vc.multiCellVoltageData = multiCellVoltageData
+	   }
+	   if let batteryInstrucId = viewModel?.batteryTestInstructionId {
+		   vc.testInstructionsId = batteryInstrucId
 	   }
 	   let dialogMessage = UIAlertController(title: "TURN OFF THE CAR", message: "Turn off the car and disconnect the OBD-II cable.", preferredStyle: .alert)
 	   // Create OK button with action handler

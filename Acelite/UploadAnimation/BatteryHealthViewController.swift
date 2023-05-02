@@ -28,6 +28,7 @@ class BatteryHealthViewController: UIViewController {
 	@IBOutlet weak var vinLabel: UILabel!
 	@IBOutlet weak var modelNameLabel: UILabel!
 	
+	@IBOutlet weak var healthLabel: UILabel!
 	@IBOutlet weak var DoneBtn: UIButton!
 	
 	@IBOutlet weak var scoreLabel: UILabel!
@@ -55,7 +56,9 @@ class BatteryHealthViewController: UIViewController {
         super.viewDidLoad()
 		self.navigationItem.hidesBackButton = true
 		self.gradeLabel.text = viewModel?.grade?.title
-		self.scoreLabel.text = viewModel?.healthScore
+		let healthScore = viewModel?.healthScore ?? 0
+		self.scoreLabel.text = "\(healthScore)"
+		self.healthLabel.text = viewModel?.health ?? ""
 		let vehicle = viewModel?.vehicleInfo
 		self.modelNameLabel.text = vehicle?.title
 		self.vinLabel.text = vehicle?.vin
@@ -75,12 +78,12 @@ class BatteryHealthViewController: UIViewController {
 			"Vin number": vinInfo,
 			"Work order": workOrder,
 			"Date-Time": "\(getCurrentDateAndTime())",
-			"Score": "4",
-			"Grade": "N/A",
+			"Score": "\(String(describing: viewModel?.healthScore))",
+			"Grade": "\(String(describing: viewModel?.grade?.title))",
 			"Transaction ID": trasctionID,
 			"Model": vinModels,
 			"Body Style": bodyStyle,
-			"Health": "Good"
+			"Health": "\(String(describing: viewModel?.health))"
 		]
     }
 	

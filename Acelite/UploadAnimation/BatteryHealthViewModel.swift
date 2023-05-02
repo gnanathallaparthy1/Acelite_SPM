@@ -11,14 +11,16 @@ class BatteryHealthViewModel {
 	
 	public var vehicleInfo: Vehicle?
 	public var transactionId: String?
+	public var health: String?
 	public var grade: VehicleGrade?
-	public var healthScore : String?
+	public var healthScore : Int?
 	
-	init(vehicleInfo: Vehicle, transactionID: String, healthScore: String, grade: VehicleGrade) {
+	init(vehicleInfo: Vehicle, transactionID: String, healthScore: Int, grade: VehicleGrade, health: String) {
 		self.vehicleInfo = vehicleInfo
 		self.transactionId = transactionID
 		self.healthScore = healthScore
 		self.grade = grade
+		self.health = health
 	}
 //	init(healthScore: String, grade: VehicleGrade) {
 //		self.healthScore = healthScore
