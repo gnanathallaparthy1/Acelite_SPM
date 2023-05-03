@@ -35,16 +35,6 @@ class BatteryHealthViewController: UIViewController {
 	public var viewModel: BatteryHealthViewModel?
 	
 	@IBAction func DoneButtonPressed(_ sender: Any) {
-		let text = "Developer"
-		let folder = "SavedFiles"
-		let timeStamp = Date.currentTimeStamp
-		let fileNamed = "\(timeStamp)"
-		guard let path = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first else { return }
-		guard let writePath = NSURL(fileURLWithPath: path).appendingPathComponent(folder) else { return }
-		try? FileManager.default.createDirectory(atPath: writePath.path, withIntermediateDirectories: true)
-		let file = writePath.appendingPathComponent(fileNamed + ".txt")
-		try? text.write(to: file, atomically: false, encoding: String.Encoding.utf8)
-		
 		//==============================
 		var dict: [[String: String]] = userDefaults.object(forKey: "myKey") as? [[String : String]] ?? [[String : String]]()
 		dict.append(dictionary)
