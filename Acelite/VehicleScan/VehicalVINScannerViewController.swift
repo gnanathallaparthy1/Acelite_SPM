@@ -134,7 +134,7 @@ class VehicalVINScannerViewController: UIViewController {
 
 }
 extension VehicalVINScannerViewController: ScannerViewDelegate {
-    func didFindScannedText(text: String) {
+	func didFindScannedText(text: String) {
 		//regex validation for vin
 		if  text.count <= 17,  isValidVinNumber(text) == true {
 			self.barcodeTextField?.text = text
@@ -142,6 +142,9 @@ extension VehicalVINScannerViewController: ScannerViewDelegate {
 			let dialogMessage = UIAlertController(title: "WHOOPS!", message: "Please enter a Valid Vin Number ", preferredStyle: .alert)
 			// Create OK button with action handler
 			let ok = UIAlertAction(title: "Ok", style: .default, handler: { (action) -> Void in
+				DispatchQueue.main.async {
+					self.navigationController?.popViewController(animated: true)
+				}
 			})
 			self.nextButton.isUserInteractionEnabled = false
 			self.nextButton.isEnabled = false
@@ -150,17 +153,15 @@ extension VehicalVINScannerViewController: ScannerViewDelegate {
 			// Present Alert to
 			self.present(dialogMessage, animated: true, completion: nil)
 		}
-       
-    }
-    
-    
+	   
+	}
 }
 
 extension VehicalVINScannerViewController: UITextFieldDelegate {
     
 
 	func textFieldDidBeginEditing(_ textField: UITextField) {
-		//self.barcodeTextField?.text = "1N4BZ1CP3LC310701"
+		//self.barcodeTextField?.text = "1N4AZ0CP3FC331073"
 		//singleframeVin
 		//"3FA6P0LU8JR142415"
 		//MultiFrame with BMS

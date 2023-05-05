@@ -25,7 +25,7 @@ struct SubmitBatteryDataFilesWithStateOfCharge: Codable {
 
 // MARK: - BatteryScore
 struct BatteryScore: Codable {
-	let score: Int
+	let score: Float
 	let grade, health: String
 	let factorsUsed: [FactorsUsed]
 }

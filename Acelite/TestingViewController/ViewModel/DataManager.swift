@@ -143,23 +143,23 @@ enum CommandType: CaseIterable {
 		 case .ODOMETER:
 			 return "odometer"
 		 case .STATEOFCHARGE:
-			 return "state Of Charge"
+			 return "stateOfCharge"
 		 case .ENERGY_TO_EMPTY:
-			 return ""
+			 return "energyToEmpty"
 		 case .BMS_CAPACITY:
-			 return ""
+			 return "bmsCapacity"
 		 case .PACK_TEMPERATURE:
-			 return "Pack temperature"
+			 return "packTemperature"
 		 case .PACK_VOLTAGE:
-			 return "pack voltage"
+			 return "packVoltage"
 		 case .PACK_CURRENT:
-			 return "pack current"
+			 return "packCurrent"
 		 case .CELL_VOLTAGE:
-			 return "cell voltage"
+			 return "cellVoltage"
 		 case .BATTERY_AGE:
 			 return ""
 		 case .DIAGNOSTIC_SESSION:
-			 return ""
+			 return "diagnosticSession"
 		 case .MISC_COMMANDS:
 			 return ""
 		 case .Other:

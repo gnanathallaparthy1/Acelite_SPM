@@ -48,6 +48,7 @@ class ViewController: UIViewController {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		FirebaseLogging.instance.logScreen(screenName: ClassNames.obdiConnect)
 		self.navigationController?.setStatusBar(backgroundColor: UIColor.appPrimaryColor())
 		self.navigationController?.navigationBar.setNeedsLayout()
 	

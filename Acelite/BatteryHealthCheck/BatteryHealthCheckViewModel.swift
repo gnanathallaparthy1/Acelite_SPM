@@ -47,6 +47,7 @@ class BatteryHealthCheckViewModel {
 	public var multiCellVoltageData = [[Double]]()
 	public var stateOfCharge: Double?
 	public var bms: Double?
+	public var currentEnergy: Double?
 	public var batteryTestInstructionId: String?
 	private var odometer: Double?
 	private var transactionId: String?
@@ -82,6 +83,7 @@ class BatteryHealthCheckViewModel {
 			normalCommandsList.append(commandCalss)
 			let stateOfCharge = command.testCommands?.stateOfHealthCommands?.stateOfCharge
 			let bms = command.testCommands?.stateOfHealthCommands?.bmsCapacity
+			let energyToEmpty = command.testCommands?.stateOfHealthCommands?.energyToEmpty
 			if let elmProtocol  = stateOfCharge?.odometerProtocol, let chal = stateOfCharge?.challenge, let res = stateOfCharge?.response, let val = stateOfCharge?.validation {
 				let stateOfChargeCommands = TestCommandExecution(type: .STATEOFCHARGE , resProtocal: elmProtocol, challenge: chal, response: res, validation: val)
 				normalCommandsList.append(stateOfChargeCommands)
@@ -92,6 +94,13 @@ class BatteryHealthCheckViewModel {
 				let bmsComands = TestCommandExecution(type: .BMS_CAPACITY , resProtocal: elmProtocol, challenge: chal, response: res, validation: val)
 				normalCommandsList.append(bmsComands)
 			}
+			
+			if let elmProtocol  = energyToEmpty?.odometerProtocol, let chal = energyToEmpty?.challenge, let res = energyToEmpty?.response, let val = energyToEmpty?.validation {
+				
+				let energyToEmptyCommand = TestCommandExecution(type: .ENERGY_TO_EMPTY , resProtocal: elmProtocol, challenge: chal, response: res, validation: val)
+				normalCommandsList.append(energyToEmptyCommand)
+			}
+
 			
 			let diagnosticSession = command.testCommands?.diagnosticSession
 			if let diaChal = diagnosticSession?.challenge, let pro = diagnosticSession?.diagnosticSessionProtocol {
@@ -330,43 +339,43 @@ class BatteryHealthCheckViewModel {
 				}
 			}
 			
-			
+			//vv imp
 		case .ENERGY_TO_EMPTY:
 			if let flowControl = testCommand.challenge?.flowControl {
 				self.runFlowControlHeaderAndData(flowControl: flowControl, testCommand: testCommand) { command in
 					if let header = testCommand.challenge?.header {
 						guard let pid = testCommand.challenge?.pid else { return }
 						let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
-//						DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
+						DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
 							Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
 								let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
 								DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
 									Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data in
 										testCommand.deviceReponse = data
-										print(Date(), "BMS PID response\(data)", to: &Log.log)
+										print(Date(), "Energy to empty PID response\(data)", to: &Log.log)
 										onCompletion!(testCommand)
 									})
 								})
 							})
-//						})
+						})
 					}
 				}
 			} else {
 				if let header = testCommand.challenge?.header {
 					guard let pid = testCommand.challenge?.pid else { return }
 					let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
-//					DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
+					DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
 						Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
 							let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
 							DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
 								Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data in
 									testCommand.deviceReponse = data
-									print(Date(), "BMS PID response\(data)", to: &Log.log)
+									print(Date(), "Energy to empty PID response\(data)", to: &Log.log)
 									onCompletion!(testCommand)
 								})
 							})
 						})
-//					})
+					})
 				}
 			}
 			break
@@ -651,7 +660,6 @@ class BatteryHealthCheckViewModel {
 
 				break
 			case .STATEOFCHARGE:
-
 						if haxValueList.count > 0 {
 							let value = self.calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
 							self.stateOfCharge = value
@@ -661,6 +669,7 @@ class BatteryHealthCheckViewModel {
 			case .ENERGY_TO_EMPTY:
 						if haxValueList.count > 0 {
 							let value = self.calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
+							self.currentEnergy = value
 							print(Date(), "Final Energy to empty \(value)", to: &Log.log)
 						}
 				break

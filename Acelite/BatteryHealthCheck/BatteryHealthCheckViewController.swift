@@ -445,6 +445,10 @@ extension BatteryHealthCheckViewController: GetPreSignedUrlDelegate, UploadAndSu
 	   if let bms = viewModel?.bms {
 		   vc.bmsCapacity = bms
 	   }
+	   if let currentEnergey = viewModel?.currentEnergy {
+		   vc.currentEnerygy = currentEnergey
+	   }
+			
 	   if let numberofCell = viewModel?.numberOfCells {
 		   vc.numberofCells = numberofCell
 	   }

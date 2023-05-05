@@ -87,6 +87,8 @@
 		86E86B9B29C0CC25007182DB /* FirebaseDatabaseSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 86E86B9A29C0CC25007182DB /* FirebaseDatabaseSwift */; };
 		86E86B9D29C0CC26007182DB /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = 86E86B9C29C0CC26007182DB /* FirebaseRemoteConfig */; };
 		86E86B9F29C0CC26007182DB /* FirebaseRemoteConfigSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 86E86B9E29C0CC26007182DB /* FirebaseRemoteConfigSwift */; };
+		86F3786F2A04222B004601D9 /* FirebaseConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F3786E2A04222B004601D9 /* FirebaseConstants.swift */; };
+		86F378712A049B79004601D9 /* FirebaseLogging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F378702A049B79004601D9 /* FirebaseLogging.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -184,6 +186,8 @@
 		86CDBA6829B653D400956B4C /* UploadAnimationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadAnimationViewModel.swift; sourceTree = "<group>"; };
 		86E727EA29FEF3370057C546 /* GoogleService-Info-Prod.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info-Prod.plist"; sourceTree = "<group>"; };
 		86E86B9129C0CA5B007182DB /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		86F3786E2A04222B004601D9 /* FirebaseConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseConstants.swift; sourceTree = "<group>"; };
+		86F378702A049B79004601D9 /* FirebaseLogging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseLogging.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -253,6 +257,7 @@
 		861E6EC82953789B00443F12 /* Acelite */ = {
 			isa = PBXGroup;
 			children = (
+				86F3786D2A041A6C004601D9 /* Firebase */,
 				8639CDB729F85268004E813D /* Alerts */,
 				8639CDB429F7FF75004E813D /* VehicleScan */,
 				8651312329CB88C400886134 /* HambugerMenuItems */,
@@ -518,6 +523,15 @@
 			path = UploadAnimation;
 			sourceTree = "<group>";
 		};
+		86F3786D2A041A6C004601D9 /* Firebase */ = {
+			isa = PBXGroup;
+			children = (
+				86F3786E2A04222B004601D9 /* FirebaseConstants.swift */,
+				86F378702A049B79004601D9 /* FirebaseLogging.swift */,
+			);
+			path = Firebase;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -704,6 +718,7 @@
 				8636D41429CE201C0045BD53 /* TestableModelsViewController.swift in Sources */,
 				86636DC9297B0AA2001240FB /* TerminalViewController.swift in Sources */,
 				8639CDB329F6FCF8004E813D /* VehicalVINScannerViewController.swift in Sources */,
+				86F378712A049B79004601D9 /* FirebaseLogging.swift in Sources */,
 				8677DBAB29BFA73A001C42CD /* CircularProgressBarView.swift in Sources */,
 				866CDB61298C206E00ADFB50 /* VehicleInformationViewModel.swift in Sources */,
 				8609395329BF89A3001DE232 /* BatteryHealthCheckViewModel.swift in Sources */,
@@ -720,6 +735,7 @@
 				8691E0F229B2B877002C6E05 /* SubmitBatteryFilesWithSOCModel.swift in Sources */,
 				8639046A299557B2008D5A0A /* DataManager.swift in Sources */,
 				86B169E729B54FCD0024EFFF /* CustomAlertView.swift in Sources */,
+				86F3786F2A04222B004601D9 /* FirebaseConstants.swift in Sources */,
 				861EDE7329B7AFC0003A1C81 /* ArcModel.swift in Sources */,
 				866CDB4C2982F63700ADFB50 /* VehicalDetailsModel.swift in Sources */,
 				86C2BB9E29F1A23D004D4D42 /* API.swift in Sources */,
@@ -921,7 +937,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = QMYQQM43B7;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Acelite/Info.plist;
@@ -961,7 +977,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = QMYQQM43B7;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Acelite/Info.plist;
@@ -1138,7 +1154,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = QMYQQM43B7;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Acelite/Info.plist;
@@ -1272,7 +1288,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = QMYQQM43B7;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Acelite/Info.plist;
