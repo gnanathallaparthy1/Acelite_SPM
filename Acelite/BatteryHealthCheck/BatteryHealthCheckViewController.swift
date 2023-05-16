@@ -144,6 +144,7 @@ class BatteryHealthCheckViewController: UIViewController {
 		self.startButton.backgroundColor = AceliteColors.buttonBgColorGray
 		switch batteryHealthInstruction {
 		case .startTheCar:
+			FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.instructionsStep1Started, parameters: nil)
 			// both booleans are true
 				self.viewModel?.handleInstructions()
 			   // self.viewModel?.isLoopingTimeInProgress = true
@@ -151,6 +152,7 @@ class BatteryHealthCheckViewController: UIViewController {
 			    self.viewModel?.isTimeInProgress = true
 			self.timer = Timer.scheduledTimer(timeInterval: 1, target: self,   selector:(#selector(updateTimerforStartCar)), userInfo: nil, repeats: true)
 		case .startClimateControls:
+			FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.instructionsStep2Started, parameters: nil)
 			self.updateBodyContentView(batteryHealthInstruction: .testInProgresInitial)
 			updateViewWithRCValues()
 			//self.viewModel?.isLoopingTimeInProgress = true
@@ -159,6 +161,7 @@ class BatteryHealthCheckViewController: UIViewController {
 		case .testInProgresInitial:
 			self.timer = Timer.scheduledTimer(timeInterval: 1, target: self,   selector:(#selector(updateTimerforTestInProgressInitial)), userInfo: nil, repeats: true)
 		case .turnOffClimateControls:
+			FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.instructionsStep3Started, parameters: nil)
 			self.updateBodyContentView(batteryHealthInstruction: .testInprogressFinal)
 			//self.viewModel?.isLoopingTimeInProgress = true
 			//self.viewModel?.commandToRunInLoopIndex += 1

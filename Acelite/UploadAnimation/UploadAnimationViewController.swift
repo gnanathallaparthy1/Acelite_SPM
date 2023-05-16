@@ -124,6 +124,8 @@ class UploadAnimationViewController: UIViewController {
 						preSignedData = try JSONSerialization.data(withJSONObject: getS3PreSingedData as Any)
 					} catch {
 						//print("Unexpected error: \(error).")
+					
+						FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.s3PreSignedUrlError, parameters: nil)
 					}
 					
 					do {
@@ -132,19 +134,25 @@ class UploadAnimationViewController: UIViewController {
 						self.transactionId = preSignedResponse.transactionID
 						self.preSignedData = preSignedResponse
 						self.preparingLogicForCSVFileGeration()
+						FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.s3PreSignedUrlSuccess, parameters: nil)
 					} catch DecodingError.dataCorrupted(let context) {
 						//print(context)
+						FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.s3PreSignedUrlError, parameters: nil)
 					} catch DecodingError.keyNotFound(let key, let context) {
 						print("Key '\(key)' not found:", context.debugDescription)
 						print("codingPath:", context.codingPath)
+						FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.s3PreSignedUrlError, parameters: nil)
 					} catch DecodingError.valueNotFound(let value, let context) {
 						//print("Value '\(value)' not found:", context.debugDescription)
 						print("codingPath:", context.codingPath)
+						FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.s3PreSignedUrlError, parameters: nil)
 					} catch DecodingError.typeMismatch(let type, let context) {
 						print("Type '\(type)' mismatch:", context.debugDescription)
 						print("codingPath:", context.codingPath)
+						FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.s3PreSignedUrlError, parameters: nil)
 					} catch {
 						print("error: ", error)
+						FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.s3PreSignedUrlError, parameters: nil)
 					}
 				}
 				
@@ -152,10 +160,11 @@ class UploadAnimationViewController: UIViewController {
 				// 5
 				//self.preSignedDelegate?.handleErrorTransactionID()
 				print("Error loading data \(error)")
+				FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.s3PreSignedUrlError, parameters: nil)
 			}
 		}
 	}
-	
+
 	func preparingLogicForCSVFileGeration() {
 		let cellVoltageList = sampledCommandsList.filter { testCommand in
 			return testCommand.type == .CELL_VOLTAGE
@@ -170,6 +179,27 @@ class UploadAnimationViewController: UIViewController {
 				print("after process result count", result.count)
 			}
 			let listCount: [Int] = [result.count,  self.packCurrentData.count, self.packVoltageData.count]
+			
+			if result.count == 0 {
+				let paramDictionary = [
+				   "file_type": "CELL_VOLTAGE"
+				  ]
+				FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.uploadFileError, parameters: paramDictionary)
+				return
+			} else if self.packCurrentData.count == 0 {
+				let paramDictionary = [
+				   "file_type": "PACK_CURRENT"
+				  ]
+				FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.uploadFileError, parameters: paramDictionary)
+				return
+			} else if self.packVoltageData.count == 0 {
+				let paramDictionary = [
+				   "file_type": "PACK_VOLTAGE"
+				  ]
+				FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.uploadFileError, parameters: paramDictionary)
+				return
+			}
+
 			minVlaue = listCount.min() ?? 0
 			print("min value from count array", minVlaue)
 			if minVlaue == 0 {
@@ -211,6 +241,11 @@ class UploadAnimationViewController: UIViewController {
 		csvDispatchGroup.enter()
 		
 		csvFileUploadingIntoS3Bucket(fileName: pack_CurrentFilePath.absoluteString)
+		let paramDictionary = [
+		   "file_type": "PACK_CURRENT"
+		  ]
+		FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.uploadFileSuccess, parameters: paramDictionary)
+		
 	}
 	
 	// MARK: Create pack voltage CSV
@@ -221,6 +256,10 @@ class UploadAnimationViewController: UIViewController {
 		csvDispatchGroup.enter()
 		let pack_VoltageFilePath = pack_Voltage.creatCSVForArray(data: data)
 		csvFileUploadingIntoS3Bucket(fileName: pack_VoltageFilePath.absoluteString)
+		let paramDictionary = [
+		   "file_type": "PACK_VOLTAGE"
+		  ]
+		FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.uploadFileSuccess, parameters: paramDictionary)
 	}
 	
 	// MARK: Create Cell Voltage CSV
@@ -231,6 +270,10 @@ class UploadAnimationViewController: UIViewController {
 		csvDispatchGroup.enter()
 		let cellVoltageFilePath = cell_voltage.createMultiframeCSV(data: data)
 		csvFileUploadingIntoS3Bucket(fileName: cellVoltageFilePath.absoluteString)
+		let paramDictionary = [
+		   "file_type": "CELL_VOLTAGE"
+		  ]
+		FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.uploadFileSuccess, parameters: paramDictionary)
 	}
 	
 	
@@ -427,6 +470,11 @@ class UploadAnimationViewController: UIViewController {
 					if submitData == nil {
 						print(Date(), "SOC:submit API result Map Error :\(String(describing: graphQLResults.errors))", to: &Log.log)
 						self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "\(String(describing: graphQLResults.errors))", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinModels, year: years)
+						let paramDictionary = [
+						   "submit_type": "STATE_OF_CHARGE",
+						   "batter_test_instructions_id": "\(String(describing: self.testInstructionsId))",
+						   "errorCode":"\(String(describing: graphQLResults.errors))"]
+						FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.submitBatteryFilesError, parameters: paramDictionary)
 						return
 					} else {
 						let jsonObject = submitData.jsonValue
@@ -445,7 +493,7 @@ class UploadAnimationViewController: UIViewController {
 									let storyBaord = UIStoryboard.init(name: "Main", bundle: nil)
 									let vc = storyBaord.instantiateViewController(withIdentifier: "BatteryHealthViewController") as! BatteryHealthViewController
 									self.submitSuccessForSubmitAPI(transactionID: self.transactionId ?? "", vinMake: vinMake, score: "\(submitBatteryData.batteryScore?.score ?? 0)", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: vinYear)
-									let vm = BatteryHealthViewModel(vehicleInfo: veh, transactionID: self.transactionId ?? "", healthScore: submitBatteryData.batteryScore?.score ?? 0.0, grade: VehicleGrade(rawValue: VehicleGrade(rawValue: submitBatteryData.batteryScore?.grade ?? "N/A")?.title ??  "N/A") ?? .A, health: submitBatteryData.batteryScore?.health ?? "N/A")
+									let vm = BatteryHealthViewModel(vehicleInfo: veh, transactionID: self.transactionId ?? "", testIntructionsId: self.testInstructionsId ?? "", healthScore: submitBatteryData.batteryScore?.score ?? 0.0, grade: VehicleGrade(rawValue: VehicleGrade(rawValue: submitBatteryData.batteryScore?.grade ?? "N/A")?.title ??  "N/A") ?? .A, health: submitBatteryData.batteryScore?.health ?? "N/A")
 									
 									vc.viewModel = vm
 									self.navigationController?.pushViewController(vc, animated: true)
@@ -561,6 +609,11 @@ class UploadAnimationViewController: UIViewController {
 						print(Date(), "BMS:submit API Error :\(String(describing: graphQLResults.errors))", to: &Log.log)
 						//TODO Stop Animation and show alert
 						self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "BMS:submit API Error :\(String(describing: graphQLResults.errors))", vinModels: vinModels, submitType: "BMS_CAPACITY", vinNumber: vinModels, year: years)
+						let paramDictionary = [
+						   "submit_type": "BMS_CAPACITY",
+						   "batter_test_instructions_id": "\(String(describing: self.testInstructionsId))",
+						   "errorCode": "\(String(describing: graphQLResults.errors))"]
+						FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.submitBatteryFilesError, parameters: paramDictionary)
 						return
 					}
 					let submitData =  graphQLResults.data?.resultMap["submitBatteryDataFilesWithBmsCapacity"].jsonValue
@@ -585,7 +638,7 @@ class UploadAnimationViewController: UIViewController {
 									let storyBaord = UIStoryboard.init(name: "Main", bundle: nil)
 									let vc = storyBaord.instantiateViewController(withIdentifier: "BatteryHealthViewController") as! BatteryHealthViewController
 									self.submitSuccessForSubmitAPI(transactionID: self.transactionId ?? "", vinMake: vinMake, score: "\(submitBatteryData.batteryScore?.score ?? 0)", vinModels: vinModels, submitType: "BMS_Capacity", vinNumber: vinInfo, year: vinYear)
-									let vm = BatteryHealthViewModel(vehicleInfo: veh, transactionID: self.transactionId ?? "", healthScore: submitBatteryData.batteryScore?.score ?? 0, grade: VehicleGrade(rawValue: VehicleGrade(rawValue: submitBatteryData.batteryScore?.grade ?? "N/A")?.title ??  "N/A") ?? .A, health: submitBatteryData.batteryScore?.health ?? "N/A")
+									let vm = BatteryHealthViewModel(vehicleInfo: veh, transactionID: self.transactionId ?? "", testIntructionsId: self.testInstructionsId ?? "", healthScore: submitBatteryData.batteryScore?.score ?? 0, grade: VehicleGrade(rawValue: VehicleGrade(rawValue: submitBatteryData.batteryScore?.grade ?? "N/A")?.title ??  "N/A") ?? .A, health: submitBatteryData.batteryScore?.health ?? "N/A")
 									
 									vc.viewModel = vm
 									self.navigationController?.pushViewController(vc, animated: true)
@@ -627,6 +680,10 @@ class UploadAnimationViewController: UIViewController {
 	}
 	
 	func submitSuccessForSubmitAPI(transactionID: String, vinMake: String, score: String, vinModels: String, submitType: String, vinNumber: String, year: Int) {
+		let paramDictionary = [
+		   "submit_type": submitType,
+		   "batter_test_instructions_id": "\(String(describing: self.testInstructionsId))"]
+		FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.submitBatteryFilesSuccess, parameters: paramDictionary)
 		let rootRef = Database.database().reference()
 		let ref = rootRef.child("successful_transaction_ids").childByAutoId()
 		//if let batteryInstr =

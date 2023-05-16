@@ -45,11 +45,18 @@ class BatteryHealthViewController: UIViewController {
 	override func viewDidLoad() {
         super.viewDidLoad()
 		FirebaseLogging.instance.logScreen(screenName: ClassNames.confirmation)
+		
+		
 		self.navigationItem.hidesBackButton = true
 		self.gradeLabel.text =  "Grade:" + "\(viewModel?.grade?.title ?? "")"
 		let healthScore = viewModel?.healthScore ?? 0
+		let testInstruc = viewModel?.testInstructionsId
 		self.scoreLabel.text = "\(healthScore)"
 		self.healthLabel.text = viewModel?.health ?? ""
+		let paramDictionary = [
+		   "score": "\(healthScore)",
+		   "batter_test_instructions_id": "\(String(describing: testInstruc))"]
+		FirebaseLogging.instance.logEvent(eventName:ConfirmationScreenEvents.confirmation, parameters: paramDictionary)
 		let vehicle = viewModel?.vehicleInfo
 		self.modelNameLabel.text = vehicle?.title
 		self.vinLabel.text = vehicle?.vin

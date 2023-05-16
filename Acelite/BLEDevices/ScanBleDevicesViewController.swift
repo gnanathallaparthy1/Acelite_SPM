@@ -186,12 +186,12 @@ extension ScanBleDevicesViewController: UITableViewDelegate, UITableViewDataSour
 		//print(cell.connectButton?.titleLabel?.text)
 		
 		if cell.connectButton?.titleLabel?.text == "Connect" {
-			FirebaseLogging.instance.logEvent(eventName:BluetoothScreenEvents.bleDisconnect, parameters: nil)
+			FirebaseLogging.instance.logEvent(eventName:BluetoothScreenEvents.bleConnect, parameters: nil)
 			cell.connectButton.setTitle("Disconnect", for: .normal)
 			cell.testButton.isHidden = false
 			cell.testButton.addTarget(self, action: #selector(self.testbuttonAction(_ :)), for: .touchUpInside)
 		} else {
-			FirebaseLogging.instance.logEvent(eventName:BluetoothScreenEvents.bleConnect, parameters: nil)
+			FirebaseLogging.instance.logEvent(eventName:BluetoothScreenEvents.bleDisconnect, parameters: nil)
 			cell.connectButton.setTitle("Connect", for: .normal)
 			cell.testButton.isHidden = true
 		}

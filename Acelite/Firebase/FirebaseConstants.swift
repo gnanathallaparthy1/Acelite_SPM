@@ -50,6 +50,7 @@ struct TestInstructionsScreenEvents {
 	static let instructionsStep2Started = "instructions_step_2_started"
 	static let instructionsStep3Started = "instructions_step_3_started"
 	static let s3PreSignedUrlError = "s3_pre_signed_url_error"
+	static let s3PreSignedUrlSuccess = "s3_pre_signed_url_success"
 	static let uploadFileSuccess = "upload_file_success"
 	static let uploadFileError = "upload_file_error"
 	static let submitBatteryFilesSuccess = "submit_battery_files_success"
