@@ -32,12 +32,12 @@ class UploadAnimationViewController: UIViewController {
 	public var packTemperatureData = [Double]()
 	public var cellVoltageData = [Double]()
 	public var stateOfCharge: Double?
+	public var odometer: Double?
 	public var currentEnerygy: Double?
 	public var numberofCells: Int?
 	public var multiCellVoltageData = [[Double]]()
 	public var bmsCapacity: Double?
 	public var testInstructionsId: String?
-	private var odometer: Double?
 	private var transactionId: String?
 	private var healthScore: String?
 	var csvDispatchGroup = DispatchGroup()
@@ -123,7 +123,7 @@ class UploadAnimationViewController: UIViewController {
 					do {
 						preSignedData = try JSONSerialization.data(withJSONObject: getS3PreSingedData as Any)
 					} catch {
-						print("Unexpected error: \(error).")
+						//print("Unexpected error: \(error).")
 					}
 					
 					do {
@@ -133,12 +133,12 @@ class UploadAnimationViewController: UIViewController {
 						self.preSignedData = preSignedResponse
 						self.preparingLogicForCSVFileGeration()
 					} catch DecodingError.dataCorrupted(let context) {
-						print(context)
+						//print(context)
 					} catch DecodingError.keyNotFound(let key, let context) {
 						print("Key '\(key)' not found:", context.debugDescription)
 						print("codingPath:", context.codingPath)
 					} catch DecodingError.valueNotFound(let value, let context) {
-						print("Value '\(value)' not found:", context.debugDescription)
+						//print("Value '\(value)' not found:", context.debugDescription)
 						print("codingPath:", context.codingPath)
 					} catch DecodingError.typeMismatch(let type, let context) {
 						print("Type '\(type)' mismatch:", context.debugDescription)
@@ -225,7 +225,7 @@ class UploadAnimationViewController: UIViewController {
 	
 	// MARK: Create Cell Voltage CSV
 	func createCellVoltageCSV(data: [[Double]]) {
-		print("cell-Voltage", data)
+		//print("cell-Voltage", data)
 		//let fileName = self.creatCSV(data: data)
 		let cell_voltage = CSVFile(fileName: "Cell_Volt_\(self.vehicleInfo?.vin ?? "")")
 		csvDispatchGroup.enter()
@@ -250,7 +250,7 @@ class UploadAnimationViewController: UIViewController {
 			multipart.add(key: field.key, value: field.value)
 		}
 		let data = (try? Data(contentsOf: URL(string: fileName) ?? URL(fileURLWithPath: ""))) ?? Data()
-		print("Data::>", data)
+		//print("Data::>", data)
 		multipart.add(
 			key: "file",
 			fileName: "\(fileName)",
@@ -258,11 +258,11 @@ class UploadAnimationViewController: UIViewController {
 			fileData: data
 		)
 		
-		print("**************************************")
-		print("file name", fileName)
+		//print("**************************************")
+		//print("file name", fileName)
 		let dataOfThefile = String(data: data, encoding: .utf8)
-		print("dataOfThefile", dataOfThefile as Any)
-		print("**************************************")
+		//print("dataOfThefile", dataOfThefile as Any)
+		//print("**************************************")
 		
 		
 		/// Create a regular HTTP URL request & use multipart components
@@ -289,10 +289,26 @@ class UploadAnimationViewController: UIViewController {
 					}
 					for command in testCommand {
 						let stateOfCharge = command.testCommands?.stateOfHealthCommands?.stateOfCharge
-						if stateOfCharge != nil {
-							self.submitBatteryDataFileWithSOCGraphRequest()
+						if self.currentReachabilityStatus != .notReachable {
+							if stateOfCharge != nil {
+								self.submitBatteryDataFileWithSOCGraphRequest()
+							} else {
+								self.submitBatteryDataFileWithBMSGraphRequest()
+							}
 						} else {
-							self.submitBatteryDataFileWithBMSGraphRequest()
+							self.stackView.removeFromSuperview()
+							let alertViewController = UIAlertController.init(title: "Oops!", message: "Please check your network connection", preferredStyle: .alert)
+							let ok = UIAlertAction(title: "Retry", style: .default, handler: { (action) -> Void in
+								self.view.addSubview(self.stackView)
+								if stateOfCharge != nil {
+									self.submitBatteryDataFileWithSOCGraphRequest()
+								} else {
+									self.submitBatteryDataFileWithBMSGraphRequest()
+								}
+
+							})
+							alertViewController.addAction(ok)
+							self.present(alertViewController, animated: true, completion: nil)
 						}
 					}
 				}
@@ -313,16 +329,16 @@ class UploadAnimationViewController: UIViewController {
 			guard let writePath = NSURL(fileURLWithPath: path).appendingPathComponent(folder) else { return ""}
 			try? FileManager.default.createDirectory(atPath: writePath.path, withIntermediateDirectories: true)
 			let file = writePath.appendingPathComponent(fileNamed + ".txt")
-			print("file path:::", file)
+			//print("file path:::", file)
 			try? text.write(to: file, atomically: false, encoding: String.Encoding.utf8)
 			// alert
 			//
 			// generated file stored in your phone file folder with app name.
-			print("file path:::", file)
+			//print("file path:::", file)
 			return file.absoluteString
 		} else {
 			// alert logs not generated
-			print("logs not generated")
+			//print("logs not generated")
 			return ""
 		}
 	}
@@ -402,7 +418,7 @@ class UploadAnimationViewController: UIViewController {
 				//print("data ::", data)
 				if graphQLResults.data != nil {
 					if graphQLResults.errors?.count ?? 0 > 0 {
-						print("Error::", graphQLResults.errors!)
+						//print("Error::", graphQLResults.errors!)
 						print(Date(), "SOC:submit API Error :\(String(describing: graphQLResults.errors))", to: &Log.log)
 						self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:submit API Error :\(String(describing: graphQLResults.errors))", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinModels, year: years)
 						return
@@ -538,10 +554,10 @@ class UploadAnimationViewController: UIViewController {
 			switch result {
 			case .success(let graphQLResults):
 				guard let data = try? result.get().data else { return }
-				print("data ::", data)
+				//print("data ::", data)
 				if graphQLResults.data != nil {
 					if graphQLResults.errors?.count ?? 0 > 0 {
-						print("Error::", graphQLResults.errors!)
+						//print("Error::", graphQLResults.errors!)
 						print(Date(), "BMS:submit API Error :\(String(describing: graphQLResults.errors))", to: &Log.log)
 						//TODO Stop Animation and show alert
 						self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "BMS:submit API Error :\(String(describing: graphQLResults.errors))", vinModels: vinModels, submitType: "BMS_CAPACITY", vinNumber: vinModels, year: years)
@@ -618,9 +634,9 @@ class UploadAnimationViewController: UIViewController {
 		ref.setValue(vinBatteryInfo) {
 			(error:Error?, ref:DatabaseReference) in
 			if let error = error {
-				print("Data could not be saved: \(error).")
+				//print("Data could not be saved: \(error).")
 			} else {
-				print("Fail data saved successfully!")
+				//print("Fail data saved successfully!")
 			}
 		}
 	}

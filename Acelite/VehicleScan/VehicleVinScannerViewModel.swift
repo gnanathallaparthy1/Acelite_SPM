@@ -33,7 +33,7 @@ class VehicleVinScannerViewModel {
 			   if graphQLResult.data != nil {
 				   
 				   if graphQLResult.errors?.count ?? 0 > 0 {
-					   print("Error::", graphQLResult.errors!)
+					  // print("Error::", graphQLResult.errors!)
 					   let errorMessage: String = "\(graphQLResult.errors)"
 					   print(Date(), "SOC:submit API Error :\(String(describing: graphQLResult.errors))", to: &Log.log)
 					   self.delegate?.handleErrorVehicleInfoUpdate(message: errorMessage)
@@ -45,7 +45,7 @@ class VehicleVinScannerViewModel {
 				   do {
 					   vehicleData = try JSONSerialization.data(withJSONObject: vehicle as Any)
 				   } catch {
-						   print("Unexpected error: \(error).")
+						   //print("Unexpected error: \(error).")
 					   self.delegate?.handleErrorVehicleInfoUpdate(message: "No result")
 				   }
 									   
@@ -55,22 +55,22 @@ class VehicleVinScannerViewModel {
 					   self.vehicleInformation = messages
 					   self.delegate?.updateVehicleInfo(viewModel: self)
 				   } catch DecodingError.dataCorrupted(let context) {
-					   print(context)
+					  // print(context)
 					   self.delegate?.handleErrorVehicleInfoUpdate(message: "No result")
 				   } catch DecodingError.keyNotFound(let key, let context) {
-					   print("Key '\(key)' not found:", context.debugDescription)
-					   print("codingPath:", context.codingPath)
+					  // print("Key '\(key)' not found:", context.debugDescription)
+					  // print("codingPath:", context.codingPath)
 					   self.delegate?.handleErrorVehicleInfoUpdate(message: "No result")
 				   } catch DecodingError.valueNotFound(let value, let context) {
-					   print("Value '\(value)' not found:", context.debugDescription)
-					   print("codingPath:", context.codingPath)
+					 //  print("Value '\(value)' not found:", context.debugDescription)
+					  // print("codingPath:", context.codingPath)
 					   self.delegate?.handleErrorVehicleInfoUpdate(message: "No result")
 				   } catch DecodingError.typeMismatch(let type, let context) {
-					   print("Type '\(type)' mismatch:", context.debugDescription)
-					   print("codingPath:", context.codingPath)
+//					   print("Type '\(type)' mismatch:", context.debugDescription)
+//					   print("codingPath:", context.codingPath)
 					   self.delegate?.handleErrorVehicleInfoUpdate(message: "No result")
 				   } catch {
-					   print("error: ", error)
+					  // print("error: ", error)
 					   self.delegate?.handleErrorVehicleInfoUpdate(message: "No result")
 				   }
 			   }

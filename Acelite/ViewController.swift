@@ -49,6 +49,7 @@ class ViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		FirebaseLogging.instance.logScreen(screenName: ClassNames.obdiConnect)
+		FirebaseLogging.instance.setUserProperty(value: "StarCharm", forProperty: UserProperty().productType)
 		self.navigationController?.setStatusBar(backgroundColor: UIColor.appPrimaryColor())
 		self.navigationController?.navigationBar.setNeedsLayout()
 	
@@ -142,6 +143,14 @@ class ViewController: UIViewController {
 //			screenState = .ConnectOBDdevice
 //		}
 //		uiViewUpdate()
+//		let storyBaord = UIStoryboard.init(name: "Main", bundle: nil)
+//		let vc = storyBaord.instantiateViewController(withIdentifier: "BatteryHealthViewController") as! BatteryHealthViewController
+//		let vm = BatteryHealthViewModel(healthScore: 2.0)
+//		//BatteryHealthViewModel(vehicleInfo: veh, transactionID: "", healthSc"ore: , grade:.A, health: "Good")
+//		
+//		vc.viewModel = vm
+//		self.navigationController?.pushViewController(vc, animated: true)
+		
 		let storyBoard = UIStoryboard.init(name: "Main", bundle: nil)
 		let vehicalVC = storyBoard.instantiateViewController(withIdentifier: "ScanBleDevicesViewController") as! ScanBleDevicesViewController
 		self.navigationController?.pushViewController(vehicalVC, animated: false)

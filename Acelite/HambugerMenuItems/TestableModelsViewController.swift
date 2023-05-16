@@ -10,7 +10,8 @@ import FirebaseDatabase
 import UIKit
 
 
-class TestableModelsViewController: UITableViewController {
+class TestableModelsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+	@IBOutlet weak var NoDataLabel: UILabel!
 	
 	@IBOutlet var modelTableView: UITableView!
 	var ref = DatabaseReference()
@@ -18,6 +19,7 @@ class TestableModelsViewController: UITableViewController {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		FirebaseLogging.instance.logScreen(screenName: ClassNames.testableModels)
 		modelTableView.delegate = self
 		modelTableView.dataSource = self
 	
@@ -51,11 +53,20 @@ class TestableModelsViewController: UITableViewController {
 		let ref = rootRef.child("testable_models").child("items")
 		let data = ref.observe(.value) { data in
 			self.itemDict = data.value as? [[String: Any]]
-			self.tableView.reloadData()
+			self.modelTableView.reloadData()
+			if self.itemDict?.count ?? 0 > 0  {
+				self.NoDataLabel.isHidden = true
+				self.modelTableView.isHidden = false
+			} else {
+				self.NoDataLabel.isHidden = false
+				self.modelTableView.isHidden = true
+			}
 		}
+		
+		
 	}
 	
-	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+	 func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = modelTableView.dequeueReusableCell(withIdentifier:"TestableTableViewCell",for: indexPath) as! TestableTableViewCell
 		if let person = itemDict?[0] {
 			let name = person["title"] as! String
@@ -71,7 +82,7 @@ class TestableModelsViewController: UITableViewController {
 		return cell
 	}
 	
-	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+	 func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 	 return 1
 	 }
 	

@@ -44,8 +44,9 @@ class BatteryHealthViewController: UIViewController {
 	
 	override func viewDidLoad() {
         super.viewDidLoad()
+		FirebaseLogging.instance.logScreen(screenName: ClassNames.confirmation)
 		self.navigationItem.hidesBackButton = true
-		self.gradeLabel.text = viewModel?.grade?.title
+		self.gradeLabel.text =  "Grade:" + "\(viewModel?.grade?.title ?? "")"
 		let healthScore = viewModel?.healthScore ?? 0
 		self.scoreLabel.text = "\(healthScore)"
 		self.healthLabel.text = viewModel?.health ?? ""
@@ -78,8 +79,8 @@ class BatteryHealthViewController: UIViewController {
     }
 	
 	override func viewWillAppear(_ animated: Bool) {
-		if let grades = viewModel?.grade {
-			self.gaugeView.grade = grades
+		if let score = viewModel?.healthScore {
+			self.gaugeView.scoreValue = score
 		}
 		
 		self.gaugeView.layoutSubviews()

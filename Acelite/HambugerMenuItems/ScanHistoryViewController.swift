@@ -11,9 +11,11 @@ class ScanHistoryViewController: UIViewController, UITableViewDelegate, UITableV
    
     
 
-    @IBOutlet weak var historyTableView: UITableView!
+	@IBOutlet weak var dataNotAvilableLabel: UILabel!
+	@IBOutlet weak var historyTableView: UITableView!
 	var vinDataArray = [[String: String]]()
     override func viewDidLoad() {
+		FirebaseLogging.instance.logScreen(screenName: ClassNames.scanHistory)
         super.viewDidLoad()
         historyTableView.delegate = self
         historyTableView.dataSource = self
@@ -24,7 +26,14 @@ class ScanHistoryViewController: UIViewController, UITableViewDelegate, UITableV
 	
 	private func loadDataIntoVinArray() {
 		vinDataArray = userDefaults.object(forKey: "myKey") as? [[String : String]] ?? [[String: String]]()
-		self.historyTableView.reloadData()
+		if vinDataArray.count > 0 {
+			historyTableView.isHidden = false
+			dataNotAvilableLabel.isHidden = true
+			self.historyTableView.reloadData()
+		} else {
+			historyTableView.isHidden = true
+			dataNotAvilableLabel.isHidden = false
+		}		
 	}
 	
 	

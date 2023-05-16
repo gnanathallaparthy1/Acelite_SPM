@@ -15,7 +15,19 @@ import UIKit
 //	func bleReonse(data: Data)
 //
 //}
+enum FlowControlInstructionType {
+	case FLOW_CONTROL_HEADER
+	case FLOW_CONTROL_DATA
+	case FLOW_CONTROL_NORMAL_COMMAND
+	case HEADER
+	case FLOW_PID
+	case NONE
+}
 
+protocol BLEPermissionDelegate: AnyObject {
+	func blePermissionDelegate()
+	func handleBleCommandError()
+}
 
 class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegate {
 	private var bleDevicesArray = [CBPeripheral]()
@@ -31,19 +43,19 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 	var rxCharacteristic: CBCharacteristic? = nil
 	var callBack: (([DeviceModel]) -> Void)?
 //	var delegate: BleWriteReadProtocal? = nil
-	var commandType: CommandType = .ODOMETER
+	var commandType: CommandType = .Other
+	var flowControlType: FlowControlInstructionType = .NONE
+	
 	//	 var commandCallBack: (((Data, BLECommand))->Void)?
 	//	var commandType: BLECommand = .NONE
-	var resData = Data()
+
 	private var bluetoothWriteCallback: AceLiteBleWriteCallback? = nil
 	private var bluetoothNotifyCallback: AceLiteBleNotifyCallback? = nil
 	var completionHandler: ((String)->())?
 	public var isPeripheralIdentified = false
 	//var emptyArray : Int[] = []
-	
-	
-	
-	
+	private var fromDate = Date()
+	weak var delegate: BLEPermissionDelegate?
 	override init() {
 		super.init()
 		self.centralManager = CBCentralManager(delegate: self, queue: DispatchQueue.main)
@@ -71,28 +83,26 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 //		bluetoothPeripheral?.setNotifyValue(true, for: rxCharacteristic!)
 //	}
 	
-	public func writeBytesData(data: String, completionHandler: ((String)->())? ) {
+	public func writeBytesData(flowControl: FlowControlInstructionType, commandType: CommandType, data: String, completionHandler: ((String)->())?) {
 		// self.commandType = .Other
 		self.completionHandler = completionHandler
 		guard let characterstics = txCharacteristic else {
 			return
 		}
-		print("request data:::::", data)
+		//print("request data:::::", data)
 		let dataToSend: Data = data.data(using: .utf8)!
+		print(Date(), "About to write: \(data)", to: &Log.log)
+		self.fromDate = Date()
+		self.commandType = commandType
+		self.flowControlType = flowControl
 		bluetoothPeripheral?.writeValue(dataToSend, for: characterstics, type: .withResponse)
-		// sleep(1)
 		bluetoothPeripheral?.setNotifyValue(true, for: rxCharacteristic!)
-		
-		// .txt file
-		// add to string  data
-		// add new line  \n
-		
 	}
 	
 	public func connectDevices(peripheral: CBPeripheral) {
 		self.centralManager.connect(peripheral, options: nil)
 		myPeripheral = peripheral
-		print("::::::: myperipheral name", peripheral.name ?? "")
+		//print("::::::: myperipheral name", peripheral.name ?? "")
 		self.myPeripheral.delegate = self
 	}
 	
@@ -112,23 +122,29 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 			// Turned on
 			central.scanForPeripherals(withServices: nil, options: nil)
 		}
+		if central.state == .unauthorized {
+			print("show unauthorized")
+			delegate?.blePermissionDelegate()
+   }
 		else {
-			print("Something wrong with BLE")
+			//print("Something wrong with BLE")
 			NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "BLEResponse"), object: ["BLEResponse": "Something wrong with BLE"], userInfo: nil)
 			// Not on, but can have different issues
 		}
 	}
 	
 	func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
-		print("peripheral data", central)
+		//print("peripheral data", central)
 		if let pname =  peripheral.name {
-			if pname.contains("cox") || pname.contains("CAM") {
+			//print("pName::::", pname)
+			if pname.contains("cox") || pname.contains("CAM") || pname.contains("COX")  {
 				//, pname ==  "CAM101" || pname ==  "CAM144" {
 				//bluetoothPeripheral = peripheral
 				//centralManager.connect(bluetoothPeripheral!)
 				//bluetoothPeripheral!.delegate = self
 				//centralManager.stopScan()
 				//self.isPeripheralIdentified = true
+				//KM8KM4AE5NU109919
 				let deviceModel = DeviceModel(id:  pname, peripheral: peripheral)
 				self.blePeripheralDevice.append(deviceModel)
 				filterPeripharalNames()
@@ -171,30 +187,31 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 	
 	func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
 		if let value = characteristic.value {
-			print("value::::", value)
-			print(Date(), "Value\(value)", to: &Log.log)
-			var byteArray: [UInt8] = Array(value)
+			//print("value::::", value)
+			//DispatchQueue.global(qos: .background).async {
 			let parseData: String = String.init(data: value, encoding: .utf8) ?? ""
-			print("PARSE DATA",parseData)
-			print(Date(), "Parse Data\(parseData)", to: &Log.log)
+
+			let byteArray: [UInt8] = Array(value)
+			print(Date(), "notify obtained bytes : \(byteArray)", to: &Log.log)
+			//print(Date(), "string value of bytes is  : \(parseData)", to: &Log.log)
 			if  parseData.contains(":") {
 				let removeSpaces = parseData.trimmingCharacters(in: .whitespacesAndNewlines)
 				let splitString = removeSpaces.components(separatedBy: "\r")
 				for item in splitString {
 					let newitem = item.trimmingCharacters(in: .whitespacesAndNewlines)
 					let sliptWithColen = newitem.components(separatedBy: ":")
-					print("sliptWithColen", sliptWithColen)
-					print(Date(), "Data Split With Colon\(sliptWithColen)", to: &Log.log)
+					//print("sliptWithColen", sliptWithColen)
+					//print(Date(), "Data Split With Colon\(sliptWithColen)", to: &Log.log)
 					if sliptWithColen.count == 2 {
-						print("adding space between two chars", sliptWithColen[1])
+						//print("adding space between two chars", sliptWithColen[1])
 						Network.shared.arrayOfBytesData.append(sliptWithColen[1])
-						print("total string", Network.shared.arrayOfBytesData)
-						print(Date(), "Total String\(Network.shared.arrayOfBytesData)", to: &Log.log)
+						//print("total string", Network.shared.arrayOfBytesData)
+						//print(Date(), "Total String\(Network.shared.arrayOfBytesData)", to: &Log.log)
 						
 					} else {
 						
-						print("::::::::::::", newitem)
-						print(Date(), "Single Frame", to: &Log.log)
+						//print("::::::::::::", newitem)
+						//print(Date(), "Single Frame", to: &Log.log)
 					}
 				}
 			
@@ -203,25 +220,27 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 				Network.shared.arrayOfBytesData.append(removeSpaces)
 				
 			}
-			if let stringData = String.init(data: value, encoding: .utf8) {
-				if  stringData.contains(Constants.CARET) {
-					print(Date(), "Caret)", to: &Log.log)
+			
+			if  parseData.count != 0 {
+				if  parseData.contains(Constants.CARET) {
+					//print(Date(), "Caret)", to: &Log.log)
+					self.calculateCommandRequestAndResponseTimeDuration(startDate: self.fromDate, endDate: Date())
 					self.completionHandler?(Network.shared.arrayOfBytesData)
 					Network.shared.arrayOfBytesData.removeAll()
 				
-				} else if stringData.contains(Constants.QUESTION_MARK) || stringData.contains(Constants.NODATA) || stringData.contains(Constants.NO_DATA) || stringData.contains(Constants.ERROR)   {
+				} else if parseData.contains(Constants.QUESTION_MARK) || parseData.contains(Constants.NODATA) || parseData.contains(Constants.NO_DATA) || parseData.contains(Constants.ERROR)   {
+					//self.calculateCommandRequestAndResponseTimeDuration(startDate: self.fromDate, endDate: Date())
 					print(Date(), "Write Data Error)", to: &Log.log)
-					print("Data byte array finished", parseData)
-					
-				} else if stringData.contains(Constants.OK) {
-					print(Date(), "OK)", to: &Log.log)
+				} else if parseData.contains(Constants.OK) {
+					//self.calculateCommandRequestAndResponseTimeDuration(startDate: self.fromDate, endDate: Date())
 					self.completionHandler?(Network.shared.arrayOfBytesData)
 					Network.shared.arrayOfBytesData.removeAll()
+					
 				} else {
-					print(Date(), "Something Else)", to: &Log.log)
+					//print(Date(), "Something Else)", to: &Log.log)
 				}
 			}
-				
+			//}
 			}
 	}
 	private func typeCastingByteToString(testCommand: String) -> String {
@@ -229,6 +248,14 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 		let splitString = testCommand.pairs.joined(separator: " ")
 			return splitString + " "
 		
+	}
+	
+	func getDateDiff(start: Date, end: Date) -> Int  {
+		let calendar = Calendar.current
+		let dateComponents = calendar.dateComponents([Calendar.Component.second], from: start, to: end)
+
+		let seconds = dateComponents.second
+		return Int(seconds!)
 	}
 	
 //	public func writeBytesData(data: String) {
@@ -241,14 +268,22 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 //	}
 	
 	func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
-		print(characteristic)
+		//print(characteristic)
+		if error == nil {
+			//bluetoothNotifyCallback?.onCharacteristicChanged(byteArray: characteristic.value)
+		} else {
+			// handle error in communication
+			delegate?.handleBleCommandError()
+		}
 	}
 	
 	func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?) {
 		if error == nil {
-			bluetoothNotifyCallback?.onCharacteristicChanged(byteArray: characteristic.value)
+			//bluetoothNotifyCallback?.onCharacteristicChanged(byteArray: characteristic.value)
 		} else {
-			bluetoothNotifyCallback?.onNotifyFailure(exception: error)
+			// handle error in communication
+			delegate?.handleBleCommandError()
+			
 		}
 	}
 	
@@ -263,6 +298,15 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 		self.blePeripheralDevice = uniquePosts
 		self.callBack?(uniquePosts)
 	}
+	
+	private func calculateCommandRequestAndResponseTimeDuration(startDate: Date, endDate: Date)  {
+			let seconds = Calendar.current.dateComponents([.nanosecond], from: startDate, to: endDate).nanosecond ?? 0
+		let milliSec = round(Double(seconds / 1000000))
+		print("timeDifference - Command \(self.commandType) - Flow Control \(self.flowControlType) :amount of time taken from start to end is \(milliSec) milli ec.")
+			
+		print(Date(), "timeDifference -  Command \(self.commandType) - Flow Control \(self.flowControlType) :amount of time taken from start to end is \(milliSec) milli sec.", to: &Log.log)
+
+		}
 }
 
 extension Collection {
@@ -285,4 +329,10 @@ extension Collection {
 	}
 
 	var pairs: [SubSequence] { .init(unfoldSubSequences(limitedTo: 2)) }
+}
+
+extension Date {
+	static func - (lhs: Date, rhs: Date) -> TimeInterval {
+		return lhs.timeIntervalSinceReferenceDate - rhs.timeIntervalSinceReferenceDate
+	}
 }

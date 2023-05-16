@@ -37,6 +37,7 @@ class WorkOrderViewController: UIViewController {
 	@IBOutlet weak var barCodeTextFiled: UITextField!
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		FirebaseLogging.instance.logScreen(screenName: ClassNames.workOrder)
 		barCodeTextFiled.delegate = self
 		let vimDetails = Network.shared.vehicleInformation
 		print(vimDetails?.vehicle?.title ?? "")

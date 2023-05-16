@@ -106,37 +106,25 @@ class BatteryHealthCheckViewController: UIViewController {
 		//form = Form()
 		super.init(coder: coder)
 	}
-	var secoonds : Int?
+	var secoonds : Int = 0
 	var timer: Timer?
 	var isStart: Bool = false
 	var batteryHealthInstruction: BatteryHealthInstruction = .startTheCar
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		/*
-		let btnCancel = UIButton()
-		btnCancel.setTitle("Cancel", for: .normal)
-		btnCancel.titleLabel?.font = UIFont(name: "Arial", size: 14)
-		btnCancel.titleLabel?.textColor = .green
-		btnCancel.backgroundColor = UIColor.warningColor()
-		btnCancel.layer.cornerRadius = 4.0
-		btnCancel.frame = CGRectMake(0, 0, 90, 30)
-		btnCancel.addTarget(self, action: #selector(self.addTapped), for: .touchUpInside)
-	
-		//Set Left Bar Button item
-		let leftBarButton = UIBarButtonItem()
-		leftBarButton.customView = btnCancel
-		self.navigationItem.rightBarButtonItem = leftBarButton
-		*/
+		FirebaseLogging.instance.logScreen(screenName: ClassNames.testInstructions)
 		updateView()
 		self.navigationItem.hidesBackButton = true
 		self.viewModel?.preSignedDelegate = self
 		self.viewModel?.uploadAndSubmitDelegate = self
+	}
+	
+	override func viewWillAppear(_ animated: Bool) {
 		setUpCircularProgressBarView()
 		self.updateBodyContentView(batteryHealthInstruction: .startTheCar)
 		setDefaultRemoteConfigDefaults()
 		fetchRemoteConfig()
-		
 	}
 	
 	@objc func addTapped() {
@@ -180,7 +168,7 @@ class BatteryHealthCheckViewController: UIViewController {
 			self.timer = Timer.scheduledTimer(timeInterval: 1, target: self,   selector:(#selector(updateTimerforTestInProgressFinal)), userInfo: nil, repeats: true)
 		}
 		
-		circleView.progressAnimation(duration: TimeInterval(secoonds ?? 0))
+		circleView.progressAnimation(duration: TimeInterval(secoonds ))
 	}
 	
 	func updateBodyContentView(batteryHealthInstruction: BatteryHealthInstruction)  {
@@ -274,6 +262,16 @@ class BatteryHealthCheckViewController: UIViewController {
 		RemoteConfig.remoteConfig().fetch(withExpirationDuration: 0) { (status, error) in
 			guard error == nil else {
 				print("Got an error fetching remote values: \(String(describing: error))")
+				self.setDefaultRemoteConfigDefaults()
+				self.updateViewWithRCValues()
+//				let alertViewController = UIAlertController.init(title: "Oops!", message: "Please check your network connection", preferredStyle: .alert)
+//				let ok = UIAlertAction(title: "Ok", style: .default, handler: { (action) -> Void in
+////					let url = URL(string: "App-Prefs:root=Privacy&path=Bluetooth") //for bluetooth setting
+////								   let app = UIApplication.shared
+////								   app.openURL(url!)
+//				})
+//				alertViewController.addAction(ok)
+//				self.present(alertViewController, animated: true, completion: nil)
 				return
 			}
 			RemoteConfig.remoteConfig().fetchAndActivate()
@@ -282,7 +280,7 @@ class BatteryHealthCheckViewController: UIViewController {
 	}
 	
 	func updateViewWithRCValues() {
-		var timerValue: NSNumber
+		var timerValue: NSNumber?
 		switch batteryHealthInstruction {
 		case .startTheCar:
 			//timerValue = 5000
@@ -303,10 +301,11 @@ class BatteryHealthCheckViewController: UIViewController {
 			//timerValue = 5000
 			timerValue = RemoteConfig.remoteConfig().configValue(forKey: "firstStepTimeInMs").numberValue
 		}
-	
-		secoonds = Int(truncating: timerValue) / 1000
+		if let timer =  timerValue {
+			secoonds = Int(truncating: timer) / 1000
+		}
 		DispatchQueue.main.async  {
-			self.timeLabel.text = self.timeString(time: TimeInterval(self.secoonds ?? 0)) //This will update the label.
+			self.timeLabel.text = self.timeString(time: TimeInterval(self.secoonds)) //This will update the label.
 		}
 	}
 	
@@ -338,7 +337,7 @@ class BatteryHealthCheckViewController: UIViewController {
 			//self.circleView.changeProgresslayerStockeColor(progress: UIColor.warningColor(), circle: .white)
 
 		} else {
-			self.secoonds! -= 1
+			self.secoonds -= 1
 			DispatchQueue.main.async  {
 				self.timeLabel.text = self.timeString(time: TimeInterval(self.secoonds ?? 0)) //This will update the label.
 			}
@@ -358,7 +357,7 @@ class BatteryHealthCheckViewController: UIViewController {
 			self.updateViewWithRCValues()
 			
 		} else {
-			self.secoonds! -= 1
+			self.secoonds -= 1
 			DispatchQueue.main.async  {
 				self.timeLabel.text = self.timeString(time: TimeInterval(self.secoonds ?? 0)) //This will update the label.
 			}
@@ -373,9 +372,9 @@ class BatteryHealthCheckViewController: UIViewController {
 			self.updateBodyContentView(batteryHealthInstruction: .turnOffClimateControls)
 			self.batteryHealthInstruction = .turnOffClimateControls
 		} else {
-			self.secoonds! -= 1
+			self.secoonds -= 1
 			DispatchQueue.main.async  {
-				self.timeLabel.text = self.timeString(time: TimeInterval(self.secoonds ?? 0)) //This will update the label.
+				self.timeLabel.text = self.timeString(time: TimeInterval(self.secoonds )) //This will update the label.
 			}
 		
 		}
@@ -390,9 +389,9 @@ class BatteryHealthCheckViewController: UIViewController {
 //			self.updateBodyContentView(batteryHealthInstruction: .testInprogressFinal)
 			self.batteryHealthInstruction = .testInprogressFinal
 		} else {
-			self.secoonds! -= 1
+			self.secoonds -= 1
 			DispatchQueue.main.async  {
-				self.timeLabel.text = self.timeString(time: TimeInterval(self.secoonds ?? 0)) //This will update the label.
+				self.timeLabel.text = self.timeString(time: TimeInterval(self.secoonds )) //This will update the label.
 			}
 		
 		}
@@ -404,9 +403,9 @@ class BatteryHealthCheckViewController: UIViewController {
 		
 			self.startButton.isUserInteractionEnabled = true
 		} else {
-			self.secoonds! -= 1
+			self.secoonds -= 1
 			DispatchQueue.main.async  {
-				self.timeLabel.text = self.timeString(time: TimeInterval(self.secoonds ?? 0)) //This will update the label.
+				self.timeLabel.text = self.timeString(time: TimeInterval(self.secoonds )) //This will update the label.
 			}
 		
 		}
@@ -444,6 +443,9 @@ extension BatteryHealthCheckViewController: GetPreSignedUrlDelegate, UploadAndSu
 	   }
 	   if let bms = viewModel?.bms {
 		   vc.bmsCapacity = bms
+	   }
+	   if let odometer = viewModel?.odometer {
+		   vc.odometer = odometer
 	   }
 	   if let currentEnergey = viewModel?.currentEnergy {
 		   vc.currentEnerygy = currentEnergey

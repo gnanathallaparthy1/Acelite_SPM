@@ -34,6 +34,7 @@
 		861EDE7429B7AFC0003A1C81 /* ColorX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861EDE7029B7AFC0003A1C81 /* ColorX.swift */; };
 		861EDE7529B7AFC0003A1C81 /* ABGaugeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861EDE7129B7AFC0003A1C81 /* ABGaugeView.swift */; };
 		861EDE7629B7AFC0003A1C81 /* ArrayX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861EDE7229B7AFC0003A1C81 /* ArrayX.swift */; };
+		861F3A122A11CC3500F963A9 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861F3A112A11CC3500F963A9 /* Reachability.swift */; };
 		8636D41129CE201C0045BD53 /* ScanHistoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8636D40B29CE201B0045BD53 /* ScanHistoryTableViewCell.swift */; };
 		8636D41229CE201C0045BD53 /* ScanHistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8636D40C29CE201B0045BD53 /* ScanHistoryViewController.swift */; };
 		8636D41329CE201C0045BD53 /* TestableTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8636D40D29CE201B0045BD53 /* TestableTableViewCell.xib */; };
@@ -140,6 +141,7 @@
 		861EDE7029B7AFC0003A1C81 /* ColorX.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorX.swift; sourceTree = "<group>"; };
 		861EDE7129B7AFC0003A1C81 /* ABGaugeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ABGaugeView.swift; sourceTree = "<group>"; };
 		861EDE7229B7AFC0003A1C81 /* ArrayX.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArrayX.swift; sourceTree = "<group>"; };
+		861F3A112A11CC3500F963A9 /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		8636D40B29CE201B0045BD53 /* ScanHistoryTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanHistoryTableViewCell.swift; sourceTree = "<group>"; };
 		8636D40C29CE201B0045BD53 /* ScanHistoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanHistoryViewController.swift; sourceTree = "<group>"; };
 		8636D40D29CE201B0045BD53 /* TestableTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TestableTableViewCell.xib; sourceTree = "<group>"; };
@@ -420,6 +422,7 @@
 		866CDB4D2982FC0600ADFB50 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				861F3A112A11CC3500F963A9 /* Reachability.swift */,
 				866CDB4E2982FC1200ADFB50 /* BuildConfig.swift */,
 				866CDB502982FCC100ADFB50 /* Constants.swift */,
 				8639046729940178008D5A0A /* Themes+Colors.swift */,
@@ -721,6 +724,7 @@
 				86F378712A049B79004601D9 /* FirebaseLogging.swift in Sources */,
 				8677DBAB29BFA73A001C42CD /* CircularProgressBarView.swift in Sources */,
 				866CDB61298C206E00ADFB50 /* VehicleInformationViewModel.swift in Sources */,
+				861F3A122A11CC3500F963A9 /* Reachability.swift in Sources */,
 				8609395329BF89A3001DE232 /* BatteryHealthCheckViewModel.swift in Sources */,
 				866CDB65298CB02700ADFB50 /* SpinnerViewController.swift in Sources */,
 				861E6F032957737D00443F12 /* SideMenuModel.swift in Sources */,
@@ -942,6 +946,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Acelite/Info.plist;
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "We need to access your bluetooth for scanning ble devices.";
+				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "We need to access your bluetooth for scanning ble devices.";
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need to access your camera for scanning barcode.";
 				INFOPLIST_KEY_NSDownloadsFolderUsageDescription = "App storing the generated files into folder";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -982,6 +987,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Acelite/Info.plist;
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "We need to access your bluetooth for scanning ble devices.";
+				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "We need to access your bluetooth for scanning ble devices.";
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need to access your camera for scanning barcode.";
 				INFOPLIST_KEY_NSDownloadsFolderUsageDescription = "App storing the generated files into folder";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -1159,6 +1165,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Acelite/Info.plist;
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "We need to access your bluetooth for scanning ble devices.";
+				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "We need to access your bluetooth for scanning ble devices.";
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need to access your camera for scanning barcode.";
 				INFOPLIST_KEY_NSDownloadsFolderUsageDescription = "App storing the generated files into folder";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -1293,6 +1300,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Acelite/Info.plist;
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "We need to access your bluetooth for scanning ble devices.";
+				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "We need to access your bluetooth for scanning ble devices.";
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need to access your camera for scanning barcode.";
 				INFOPLIST_KEY_NSDownloadsFolderUsageDescription = "App storing the generated files into folder";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

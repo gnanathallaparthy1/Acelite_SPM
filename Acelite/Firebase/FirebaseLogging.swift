@@ -13,7 +13,7 @@ class FirebaseLogging {
 	private init(){}
 	   
 	
-	func logEvent(eventName: String , parameters: [String : String]) {
+	func logEvent(eventName: String , parameters: [String : String]?) {
 		Analytics.logEvent(eventName, parameters: parameters)
 	}
 	

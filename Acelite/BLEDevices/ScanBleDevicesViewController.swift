@@ -26,6 +26,7 @@ class ScanBleDevicesViewController: UIViewController {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		FirebaseLogging.instance.logScreen(screenName: ClassNames.bluetoothScan)
 		uiUpdates()
 	}
 	
@@ -86,8 +87,10 @@ class ScanBleDevicesViewController: UIViewController {
 	
 	@IBAction func scanButtonAction(_ sender: UIButton) {
 		self.bleServices = BluetoothServices()
+		self.bleServices.delegate = self
 		if self.scanButton.titleLabel?.text == "Stop Scanning" {
 			if let cbManager = self.bleServices.centralManager {
+				FirebaseLogging.instance.logEvent(eventName:BluetoothScreenEvents.bleScanStop, parameters: nil)
 				cbManager.stopScan()
 				self.scanButton.setTitle("START SCANNING FOR OBD II DEVICES", for: .normal)
 				return
@@ -104,8 +107,10 @@ class ScanBleDevicesViewController: UIViewController {
 			self.bleTableView.reloadData()
 			//print(devices.first)
 			if self.blePeripheralDevice.count == 0 {
+				FirebaseLogging.instance.logEvent(eventName:BluetoothScreenEvents.bleConnectionFailure, parameters: nil)
 				self.bleServices.isPeripheralIdentified = true
 			} else {
+				FirebaseLogging.instance.logEvent(eventName:BluetoothScreenEvents.bleConnectionSuccess, parameters: nil)
 				self.bleServices.isPeripheralIdentified = false
 			}
 		}
@@ -117,12 +122,12 @@ class ScanBleDevicesViewController: UIViewController {
 //		}
 //		centralManager = CBCentralManager(delegate: self, queue: nil)
 		if self.scanButton.titleLabel?.text == "START SCANNING FOR OBD II DEVICES" {
+		FirebaseLogging.instance.logEvent(eventName:BluetoothScreenEvents.bleScanStart, parameters: nil)
 		self.scanButton.setTitle("STOP SCANNING FOR OBD II DEVICES", for: .normal)
 		} else {
 			self.scanButton.setTitle("START SCANNING FOR OBD II DEVICES", for: .normal)
 		}
 	}
-		
 }
 
 extension ScanBleDevicesViewController: UITableViewDelegate, UITableViewDataSource {
@@ -181,10 +186,12 @@ extension ScanBleDevicesViewController: UITableViewDelegate, UITableViewDataSour
 		//print(cell.connectButton?.titleLabel?.text)
 		
 		if cell.connectButton?.titleLabel?.text == "Connect" {
+			FirebaseLogging.instance.logEvent(eventName:BluetoothScreenEvents.bleDisconnect, parameters: nil)
 			cell.connectButton.setTitle("Disconnect", for: .normal)
 			cell.testButton.isHidden = false
 			cell.testButton.addTarget(self, action: #selector(self.testbuttonAction(_ :)), for: .touchUpInside)
 		} else {
+			FirebaseLogging.instance.logEvent(eventName:BluetoothScreenEvents.bleConnect, parameters: nil)
 			cell.connectButton.setTitle("Connect", for: .normal)
 			cell.testButton.isHidden = true
 		}
@@ -202,6 +209,7 @@ extension ScanBleDevicesViewController: UITableViewDelegate, UITableViewDataSour
 	
 	@IBAction func testbuttonAction(_ sender: UIButton) {
 		Network.shared.bluetoothService?.centralManager.stopScan()
+		FirebaseLogging.instance.logEvent(eventName:BluetoothScreenEvents.bleTest, parameters: nil)
 		let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
 		//let testVC = storyboard.instantiateViewController(withIdentifier: "TerminalViewController") as! TerminalViewController
 		//testVC.bluetoothService(bleServices: self.bleServices)
@@ -218,6 +226,39 @@ extension ScanBleDevicesViewController: UITableViewDelegate, UITableViewDataSour
 		//vehicleVinScan.vehicleInfo = viewModel?.vehicleInformation
 		vehicleVinScan.viewModel = vm
 		self.navigationController?.pushViewController(vehicleVinScan, animated: true)
+	}
+	
+	
+}
+
+extension ScanBleDevicesViewController: BLEPermissionDelegate {
+	func handleBleCommandError() {
+		let alert = UIAlertController(title: "Error", message: "Sorry, something went wrong. Please try again. ", preferredStyle: .alert)
+		alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { action in
+			guard let viewControllers = self.navigationController?.viewControllers else {
+				return
+			}
+			for workOrderVc in viewControllers {
+				if workOrderVc is WorkOrderViewController {
+					self.navigationController?.popToViewController(workOrderVc, animated: true)
+					break
+				}
+			}
+		}))
+		self.present(alert, animated: true, completion: nil)
+	}
+	
+	func blePermissionDelegate() {
+		let alert = UIAlertController(title: "Alert", message: "Please enable Bluetooth in the settings.", preferredStyle: .alert)
+		alert.addAction(UIAlertAction(title: "Go to -> Settings", style: .default, handler: { action in
+			UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
+			
+			
+//			let url = URL(string: "App-Prefs:root=Privacy&path=Bluetooth") //for bluetooth setting
+//			   let app = UIApplication.shared
+//			   app.openURL(url!)
+		}))
+		self.present(alert, animated: true, completion: nil)
 	}
 	
 	

@@ -83,9 +83,12 @@ class VehicalVINScannerViewController: UIViewController {
 	
     override func viewDidLoad() {
         super.viewDidLoad()
+		FirebaseLogging.instance.logScreen(screenName: ClassNames.enterVin)
+		let tapGesture = UITapGestureRecognizer(target: view, action: #selector(UIView.endEditing))
+		view.addGestureRecognizer(tapGesture)
         viewModel?.delegate = self
         self.barcodeTextField.delegate = self
-		nextButton.isUserInteractionEnabled = false
+		nextButton.isUserInteractionEnabled = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -94,6 +97,7 @@ class VehicalVINScannerViewController: UIViewController {
         let menuBarButton = UIBarButtonItem(image: UIImage(systemName: "line.3.horizontal"), style: .plain, target: self, action: #selector(self.menuButtonAction(_ :)))
         menuBarButton.tintColor = UIColor.appPrimaryColor()
         self.navigationItem.leftBarButtonItem  = menuBarButton
+		self.view.activityStopAnimating()
     }
     
     @IBAction func menuButtonAction(_ sender: UIBarButtonItem) {
@@ -105,6 +109,7 @@ class VehicalVINScannerViewController: UIViewController {
         let storyBaord = UIStoryboard.init(name: "Main", bundle: nil)
         let vc = storyBaord.instantiateViewController(withIdentifier: "ScannerViewController") as! ScannerViewController
         vc.delegate = self
+		self.barcodeTextField.resignFirstResponder()
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
@@ -115,9 +120,11 @@ class VehicalVINScannerViewController: UIViewController {
     
     @IBAction func nextButtonAction(_ sender: UIButton) {
 		if let textFieldData = barcodeTextField.text, textFieldData.count <= 17,  isValidVinNumber(textFieldData) == true {
-			self.view.activityStartAnimating(activityColor: UIColor.white, backgroundColor: UIColor.black.withAlphaComponent(0.5))
+	
+			
 			//regex validation for vin
-			self.viewModel?.fetchVehicalInformation(vim: self.barcodeTextField?.text ?? "N/A")
+			self.fetchVehicalInformation(vin: self.barcodeTextField?.text ?? "N/A")
+			//self.viewModel?.fetchVehicalInformation(vim: self.barcodeTextField?.text ?? "N/A")
 		} else {
 			let dialogMessage = UIAlertController(title: "WHOOPS!", message: "Please enter a Valid Vin Number ", preferredStyle: .alert)
 			// Create OK button with action handler
@@ -138,6 +145,8 @@ extension VehicalVINScannerViewController: ScannerViewDelegate {
 		//regex validation for vin
 		if  text.count <= 17,  isValidVinNumber(text) == true {
 			self.barcodeTextField?.text = text
+			self.nextButton.isUserInteractionEnabled = true
+			self.nextButton.isEnabled = true
 		} else {
 			let dialogMessage = UIAlertController(title: "WHOOPS!", message: "Please enter a Valid Vin Number ", preferredStyle: .alert)
 			// Create OK button with action handler
@@ -161,7 +170,7 @@ extension VehicalVINScannerViewController: UITextFieldDelegate {
     
 
 	func textFieldDidBeginEditing(_ textField: UITextField) {
-		//self.barcodeTextField?.text = "1N4AZ0CP3FC331073"
+		self.barcodeTextField?.text = "1N4AZ0CP3FC331073"
 		//singleframeVin
 		//"3FA6P0LU8JR142415"
 		//MultiFrame with BMS
@@ -175,7 +184,8 @@ extension VehicalVINScannerViewController: UITextFieldDelegate {
 	
 		if let textFieldData = textField.text, textFieldData.count <= 17,  isValidVinNumber(textFieldData) == true {
             self.view.activityStartAnimating(activityColor: UIColor.white, backgroundColor: UIColor.black.withAlphaComponent(0.5))
-			self.viewModel?.fetchVehicalInformation(vim: textField.text ?? "N/A")
+			//self.viewModel?.fetchVehicalInformation(vim: textField.text ?? "N/A")
+			self.fetchVehicalInformation(vin:  textField.text ?? "N/A")
             
 		} else {
 			let dialogMessage = UIAlertController(title: "WHOOPS!", message: "Please enter a valid Vin number", preferredStyle: .alert)
@@ -186,12 +196,30 @@ extension VehicalVINScannerViewController: UITextFieldDelegate {
 			self.nextButton.isEnabled = false
 			//Add OK button to a dialog message
 			dialogMessage.addAction(ok)
+			self.view.activityStopAnimating()
 			// Present Alert to
 			self.present(dialogMessage, animated: true, completion: nil)
 		}
         textField.resignFirstResponder()
         return true
     }
+	
+	private func fetchVehicalInformation(vin: String) {
+		if currentReachabilityStatus != .notReachable {
+			self.nextButton.isUserInteractionEnabled = true
+			self.nextButton.isEnabled = true
+			self.view.activityStartAnimating(activityColor: UIColor.white, backgroundColor: UIColor.black.withAlphaComponent(0.5))
+			self.viewModel?.fetchVehicalInformation(vim: vin)
+		} else {
+			let alertViewController = UIAlertController.init(title: "Oops!", message: "Please check your network connection", preferredStyle: .alert)
+			let ok = UIAlertAction(title: "Ok", style: .default, handler: { (action) -> Void in
+				self.view.activityStopAnimating()
+			})
+			alertViewController.addAction(ok)
+			self.present(alertViewController, animated: true, completion: nil)
+		}
+	}
+	
 }
 
 extension VehicalVINScannerViewController: PassVehicleInformationDelegate {
@@ -201,8 +229,8 @@ extension VehicalVINScannerViewController: PassVehicleInformationDelegate {
 		// Create OK button with action handler
 		let ok = UIAlertAction(title: "GOT IT", style: .default, handler: { (action) -> Void in
 		})
-		self.nextButton.isUserInteractionEnabled = false
-		self.nextButton.isEnabled = false
+//		self.nextButton.isUserInteractionEnabled = false
+//		self.nextButton.isEnabled = false
 		//Add OK button to a dialog message
 		dialogMessage.addAction(ok)
 		// Present Alert to
@@ -212,6 +240,7 @@ extension VehicalVINScannerViewController: PassVehicleInformationDelegate {
 	func updateVehicleInfo(viewModel: VehicleVinScannerViewModel) {
 		self.view.activityStopAnimating()
 		nextButton.isUserInteractionEnabled = true
+		nextButton.isEnabled = true
 		if (viewModel.vehicleInformation?.getBatteryTestInstructions) != nil {
 			let storyBoard = UIStoryboard.init(name: "Main", bundle: nil)
 			let vehicalInformation = storyBoard.instantiateViewController(withIdentifier: "VehicalInformationViewController") as! VehicalInformationViewController

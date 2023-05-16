@@ -43,7 +43,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			//load a named file
 			let filePath = Bundle.main.path(forResource: fileName, ofType: "plist")
 			guard let fileopts = FirebaseOptions(contentsOfFile: filePath!)  else {
-				print("file not found")
+				//print("file not found")
 				return
 				
 			}

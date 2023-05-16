@@ -80,6 +80,7 @@ class VehicalInformationViewController: UIViewController {
 		
     override func viewDidLoad() {
         super.viewDidLoad()
+		FirebaseLogging.instance.logScreen(screenName: ClassNames.vehicleInformation)
 		viewModel?.delegate = self
 		//self.barcodeTextField.delegate = self
 		carInfoView.isHidden = false

@@ -331,26 +331,45 @@
             <point key="canvasLocation" x="1036.7441860465117" y="-2.5751072961373391"/>
         </scene>
         <!--Testable Models View Controller-->
-        <scene sceneID="yqh-PF-15a">
+        <scene sceneID="Ltt-Cz-Emc">
             <objects>
-                <tableViewController storyboardIdentifier="TestableModelsViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Zpl-l2-Aeq" customClass="TestableModelsViewController" customModule="Acelite" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" id="m6h-jS-u4F">
+                <viewController storyboardIdentifier="TestableModelsViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="nrQ-j5-4Jo" customClass="TestableModelsViewController" customModule="Acelite" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="OyU-Zx-Xmn">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Looks like there are no testable models." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fGM-h5-MUn">
+                                <rect key="frame" x="20" y="416" width="353" height="20.333333333333314"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="tms-XU-Gvm">
+                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </tableView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="mQM-2t-F5I"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <sections/>
-                        <connections>
-                            <outlet property="dataSource" destination="Zpl-l2-Aeq" id="kyR-tH-is3"/>
-                            <outlet property="delegate" destination="Zpl-l2-Aeq" id="3gw-Fo-MJ9"/>
-                        </connections>
-                    </tableView>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="tms-XU-Gvm" secondAttribute="bottom" id="4cq-mj-1nQ"/>
+                            <constraint firstItem="tms-XU-Gvm" firstAttribute="leading" secondItem="mQM-2t-F5I" secondAttribute="leading" id="Iex-na-4gu"/>
+                            <constraint firstItem="fGM-h5-MUn" firstAttribute="centerY" secondItem="OyU-Zx-Xmn" secondAttribute="centerY" id="Js2-tV-fi8"/>
+                            <constraint firstItem="fGM-h5-MUn" firstAttribute="leading" secondItem="mQM-2t-F5I" secondAttribute="leading" constant="20" id="LwU-xm-A6n"/>
+                            <constraint firstAttribute="trailing" secondItem="tms-XU-Gvm" secondAttribute="trailing" id="X7z-Ul-UPN"/>
+                            <constraint firstItem="fGM-h5-MUn" firstAttribute="centerX" secondItem="OyU-Zx-Xmn" secondAttribute="centerX" id="is7-eC-6vY"/>
+                            <constraint firstItem="tms-XU-Gvm" firstAttribute="top" secondItem="OyU-Zx-Xmn" secondAttribute="top" id="o16-PS-cDA"/>
+                            <constraint firstItem="mQM-2t-F5I" firstAttribute="trailing" secondItem="fGM-h5-MUn" secondAttribute="trailing" constant="20" id="r3C-AX-bsE"/>
+                        </constraints>
+                    </view>
                     <connections>
-                        <outlet property="modelTableView" destination="m6h-jS-u4F" id="Va6-IJ-dS7"/>
+                        <outlet property="NoDataLabel" destination="fGM-h5-MUn" id="cVc-7T-B4A"/>
+                        <outlet property="modelTableView" destination="tms-XU-Gvm" id="xDe-Q0-1VK"/>
                     </connections>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="116-Ac-VCL" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="X6b-77-V7G" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1814" y="-13"/>
+            <point key="canvasLocation" x="1762.5954198473282" y="7.746478873239437"/>
         </scene>
         <!--Scan History View Controller-->
         <scene sceneID="iLa-ax-MQT">
@@ -360,8 +379,14 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Looks like there is no scan history." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qg5-Nw-vmH">
+                                <rect key="frame" x="20" y="416" width="353" height="20.333333333333314"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="JdS-CX-D1U">
-                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                                <rect key="frame" x="0.0" y="0.0" width="393" height="851"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </tableView>
                         </subviews>
@@ -370,17 +395,22 @@
                         <constraints>
                             <constraint firstItem="JdS-CX-D1U" firstAttribute="top" secondItem="BQe-Ky-AM8" secondAttribute="top" id="6On-P2-ysw"/>
                             <constraint firstItem="O3X-9O-g0M" firstAttribute="trailing" secondItem="JdS-CX-D1U" secondAttribute="trailing" id="6rL-cf-OAp"/>
-                            <constraint firstAttribute="bottom" secondItem="JdS-CX-D1U" secondAttribute="bottom" id="mm8-d9-Gw4"/>
+                            <constraint firstItem="Qg5-Nw-vmH" firstAttribute="centerX" secondItem="BQe-Ky-AM8" secondAttribute="centerX" id="82v-MW-Elw"/>
+                            <constraint firstItem="O3X-9O-g0M" firstAttribute="trailing" secondItem="Qg5-Nw-vmH" secondAttribute="trailing" constant="20" id="8uV-iy-H4k"/>
+                            <constraint firstItem="Qg5-Nw-vmH" firstAttribute="leading" secondItem="O3X-9O-g0M" secondAttribute="leading" constant="20" id="c8k-7w-c0h"/>
+                            <constraint firstAttribute="bottom" secondItem="JdS-CX-D1U" secondAttribute="bottom" constant="1" id="mm8-d9-Gw4"/>
+                            <constraint firstItem="Qg5-Nw-vmH" firstAttribute="centerY" secondItem="BQe-Ky-AM8" secondAttribute="centerY" id="t5n-wk-cnS"/>
                             <constraint firstItem="JdS-CX-D1U" firstAttribute="leading" secondItem="O3X-9O-g0M" secondAttribute="leading" id="xCW-3J-QTT"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="dataNotAvilableLabel" destination="Qg5-Nw-vmH" id="CyD-Rc-z8B"/>
                         <outlet property="historyTableView" destination="JdS-CX-D1U" id="ZR3-nf-AMZ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HQJ-W1-Mhw" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3044" y="8"/>
+            <point key="canvasLocation" x="3043.5114503816794" y="7.746478873239437"/>
         </scene>
     </scenes>
     <resources>
