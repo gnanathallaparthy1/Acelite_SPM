@@ -192,11 +192,11 @@ class TestCommandExecution {
 	var challenge: Challenge?
 	var response: OdometerResponse?
 	var validation: Validation?
-	var deviceReponse: String?
+	var deviceReponse: String = ""
 	var reqeustByteInString: String = ""
 	var isFlowController: Bool = false
 	var deviceByteArray = [UInt8]()
-	
+	var deviceData: Data?
 	init(type: CommandType, resProtocal: ProtocolClass, challenge: Challenge, response: OdometerResponse, validation: Validation) {
 		self.type = type
 		self.resProtocol = resProtocal

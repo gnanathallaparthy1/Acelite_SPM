@@ -72,6 +72,8 @@ class UploadAnimationViewController: UIViewController {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		print("upload animation VC")
+		print(Date(), "upload animation VC", to: &Log.log)
 		navigationItem.hidesBackButton = true
 		let label = UILabel(frame: CGRect(x: 0, y: 0, width: 250, height: 21))
 		label.center = CGPoint(x: 220, y: 150)
@@ -93,7 +95,8 @@ class UploadAnimationViewController: UIViewController {
 			$0.widthAnchor.constraint(equalToConstant: 20).isActive = true
 			$0.heightAnchor.constraint(equalTo: $0.widthAnchor).isActive = true
 		}
-		self.notificationCenter.addObserver(self, selector: #selector(navigateToHealthS), name: NSNotification.Name.init(rawValue: "GotAllData"), object: nil)
+		self.getTransectionId()
+		//self.notificationCenter.addObserver(self, selector: #selector(navigateToHealthS), name: NSNotification.Name.init(rawValue: "GotAllData"), object: nil)
 	}
 	
 	override func viewDidAppear(_ animated: Bool) {
@@ -102,6 +105,7 @@ class UploadAnimationViewController: UIViewController {
 		
 	}
 	@objc func navigateToHealthS() {
+		print(Date(), "upload animation VC", to: &Log.log)
 		Network.shared.bluetoothService?.disconnectDevice(peripheral: Network.shared.myPeripheral)
 		self.getTransectionId()
 	}
@@ -124,7 +128,7 @@ class UploadAnimationViewController: UIViewController {
 						preSignedData = try JSONSerialization.data(withJSONObject: getS3PreSingedData as Any)
 					} catch {
 						//print("Unexpected error: \(error).")
-					
+						print(Date(), "Unexpected error: \(error).", to: &Log.log)
 						FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.s3PreSignedUrlError, parameters: nil)
 					}
 					
@@ -133,25 +137,31 @@ class UploadAnimationViewController: UIViewController {
 						let preSignedResponse = try decoder.decode(GetS3PreSingedURL.self, from: preSignedData!)
 						self.transactionId = preSignedResponse.transactionID
 						self.preSignedData = preSignedResponse
+						print(Date(), "preSignedResponse.", to: &Log.log)
 						self.preparingLogicForCSVFileGeration()
 						FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.s3PreSignedUrlSuccess, parameters: nil)
 					} catch DecodingError.dataCorrupted(let context) {
 						//print(context)
+						print(Date(), "preSignedResponse Error", to: &Log.log)
 						FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.s3PreSignedUrlError, parameters: nil)
 					} catch DecodingError.keyNotFound(let key, let context) {
 						print("Key '\(key)' not found:", context.debugDescription)
 						print("codingPath:", context.codingPath)
+						print(Date(), "preSignedResponse Error", to: &Log.log)
 						FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.s3PreSignedUrlError, parameters: nil)
 					} catch DecodingError.valueNotFound(let value, let context) {
 						//print("Value '\(value)' not found:", context.debugDescription)
 						print("codingPath:", context.codingPath)
+						print(Date(), "preSignedResponse Error", to: &Log.log)
 						FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.s3PreSignedUrlError, parameters: nil)
 					} catch DecodingError.typeMismatch(let type, let context) {
 						print("Type '\(type)' mismatch:", context.debugDescription)
 						print("codingPath:", context.codingPath)
+						print(Date(), "preSignedResponse Error", to: &Log.log)
 						FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.s3PreSignedUrlError, parameters: nil)
 					} catch {
 						print("error: ", error)
+						print(Date(), "preSignedResponse Error", to: &Log.log)
 						FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.s3PreSignedUrlError, parameters: nil)
 					}
 				}
@@ -160,12 +170,14 @@ class UploadAnimationViewController: UIViewController {
 				// 5
 				//self.preSignedDelegate?.handleErrorTransactionID()
 				print("Error loading data \(error)")
+				print(Date(), "preSignedResponse Error", to: &Log.log)
 				FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.s3PreSignedUrlError, parameters: nil)
 			}
 		}
 	}
 
 	func preparingLogicForCSVFileGeration() {
+		print(Date(), "preparingLogicForCSVFileGeration", to: &Log.log)
 		let cellVoltageList = sampledCommandsList.filter { testCommand in
 			return testCommand.type == .CELL_VOLTAGE
 		}
@@ -176,7 +188,8 @@ class UploadAnimationViewController: UIViewController {
 			if resultLastValue.count < cellVoltageList.count {
 				result.removeLast()
 			} else {
-				print("after process result count", result.count)
+				print(Date(), "after process result count", to: &Log.log)
+				//print("after process result count", result.count)
 			}
 			let listCount: [Int] = [result.count,  self.packCurrentData.count, self.packVoltageData.count]
 			
@@ -185,18 +198,21 @@ class UploadAnimationViewController: UIViewController {
 				   "file_type": "CELL_VOLTAGE"
 				  ]
 				FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.uploadFileError, parameters: paramDictionary)
+				print(Date(), "error CELL_VOLTAGE generation", to: &Log.log)
 				return
 			} else if self.packCurrentData.count == 0 {
 				let paramDictionary = [
 				   "file_type": "PACK_CURRENT"
 				  ]
 				FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.uploadFileError, parameters: paramDictionary)
+				print(Date(), "error PACK_CURRENT generation", to: &Log.log)
 				return
 			} else if self.packVoltageData.count == 0 {
 				let paramDictionary = [
 				   "file_type": "PACK_VOLTAGE"
 				  ]
 				FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.uploadFileError, parameters: paramDictionary)
+				print(Date(), "error PACK_VOLTAGE generation", to: &Log.log)
 				return
 			}
 
@@ -234,7 +250,7 @@ class UploadAnimationViewController: UIViewController {
 	
 	//MARK: Create pack current CSV
 	func createPackCurrentCSVFile(data: [Double] ) {
-		
+		print(Date(), "Uploading PackCurrentCSVFile", to: &Log.log)
 		
 		let pack_Current = CSVFile(fileName: "Pack_Current_\(self.vehicleInfo?.vin ?? "")")
 		let pack_CurrentFilePath = pack_Current.creatCSVForArray(data: data)
@@ -250,7 +266,7 @@ class UploadAnimationViewController: UIViewController {
 	
 	// MARK: Create pack voltage CSV
 	func createPackVoltageCSV(data: [Double]) {
-		
+		print(Date(), "Uploading PackVoltageCSV", to: &Log.log)
 		let pack_Voltage = CSVFile(fileName: "Pack_Voltage_\(self.vehicleInfo?.vin ?? "")")
 		
 		csvDispatchGroup.enter()
@@ -265,6 +281,7 @@ class UploadAnimationViewController: UIViewController {
 	// MARK: Create Cell Voltage CSV
 	func createCellVoltageCSV(data: [[Double]]) {
 		//print("cell-Voltage", data)
+		print(Date(), "Uploading CellVoltageCSV", to: &Log.log)
 		//let fileName = self.creatCSV(data: data)
 		let cell_voltage = CSVFile(fileName: "Cell_Volt_\(self.vehicleInfo?.vin ?? "")")
 		csvDispatchGroup.enter()
@@ -279,7 +296,7 @@ class UploadAnimationViewController: UIViewController {
 	
 	
 	func csvFileUploadingIntoS3Bucket(fileName: String) {
-		
+		print(Date(), "Uploading csvFileUploadingIntoS3Bucket", to: &Log.log)
 		guard let presinedData = self.preSignedData else { return }
 		
 		var multipart = MultipartRequest()
@@ -320,12 +337,14 @@ class UploadAnimationViewController: UIViewController {
 		let dataTask = session.dataTask(with: request) { data, response, error in
 			self.csvDispatchGroup.leave()
 			guard let _ = data else {
-				print("json data response Error")
+				print("presinedData json data response Error")
+				print(Date(), "presinedData json data response Error", to: &Log.log)
 				return
 			}
 			
 			self.csvDispatchGroup.notify(queue: .main) {
 				if fileName.contains("Cell_Volt") {
+					print(Date(), "file uploaded succesfully...", to: &Log.log)
 					print("file uploaded succesfully...")
 					guard let testCommand = self.vehicleInfo?.getBatteryTestInstructions, testCommand.count > 0 else {
 						return
@@ -387,6 +406,7 @@ class UploadAnimationViewController: UIViewController {
 	}
 	
 	private func submitBatteryDataFileWithSOCGraphRequest() {
+		print(Date(), "submitBatteryDataFileWithSOCGraphRequest", to: &Log.log)
 		guard let veh = vehicleInfo else {return}
 		guard let vinInfo = vehicleInfo?.vin else { return  }
 		guard let vinMake = vehicleInfo?.make else { return  }
@@ -530,6 +550,7 @@ class UploadAnimationViewController: UIViewController {
 	}
 	
 	private func submitBatteryDataFileWithBMSGraphRequest() {
+		print(Date(), "submitBatteryDataFileWithBMSGraphRequest", to: &Log.log)
 		guard let veh = vehicleInfo else {return}
 		guard let vinInfo = vehicleInfo?.vin else { return  }
 		guard let vinMake = vehicleInfo?.make else { return  }

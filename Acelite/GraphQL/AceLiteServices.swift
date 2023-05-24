@@ -20,6 +20,7 @@ class Network {
 	var myPeripheral: CBPeripheral!
 	public var byteDataArray: [UInt8] = []
 	public var arrayOfBytesData: String = ""
+	public var bleData = Data()
   //  lazy var apollo = ApolloClient(url: URL.init(string: "http://countries.trevorblades.com/")!)
 	lazy var apollo: ApolloClient = {
 
