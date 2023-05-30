@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import ExternalAccessory
 
 enum ScreenState {
 case ConnectOBDdevice
@@ -14,8 +15,11 @@ case ConnectOBDdevice
 //case VehicalInfo
 }
 
-
+extension ViewController: EAAccessoryDelegate {
+	
+}
 class ViewController: UIViewController {
+	var accessoryManger: EAAccessoryManager!
 	//@IBOutlet weak var sideMenuBtn: UIBarButtonItem!
 	@IBOutlet weak var imageTitleLabel: UILabel!
 	var screenState = ScreenState.ConnectOBDdevice
@@ -48,6 +52,7 @@ class ViewController: UIViewController {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		accessoryManger = EAAccessoryManager.shared()
 		FirebaseLogging.instance.logScreen(screenName: ClassNames.obdiConnect)
 		FirebaseLogging.instance.setUserProperty(value: "StarCharm", forProperty: UserProperty().productType)
 		self.navigationController?.setStatusBar(backgroundColor: UIColor.appPrimaryColor())
@@ -67,8 +72,42 @@ class ViewController: UIViewController {
 	
 		uiViewUpdate()
 		
+		
+		// External Device
+		
+		NotificationCenter.default.addObserver(self, selector: #selector(accessoryConnected), name: NSNotification.Name.EAAccessoryDidConnect, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(accessoryDisconnected), name: NSNotification.Name.EAAccessoryDidDisconnect, object: nil)
+print("Connected/Disconnected notification centers")
+		print(AceliteExternalAccessory.accessoryManager.connectedAccessories)
+		EAAccessoryManager.shared().registerForLocalNotifications()
 	}
+	
+	@objc func accessoryConnected(notification: NSNotification) {
+		print("connected notification called")
+		if let accessory = notification.userInfo?[EAAccessoryKey] as? EAAccessory {
+			let session = EASession(accessory: accessory, forProtocol: "com.acelite.protocol")
+			if let inputStream = session?.inputStream, let outputStream = session?.outputStream {
+				// Open the input and output streams and start communication
+				inputStream.open()
+				outputStream.open()
+				// Handle communication with the accessory
+			}
+		}
+	}
+ 
 
+	@objc func accessoryDisconnected(notification: NSNotification) {
+		print("disconnected notification called")
+		if let accessory = notification.userInfo?[EAAccessoryKey] as? EAAccessory {
+			// Accessory disconnected, handle it
+		}
+	}
+	func showBluetoothAccessoryPicker(
+		withNameFilter predicate: NSPredicate?,
+		completion: EABluetoothAccessoryPickerCompletion? = nil
+	) {
+		print(predicate)
+	}
 	
 	@IBAction func menuButtonAction(_ sender: UIBarButtonItem) {
 		sender.target = revealViewController()

@@ -80,6 +80,8 @@
 		86C2BB9E29F1A23D004D4D42 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C2BB9D29F1A23D004D4D42 /* API.swift */; };
 		86CDBA6629B632D600956B4C /* UploadAnimationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86CDBA6529B632D600956B4C /* UploadAnimationViewController.swift */; };
 		86CDBA6929B653D400956B4C /* UploadAnimationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86CDBA6829B653D400956B4C /* UploadAnimationViewModel.swift */; };
+		86E33DFC2A1E7D3C00E2F167 /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86E33DFB2A1E7D3C00E2F167 /* ExternalAccessory.framework */; };
+		86E33DFE2A252D8700E2F167 /* ExternalAccessory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86E33DFD2A252D8700E2F167 /* ExternalAccessory.swift */; };
 		86E727EB29FEF3370057C546 /* GoogleService-Info-Prod.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86E727EA29FEF3370057C546 /* GoogleService-Info-Prod.plist */; };
 		86E86B9229C0CA5B007182DB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86E86B9129C0CA5B007182DB /* GoogleService-Info.plist */; };
 		86E86B9529C0CC25007182DB /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 86E86B9429C0CC25007182DB /* FirebaseAnalytics */; };
@@ -186,6 +188,8 @@
 		86C2BB9D29F1A23D004D4D42 /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		86CDBA6529B632D600956B4C /* UploadAnimationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadAnimationViewController.swift; sourceTree = "<group>"; };
 		86CDBA6829B653D400956B4C /* UploadAnimationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadAnimationViewModel.swift; sourceTree = "<group>"; };
+		86E33DFB2A1E7D3C00E2F167 /* ExternalAccessory.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ExternalAccessory.framework; path = System/Library/Frameworks/ExternalAccessory.framework; sourceTree = SDKROOT; };
+		86E33DFD2A252D8700E2F167 /* ExternalAccessory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExternalAccessory.swift; sourceTree = "<group>"; };
 		86E727EA29FEF3370057C546 /* GoogleService-Info-Prod.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info-Prod.plist"; sourceTree = "<group>"; };
 		86E86B9129C0CA5B007182DB /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		86F3786E2A04222B004601D9 /* FirebaseConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseConstants.swift; sourceTree = "<group>"; };
@@ -197,6 +201,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				86E33DFC2A1E7D3C00E2F167 /* ExternalAccessory.framework in Frameworks */,
 				86E86B9B29C0CC25007182DB /* FirebaseDatabaseSwift in Frameworks */,
 				86E86B9F29C0CC26007182DB /* FirebaseRemoteConfigSwift in Frameworks */,
 				86E86B9729C0CC25007182DB /* FirebaseAnalyticsSwift in Frameworks */,
@@ -349,6 +354,7 @@
 				869D86A82968982500503B9C /* BLETableViewCell.swift */,
 				869D86A92968982500503B9C /* BLETableViewCell.xib */,
 				86636DC629785A14001240FB /* BluetoothServices.swift */,
+				86E33DFD2A252D8700E2F167 /* ExternalAccessory.swift */,
 			);
 			path = BLEDevices;
 			sourceTree = "<group>";
@@ -356,6 +362,7 @@
 		861E6F0F295E118000443F12 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				86E33DFB2A1E7D3C00E2F167 /* ExternalAccessory.framework */,
 				861E6F10295E118000443F12 /* CoreBluetooth.framework */,
 			);
 			name = Frameworks;
@@ -736,6 +743,7 @@
 				861EDE7629B7AFC0003A1C81 /* ArrayX.swift in Sources */,
 				866CDB4F2982FC1200ADFB50 /* BuildConfig.swift in Sources */,
 				86A68D4C29AD2A3C000F2188 /* GetS3PreSingedViewModel.swift in Sources */,
+				86E33DFE2A252D8700E2F167 /* ExternalAccessory.swift in Sources */,
 				8691E0F229B2B877002C6E05 /* SubmitBatteryFilesWithSOCModel.swift in Sources */,
 				8639046A299557B2008D5A0A /* DataManager.swift in Sources */,
 				86B169E729B54FCD0024EFFF /* CustomAlertView.swift in Sources */,
@@ -981,9 +989,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 2;
-				DEVELOPMENT_TEAM = QMYQQM43B7;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 22SESE2W87;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Acelite/Info.plist;
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "We need to access your bluetooth for scanning ble devices.";
@@ -1006,6 +1016,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.cox.acelite.prod;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Acelite Prod";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -1294,9 +1305,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 2;
-				DEVELOPMENT_TEAM = QMYQQM43B7;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 22SESE2W87;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Acelite/Info.plist;
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "We need to access your bluetooth for scanning ble devices.";
@@ -1319,6 +1332,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.cox.acelite.prod;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Acelite Prod";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
