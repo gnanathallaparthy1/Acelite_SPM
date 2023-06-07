@@ -106,6 +106,7 @@ class VehicalVINScannerViewController: UIViewController {
     }
     
     @IBAction func barcodeScannerButtonAction(_ sender: UIButton) {
+		FirebaseLogging.instance.logEvent(eventName: EnterVinScreenEvents.vinScanner, parameters: nil)
         let storyBaord = UIStoryboard.init(name: "Main", bundle: nil)
         let vc = storyBaord.instantiateViewController(withIdentifier: "ScannerViewController") as! ScannerViewController
         vc.delegate = self
@@ -170,7 +171,7 @@ extension VehicalVINScannerViewController: UITextFieldDelegate {
     
 
 	func textFieldDidBeginEditing(_ textField: UITextField) {
-		self.barcodeTextField?.text = "1N4AZ0CPXFC331314"
+		self.barcodeTextField?.text = "JN1AZ0CPXCT026887"
 		//singleframeVin
 		//"3FA6P0LU8JR142415"
 		//MultiFrame with BMS
@@ -190,6 +191,7 @@ extension VehicalVINScannerViewController: UITextFieldDelegate {
 			self.fetchVehicalInformation(vin:  textField.text ?? "N/A")
             
 		} else {
+			self.view.activityStopAnimating()
 			let dialogMessage = UIAlertController(title: "WHOOPS!", message: "Please enter a valid Vin number", preferredStyle: .alert)
 			// Create OK button with action handler
 			let ok = UIAlertAction(title: "GOT IT", style: .default, handler: { (action) -> Void in
@@ -227,16 +229,25 @@ extension VehicalVINScannerViewController: UITextFieldDelegate {
 extension VehicalVINScannerViewController: PassVehicleInformationDelegate {
 	func handleErrorVehicleInfoUpdate(message: String) {
 		self.view.activityStopAnimating()
-		let dialogMessage = UIAlertController(title: "WHOOPS!", message: "This vehicle is not supported to run the test. Check testable vehicles.", preferredStyle: .alert)
-		// Create OK button with action handler
-		let ok = UIAlertAction(title: "GOT IT", style: .default, handler: { (action) -> Void in
-		})
-//		self.nextButton.isUserInteractionEnabled = false
-//		self.nextButton.isEnabled = false
-		//Add OK button to a dialog message
-		dialogMessage.addAction(ok)
-		// Present Alert to
-		self.present(dialogMessage, animated: true, completion: nil)
+		func showAlertMessage(title: String, mesg: String, actionMessage: String) {
+			let dialogMessage = UIAlertController(title: title, message: mesg, preferredStyle: .alert)
+			// Create OK button with action handler
+			let ok = UIAlertAction(title: actionMessage, style: .default, handler: { (action) -> Void in
+				self.view.activityStopAnimating()
+			})
+	//		self.nextButton.isUserInteractionEnabled = false
+	//		self.nextButton.isEnabled = false
+			//Add OK button to a dialog message
+			dialogMessage.addAction(ok)
+			// Present Alert to
+			self.present(dialogMessage, animated: true, completion: nil)
+		}
+		if message == "Network Error" {
+			showAlertMessage(title: "Oops!", mesg: "Please check your network connection", actionMessage: "Ok")
+		} else {
+			showAlertMessage(title: "WHOOPS!", mesg: "This vehicle is not supported to run the test. Check testable vehicles.", actionMessage: "GOT IT")
+		}
+		
 	}
 	
 	func updateVehicleInfo(viewModel: VehicleVinScannerViewModel) {

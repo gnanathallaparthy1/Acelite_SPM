@@ -76,7 +76,7 @@ class VehicleVinScannerViewModel {
 			   }
 				   
 		   case .failure(let error):
-			   self.delegate?.handleErrorVehicleInfoUpdate(message: "No result")
+			   self.delegate?.handleErrorVehicleInfoUpdate(message: "Network Error")
 			   print("Error loading data \(error)")
 			   //self.callback?(false)
 		   }

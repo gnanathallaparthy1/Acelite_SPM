@@ -51,7 +51,8 @@ class TestableModelsViewController: UIViewController, UITableViewDelegate, UITab
 	private func messageObserver() {
 		let rootRef = Database.database().reference()
 		let ref = rootRef.child("testable_models").child("items")
-		let data = ref.observe(.value) { data in
+		let dataa = ref.observe(.value) { data in
+			print(data)
 			self.itemDict = data.value as? [[String: Any]]
 			self.modelTableView.reloadData()
 			if self.itemDict?.count ?? 0 > 0  {
@@ -62,17 +63,18 @@ class TestableModelsViewController: UIViewController, UITableViewDelegate, UITab
 				self.modelTableView.isHidden = true
 			}
 		}
+		print(dataa)
 		
 		
 	}
 	
 	 func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = modelTableView.dequeueReusableCell(withIdentifier:"TestableTableViewCell",for: indexPath) as! TestableTableViewCell
-		if let person = itemDict?[0] {
-			let name = person["title"] as! String
-			let year = person["yearsRange"] as! String
-			let model = person["model"] as! String
-			let make = person["make"] as! Int
+		 if let vinInfor = itemDict?[indexPath.row] {
+			let name = vinInfor["title"] as! String
+			let year = vinInfor["yearsRange"] as! String
+			let model = vinInfor["model"] as! String
+			let make = vinInfor["make"] as! Int
 			cell.Name.text =  name
 			cell.year.text = "Years: " + year
 			cell.model.text = "Model: " + model
@@ -83,7 +85,7 @@ class TestableModelsViewController: UIViewController, UITableViewDelegate, UITab
 	}
 	
 	 func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-	 return 1
+		 return itemDict?.count ?? 0
 	 }
 	
 //	override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

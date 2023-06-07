@@ -43,6 +43,8 @@ struct EnterVinScreenEvents {
 
 struct WorkOrderScreenEvents {
 	static let workOrderScanner = "work_order_scanner"
+	static let workOrderInput = "work_order_input"
+	
 }
 
 struct TestInstructionsScreenEvents {
@@ -70,6 +72,7 @@ struct Parameters {
 	static let fileType = "file_type"
 	static let vinNumber = "vin_number"
 	static let error = "error"
+	static let workOrder = "work_order"
 }
 struct UserProperties {
 	static let productType = "product_type"

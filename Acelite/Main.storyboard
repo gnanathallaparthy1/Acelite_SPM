@@ -477,7 +477,7 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="barCodeTextFiled" destination="voG-pg-dla" id="Sdf-Gj-YuG"/>
+                        <outlet property="barCodeTextField" destination="voG-pg-dla" id="CIY-XX-XIM"/>
                         <outlet property="cancelButton" destination="OVr-w5-vZD" id="Q4I-vU-3JG"/>
                         <outlet property="countLabel" destination="6O8-Jo-0v4" id="H66-sg-5xz"/>
                         <outlet property="nextButton" destination="f0R-ee-Mfo" id="DHx-NK-2GF"/>
