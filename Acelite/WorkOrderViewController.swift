@@ -83,7 +83,7 @@ class WorkOrderViewController: UIViewController {
 		let testingVC = storyBoard.instantiateViewController(withIdentifier: "BatteryHealthCheckViewController") as! BatteryHealthCheckViewController
 		
 		if let vehicleInfo = self.vehicleInfo {
-			let vm = BatteryHealthCheckViewModel(vehicleInfo: vehicleInfo)
+			let vm = BatteryHealthCheckViewModel(vehicleInfo: vehicleInfo, workOrder: self.barCodeTextField?.text?.description)
 			testingVC.viewModel = vm
 		}
 			

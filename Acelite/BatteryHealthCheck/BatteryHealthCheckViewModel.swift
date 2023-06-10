@@ -49,6 +49,7 @@ class BatteryHealthCheckViewModel {
 	public var bms: Double?
 	public var currentEnergy: Double?
 	public var batteryTestInstructionId: String?
+	public var workOrder: String?
 	public var odometer: Double?
 	private var transactionId: String?
 	weak var preSignedDelegate: GetPreSignedUrlDelegate? = nil
@@ -60,8 +61,9 @@ class BatteryHealthCheckViewModel {
 	let loopConcurrentQueue = DispatchQueue(label: "com.acelite.concurrent", attributes: .concurrent)
 	
 	let loopDispatch = DispatchQueue.global(qos: .userInitiated)
-	init(vehicleInfo: Vehicle) {
+	init(vehicleInfo: Vehicle, workOrder: String?) {
 		self.vehicleInfo = vehicleInfo
+		self.workOrder = workOrder
 	}
 	
 	
@@ -367,16 +369,16 @@ class BatteryHealthCheckViewModel {
 								let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
 								//DispatchQueue.main.asyncAfter(deadline: .now(), execute: {
 								//Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data1 in
-						DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5), execute: {
+						//DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5), execute: {
 							Network.shared.bluetoothService?.writeBytesData(flowControl: .NONE,  commandType: .STATEOFCHARGE, data: odometerPIDCommand, completionHandler: { data1 in
 								testCommand.deviceData = data1
-								print("STATE OF CHARGE", data1)
+								//print("STATE OF CHARGE", data1)
 								let SOC: String = String.init(data: data1, encoding: .utf8) ?? ""
-					print("SOC", SOC)
+					//print("SOC", SOC)
 								print(Date(), "State of Charge PID response\(data1)", to: &Log.log)
 								onCompletion!(testCommand)
 							})
-						})
+						//})
 								//})
 							
 						})
@@ -401,9 +403,9 @@ class BatteryHealthCheckViewModel {
 							DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5), execute: {
 							Network.shared.bluetoothService?.writeBytesData(flowControl: .FLOW_PID, commandType: .ENERGY_TO_EMPTY, data: odometerPIDCommand, completionHandler: { data in
 												testCommand.deviceData = data
-								print("E 2 Empty", data)
+								//print("E 2 Empty", data)
 								let ETOE: String = String.init(data: data, encoding: .utf8) ?? ""
-					print("ETOE", ETOE)
+					//print("ETOE", ETOE)
 												print(Date(), "Energy to empty PID response\(data)", to: &Log.log)
 												onCompletion!(testCommand)
 											})
@@ -417,7 +419,6 @@ class BatteryHealthCheckViewModel {
 			} else {
 				if let header = testCommand.challenge?.header {
 					guard let pid = testCommand.challenge?.pid else { return }
-			
 						let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
 						//DispatchQueue.main.asyncAfter(deadline: .now() , execute: {
 						//Network.shared.bluetoothService?.writeBytesData(data: ATSHOdometer_Command, completionHandler: { data in
@@ -428,9 +429,9 @@ class BatteryHealthCheckViewModel {
 						//DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5), execute: {
 						Network.shared.bluetoothService?.writeBytesData(flowControl: .NONE, commandType: .ENERGY_TO_EMPTY, data: odometerPIDCommand, completionHandler: { data in
 										testCommand.deviceData = data
-							print("E 2 Empty", data)
+							//print("E 2 Empty", data)
 							let ETOE: String = String.init(data: data, encoding: .utf8) ?? ""
-							print("ETOE", ETOE)
+							//print("ETOE", ETOE)
 										print(Date(), "Energy to empty PID response\(data)", to: &Log.log)
 										onCompletion!(testCommand)
 									})
@@ -702,8 +703,8 @@ class BatteryHealthCheckViewModel {
 					if self.previousFlowControlData ==  flowControl.flowControlData {
 						isFlowControlChanged = false
 					} else {
-						print("Previous Flow control data", self.previousFlowControlData)
-						print("current flow control data", flowControl.flowControlData)
+						//print("Previous Flow control data", self.previousFlowControlData)
+						//print("current flow control data", flowControl.flowControlData)
 						isFlowControlChanged = true
 						self.previousFlowControlData = flowControl.flowControlData
 					}
@@ -816,6 +817,7 @@ class BatteryHealthCheckViewModel {
 				let endByte = testCommand?.response?.endByte ?? 0
 				print(Date(), "End Byte\(endByte)", to: &Log.log)
 				let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
+				print(Date(), "Haxa list\(haxValueList)", to: &Log.log)
 				if (haxValueList.count - 1) < endByte {
 					return
 				}
@@ -949,6 +951,7 @@ class BatteryHealthCheckViewModel {
 			let endByte = testCommand?.response?.endByte ?? 0
 			print(Date(), "End Byte \(endByte)", to: &Log.log)
 			let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
+			print(Date(), "Haxa List \(haxValueList)", to: &Log.log)
 			let haxValue = FlowfindFinalHexValue(haxVal: haxValueList, startByete: startByte, endByte: endByte)
 			//print(Date(), "Final Byte Array\(endByte)", to: &Log.log)
 			let chunkArray = haxValue.chunked(into: testCommand?.response?.bytesPerCell ?? 0)

@@ -38,6 +38,7 @@ class UploadAnimationViewController: UIViewController {
 	public var multiCellVoltageData = [[Double]]()
 	public var bmsCapacity: Double?
 	public var testInstructionsId: String?
+	public var workOrder: String?
 	private var transactionId: String?
 	private var healthScore: String?
 	var csvDispatchGroup = DispatchGroup()
@@ -493,7 +494,8 @@ class UploadAnimationViewController: UIViewController {
 						let paramDictionary = [
 						   "submit_type": "STATE_OF_CHARGE",
 						   "batter_test_instructions_id": "\(String(describing: self.testInstructionsId))",
-						   "errorCode":"\(String(describing: graphQLResults.errors))"]
+						   "errorCode":"\(String(describing: graphQLResults.errors))",
+						   "work_order": "\(String(describing: self.workOrder))"]
 						FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.submitBatteryFilesError, parameters: paramDictionary)
 						return
 					} else {
@@ -633,7 +635,8 @@ class UploadAnimationViewController: UIViewController {
 						let paramDictionary = [
 						   "submit_type": "BMS_CAPACITY",
 						   "batter_test_instructions_id": "\(String(describing: self.testInstructionsId))",
-						   "errorCode": "\(String(describing: graphQLResults.errors))"]
+						   "errorCode": "\(String(describing: graphQLResults.errors))",
+						   "work_order": "\(String(describing: self.workOrder))"]
 						FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.submitBatteryFilesError, parameters: paramDictionary)
 						return
 					}
@@ -703,7 +706,8 @@ class UploadAnimationViewController: UIViewController {
 	func submitSuccessForSubmitAPI(transactionID: String, vinMake: String, score: String, vinModels: String, submitType: String, vinNumber: String, year: Int) {
 		let paramDictionary = [
 		   "submit_type": submitType,
-		   "batter_test_instructions_id": "\(String(describing: self.testInstructionsId))"]
+		   "batter_test_instructions_id": "\(String(describing: self.testInstructionsId))",
+		   "work_order": "\(String(describing: self.workOrder))"]
 		FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.submitBatteryFilesSuccess, parameters: paramDictionary)
 		let rootRef = Database.database().reference()
 		let ref = rootRef.child("successful_transaction_ids").childByAutoId()

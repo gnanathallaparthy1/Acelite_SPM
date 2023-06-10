@@ -147,24 +147,18 @@ class BatteryHealthCheckViewController: UIViewController {
 			FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.instructionsStep1Started, parameters: nil)
 			// both booleans are true
 				self.viewModel?.handleInstructions()
-			   // self.viewModel?.isLoopingTimeInProgress = true
-			   // self.viewModel?.commandToRunInLoopIndex += 1
 			    self.viewModel?.isTimeInProgress = true
 			self.timer = Timer.scheduledTimer(timeInterval: 1, target: self,   selector:(#selector(updateTimerforStartCar)), userInfo: nil, repeats: true)
 		case .startClimateControls:
 			FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.instructionsStep2Started, parameters: nil)
 			self.updateBodyContentView(batteryHealthInstruction: .testInProgresInitial)
 			updateViewWithRCValues()
-			//self.viewModel?.isLoopingTimeInProgress = true
-			//self.viewModel?.commandToRunInLoopIndex += 1
 			self.timer = Timer.scheduledTimer(timeInterval: 1, target: self,   selector:(#selector(updateTimerforStartClimateControls)), userInfo: nil, repeats: true)
 		case .testInProgresInitial:
 			self.timer = Timer.scheduledTimer(timeInterval: 1, target: self,   selector:(#selector(updateTimerforTestInProgressInitial)), userInfo: nil, repeats: true)
 		case .turnOffClimateControls:
 			FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.instructionsStep3Started, parameters: nil)
 			self.updateBodyContentView(batteryHealthInstruction: .testInprogressFinal)
-			//self.viewModel?.isLoopingTimeInProgress = true
-			//self.viewModel?.commandToRunInLoopIndex += 1
 			self.timer = Timer.scheduledTimer(timeInterval: 1, target: self,   selector:(#selector(updateTimerforTurnOffClimateControls)), userInfo: nil, repeats: true)
 		case .testInprogressFinal:
 			updateViewWithRCValues()
@@ -462,6 +456,9 @@ extension BatteryHealthCheckViewController: GetPreSignedUrlDelegate, UploadAndSu
 	   }
 	   if let batteryInstrucId = viewModel?.batteryTestInstructionId {
 		   vc.testInstructionsId = batteryInstrucId
+	   }
+	   if let workOrd = viewModel?.workOrder {
+		   vc.workOrder = workOrd
 	   }
 	   let dialogMessage = UIAlertController(title: "TURN OFF THE CAR", message: "Turn off the car and disconnect the OBD-II cable.", preferredStyle: .alert)
 	   // Create OK button with action handler

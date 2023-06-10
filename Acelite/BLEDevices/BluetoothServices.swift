@@ -204,7 +204,9 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 		if let value = characteristic.value {
 			
 			let parseData: String = String.init(data: value, encoding: .utf8) ?? ""
-			Network.shared.bleData.append(parseData)
+			//check if needed
+			//Network.shared.bleData.append(parseData)
+			Network.shared.bleData.append(value)
 			//let byteArray: [UInt8] = Array(value)
 			print(Date(), "notify obtained bytes : \(parseData)", to: &Log.log)
 			//print("byteArray",byteArray)
@@ -241,6 +243,7 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 					Network.shared.bleData.removeAll()
 				
 				} else if parseData.contains(Constants.QUESTION_MARK) || parseData.contains(Constants.NODATA) || parseData.contains(Constants.NO_DATA) || parseData.contains(Constants.ERROR)   {
+					Network.shared.bleData.removeAll()
 					print(Date(), "Write Data Error)", to: &Log.log)
 				} else if parseData.contains(Constants.OK) {
 					self.completionHandler?(Network.shared.bleData)
