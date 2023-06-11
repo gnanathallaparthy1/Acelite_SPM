@@ -119,33 +119,9 @@ extension WorkOrderViewController: UITextFieldDelegate {
 
 extension WorkOrderViewController: ScannerViewDelegate {
 	func didFindScannedText(text: String) {
-		//regex validation for vin
-		if  text.count <= 17,  isValidVinNumber(text) == true {
 			self.barCodeTextField?.text = text
 			self.nextButton.isUserInteractionEnabled = true
 			self.nextButton.isEnabled = true
-		} else {
-			let dialogMessage = UIAlertController(title: "WHOOPS!", message: "Please enter a Valid Vin Number ", preferredStyle: .alert)
-			// Create OK button with action handler
-			let ok = UIAlertAction(title: "Ok", style: .default, handler: { (action) -> Void in
-				DispatchQueue.main.async {
-					self.navigationController?.popViewController(animated: true)
-				}
-			})
-			self.nextButton.isUserInteractionEnabled = false
-			self.nextButton.isEnabled = false
-			//Add OK button to a dialog message
-			dialogMessage.addAction(ok)
-			// Present Alert to
-			self.present(dialogMessage, animated: true, completion: nil)
-		}
-	   
 	}
 	
-	func isValidVinNumber(_ vinNumber: String) -> Bool {
-		let vinRegEx = "(?=.*\\d|=.*[A-Z])(?=.*[A-Z])[A-Z0-9]{17}"
-//RegExp("^[A-HJ-NPR-Z\\d]{8}[\\dX][A-HJ-NPR-Z\\d]{2}\\d{6}$")
-		let vinPred = NSPredicate(format:"SELF MATCHES %@", vinRegEx)
-		return vinPred.evaluate(with: vinNumber)
-	}
 }

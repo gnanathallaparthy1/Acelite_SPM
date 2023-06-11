@@ -170,18 +170,18 @@ extension VehicalVINScannerViewController: ScannerViewDelegate {
 extension VehicalVINScannerViewController: UITextFieldDelegate {
     
 
-	func textFieldDidBeginEditing(_ textField: UITextField) {
-		self.barcodeTextField?.text = "JN1AZ0CPXCT026887"
-		//singleframeVin
-		//"3FA6P0LU8JR142415"
-		//MultiFrame with BMS
-		//"1N4BZ1CP3LC310701"
-		//MultiFrame with SOC
-		//old leaf
-		//1N4BZ0CP4GC311050
-		//1N4AZ0CP3FC331073
-		//"1N4BZ1DP7LC310036"
-	}
+//	func textFieldDidBeginEditing(_ textField: UITextField) {
+//		self.barcodeTextField?.text = "JN1AZ0CPXCT026887"
+//		//singleframeVin
+//		//"3FA6P0LU8JR142415"
+//		//MultiFrame with BMS
+//		//"1N4BZ1CP3LC310701"
+//		//MultiFrame with SOC
+//		//old leaf
+//		//1N4BZ0CP4GC311050
+//		//1N4AZ0CP3FC331073
+//		//"1N4BZ1DP7LC310036"
+//	}
 	
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
 	
