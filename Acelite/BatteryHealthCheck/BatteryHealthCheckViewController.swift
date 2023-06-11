@@ -94,6 +94,7 @@ class BatteryHealthCheckViewController: UIViewController {
 	private let notificationCenter = NotificationCenter.default
 	var delegate:GetPreSignedUrlDelegate?
 	var infoPooDelegate: InfoPopAlertViewDelegate? = nil
+	private var backgroundTask: UIBackgroundTaskIdentifier = .invalid
 
 	public var viewModel: BatteryHealthCheckViewModel?
 	
@@ -142,6 +143,9 @@ class BatteryHealthCheckViewController: UIViewController {
 		self.startButton.setTitle("In progress...", for: .normal)
 		self.startButton.isUserInteractionEnabled = false
 		self.startButton.backgroundColor = AceliteColors.buttonBgColorGray
+		backgroundTask = UIApplication.shared.beginBackgroundTask { [weak self] in
+			self?.endBackgroundTask()
+		}
 		switch batteryHealthInstruction {
 		case .startTheCar:
 			FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.instructionsStep1Started, parameters: nil)
@@ -166,6 +170,10 @@ class BatteryHealthCheckViewController: UIViewController {
 		}
 		
 		circleView.progressAnimation(duration: TimeInterval(secoonds ))
+	}
+	private func endBackgroundTask() {
+		UIApplication.shared.endBackgroundTask(backgroundTask)
+		backgroundTask = .invalid
 	}
 	
 	func updateBodyContentView(batteryHealthInstruction: BatteryHealthInstruction)  {
@@ -340,6 +348,7 @@ class BatteryHealthCheckViewController: UIViewController {
 			}
 		
 		}
+		runInLoopTimer()
 	}
 	
 	@objc func updateTimerforStartClimateControls() {
@@ -360,7 +369,18 @@ class BatteryHealthCheckViewController: UIViewController {
 			}
 		
 		}
+		runInLoopTimer()
 	}
+	
+	private func runInLoopTimer() {
+		// Schedule the timer to run in the background
+		DispatchQueue.main.async {
+			//let runLoop = RunLoop.current
+			//runLoop.add(self.timer ?? Timer(), forMode: .common)
+		}
+		
+	}
+	
 	
 	@objc func updateTimerforTestInProgressInitial() {
 		if self.secoonds == 0  {
@@ -375,6 +395,7 @@ class BatteryHealthCheckViewController: UIViewController {
 			}
 		
 		}
+		runInLoopTimer()
 	}
 	
 	@objc func updateTimerforTurnOffClimateControls() {
@@ -392,6 +413,7 @@ class BatteryHealthCheckViewController: UIViewController {
 			}
 		
 		}
+		runInLoopTimer()
 	}
 	
 	@objc func updateTimerforTestInProgressFinal() {
@@ -406,6 +428,7 @@ class BatteryHealthCheckViewController: UIViewController {
 			}
 		
 		}
+		runInLoopTimer()
 	}
 
 	
@@ -463,6 +486,7 @@ extension BatteryHealthCheckViewController: GetPreSignedUrlDelegate, UploadAndSu
 	   let dialogMessage = UIAlertController(title: "TURN OFF THE CAR", message: "Turn off the car and disconnect the OBD-II cable.", preferredStyle: .alert)
 	   // Create OK button with action handler
 	   let ok = UIAlertAction(title: "Done", style: .default, handler: { (action) -> Void in
+		   self.endBackgroundTask()
 		   self.navigationController?.pushViewController(vc, animated: true)
 	   })
 	   //Add OK button to a dialog message
