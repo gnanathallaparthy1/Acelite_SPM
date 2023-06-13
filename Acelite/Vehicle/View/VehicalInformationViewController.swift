@@ -143,16 +143,16 @@ extension VehicalInformationViewController: ScannerViewDelegate {
 
 extension VehicalInformationViewController: UITextFieldDelegate {
 	
-	func textFieldDidBeginEditing(_ textField: UITextField) {
-		//self.barcodeTextField?.text = "1N4BZ1CP3LC310701"
-		//singleframeVin
-		//"3FA6P0LU8JR142415"
-		//MultiFrame with BMS
-		//"1N4BZ1CP3LC310701"
-		//MultiFrame with SOC
-		//1N4BZ0CP4GC311050
-		//1N4AZ0CP3FC331073
-	}
+//	func textFieldDidBeginEditing(_ textField: UITextField) {
+//		//self.barcodeTextField?.text = "1N4BZ1CP3LC310701"
+//		//singleframeVin
+//		//"3FA6P0LU8JR142415"
+//		//MultiFrame with BMS
+//		//"1N4BZ1CP3LC310701"
+//		//MultiFrame with SOC
+//		//1N4BZ0CP4GC311050
+//		//1N4AZ0CP3FC331073
+//	}
 	
 	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
 		if textField == self.barcodeTextField && textField.text?.count ?? 0 > 0 {

@@ -400,7 +400,7 @@ class BatteryHealthCheckViewModel {
 										let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
 										//DispatchQueue.main.asyncAfter(deadline: .now() , execute: {
 											//Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data in
-							DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5), execute: {
+							
 							Network.shared.bluetoothService?.writeBytesData(flowControl: .FLOW_PID, commandType: .ENERGY_TO_EMPTY, data: odometerPIDCommand, completionHandler: { data in
 												testCommand.deviceData = data
 								//print("E 2 Empty", data)
@@ -409,7 +409,7 @@ class BatteryHealthCheckViewModel {
 												print(Date(), "Energy to empty PID response\(data)", to: &Log.log)
 												onCompletion!(testCommand)
 											})
-										})
+									
 									
 								//})
 							})
@@ -456,14 +456,13 @@ class BatteryHealthCheckViewModel {
 									let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
 									//DispatchQueue.main.asyncAfter(deadline: .now(), execute: {
 									//Network.shared.bluetoothService?.writeBytesData(data: odometerPIDCommand, completionHandler: { data in
-							DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2), execute: {
+							
 							Network.shared.bluetoothService?.writeBytesData(flowControl: .FLOW_PID, commandType: .BMS_CAPACITY, data: odometerPIDCommand, completionHandler: { data in
 										testCommand.deviceData = data
 										print(Date(), "BMS PID response\(data)", to: &Log.log)
 										onCompletion!(testCommand)
 									})
 								
-								})
 							})
 						
 						//})

@@ -68,6 +68,8 @@ class BatteryHealthViewController: UIViewController {
 		guard let bodyStyle = vehicle?.bodyStyle else {return}
 		guard let workOrder = vehicle?.trimName else {return}
 		guard let trasctionID = viewModel?.transactionId else {return}
+		guard let healthScore = viewModel?.healthScore else {return}
+		guard let gradeTitle = viewModel?.grade?.title else {return}
 		//timestamp
 		 dictionary = [
 			"Title": title,
@@ -76,8 +78,8 @@ class BatteryHealthViewController: UIViewController {
 			"Vin number": vinInfo,
 			"Work order": workOrder,
 			"Date-Time": "\(getCurrentDateAndTime())",
-			"Score": "\(String(describing: viewModel?.healthScore))",
-			"Grade": "\(String(describing: viewModel?.grade?.title))",
+			"Score": "\(healthScore)",
+			"Grade": "\(gradeTitle)",
 			"Transaction ID": trasctionID,
 			"Model": vinModels,
 			"Body Style": bodyStyle,
