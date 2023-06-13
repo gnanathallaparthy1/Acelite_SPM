@@ -421,42 +421,42 @@ class UploadAnimationViewController: UIViewController {
 		//Vehicle Profile
 		guard let vehicleProfile = batteryInstr?[0].testCommands?.vehicleProfile else {
 			print(Date(), "SOC:Submit API failed due to Vehicle Profile", to: &Log.log)
-			self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:Submit API failed due to Vehicle Profile", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinModels, year: years)
+			self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:Submit API failed due to Vehicle Profile", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years)
 			return}
 		print(Date(), "SOC:Vehicle Profile\(vehicleProfile)", to: &Log.log)
 		
 		//State of Health
 		guard let stateOfHealth = batteryInstr?[0].testCommands?.stateOfHealthCommands else {
 			print(Date(), "SOC:Submit API failed due to state Of Health", to: &Log.log)
-			self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:Submit API failed due to state Of Health", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinModels, year: years)
+			self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:Submit API failed due to state Of Health", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years)
 			return}
 		print(Date(), "SOC:State of Health\(stateOfHealth)", to: &Log.log)
 		
 		//Nominal Volatage
 		guard let nominalVoltage: Double = vehicleProfile.nominalVoltage else {
 			print(Date(), "SOC:Submit API failed due to Nominal Volatge", to: &Log.log)
-			self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:Submit API failed due to Nominal Volatge", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinModels, year: years)
+			self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:Submit API failed due to Nominal Volatge", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years)
 			return  }
 		print(Date(), "SOC:Nominal Voltage\(nominalVoltage)", to: &Log.log)
 		
 		//EnergyAtBirth
 		guard let energyAtBirth: Double = vehicleProfile.energyAtBirth else {
 			print(Date(), "SOC:Submit API failed due to state Of energyAtBirth", to: &Log.log)
-			self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:Submit API failed due to state Of energyAtBirth", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinModels, year: years)
+			self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:Submit API failed due to state Of energyAtBirth", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years)
 			return  }
 		print(Date(), "SOC:energyAtBirth\(energyAtBirth)", to: &Log.log)
 		
 		//CapacityAtBirth
 		guard let capacityAtBirth: Double = vehicleProfile.capacityAtBirth else {
 			print(Date(), "SOC:Submit API failed due to state Of capacityAtBirth", to: &Log.log)
-			self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:Submit API failed due to state Of capacityAtBirth", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinModels, year: years)
+			self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:Submit API failed due to state Of capacityAtBirth", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years)
 			return}
 		print(Date(), "SOC:capacityAtBirth\(capacityAtBirth)", to: &Log.log)
 		
 		//Battery
 		guard let batteryType: String = vehicleProfile.batteryType else {
 			print(Date(), "SOC:Submit API failed due to BatteryType", to: &Log.log)
-			self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:Submit API failed due to state Of capacityAtBirth", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinModels, year: years)
+			self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:Submit API failed due to state Of capacityAtBirth", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years)
 			return}
 		print(Date(), "SOC:BatteryType\(batteryType)", to: &Log.log)
 		
@@ -484,13 +484,13 @@ class UploadAnimationViewController: UIViewController {
 					if graphQLResults.errors?.count ?? 0 > 0 {
 						//print("Error::", graphQLResults.errors!)
 						print(Date(), "SOC:submit API Error :\(String(describing: graphQLResults.errors))", to: &Log.log)
-						self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:submit API Error :\(String(describing: graphQLResults.errors))", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinModels, year: years)
+						self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:submit API Error :\(String(describing: graphQLResults.errors))", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years)
 						return
 					}
 					let submitData =  graphQLResults.data?.resultMap["submitBatteryDataFilesWithStateOfCharge"]
 					if submitData == nil {
 						print(Date(), "SOC:submit API result Map Error :\(String(describing: graphQLResults.errors))", to: &Log.log)
-						self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "\(String(describing: graphQLResults.errors))", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinModels, year: years)
+						self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "\(String(describing: graphQLResults.errors))", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years)
 						let paramDictionary = [
 						   "submit_type": "STATE_OF_CHARGE",
 						   "batter_test_instructions_id": "\(String(describing: self.testInstructionsId))",
@@ -509,7 +509,7 @@ class UploadAnimationViewController: UIViewController {
 								print(Date(), "SOC:submit API Decode Sucessful :\(String(describing: submitBatteryData))", to: &Log.log)
 								if submitBatteryData.batteryScore == nil {
 									print(Date(), "SOC:battery Score is Null :\(String(describing: graphQLResults.errors))", to: &Log.log)
-									self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "Battery Score is Null", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinModels, year: years)
+									self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "Battery Score is Null", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years)
 									return
 								} else {
 									let storyBaord = UIStoryboard.init(name: "Main", bundle: nil)
@@ -525,11 +525,11 @@ class UploadAnimationViewController: UIViewController {
 							} catch DecodingError.dataCorrupted(let context) {
 								//print(context)
 								print(Date(), "SOC:submit API Error :\(context)", to: &Log.log)
-								self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:submit API Error :\(context)", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinModels, year: years)
+								self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:submit API Error :\(context)", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years)
 								return
 							}
 						} catch {
-							self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:submit API Error :\(error)", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinModels, year: years)
+							self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:submit API Error :\(error)", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years)
 							print(Date(), "SOC:submit API Error :\(error)", to: &Log.log)
 							//print("Unexpected error: \(error).")
 						}
@@ -541,7 +541,7 @@ class UploadAnimationViewController: UIViewController {
 				break
 			case .failure(let error):
 				if let transactionId = self.preSignedData?.transactionID {
-					self.showSubmitAPIError(transactionID: transactionId , vinMake: vinMake, message: error.localizedDescription, vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinModels, year: years)
+					self.showSubmitAPIError(transactionID: transactionId , vinMake: vinMake, message: error.localizedDescription, vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years)
 				}
 				print(Date(), "SOC:submit API Error :\(error)", to: &Log.log)
 				break
@@ -566,14 +566,14 @@ class UploadAnimationViewController: UIViewController {
 		//vehicle profile
 		guard let vehicleProfile = batteryInstr?[0].testCommands?.vehicleProfile else {
 			print(Date(), "BMS:Submit API failed due to Vehicle Profile", to: &Log.log)
-			self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "BMS:Submit API failed due to Vehicle Profile", vinModels: vinModels, submitType: "BMS_CAPACITY", vinNumber: vinModels, year: years)
+			self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "BMS:Submit API failed due to Vehicle Profile", vinModels: vinModels, submitType: "BMS_CAPACITY", vinNumber: vinInfo, year: years)
 			return }
 		print(Date(), "Vehicle Profile\(vehicleProfile)", to: &Log.log)
 		
 		//stateOfHealth
 		guard let stateOfHealth = batteryInstr?[0].testCommands?.stateOfHealthCommands else {
 			print(Date(), "BMS:Submit API failed due to stateOfHealth", to: &Log.log)
-			self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "BMS:Submit API failed due to stateOfHealth", vinModels: vinModels, submitType: "BMS_CAPACITY", vinNumber: vinModels, year: years)
+			self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "BMS:Submit API failed due to stateOfHealth", vinModels: vinModels, submitType: "BMS_CAPACITY", vinNumber: vinInfo, year: years)
 			return
 		}
 		print(Date(), "BMS:stateOfHealth\(stateOfHealth)", to: &Log.log)
@@ -581,7 +581,7 @@ class UploadAnimationViewController: UIViewController {
 		//NominalVoltage
 		guard let nominalVoltage: Double = vehicleProfile.nominalVoltage else {
 			print(Date(), "BMS:Submit API failed due to Nominal Voltage", to: &Log.log)
-			self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "BMS:Submit API failed due to Nominal Voltage", vinModels: vinModels, submitType: "BMS_CAPACITY", vinNumber: vinModels, year: years)
+			self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "BMS:Submit API failed due to Nominal Voltage", vinModels: vinModels, submitType: "BMS_CAPACITY", vinNumber: vinInfo, year: years)
 			return
 		}
 		print(Date(), "BMS:Nominal Voltage\(nominalVoltage)", to: &Log.log)
@@ -589,7 +589,7 @@ class UploadAnimationViewController: UIViewController {
 		//Energy AT Birth
 		guard let energyAtBirth: Double = vehicleProfile.energyAtBirth else {
 			print(Date(), "BMS: Submit API failed due to Energy At Birth", to: &Log.log)
-			self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "BMS: Submit API failed due to Energy At Birth", vinModels: vinModels, submitType: "BMS_CAPACITY", vinNumber: vinModels, year: years)
+			self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "BMS: Submit API failed due to Energy At Birth", vinModels: vinModels, submitType: "BMS_CAPACITY", vinNumber: vinInfo, year: years)
 			return
 		}
 		print(Date(), " Energy At Birth\(energyAtBirth)", to: &Log.log)
@@ -597,7 +597,7 @@ class UploadAnimationViewController: UIViewController {
 		//Capacity At Birth
 		guard let capacityAtBirth: Double = vehicleProfile.capacityAtBirth else {
 			print(Date(), "BMS: Submit API failed due to Capacity At Birth", to: &Log.log)
-			self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:Submit API failed due to Vehicle Profile", vinModels: vinModels, submitType: "BMS_CAPACITY", vinNumber: vinModels, year: years)
+			self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:Submit API failed due to Vehicle Profile", vinModels: vinModels, submitType: "BMS_CAPACITY", vinNumber: vinInfo, year: years)
 			return
 		}
 		print(Date(), "BMS:Capacity At Birth\(capacityAtBirth)", to: &Log.log)
@@ -605,7 +605,7 @@ class UploadAnimationViewController: UIViewController {
 		//BMS Capacity
 		guard let bmsCapacitys: Double = self.bmsCapacity else {
 			print(Date(), "BMS:Submit API failed due to BMS", to: &Log.log)
-			self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "BMS:Submit API failed due to BMS", vinModels: vinModels, submitType: "BMS_CAPACITY", vinNumber: vinModels, year: years)
+			self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "BMS:Submit API failed due to BMS", vinModels: vinModels, submitType: "BMS_CAPACITY", vinNumber: vinInfo, year: years)
 			return}
 		print(Date(), "BMS Value\(bmsCapacitys)", to: &Log.log)
 		
@@ -642,7 +642,7 @@ class UploadAnimationViewController: UIViewController {
 					}
 					let submitData =  graphQLResults.data?.resultMap["submitBatteryDataFilesWithBmsCapacity"].jsonValue
 					if submitData == nil {
-						self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "BMS:submit API Result Map error :\(String(describing: submitData))", vinModels: vinModels, submitType: "BMS_CAPACITY", vinNumber: vinModels, year: years)
+						self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "BMS:submit API Result Map error :\(String(describing: submitData))", vinModels: vinModels, submitType: "BMS_CAPACITY", vinNumber: vinInfo, year: years)
 						print(Date(), "BMS:submit API Result Map error :\(String(describing: submitData))", to: &Log.log)
 						return
 					} else {
@@ -667,20 +667,20 @@ class UploadAnimationViewController: UIViewController {
 									vc.viewModel = vm
 									self.navigationController?.pushViewController(vc, animated: true)
 								} else {
-									self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "BMS:submit API Result Battery Score is Null", vinModels: vinModels, submitType: "BMS_CAPACITY", vinNumber: vinModels, year: years)
+									self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "BMS:submit API Result Battery Score is Null", vinModels: vinModels, submitType: "BMS_CAPACITY", vinNumber: vinInfo, year: years)
 									print(Date(), "BMS:BMS:submit API Result Battery Score is Null", to: &Log.log)
 									return
 									
 								}
 							
 							} catch DecodingError.dataCorrupted(let context) {
-								self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "BMS:submit API error :\(context)", vinModels: vinModels, submitType: "BMS_CAPACITY", vinNumber: vinModels, year: years)
+								self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "BMS:submit API error :\(context)", vinModels: vinModels, submitType: "BMS_CAPACITY", vinNumber: vinInfo, year: years)
 								print(Date(), "BMS:submit API error :\(context)", to: &Log.log)
 								print(context)
 								return
 							}
 						} catch {
-							self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "BMS:submit API error :\(error)", vinModels: vinModels, submitType: "BMS_CAPACITY", vinNumber: vinModels, year: years)
+							self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "BMS:submit API error :\(error)", vinModels: vinModels, submitType: "BMS_CAPACITY", vinNumber: vinInfo, year: years)
 							print(Date(), "BMS:submit API error :\(error)", to: &Log.log)
 							print("Unexpected error: \(error).")
 						}
@@ -693,7 +693,7 @@ class UploadAnimationViewController: UIViewController {
 			case .failure(let error):
 				if let transactionId = self.preSignedData?.transactionID {
 					print(Date(), "BMS:submit API error :\(error)", to: &Log.log)
-					self.showSubmitAPIError(transactionID: transactionId, vinMake: vinMake, message: "BMS:submit API error :\(error)", vinModels: vinModels, submitType: "BMS_CAPACITY", vinNumber: vinModels, year: years)
+					self.showSubmitAPIError(transactionID: transactionId, vinMake: vinMake, message: "BMS:submit API error :\(error)", vinModels: vinModels, submitType: "BMS_CAPACITY", vinNumber: vinInfo, year: years)
 				}
 				break
 			}
