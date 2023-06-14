@@ -150,7 +150,7 @@ class BatteryHealthCheckViewController: UIViewController {
 		case .startTheCar:
 			FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.instructionsStep1Started, parameters: nil)
 			// both booleans are true
-				self.viewModel?.handleInstructions()
+				self.viewModel?.initialCommand()
 			    self.viewModel?.isTimeInProgress = true
 			self.timer = Timer.scheduledTimer(timeInterval: 1, target: self,   selector:(#selector(updateTimerforStartCar)), userInfo: nil, repeats: true)
 		case .startClimateControls:
@@ -446,9 +446,9 @@ extension BatteryHealthCheckViewController: GetPreSignedUrlDelegate, UploadAndSu
 	   //let vm = UploadAnimationViewModel(delegate: self.viewModel?.uploadAndSubmitDelegate)
 	   let vc = UploadAnimationViewController()
 	   vc.vehicleInfo = viewModel?.vehicleInfo
-	   if let sp = viewModel?.sampledCommandsList {
-		   vc.sampledCommandsList = sp
-	   }
+	   //if let sp =  {
+		   vc.sampledCommandsList = Network.shared.sampledCommandsList
+	   //}
 	   if let pc = viewModel?.packCurrentData {
 		   vc.packCurrentData = pc
 	   }
@@ -477,7 +477,7 @@ extension BatteryHealthCheckViewController: GetPreSignedUrlDelegate, UploadAndSu
 	   if let multiCellVoltageData = viewModel?.multiCellVoltageData {
 		   vc.multiCellVoltageData = multiCellVoltageData
 	   }
-	   if let batteryInstrucId = viewModel?.batteryTestInstructionId {
+	   if let batteryInstrucId = Network.shared.batteryTestInstructionId {
 		   vc.testInstructionsId = batteryInstrucId
 	   }
 	   if let workOrd = viewModel?.workOrder {

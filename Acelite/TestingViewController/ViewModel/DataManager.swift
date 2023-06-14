@@ -118,6 +118,7 @@ enum InstructionType: CaseIterable {
 	case FLOW_CONTROL_NORMAL_COMMAND
 	case HEADER
 	case PID
+	case NONE
 	var description: String {
 		get {
 			switch self {				
@@ -131,6 +132,8 @@ enum InstructionType: CaseIterable {
 				return "FLOW_HEADER"
 			case .PID:
 				return "FLOW_PID"
+			case .NONE:
+				return ""
 			}
 		}
 	}
@@ -185,9 +188,37 @@ enum CommandType: CaseIterable {
 	 }
 }
 
+enum InstructionType: CaseIterable {
+	case FLOW_CONTROL_HEADER
+	case FLOW_CONTROL_DATA
+	case FLOW_CONTROL_NORMAL_COMMAND
+	case HEADER
+	case PID
+	case NONE
+	var description: String {
+		get {
+			switch self {
+			case .FLOW_CONTROL_HEADER:
+				return "FLOW_CONTROL_HEADER"
+			case .FLOW_CONTROL_DATA:
+				return "FLOW_CONTROL_DATA"
+			case .FLOW_CONTROL_NORMAL_COMMAND:
+				return "FLOW_CONTROL_NORMAL_COMMAND"
+			case .HEADER:
+				return "FLOW_HEADER"
+			case .PID:
+				return "FLOW_PID"
+			case .NONE:
+				return ""
+			}
+		}
+	}
+}
+	
+
 class TestCommandExecution {
 
-	var type: CommandType?
+	var type: CommandType = .Other
 	var resProtocol : ProtocolClass?
 	var challenge: Challenge?
 	var response: OdometerResponse?
@@ -197,6 +228,8 @@ class TestCommandExecution {
 	var isFlowController: Bool = false
 	var deviceByteArray = [UInt8]()
 	var deviceData: Data?
+	var instructionType: InstructionType = .NONE
+	
 	init(type: CommandType, resProtocal: ProtocolClass, challenge: Challenge, response: OdometerResponse, validation: Validation) {
 		self.type = type
 		self.resProtocol = resProtocal

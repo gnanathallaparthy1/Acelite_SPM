@@ -18,10 +18,6 @@ class VehicleInformationViewModel {
 	var vehicleInformation:  Vehicle?
 	var vinNumber: String?
 	weak var delegate: UpdateVehicleInformationDelegate? = nil
-	//var delegate: UpdateVehicleInformationDelegate?
-	//var getBatteryinstructions: [GetBatteryTestInstruction]?
-	//var callback: ((Bool)->())?
-	//var dataManger: DataManager?
 	init(vinNumber: String?, vehicleInformation: Vehicle) {
 		self.vinNumber = vinNumber
 		self.vehicleInformation = vehicleInformation
@@ -55,7 +51,7 @@ class VehicleInformationViewModel {
 					do {
 						let decoder = JSONDecoder()
 						let messages = try decoder.decode(Vehicle.self, from: vehicleData!)
-						self.vehicleInformation = messages						
+						self.vehicleInformation = messages
 						self.delegate?.updateVehicleInfo(viewModel: self)
 					} catch DecodingError.dataCorrupted(let context) {
 						//print(context)

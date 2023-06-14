@@ -21,6 +21,12 @@ class Network {
 	public var byteDataArray: [UInt8] = []
 	public var arrayOfBytesData: String = ""
 	public var bleData = Data()
+	public var normalCommandsList = [TestCommandExecution]()
+	public var sampledCommandsList = [TestCommandExecution]()
+	public var diagnosticCommand: TestCommandDiagnosticExecution?
+	public var isDiagnosticSession: Bool = false
+	public var batteryTestInstructionId: String?
+
   //  lazy var apollo = ApolloClient(url: URL.init(string: "http://countries.trevorblades.com/")!)
 	lazy var apollo: ApolloClient = {
 

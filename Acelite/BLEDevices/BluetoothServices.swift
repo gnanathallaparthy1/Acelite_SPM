@@ -58,7 +58,7 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 
 
 	var commandType: CommandType = .Other
-	var flowControlType: FlowControlInstructionType = .NONE
+	var instructionType: InstructionType = .NONE
 
 	var reqestDataTime = Date()
 	var responseDateTime = Date()
@@ -90,8 +90,13 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 //		bluetoothPeripheral?.setNotifyValue(true, for: rxCharacteristic!)
 //	} 	public func writeBytesData(flowControl: FlowControlInstructionType, commandType: CommandType, data: String, completionHandler: ((String)->())?) {
 
+	//MARK: - WriteByteArrayToDevice
 	
-	public func writeBytesData(flowControl: FlowControlInstructionType, commandType: CommandType, data: String, completionHandler: ((Data)->())? ) {
+	public func writeByteDataOnDevice(commandType: CommandType, data: String, completionHandler: ((Data)->())? ) {
+	}
+	
+	
+	public func writeBytesData(instructionType: InstructionType, commandType: CommandType, data: String, completionHandler: ((Data)->())? ) {
 		// self.commandType = .Other
 		self.completionHandler = completionHandler
 		guard let characterstics = txCharacteristic else {
@@ -103,15 +108,10 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 		self.reqestDataTime = Date()
 		self.fromDate = Date()
 		self.commandType = commandType
-		self.flowControlType = flowControl
+		self.instructionType = instructionType
 		bluetoothPeripheral?.writeValue(dataToSend, for: characterstics, type: .withResponse)
-		// sleep(1)
+
 		bluetoothPeripheral?.setNotifyValue(true, for: rxCharacteristic!)
-		
-		// .txt file
-		// add to string  data
-		// add new line  \n
-		
 	}
 	
 	public func connectDevices(peripheral: CBPeripheral) {
