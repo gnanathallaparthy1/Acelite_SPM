@@ -107,6 +107,8 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 		let userInfo = response.notification.request.content.userInfo
 		let application = UIApplication.shared
 		
+		print("remote notification data", userInfo)
+		guard let screenName: String = userInfo["screen"] as? String , screenName == "testable_models"  else { return  }
 		if(application.applicationState == .active || application.applicationState == .inactive){
 			NotificationCenter.default.post(name:NSNotification.Name("identifier"), object: userInfo)
 			

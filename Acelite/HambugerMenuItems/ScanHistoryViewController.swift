@@ -22,7 +22,26 @@ class ScanHistoryViewController: UIViewController, UITableViewDelegate, UITableV
         self.historyTableView.register(UINib(nibName: "ScanHistoryTableViewCell", bundle: nil), forCellReuseIdentifier: "ScanHistoryCell")
         // Update TableView with the data
 		loadDataIntoVinArray()
+		
+		// Remote Notification
+		NotificationCenter.default.addObserver(self, selector: #selector(self.goToVc(notification:)), name:NSNotification.Name(rawValue:"identifier"), object: nil)
     }
+	
+	@objc func goToVc(notification:Notification) {
+		NotificationCenter.default.removeObserver(self)
+		DispatchQueue.main.async {
+			if self.navigationController?.topViewController == self {
+				self.dismiss(animated: true)
+				let storyBaord = UIStoryboard.init(name: "BatteryHealthCheck", bundle: nil)
+				let vc = storyBaord.instantiateViewController(withIdentifier: "TestableModelsViewController") as! TestableModelsViewController
+				vc.isModallyPresented = true
+				self.navigationController?.present(vc, animated: true)
+			}
+		}
+		
+		
+   }
+
 	
 	private func loadDataIntoVinArray() {
 		vinDataArray = userDefaults.object(forKey: "myKey") as? [[String : String]] ?? [[String: String]]()
