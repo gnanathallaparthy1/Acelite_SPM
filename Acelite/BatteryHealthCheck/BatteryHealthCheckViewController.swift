@@ -128,6 +128,30 @@ class BatteryHealthCheckViewController: UIViewController {
 		fetchRemoteConfig()
 	}
 	
+	func fetchRemoteConfig() {
+		//FIXME remove this before we go in production
+	//	let debugSettings = FIRRemoteConfigSettings(developerModeEnabled: true)
+		//RemoteConfig.remoteConfig().configSettings =
+		RemoteConfig.remoteConfig().fetch(withExpirationDuration: 0) { (status, error) in
+			guard error == nil else {
+				print("Got an error fetching remote values: \(String(describing: error))")
+				self.setDefaultRemoteConfigDefaults()
+				self.updateViewWithRCValues()
+//				let alertViewController = UIAlertController.init(title: "Oops!", message: "Please check your network connection", preferredStyle: .alert)
+//				let ok = UIAlertAction(title: "Ok", style: .default, handler: { (action) -> Void in
+////					let url = URL(string: "App-Prefs:root=Privacy&path=Bluetooth") //for bluetooth setting
+////								   let app = UIApplication.shared
+////								   app.openURL(url!)
+//				})
+//				alertViewController.addAction(ok)
+//				self.present(alertViewController, animated: true, completion: nil)
+				return
+			}
+			RemoteConfig.remoteConfig().fetchAndActivate()
+			self.updateViewWithRCValues()
+		}
+	}
+	
 	@objc func addTapped() {
 		self.navigationController?.popViewController(animated: true)
 	}
@@ -146,6 +170,7 @@ class BatteryHealthCheckViewController: UIViewController {
 		backgroundTask = UIApplication.shared.beginBackgroundTask { [weak self] in
 			self?.endBackgroundTask()
 		}
+		deleteExistingLogFile()
 		switch batteryHealthInstruction {
 		case .startTheCar:
 			FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.instructionsStep1Started, parameters: nil)
@@ -259,30 +284,7 @@ class BatteryHealthCheckViewController: UIViewController {
 		]
 		RemoteConfig.remoteConfig().setDefaults(defaultValues)
 	}
-	
-	func fetchRemoteConfig() {
-		//FIXME remove this before we go in production
-	//	let debugSettings = FIRRemoteConfigSettings(developerModeEnabled: true)
-		//RemoteConfig.remoteConfig().configSettings =
-		RemoteConfig.remoteConfig().fetch(withExpirationDuration: 0) { (status, error) in
-			guard error == nil else {
-				print("Got an error fetching remote values: \(String(describing: error))")
-				self.setDefaultRemoteConfigDefaults()
-				self.updateViewWithRCValues()
-//				let alertViewController = UIAlertController.init(title: "Oops!", message: "Please check your network connection", preferredStyle: .alert)
-//				let ok = UIAlertAction(title: "Ok", style: .default, handler: { (action) -> Void in
-////					let url = URL(string: "App-Prefs:root=Privacy&path=Bluetooth") //for bluetooth setting
-////								   let app = UIApplication.shared
-////								   app.openURL(url!)
-//				})
-//				alertViewController.addAction(ok)
-//				self.present(alertViewController, animated: true, completion: nil)
-				return
-			}
-			RemoteConfig.remoteConfig().fetchAndActivate()
-			self.updateViewWithRCValues()
-		}
-	}
+
 	
 	func updateViewWithRCValues() {
 		var timerValue: NSNumber?
@@ -503,5 +505,21 @@ extension BatteryHealthCheckViewController: GetPreSignedUrlDelegate, UploadAndSu
    func handleErrorTransactionID() {
 	   
    }
+	
+	func deleteExistingLogFile() {
+		
+		let fileManager = FileManager.default
+		do {
+			let path = try? fileManager.url(for: .documentDirectory, in: .allDomainsMask, appropriateFor: nil, create: false)
+			let fileURL: URL = (path?.appendingPathComponent("\(Date.getCurrentDate()).txt"))!
+			do {
+				try FileManager.default.removeItem(at: fileURL)
+				print("Image has been deleted")
+			} catch {
+				print(error)
+			}
+			
+		}
+	}
 	
 }

@@ -14,7 +14,7 @@ class Log: TextOutputStream {
 		let fileManager = FileManager.default
 		do {
 			let path = try? fileManager.url(for: .documentDirectory, in: .allDomainsMask, appropriateFor: nil, create: false)
-			let fileURL: URL = (path?.appendingPathComponent("log.txt"))!
+			let fileURL: URL = (path?.appendingPathComponent("\(Date.getCurrentDate()).txt"))!
 			
 			
 			//let fm = FileManager.default
@@ -30,4 +30,17 @@ class Log: TextOutputStream {
 	}
 	static var log: Log = Log()
 	private init() {} // we are sure, nobody else could create it
+}
+
+extension Date {
+
+ static func getCurrentDate() -> String {
+
+		let dateFormatter = DateFormatter()
+
+		dateFormatter.dateFormat = "dd-MM-yyyy"
+
+		return dateFormatter.string(from: Date())
+
+	}
 }

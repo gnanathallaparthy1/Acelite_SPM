@@ -7,7 +7,7 @@
 
 import UIKit
 import ExternalAccessory
-
+import UserNotifications
 enum ScreenState {
 case ConnectOBDdevice
 //case StartCar
@@ -80,7 +80,22 @@ class ViewController: UIViewController {
 print("Connected/Disconnected notification centers")
 		print(AceliteExternalAccessory.accessoryManager.connectedAccessories)
 		EAAccessoryManager.shared().registerForLocalNotifications()
+		
+		// Remote Notification
+		NotificationCenter.default.addObserver(self, selector: #selector(self.goToVc(notification:)), name:NSNotification.Name(rawValue:"identifier"), object: nil)
+
 	}
+	
+	@objc func goToVc(notification:Notification) {
+		NotificationCenter.default.removeObserver(self)
+		if self.navigationController?.topViewController == self {
+			let storyBaord = UIStoryboard.init(name: "BatteryHealthCheck", bundle: nil)
+			let vc = storyBaord.instantiateViewController(withIdentifier: "TestableModelsViewController") as! TestableModelsViewController
+			vc.isModallyPresented = false
+			self.navigationController?.pushViewController(vc, animated: true)
+		}
+		
+   }
 	
 	@objc func accessoryConnected(notification: NSNotification) {
 		print("connected notification called")
@@ -125,6 +140,9 @@ print("Connected/Disconnected notification centers")
 //			backButton.isUserInteractionEnabled = false
 		imageView.image = UIImage.init(named: "1-5")
 		screenCountLabel.text = "1/5"
+		
+		// Remote Nitification
+		NotificationCenter.default.addObserver(self, selector: #selector(self.goToVc(notification:)), name:NSNotification.Name(rawValue:"identifier"), object: nil)
 		//self.navigationItem.setHidesBackButton(true, animated: true)
 			//setNavigationBar(bgColor: UIColor(red: 0.00, green: 0.76, blue: 0.84, alpha: 1.00), TitleColor: UIColor.white, title: "" ,imageLeft: UIImage(named: "menu")!,imageRight: UIImage(named: "menu")!, leftbarImageisHide: false, rightbarImageisHide: true, popView: false)
 		}

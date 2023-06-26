@@ -119,6 +119,7 @@ extension MainViewController: SideMenuViewControllerDelegate {
 			//let vc =
 			let storyBaord = UIStoryboard.init(name: "BatteryHealthCheck", bundle: nil)
 			let vc = storyBaord.instantiateViewController(withIdentifier: "TestableModelsViewController") as! TestableModelsViewController
+			vc.isModallyPresented = true
 			let navigationController = UINavigationController(rootViewController: vc)
 			navigationController.modalPresentationStyle = .fullScreen
 			self.present(navigationController, animated: true, completion: nil)
