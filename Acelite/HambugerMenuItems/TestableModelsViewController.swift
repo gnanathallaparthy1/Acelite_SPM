@@ -62,6 +62,7 @@ class TestableModelsViewController: UIViewController, UITableViewDelegate, UITab
 				print("User denied notification permission")
 				self.showMessageLable()
 			case .notDetermined:
+				self.showMessageLable()
 				print("Notification permission haven't been asked yet")
 			case .provisional:
 				// @available(iOS 12.0, *)
