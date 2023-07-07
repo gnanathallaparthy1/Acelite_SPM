@@ -178,11 +178,11 @@ class TestableModelsViewController: UIViewController, UITableViewDelegate, UITab
 			let name = vinInfor["title"] as! String
 			let year = vinInfor["yearsRange"] as! String
 			let model = vinInfor["model"] as! String
-			let make = vinInfor["make"] as! Int
+			let make = vinInfor["makeString"] as! String
 			cell.Name.text =  name
 			cell.year.text = "Years: " + year
 			cell.model.text = "Model: " + model
-			cell.make.text = "Make: " + String(make)
+			cell.make.text = "Make: " + make
 		}
 		
 		return cell
