@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import FirebaseDatabase
+import Firebase
 
 class UploadAnimationViewController: UIViewController {
 	private let stackView: UIStackView = {
@@ -44,7 +45,8 @@ class UploadAnimationViewController: UIViewController {
 	var csvDispatchGroup = DispatchGroup()
 	var preSignedData: GetS3PreSingedURL?
 	var textCommands = ""
-	//var gradeTest:VehicleGrade = .C
+	var remoteConfig = RemoteConfig.remoteConfig()
+	var isJsonEnabled : Bool = false
 	public var sampledCommandsList = [TestCommandExecution]()
 	//========================
 	
@@ -73,13 +75,11 @@ class UploadAnimationViewController: UIViewController {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		print("upload animation VC")
 		print(Date(), "upload animation VC", to: &Log.log)
 		navigationItem.hidesBackButton = true
 		let label = UILabel(frame: CGRect(x: 0, y: 0, width: 250, height: 21))
 		label.center = CGPoint(x: 220, y: 150)
 		label.textAlignment = .center
-		//label.translatesAutoresizingMaskIntoConstraints = false
 		label.text = "UPLOADING DATA..."
 		label.font = UIFont(name: "Arial-BoldMT", size: 25)
 		view.addSubview(label)
@@ -103,8 +103,23 @@ class UploadAnimationViewController: UIViewController {
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 		self.animate()
+		self.messageObserver()
 		
 	}
+	
+	private func messageObserver()  {
+		remoteConfig.fetch(withExpirationDuration: 0) { [unowned self] (status, error) in
+			guard error == nil else {
+				print("error retreiving remote")
+				return }
+			print("got remote")
+			remoteConfig.activate()
+			self.isJsonEnabled = remoteConfig.configValue(forKey: "submit_json_version_enabled").boolValue
+			print("XXXX",isJsonEnabled as Any)
+			
+		}
+	}
+	
 	@objc func navigateToHealthS() {
 		print(Date(), "upload animation VC", to: &Log.log)
 		Network.shared.bluetoothService?.disconnectDevice(peripheral: Network.shared.myPeripheral)
