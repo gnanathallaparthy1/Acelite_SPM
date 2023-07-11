@@ -170,9 +170,10 @@ class BatteryHealthCheckViewController: UIViewController {
 		backgroundTask = UIApplication.shared.beginBackgroundTask { [weak self] in
 			self?.endBackgroundTask()
 		}
-		deleteExistingLogFile()
+		//deleteExistingLogFile()
 		switch batteryHealthInstruction {
 		case .startTheCar:
+			deleteExistingLogFile()
 			FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.instructionsStep1Started, parameters: nil)
 			// both booleans are true
 				self.viewModel?.initialCommand()
