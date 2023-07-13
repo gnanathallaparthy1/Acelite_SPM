@@ -442,9 +442,45 @@ extension BatteryHealthCheckViewController: GetPreSignedUrlDelegate, UploadAndSu
 		//post(name: "GotAllData", object: nil)
    }
    
-   func navigateToAnimationVC() {
+	func navigateToAnimationVC() {
 	   timer?.invalidate()
 	   timer = nil
+	   
+	   let packVoltageScan = ["packVoltageScan": self.viewModel?.packVoltageArray]
+	   let packCurrentScan = ["packCurrentScan": self.viewModel?.packCurrentArray]
+	   let packCellVoltageScan = ["packCellVoltageScan": self.viewModel?.multiCellVoltageArray]
+	   
+
+	   let finalDictionary = ([packVoltageScan, packCurrentScan, packCellVoltageScan] as? [[String : [[String : Any]]]])
+	   
+	   let finalJsonObject = self.convertToJSONString(value: finalDictionary as AnyObject)
+	  
+	   let fileManager = FileManager.default
+	   do {
+		   let path = try fileManager.url(for: .documentDirectory, in: .allDomainsMask, appropriateFor: nil, create: false)
+		   let fileURL = path.appendingPathComponent("final_vin.json")
+		   try finalJsonObject?.write(to: fileURL, atomically: true, encoding: .utf8)
+		 print(fileURL)
+	   } catch {
+		   print("error creating file")
+		  
+	   }
+	   print(finalJsonObject!)
+	   
+	   
+	   
+	   
+	   
+	   
+//	   let packCurrentArray = self.convertToJSONString(value: packVoltageScan as AnyObject)
+//	   print(packCurrentArray!)
+//
+//	   let packVoltageArray = self.convertToJSONString(value: packCurrentScan as AnyObject)
+//	   print(packVoltageArray!)
+//
+//	   let multiCellVoltageArray = self.convertToJSONString(value: packCellVoltageScan as AnyObject)
+//	   print(multiCellVoltageArray!)
+	   
 	   
 	   //let vm = UploadAnimationViewModel(delegate: self.viewModel?.uploadAndSubmitDelegate)
 	   let vc = UploadAnimationViewController()
@@ -523,4 +559,31 @@ extension BatteryHealthCheckViewController: GetPreSignedUrlDelegate, UploadAndSu
 		}
 	}
 	
+	func convertToJSONString(value: AnyObject) -> String? {
+			if JSONSerialization.isValidJSONObject(value) {
+				do{
+					let data = try JSONSerialization.data(withJSONObject: value, options: [])
+					if let string = NSString(data: data, encoding: String.Encoding.utf8.rawValue) {
+						return string as String
+					}
+				}catch{
+				}
+			}
+			return nil
+		}
+	
+}
+extension Dictionary {
+	var jsonData: Data? {
+		return try? JSONSerialization.data(withJSONObject: self, options: [.prettyPrinted])
+	}
+	
+	func toJSONString() -> String? {
+		if let jsonData = jsonData {
+			let jsonString = String(data: jsonData, encoding: .utf8)
+			return jsonString
+		}
+		
+		return "[]"
+	}
 }

@@ -39,10 +39,15 @@ class BatteryHealthCheckViewModel {
 	public var vehicleInfo: Vehicle?
 	public var numberOfCells: Int?
 	public var packVoltageData = [Double]()
+	public var packVoltageArray = [[String: Any]]()
 	public var packCurrentData = [Double]()
+	public var packCurrentArray = [[String: Any]]()
 	public var packTemperatureData = [Double]()
 	public var cellVoltageData = [Double]()
+	public var cellVoltageArray = [[String: Any]]()
+	var startTime = ""
 	public var multiCellVoltageData = [[Double]]()
+	public var multiCellVoltageArray = [[String: Any]]()
 	public var stateOfCharge: Double?
 	public var bms: Double?
 	public var currentEnergy: Double?
@@ -205,7 +210,7 @@ class BatteryHealthCheckViewModel {
 			let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
 			Network.shared.bluetoothService?.writeBytesData(instructionType: .HEADER, commandType: testCommand.type, data: ATSHOdometer_Command, completionHandler: { data in
 						let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
-				
+				self.startTime = self.getStartTime()
 				Network.shared.bluetoothService?.writeBytesData(instructionType: .PID, commandType: .ODOMETER, data: odometerPIDCommand, completionHandler: { data1 in
 							testCommand.deviceData = data1
 					print(Date(), "Command:  \(testCommand.type) - Response: \(data1)", to: &Log.log)
@@ -242,6 +247,7 @@ class BatteryHealthCheckViewModel {
 						self.previousFlowControlData = flowControl.flowControlData
 					}
 					let flowControlData = Constants.ATFCSD + flowControl.flowControlData! + Constants.NEW_LINE_CHARACTER
+			self.startTime = self.getStartTime()
 			Network.shared.bluetoothService?.writeBytesData(instructionType: .FLOW_CONTROL_DATA, commandType: testCommand.type,   data: flowControlData, completionHandler: { data in
 						if isFlowControlChanged {
 							let flowControlChangedCommand = Constants.ATFCSM1 + Constants.NEW_LINE_CHARACTER
@@ -392,6 +398,11 @@ class BatteryHealthCheckViewModel {
 				case .PACK_VOLTAGE:
 					if haxValueList.count > 0 {
 						let value = self.calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
+						
+						let packDict = ["start": self.startTime, "voltage": value, "stop": self.getStartTime()] as [String : Any]
+						self.packVoltageArray.append(packDict)
+						
+						
 						self.packVoltageData.append(value)
 						print(Date(), "Final Pack Voltage Value \(value)", to: &Log.log)
 					}
@@ -429,6 +440,11 @@ class BatteryHealthCheckViewModel {
 						
 						let constantValue = testCommand?.response?.constant ?? 0
 						let finalValue = packCurrentValue + Double(constantValue)
+						
+						let packCurrentDict = ["start": self.startTime, "current": finalValue, "stop": self.getStartTime()] as [String : Any]
+						self.packCurrentArray.append(packCurrentDict)
+						
+						
 						print(Date(), "Final Pack Current Value \(finalValue)", to: &Log.log)
 						self.packCurrentData.append(finalValue)
 					}
@@ -487,8 +503,13 @@ class BatteryHealthCheckViewModel {
 			//print(Date(), "Divided in chunks of Array\(chunkArray)", to: &Log.log)
 			let totalCells = testCommand?.response?.numberOfCells
 			var finalValuesArray = [Double]()
+			var arrayCell = [[String: Any]]()
 			if chunkArray.count == totalCells {
+				var index = 0
 				for item in chunkArray {
+					index += 1
+					print("Cell Number::::::", index)
+					var dictCell = [String: Any]()
 					//print(Date(), "Each chunk array:\(chunkArray)", to: &Log.log)
 					let finalByte = item.joined()
 					let decimalValue = fromHaxToDecimal(haxValue: finalByte)
@@ -499,11 +520,18 @@ class BatteryHealthCheckViewModel {
 					let finalValue = multiplierValue + Double(constantValue)
 					print(Date(), "Final Calculated value\(finalValue)", to: &Log.log)
 					finalValuesArray.append(finalValue)
-					
+					dictCell["cellNumber"] = index
+					dictCell["voltage"] = finalValue
+					arrayCell.append(dictCell)
 					let message = (testCommand?.type.description ?? "") + "calculated value is \(finalValue)"
 					NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "BLEResponse"), object: ["BLEResponse": "\(message)"], userInfo: nil)
 				}
 			}
+			var dict = [String: Any]()
+			dict["start"] = self.startTime
+			dict["cellVoltageScan"] = arrayCell
+			dict["stop"] = self.getStartTime()
+			self.multiCellVoltageArray.append(dict)
 			multiCellVoltageData.append(finalValuesArray)
 			return finalValuesArray
 		} else {
@@ -564,6 +592,16 @@ class BatteryHealthCheckViewModel {
 		}
 		return Int(decimalValue)
 	}
+	
+	private  func getStartTime() -> String {
+		  let localISOFormatter = ISO8601DateFormatter()
+		  localISOFormatter.timeZone = TimeZone.current
+		  let date = Date()
+		  let dateInString = localISOFormatter.string(from: date)
+		  print(dateInString)
+		  return dateInString
+	  }
+	
 }
 
 extension String {
