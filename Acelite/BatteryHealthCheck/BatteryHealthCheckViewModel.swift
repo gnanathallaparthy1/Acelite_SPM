@@ -57,6 +57,7 @@ class BatteryHealthCheckViewModel {
 	weak var preSignedDelegate: GetPreSignedUrlDelegate? = nil
 	weak var uploadAndSubmitDelegate: UploadAndSubmitDataDelegate? = nil
 	var loopCount: Int = -1
+	var isJSON: Bool = false
  //   var preSignedData: GetS3PreSingedURL?
   //  var countLoopCommand: Int = 0
 	private var previousFlowControlData: String? = nil
@@ -398,12 +399,12 @@ class BatteryHealthCheckViewModel {
 				case .PACK_VOLTAGE:
 					if haxValueList.count > 0 {
 						let value = self.calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
-						
-						let packDict = ["start": self.startTime, "voltage": value, "stop": self.getStartTime()] as [String : Any]
-						self.packVoltageArray.append(packDict)
-						
-						
-						self.packVoltageData.append(value)
+						if self.isJSON == true {
+							let packDict = ["start": self.startTime, "voltage": value, "stop": self.getStartTime()] as [String : Any]
+							self.packVoltageArray.append(packDict)
+						} else {
+							self.packVoltageData.append(value)
+						}
 						print(Date(), "Final Pack Voltage Value \(value)", to: &Log.log)
 					}
 					break
@@ -441,12 +442,13 @@ class BatteryHealthCheckViewModel {
 						let constantValue = testCommand?.response?.constant ?? 0
 						let finalValue = packCurrentValue + Double(constantValue)
 						
+						if self.isJSON == true {
 						let packCurrentDict = ["start": self.startTime, "current": finalValue, "stop": self.getStartTime()] as [String : Any]
 						self.packCurrentArray.append(packCurrentDict)
-						
-						
+						} else {
+							self.packCurrentData.append(finalValue)
+						}
 						print(Date(), "Final Pack Current Value \(finalValue)", to: &Log.log)
-						self.packCurrentData.append(finalValue)
 					}
 					break
 				case .CELL_VOLTAGE:
@@ -507,8 +509,8 @@ class BatteryHealthCheckViewModel {
 			if chunkArray.count == totalCells {
 				var index = 0
 				for item in chunkArray {
-					index += 1
-					print("Cell Number::::::", index)
+					
+					//print("Cell Number::::::", index)
 					var dictCell = [String: Any]()
 					//print(Date(), "Each chunk array:\(chunkArray)", to: &Log.log)
 					let finalByte = item.joined()
@@ -520,19 +522,27 @@ class BatteryHealthCheckViewModel {
 					let finalValue = multiplierValue + Double(constantValue)
 					print(Date(), "Final Calculated value\(finalValue)", to: &Log.log)
 					finalValuesArray.append(finalValue)
-					dictCell["cellNumber"] = index
-					dictCell["voltage"] = finalValue
-					arrayCell.append(dictCell)
+					
+					if self.isJSON == true {
+						index += 1
+						dictCell["cellNumber"] = index
+						dictCell["voltage"] = finalValue
+						arrayCell.append(dictCell)
+					}
+					
 					let message = (testCommand?.type.description ?? "") + "calculated value is \(finalValue)"
 					NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "BLEResponse"), object: ["BLEResponse": "\(message)"], userInfo: nil)
 				}
 			}
-			var dict = [String: Any]()
-			dict["start"] = self.startTime
-			dict["cellVoltageScan"] = arrayCell
-			dict["stop"] = self.getStartTime()
-			self.multiCellVoltageArray.append(dict)
-			multiCellVoltageData.append(finalValuesArray)
+			if self.isJSON == true {
+				var dict = [String: Any]()
+				dict["start"] = self.startTime
+				dict["cellVoltageScan"] = arrayCell
+				dict["stop"] = self.getStartTime()
+				self.multiCellVoltageArray.append(dict)
+			} else {
+				multiCellVoltageData.append(finalValuesArray)
+			}
 			return finalValuesArray
 		} else {
 			return [0.0]
@@ -594,14 +604,11 @@ class BatteryHealthCheckViewModel {
 	}
 	
 	private  func getStartTime() -> String {
-		  let localISOFormatter = ISO8601DateFormatter()
-		  localISOFormatter.timeZone = TimeZone.current
-		  let date = Date()
-		  let dateInString = localISOFormatter.string(from: date)
-		  print(dateInString)
-		  return dateInString
+		let dateString = Date().iso8601withFractionalSeconds
+		print("DATE:::::::", dateString)
+		  return dateString
 	  }
-	
+	//iso8601
 }
 
 extension String {
@@ -628,4 +635,19 @@ extension Date {
 	}
 }
 
+extension ISO8601DateFormatter {
+	convenience init(_ formatOptions: Options) {
+		self.init()
+		self.formatOptions = formatOptions
+	}
+}
 
+extension Formatter {
+	static let iso8601withFractionalSeconds = ISO8601DateFormatter([.withInternetDateTime, .withFractionalSeconds])
+}
+extension Date {
+	var iso8601withFractionalSeconds: String { return Formatter.iso8601withFractionalSeconds.string(from: self) }
+}
+extension String {
+	var iso8601withFractionalSeconds: Date? { return Formatter.iso8601withFractionalSeconds.date(from: self) }
+}

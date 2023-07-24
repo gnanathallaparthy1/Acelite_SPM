@@ -152,7 +152,7 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 		//print("peripheral data", central)
 		if let pname =  peripheral.name {
 			//print("pName::::", pname)
-			if pname.contains("cox") || pname.contains("CAM") || pname.contains("COX")  {
+			if  pname.contains("CAM") {
 				//, pname ==  "CAM101" || pname ==  "CAM144" {
 				//bluetoothPeripheral = peripheral
 				//centralManager.connect(bluetoothPeripheral!)

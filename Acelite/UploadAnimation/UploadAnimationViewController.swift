@@ -48,6 +48,8 @@ class UploadAnimationViewController: UIViewController {
 	var remoteConfig = RemoteConfig.remoteConfig()
 	var isJsonEnabled : Bool = false
 	public var sampledCommandsList = [TestCommandExecution]()
+	
+	var finalJsonString: String = ""
 	//========================
 	
 	
@@ -97,13 +99,14 @@ class UploadAnimationViewController: UIViewController {
 			$0.heightAnchor.constraint(equalTo: $0.widthAnchor).isActive = true
 		}
 		self.getTransectionId()
+		print("finalJsonString size", finalJsonString.count)
 		//self.notificationCenter.addObserver(self, selector: #selector(navigateToHealthS), name: NSNotification.Name.init(rawValue: "GotAllData"), object: nil)
 	}
 	
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 		self.animate()
-		self.messageObserver()
+		//self.messageObserver()
 		
 	}
 	
@@ -125,6 +128,30 @@ class UploadAnimationViewController: UIViewController {
 		Network.shared.bluetoothService?.disconnectDevice(peripheral: Network.shared.myPeripheral)
 		self.getTransectionId()
 	}
+	
+	private func updateJONSFile() {
+		let fileManager = FileManager.default
+		do {
+			let path = try fileManager.url(for: .documentDirectory, in: .allDomainsMask, appropriateFor: nil, create: false)
+			let fileURL = path.appendingPathComponent("final_vin.json")
+			try self.finalJsonString.write(to: fileURL, atomically: true, encoding: .utf8)
+			print(fileURL)
+			self.stackView.removeFromSuperview()
+			let alertViewController = UIAlertController.init(title: "Success!", message: "Please check Files Folder for JSON file", preferredStyle: .alert)
+			let ok = UIAlertAction(title: "OK", style: .default, handler: { (action) -> Void in
+				DispatchQueue.main.async {
+					self.navigationController?.popToRootViewController(animated: true)
+				}
+			})
+			alertViewController.addAction(ok)
+			self.present(alertViewController, animated: true, completion: nil)
+		} catch {
+			print("error creating file")
+			
+		}
+		
+	}
+	
 	
 	func getTransectionId()  {
 		
@@ -154,7 +181,14 @@ class UploadAnimationViewController: UIViewController {
 						self.transactionId = preSignedResponse.transactionID
 						self.preSignedData = preSignedResponse
 						print(Date(), "preSignedResponse.", to: &Log.log)
-						self.preparingLogicForCSVFileGeration()
+						
+						
+						if self.isJsonEnabled {
+							self.updateJONSFile()
+						} else {
+							self.preparingLogicForCSVFileGeration()
+						}
+						
 						FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.s3PreSignedUrlSuccess, parameters: nil)
 					} catch DecodingError.dataCorrupted(let context) {
 						//print(context)

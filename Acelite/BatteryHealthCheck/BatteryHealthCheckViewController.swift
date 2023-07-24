@@ -148,6 +148,10 @@ class BatteryHealthCheckViewController: UIViewController {
 				return
 			}
 			RemoteConfig.remoteConfig().fetchAndActivate()
+			
+			//self.viewModel?.isJSON  = true
+			self.viewModel?.isJSON = RemoteConfig.remoteConfig().configValue(forKey: "submit_json_version_enabled").boolValue
+			print("XXXX:::::::::::::::",(self.viewModel?.isJSON ?? false) as Bool)
 			self.updateViewWithRCValues()
 		}
 	}
@@ -445,49 +449,62 @@ extension BatteryHealthCheckViewController: GetPreSignedUrlDelegate, UploadAndSu
 	func navigateToAnimationVC() {
 	   timer?.invalidate()
 	   timer = nil
-	   
-	   let packVoltageScan = ["packVoltageScan": self.viewModel?.packVoltageArray]
-	   let packCurrentScan = ["packCurrentScan": self.viewModel?.packCurrentArray]
-	   let packCellVoltageScan = ["packCellVoltageScan": self.viewModel?.multiCellVoltageArray]
-	   
-
-	   let finalDictionary = ([packVoltageScan, packCurrentScan, packCellVoltageScan] as? [[String : [[String : Any]]]])
-	   
-	   let finalJsonObject = self.convertToJSONString(value: finalDictionary as AnyObject)
-	  
-	   let fileManager = FileManager.default
-	   do {
-		   let path = try fileManager.url(for: .documentDirectory, in: .allDomainsMask, appropriateFor: nil, create: false)
-		   let fileURL = path.appendingPathComponent("final_vin.json")
-		   try finalJsonObject?.write(to: fileURL, atomically: true, encoding: .utf8)
-		 print(fileURL)
-	   } catch {
-		   print("error creating file")
-		  
-	   }
-	   print(finalJsonObject!)
-	   
-	   
-	   
-	   
-	   
-	   
-//	   let packCurrentArray = self.convertToJSONString(value: packVoltageScan as AnyObject)
-//	   print(packCurrentArray!)
-//
-//	   let packVoltageArray = self.convertToJSONString(value: packCurrentScan as AnyObject)
-//	   print(packVoltageArray!)
-//
-//	   let multiCellVoltageArray = self.convertToJSONString(value: packCellVoltageScan as AnyObject)
-//	   print(multiCellVoltageArray!)
-	   
-	   
+	   var jsonString = ""
+		let vc = UploadAnimationViewController()
+		if self.viewModel?.isJSON == true {
+			var minVlaue: Int = 0
+			let listCount: [Int] = [self.viewModel?.packVoltageArray.count ?? 0,  self.viewModel?.packCurrentArray.count ?? 0, self.viewModel?.multiCellVoltageArray.count ?? 0]
+		   
+			minVlaue = listCount.min() ?? 0
+			if minVlaue == 0 {
+				print(Date(), "Min Count of the Data Files Not Fullfilled", to: &Log.log)
+				return
+			}
+			
+			if self.viewModel?.packVoltageArray.count ?? 0 > minVlaue {
+				self.viewModel?.packVoltageArray.removeLast()
+			}
+			
+			if self.viewModel?.packCurrentArray.count ?? 0 > minVlaue {
+				self.viewModel?.packCurrentArray.removeLast()
+			}
+			
+			if self.viewModel?.multiCellVoltageArray.count ?? 0 > minVlaue {
+				self.viewModel?.multiCellVoltageArray.removeLast()
+			}
+			
+			
+			
+//			let packVoltageArray = self.viewModel?.packVoltageArray[0...minVlaue - 1]
+//			let packCurrentArray = self.viewModel?.packCurrentArray[0...minVlaue - 1]
+//			let multiCellVoltageArray = self.viewModel?.multiCellVoltageArray[0...minVlaue - 1]
+			
+			let packVoltageScan = ["packVoltageScan": self.viewModel?.packVoltageArray]
+			let packCurrentScan = ["packCurrentScan": self.viewModel?.packCurrentArray]
+			let packCellVoltageScan = ["packCellVoltageScan": self.viewModel?.multiCellVoltageArray]
+			
+			print("packVoltageScan::::::", packVoltageScan)
+			print("packCurrentScan::::", packCurrentScan)
+			print("packCellVoltageScan::::", packCellVoltageScan)
+			
+//			let finalDictionary: AnyObject = [packVoltageScan, packCurrentScan, packCellVoltageScan] as AnyObject
+			let finalDictionary = ([packVoltageScan, packCurrentScan, packCellVoltageScan] as? [[String : [[String : Any]]]])
+			jsonString = self.convertToJSONString(value: finalDictionary as AnyObject) ?? ""
+			print("finalDictionary::::::", finalDictionary as Any)
+//			let jsonOobject = finalDictionary.toJSONString()
+//			jsonString = self.convertToJSONString(value: finalDictionary) ?? ""
+			print("JSON String ::::", jsonString)
+			vc.finalJsonString = jsonString
+			print("final json size::::", vc.finalJsonString.count)
+		}
 	   //let vm = UploadAnimationViewModel(delegate: self.viewModel?.uploadAndSubmitDelegate)
-	   let vc = UploadAnimationViewController()
+	
 	   vc.vehicleInfo = viewModel?.vehicleInfo
+		
 	   //if let sp =  {
 		   vc.sampledCommandsList = Network.shared.sampledCommandsList
 	   //}
+		vc.isJsonEnabled = self.viewModel?.isJSON ?? false
 	   if let pc = viewModel?.packCurrentData {
 		   vc.packCurrentData = pc
 	   }
@@ -562,13 +579,15 @@ extension BatteryHealthCheckViewController: GetPreSignedUrlDelegate, UploadAndSu
 	func convertToJSONString(value: AnyObject) -> String? {
 			if JSONSerialization.isValidJSONObject(value) {
 				do{
-					let data = try JSONSerialization.data(withJSONObject: value, options: [])
+					let data = try JSONSerialization.data(withJSONObject: value, options:  [.prettyPrinted])
 					if let string = NSString(data: data, encoding: String.Encoding.utf8.rawValue) {
 						return string as String
 					}
 				}catch{
+					print("error")
 				}
 			}
+			print("nil")
 			return nil
 		}
 	
