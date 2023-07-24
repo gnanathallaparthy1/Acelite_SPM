@@ -61,7 +61,6 @@
 		864667B92A436D4500C85ABD /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 864667B82A436D4500C85ABD /* FirebaseMessaging */; };
 		864667BB2A436D4500C85ABD /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = 864667BA2A436D4500C85ABD /* FirebaseRemoteConfig */; };
 		864667BD2A436D4500C85ABD /* FirebaseRemoteConfigSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 864667BC2A436D4500C85ABD /* FirebaseRemoteConfigSwift */; };
-		864667C12A43780A00C85ABD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 864667C02A43780900C85ABD /* GoogleService-Info.plist */; };
 		86636DC729785A14001240FB /* BluetoothServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86636DC629785A14001240FB /* BluetoothServices.swift */; };
 		86636DC9297B0AA2001240FB /* TerminalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86636DC8297B0AA2001240FB /* TerminalViewController.swift */; };
 		866CDB492982E80400ADFB50 /* Apollo in Frameworks */ = {isa = PBXBuildFile; productRef = 866CDB482982E80400ADFB50 /* Apollo */; };
@@ -73,6 +72,91 @@
 		866CDB61298C206E00ADFB50 /* VehicleInformationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866CDB60298C206E00ADFB50 /* VehicleInformationViewModel.swift */; };
 		866CDB65298CB02700ADFB50 /* SpinnerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866CDB64298CB02700ADFB50 /* SpinnerViewController.swift */; };
 		866CDB6A298D743E00ADFB50 /* TestViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866CDB69298D743E00ADFB50 /* TestViewModel.swift */; };
+		867200A82A5F91D900C6CBC7 /* Themes+Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8639046729940178008D5A0A /* Themes+Colors.swift */; };
+		867200A92A5F91D900C6CBC7 /* BatteryDataFileSubmitModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A68D4F29B108C2000F2188 /* BatteryDataFileSubmitModel.swift */; };
+		867200AA2A5F91D900C6CBC7 /* AceliteConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867BBF7A296744CD00DC4842 /* AceliteConstants.swift */; };
+		867200AB2A5F91D900C6CBC7 /* ScanHistoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8636D40B29CE201B0045BD53 /* ScanHistoryTableViewCell.swift */; };
+		867200AC2A5F91D900C6CBC7 /* BatteryHealthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8636D41729D1430D0045BD53 /* BatteryHealthViewModel.swift */; };
+		867200AD2A5F91D900C6CBC7 /* TestableTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8636D41029CE201C0045BD53 /* TestableTableViewCell.swift */; };
+		867200AE2A5F91D900C6CBC7 /* SubmitBatteryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8636D42129DC88EE0045BD53 /* SubmitBatteryModel.swift */; };
+		867200AF2A5F91D900C6CBC7 /* TestableModelsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8636D40E29CE201C0045BD53 /* TestableModelsViewController.swift */; };
+		867200B02A5F91D900C6CBC7 /* TerminalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86636DC8297B0AA2001240FB /* TerminalViewController.swift */; };
+		867200B12A5F91D900C6CBC7 /* VehicalVINScannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8639CDB229F6FCF8004E813D /* VehicalVINScannerViewController.swift */; };
+		867200B22A5F91D900C6CBC7 /* CircularProgressBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8677DBAA29BFA73A001C42CD /* CircularProgressBarView.swift */; };
+		867200B32A5F91D900C6CBC7 /* VehicleInformationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866CDB60298C206E00ADFB50 /* VehicleInformationViewModel.swift */; };
+		867200B42A5F91D900C6CBC7 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861F3A112A11CC3500F963A9 /* Reachability.swift */; };
+		867200B52A5F91D900C6CBC7 /* BatteryHealthCheckViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8609395229BF89A3001DE232 /* BatteryHealthCheckViewModel.swift */; };
+		867200B62A5F91D900C6CBC7 /* SpinnerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866CDB64298CB02700ADFB50 /* SpinnerViewController.swift */; };
+		867200B72A5F91D900C6CBC7 /* SideMenuModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861E6F022957737D00443F12 /* SideMenuModel.swift */; };
+		867200B82A5F91D900C6CBC7 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861E6ECD2953789B00443F12 /* ViewController.swift */; };
+		867200B92A5F91D900C6CBC7 /* ErrorAlertDailogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8639CDB829F852A9004E813D /* ErrorAlertDailogViewController.swift */; };
+		867200BA2A5F91D900C6CBC7 /* ABGaugeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861EDE7129B7AFC0003A1C81 /* ABGaugeView.swift */; };
+		867200BB2A5F91D900C6CBC7 /* BLETableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 869D86A82968982500503B9C /* BLETableViewCell.swift */; };
+		867200BC2A5F91D900C6CBC7 /* AceLiteBleNotifyCallback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8639046D29957F43008D5A0A /* AceLiteBleNotifyCallback.swift */; };
+		867200BD2A5F91D900C6CBC7 /* ArrayX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861EDE7229B7AFC0003A1C81 /* ArrayX.swift */; };
+		867200BE2A5F91D900C6CBC7 /* BuildConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866CDB4E2982FC1200ADFB50 /* BuildConfig.swift */; };
+		867200BF2A5F91D900C6CBC7 /* GetS3PreSingedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A68D4B29AD2A3C000F2188 /* GetS3PreSingedViewModel.swift */; };
+		867200C02A5F91D900C6CBC7 /* ExternalAccessory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86E33DFD2A252D8700E2F167 /* ExternalAccessory.swift */; };
+		867200C12A5F91D900C6CBC7 /* FirebaseLogging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 864667A62A436C5100C85ABD /* FirebaseLogging.swift */; };
+		867200C22A5F91D900C6CBC7 /* SubmitBatteryFilesWithSOCModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8691E0F129B2B877002C6E05 /* SubmitBatteryFilesWithSOCModel.swift */; };
+		867200C32A5F91D900C6CBC7 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86390469299557B2008D5A0A /* DataManager.swift */; };
+		867200C42A5F91D900C6CBC7 /* CustomAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86B169E629B54FCD0024EFFF /* CustomAlertView.swift */; };
+		867200C52A5F91D900C6CBC7 /* ArcModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861EDE6F29B7AFC0003A1C81 /* ArcModel.swift */; };
+		867200C62A5F91D900C6CBC7 /* VehicalDetailsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866CDB4B2982F63700ADFB50 /* VehicalDetailsModel.swift */; };
+		867200C72A5F91D900C6CBC7 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C2BB9D29F1A23D004D4D42 /* API.swift */; };
+		867200C82A5F91D900C6CBC7 /* WorkOrderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86B9089F297079A9001CAB90 /* WorkOrderViewController.swift */; };
+		867200C92A5F91D900C6CBC7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861E6EC92953789B00443F12 /* AppDelegate.swift */; };
+		867200CA2A5F91D900C6CBC7 /* InfoPopUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86AF929329B585AF00FDA4C3 /* InfoPopUpViewController.swift */; };
+		867200CB2A5F91D900C6CBC7 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8609394D29BE6E27001DE232 /* Logger.swift */; };
+		867200CC2A5F91D900C6CBC7 /* TestViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866CDB69298D743E00ADFB50 /* TestViewModel.swift */; };
+		867200CD2A5F91D900C6CBC7 /* VehicleVinScannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8639CDB529F7FFF5004E813D /* VehicleVinScannerViewModel.swift */; };
+		867200CE2A5F91D900C6CBC7 /* VehicalInformationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861E6EFB29561D1A00443F12 /* VehicalInformationViewController.swift */; };
+		867200CF2A5F91D900C6CBC7 /* FirebaseConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 864667A52A436C5100C85ABD /* FirebaseConstants.swift */; };
+		867200D02A5F91D900C6CBC7 /* BatteryHealthCheckViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8609395029BF898B001DE232 /* BatteryHealthCheckViewController.swift */; };
+		867200D12A5F91D900C6CBC7 /* ScannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861E6F0C295E08B300443F12 /* ScannerViewController.swift */; };
+		867200D22A5F91D900C6CBC7 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861E6ECB2953789B00443F12 /* SceneDelegate.swift */; };
+		867200D32A5F91D900C6CBC7 /* TestingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86B908A12970854A001CAB90 /* TestingViewController.swift */; };
+		867200D42A5F91D900C6CBC7 /* ExportAsCSV.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867B607F29A937CE0050411C /* ExportAsCSV.swift */; };
+		867200D52A5F91D900C6CBC7 /* SideMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861E6F002957736700443F12 /* SideMenuViewController.swift */; };
+		867200D62A5F91D900C6CBC7 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861E6EFE2957733000443F12 /* MainViewController.swift */; };
+		867200D72A5F91D900C6CBC7 /* ScanHistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8636D40C29CE201B0045BD53 /* ScanHistoryViewController.swift */; };
+		867200D82A5F91D900C6CBC7 /* BatteryHealthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861EDE6C29B7A9F3003A1C81 /* BatteryHealthViewController.swift */; };
+		867200D92A5F91D900C6CBC7 /* AceLiteServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866CDB532982FD3400ADFB50 /* AceLiteServices.swift */; };
+		867200DA2A5F91D900C6CBC7 /* AceLiteBleWriteCallback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8639046B29957ED0008D5A0A /* AceLiteBleWriteCallback.swift */; };
+		867200DB2A5F91D900C6CBC7 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866CDB502982FCC100ADFB50 /* Constants.swift */; };
+		867200DC2A5F91D900C6CBC7 /* BluetoothServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86636DC629785A14001240FB /* BluetoothServices.swift */; };
+		867200DD2A5F91D900C6CBC7 /* UploadAnimationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86CDBA6829B653D400956B4C /* UploadAnimationViewModel.swift */; };
+		867200DE2A5F91D900C6CBC7 /* MultipartRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A68D4D29B0350D000F2188 /* MultipartRequest.swift */; };
+		867200DF2A5F91D900C6CBC7 /* UploadAnimationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86CDBA6529B632D600956B4C /* UploadAnimationViewController.swift */; };
+		867200E02A5F91D900C6CBC7 /* SideMenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861E6F05295773C100443F12 /* SideMenuCell.swift */; };
+		867200E12A5F91D900C6CBC7 /* AceliteColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867BBF7829673D7400DC4842 /* AceliteColors.swift */; };
+		867200E22A5F91D900C6CBC7 /* ScanBleDevicesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861E6F12295E11BE00443F12 /* ScanBleDevicesViewController.swift */; };
+		867200E32A5F91D900C6CBC7 /* ColorX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861EDE7029B7AFC0003A1C81 /* ColorX.swift */; };
+		867200E52A5F91D900C6CBC7 /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = 867200A42A5F91D900C6CBC7 /* FirebaseRemoteConfig */; };
+		867200E62A5F91D900C6CBC7 /* FirebaseDatabaseSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 867200A12A5F91D900C6CBC7 /* FirebaseDatabaseSwift */; };
+		867200E72A5F91D900C6CBC7 /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86E33DFB2A1E7D3C00E2F167 /* ExternalAccessory.framework */; };
+		867200E82A5F91D900C6CBC7 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 867200A32A5F91D900C6CBC7 /* FirebaseMessaging */; };
+		867200E92A5F91D900C6CBC7 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 861E6F10295E118000443F12 /* CoreBluetooth.framework */; };
+		867200EA2A5F91D900C6CBC7 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 8672009C2A5F91D900C6CBC7 /* FirebaseAnalytics */; };
+		867200EB2A5F91D900C6CBC7 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 8672009F2A5F91D900C6CBC7 /* FirebaseCrashlytics */; };
+		867200EC2A5F91D900C6CBC7 /* Apollo in Frameworks */ = {isa = PBXBuildFile; productRef = 8672009A2A5F91D900C6CBC7 /* Apollo */; };
+		867200ED2A5F91D900C6CBC7 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 867200A02A5F91D900C6CBC7 /* FirebaseDatabase */; };
+		867200EE2A5F91D900C6CBC7 /* FirebaseRemoteConfigSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 867200A52A5F91D900C6CBC7 /* FirebaseRemoteConfigSwift */; };
+		867200EF2A5F91D900C6CBC7 /* FirebaseInAppMessagingSwift-Beta in Frameworks */ = {isa = PBXBuildFile; productRef = 867200A22A5F91D900C6CBC7 /* FirebaseInAppMessagingSwift-Beta */; };
+		867200F02A5F91D900C6CBC7 /* FirebaseAnalyticsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 8672009E2A5F91D900C6CBC7 /* FirebaseAnalyticsSwift */; };
+		867200F22A5F91D900C6CBC7 /* BatteryHealthCheck.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8609395429BF8C98001DE232 /* BatteryHealthCheck.storyboard */; };
+		867200F32A5F91D900C6CBC7 /* TestableTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8636D40D29CE201B0045BD53 /* TestableTableViewCell.xib */; };
+		867200F42A5F91D900C6CBC7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 861E6ED42953789D00443F12 /* LaunchScreen.storyboard */; };
+		867200F52A5F91D900C6CBC7 /* Queries.graphql in Resources */ = {isa = PBXBuildFile; fileRef = 866CDB59298AD44400ADFB50 /* Queries.graphql */; };
+		867200F62A5F91D900C6CBC7 /* schema.json in Resources */ = {isa = PBXBuildFile; fileRef = 86C2BB9929F19310004D4D42 /* schema.json */; };
+		867200F82A5F91D900C6CBC7 /* CustomAlertView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 86B169E429B549E80024EFFF /* CustomAlertView.xib */; };
+		867200F92A5F91D900C6CBC7 /* BLETableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 869D86A92968982500503B9C /* BLETableViewCell.xib */; };
+		867200FA2A5F91D900C6CBC7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 861E6F09295778A000443F12 /* Main.storyboard */; };
+		867200FB2A5F91D900C6CBC7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 861E6ED22953789D00443F12 /* Assets.xcassets */; };
+		867200FC2A5F91D900C6CBC7 /* SideMenuCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 861E6F06295773C100443F12 /* SideMenuCell.xib */; };
+		867200FD2A5F91D900C6CBC7 /* ScanHistoryTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8636D40F29CE201C0045BD53 /* ScanHistoryTableViewCell.xib */; };
+		867201112A607CF300C6CBC7 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8672010B2A60701D00C6CBC7 /* GoogleService-Info.plist */; };
+		867201122A607F2700C6CBC7 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8672010D2A60701D00C6CBC7 /* GoogleService-Info.plist */; };
 		8677DBAB29BFA73A001C42CD /* CircularProgressBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8677DBAA29BFA73A001C42CD /* CircularProgressBarView.swift */; };
 		867B608029A937CE0050411C /* ExportAsCSV.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867B607F29A937CE0050411C /* ExportAsCSV.swift */; };
 		867BBF7929673D7400DC4842 /* AceliteColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867BBF7829673D7400DC4842 /* AceliteColors.swift */; };
@@ -163,7 +247,6 @@
 		8639CDB829F852A9004E813D /* ErrorAlertDailogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorAlertDailogViewController.swift; sourceTree = "<group>"; };
 		864667A52A436C5100C85ABD /* FirebaseConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FirebaseConstants.swift; path = Acelite/FirebaseConstants.swift; sourceTree = SOURCE_ROOT; };
 		864667A62A436C5100C85ABD /* FirebaseLogging.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FirebaseLogging.swift; path = Acelite/FirebaseLogging.swift; sourceTree = SOURCE_ROOT; };
-		864667C02A43780900C85ABD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		864667C22A4379A300C85ABD /* Acelite.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Acelite.entitlements; sourceTree = "<group>"; };
 		86636DC629785A14001240FB /* BluetoothServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothServices.swift; sourceTree = "<group>"; };
 		86636DC8297B0AA2001240FB /* TerminalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalViewController.swift; sourceTree = "<group>"; };
@@ -175,6 +258,10 @@
 		866CDB60298C206E00ADFB50 /* VehicleInformationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleInformationViewModel.swift; sourceTree = "<group>"; };
 		866CDB64298CB02700ADFB50 /* SpinnerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinnerViewController.swift; sourceTree = "<group>"; };
 		866CDB69298D743E00ADFB50 /* TestViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestViewModel.swift; sourceTree = "<group>"; };
+		867201032A5F91D900C6CBC7 /* Acelite_Prod.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Acelite_Prod.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		867201042A5F91DA00C6CBC7 /* Acelite_Prod.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Acelite_Prod.plist; path = /Users/Gnana.Thallaparthy/Documents/Acelite/Acelite_Prod.plist; sourceTree = "<absolute>"; };
+		8672010B2A60701D00C6CBC7 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		8672010D2A60701D00C6CBC7 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		8677DBAA29BFA73A001C42CD /* CircularProgressBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgressBarView.swift; sourceTree = "<group>"; };
 		867B607F29A937CE0050411C /* ExportAsCSV.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportAsCSV.swift; sourceTree = "<group>"; };
 		867BBF7829673D7400DC4842 /* AceliteColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AceliteColors.swift; sourceTree = "<group>"; };
@@ -232,6 +319,25 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		867200E42A5F91D900C6CBC7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				867200E52A5F91D900C6CBC7 /* FirebaseRemoteConfig in Frameworks */,
+				867200E62A5F91D900C6CBC7 /* FirebaseDatabaseSwift in Frameworks */,
+				867200E72A5F91D900C6CBC7 /* ExternalAccessory.framework in Frameworks */,
+				867200E82A5F91D900C6CBC7 /* FirebaseMessaging in Frameworks */,
+				867200E92A5F91D900C6CBC7 /* CoreBluetooth.framework in Frameworks */,
+				867200EA2A5F91D900C6CBC7 /* FirebaseAnalytics in Frameworks */,
+				867200EB2A5F91D900C6CBC7 /* FirebaseCrashlytics in Frameworks */,
+				867200EC2A5F91D900C6CBC7 /* Apollo in Frameworks */,
+				867200ED2A5F91D900C6CBC7 /* FirebaseDatabase in Frameworks */,
+				867200EE2A5F91D900C6CBC7 /* FirebaseRemoteConfigSwift in Frameworks */,
+				867200EF2A5F91D900C6CBC7 /* FirebaseInAppMessagingSwift-Beta in Frameworks */,
+				867200F02A5F91D900C6CBC7 /* FirebaseAnalyticsSwift in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -253,6 +359,7 @@
 				861E6EE92953789D00443F12 /* AceliteUITests */,
 				861E6EC72953789B00443F12 /* Products */,
 				861E6F0F295E118000443F12 /* Frameworks */,
+				867201042A5F91DA00C6CBC7 /* Acelite_Prod.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -262,6 +369,7 @@
 				861E6EC62953789B00443F12 /* Acelite.app */,
 				861E6EDC2953789D00443F12 /* AceliteTests.xctest */,
 				861E6EE62953789D00443F12 /* AceliteUITests.xctest */,
+				867201032A5F91D900C6CBC7 /* Acelite_Prod.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -270,7 +378,7 @@
 			isa = PBXGroup;
 			children = (
 				864667C22A4379A300C85ABD /* Acelite.entitlements */,
-				86F3786D2A041A6C004601D9 /* Firebase */,
+				86F3786D2A041A6C004601D9 /* Firebases */,
 				8639CDB729F85268004E813D /* Alerts */,
 				8639CDB429F7FF75004E813D /* VehicleScan */,
 				8651312329CB88C400886134 /* HambugerMenuItems */,
@@ -295,8 +403,8 @@
 				861E6ED22953789D00443F12 /* Assets.xcassets */,
 				861E6F09295778A000443F12 /* Main.storyboard */,
 				861E6ED42953789D00443F12 /* LaunchScreen.storyboard */,
-				864667C02A43780900C85ABD /* GoogleService-Info.plist */,
 				861E6ED72953789D00443F12 /* Info.plist */,
+				867201092A60701D00C6CBC7 /* Firebase */,
 				867BBF7829673D7400DC4842 /* AceliteColors.swift */,
 				867BBF7A296744CD00DC4842 /* AceliteConstants.swift */,
 				86B9089F297079A9001CAB90 /* WorkOrderViewController.swift */,
@@ -527,6 +635,31 @@
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
+		867201092A60701D00C6CBC7 /* Firebase */ = {
+			isa = PBXGroup;
+			children = (
+				8672010A2A60701D00C6CBC7 /* Prod */,
+				8672010C2A60701D00C6CBC7 /* Dev */,
+			);
+			path = Firebase;
+			sourceTree = "<group>";
+		};
+		8672010A2A60701D00C6CBC7 /* Prod */ = {
+			isa = PBXGroup;
+			children = (
+				8672010B2A60701D00C6CBC7 /* GoogleService-Info.plist */,
+			);
+			path = Prod;
+			sourceTree = "<group>";
+		};
+		8672010C2A60701D00C6CBC7 /* Dev */ = {
+			isa = PBXGroup;
+			children = (
+				8672010D2A60701D00C6CBC7 /* GoogleService-Info.plist */,
+			);
+			path = Dev;
+			sourceTree = "<group>";
+		};
 		86CDBA6729B6539800956B4C /* UploadAnimation */ = {
 			isa = PBXGroup;
 			children = (
@@ -538,13 +671,13 @@
 			path = UploadAnimation;
 			sourceTree = "<group>";
 		};
-		86F3786D2A041A6C004601D9 /* Firebase */ = {
+		86F3786D2A041A6C004601D9 /* Firebases */ = {
 			isa = PBXGroup;
 			children = (
 				864667A52A436C5100C85ABD /* FirebaseConstants.swift */,
 				864667A62A436C5100C85ABD /* FirebaseLogging.swift */,
 			);
-			path = Firebase;
+			path = Firebases;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -616,6 +749,36 @@
 			productReference = 861E6EE62953789D00443F12 /* AceliteUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		867200992A5F91D900C6CBC7 /* Acelite_Prod */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 867200FE2A5F91D900C6CBC7 /* Build configuration list for PBXNativeTarget "Acelite_Prod" */;
+			buildPhases = (
+				867200A62A5F91D900C6CBC7 /* Apollo */,
+				867200A72A5F91D900C6CBC7 /* Sources */,
+				867200E42A5F91D900C6CBC7 /* Frameworks */,
+				867200F12A5F91D900C6CBC7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Acelite_Prod;
+			packageProductDependencies = (
+				8672009A2A5F91D900C6CBC7 /* Apollo */,
+				8672009C2A5F91D900C6CBC7 /* FirebaseAnalytics */,
+				8672009E2A5F91D900C6CBC7 /* FirebaseAnalyticsSwift */,
+				8672009F2A5F91D900C6CBC7 /* FirebaseCrashlytics */,
+				867200A02A5F91D900C6CBC7 /* FirebaseDatabase */,
+				867200A12A5F91D900C6CBC7 /* FirebaseDatabaseSwift */,
+				867200A22A5F91D900C6CBC7 /* FirebaseInAppMessagingSwift-Beta */,
+				867200A32A5F91D900C6CBC7 /* FirebaseMessaging */,
+				867200A42A5F91D900C6CBC7 /* FirebaseRemoteConfig */,
+				867200A52A5F91D900C6CBC7 /* FirebaseRemoteConfigSwift */,
+			);
+			productName = Acelite;
+			productReference = 867201032A5F91D900C6CBC7 /* Acelite_Prod.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -659,6 +822,7 @@
 				861E6EC52953789B00443F12 /* Acelite */,
 				861E6EDB2953789D00443F12 /* AceliteTests */,
 				861E6EE52953789D00443F12 /* AceliteUITests */,
+				867200992A5F91D900C6CBC7 /* Acelite_Prod */,
 			);
 		};
 /* End PBXProject section */
@@ -673,7 +837,7 @@
 				861E6ED62953789D00443F12 /* LaunchScreen.storyboard in Resources */,
 				866CDB5A298AD44400ADFB50 /* Queries.graphql in Resources */,
 				86C2BB9A29F19310004D4D42 /* schema.json in Resources */,
-				864667C12A43780A00C85ABD /* GoogleService-Info.plist in Resources */,
+				867201122A607F2700C6CBC7 /* GoogleService-Info.plist in Resources */,
 				86B169E529B549E80024EFFF /* CustomAlertView.xib in Resources */,
 				869D86AB2968982500503B9C /* BLETableViewCell.xib in Resources */,
 				861E6F0A295778A100443F12 /* Main.storyboard in Resources */,
@@ -697,10 +861,47 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		867200F12A5F91D900C6CBC7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				867200F22A5F91D900C6CBC7 /* BatteryHealthCheck.storyboard in Resources */,
+				867200F32A5F91D900C6CBC7 /* TestableTableViewCell.xib in Resources */,
+				867200F42A5F91D900C6CBC7 /* LaunchScreen.storyboard in Resources */,
+				867200F52A5F91D900C6CBC7 /* Queries.graphql in Resources */,
+				867200F62A5F91D900C6CBC7 /* schema.json in Resources */,
+				867201112A607CF300C6CBC7 /* GoogleService-Info.plist in Resources */,
+				867200F82A5F91D900C6CBC7 /* CustomAlertView.xib in Resources */,
+				867200F92A5F91D900C6CBC7 /* BLETableViewCell.xib in Resources */,
+				867200FA2A5F91D900C6CBC7 /* Main.storyboard in Resources */,
+				867200FB2A5F91D900C6CBC7 /* Assets.xcassets in Resources */,
+				867200FC2A5F91D900C6CBC7 /* SideMenuCell.xib in Resources */,
+				867200FD2A5F91D900C6CBC7 /* ScanHistoryTableViewCell.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
 		866CDB55298AD34600ADFB50 /* Apollo */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 8;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = Apollo;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\n# Go to the build root and search up the chain to find the Derived Data Path where the source packages are checked out.\nDERIVED_DATA_CANDIDATE=\"${BUILD_ROOT}\"\n\nwhile ! [ -d \"${DERIVED_DATA_CANDIDATE}/SourcePackages\" ]; do\n  if [ \"${DERIVED_DATA_CANDIDATE}\" = / ]; then\n    echo >&2 \"error: Unable to locate SourcePackages directory from BUILD_ROOT: '${BUILD_ROOT}'\"\n    exit 1\n  fi\n\n  DERIVED_DATA_CANDIDATE=\"$(dirname \"${DERIVED_DATA_CANDIDATE}\")\"\ndone\n\n# Grab a reference to the directory where scripts are checked out\nSCRIPT_PATH=\"${DERIVED_DATA_CANDIDATE}/SourcePackages/checkouts/apollo-ios/scripts\"\n\nif [ -z \"${SCRIPT_PATH}\" ]; then\n    echo >&2 \"error: Couldn't find the CLI script in your checked out SPM packages; make sure to add the framework to your project.\"\n    exit 1\nfi\n\ncd \"${SRCROOT}/${TARGET_NAME}\"\n\"${SCRIPT_PATH}\"/run-bundled-codegen.sh codegen:generate --target=swift --includes=./**/*.graphql --localSchemaFile=\"schema.json\" API.swift\n\n#\"${SCRIPT_PATH}\"/run-bundled-codegen.sh schema:download --endpoint=\"https://api.fleet.io.nonprod.caioptimizations.com/graphql\" --header=\"x-api-key: 0FPKgwbkWP6wkOov1jTFO2BLfWhesqBY8dPBZB45\"\n\n\n\n";
+		};
+		867200A62A5F91D900C6CBC7 /* Apollo */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 8;
 			files = (
@@ -802,6 +1003,73 @@
 			files = (
 				861E6EED2953789D00443F12 /* AceliteUITestsLaunchTests.swift in Sources */,
 				861E6EEB2953789D00443F12 /* AceliteUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		867200A72A5F91D900C6CBC7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				867200A82A5F91D900C6CBC7 /* Themes+Colors.swift in Sources */,
+				867200A92A5F91D900C6CBC7 /* BatteryDataFileSubmitModel.swift in Sources */,
+				867200AA2A5F91D900C6CBC7 /* AceliteConstants.swift in Sources */,
+				867200AB2A5F91D900C6CBC7 /* ScanHistoryTableViewCell.swift in Sources */,
+				867200AC2A5F91D900C6CBC7 /* BatteryHealthViewModel.swift in Sources */,
+				867200AD2A5F91D900C6CBC7 /* TestableTableViewCell.swift in Sources */,
+				867200AE2A5F91D900C6CBC7 /* SubmitBatteryModel.swift in Sources */,
+				867200AF2A5F91D900C6CBC7 /* TestableModelsViewController.swift in Sources */,
+				867200B02A5F91D900C6CBC7 /* TerminalViewController.swift in Sources */,
+				867200B12A5F91D900C6CBC7 /* VehicalVINScannerViewController.swift in Sources */,
+				867200B22A5F91D900C6CBC7 /* CircularProgressBarView.swift in Sources */,
+				867200B32A5F91D900C6CBC7 /* VehicleInformationViewModel.swift in Sources */,
+				867200B42A5F91D900C6CBC7 /* Reachability.swift in Sources */,
+				867200B52A5F91D900C6CBC7 /* BatteryHealthCheckViewModel.swift in Sources */,
+				867200B62A5F91D900C6CBC7 /* SpinnerViewController.swift in Sources */,
+				867200B72A5F91D900C6CBC7 /* SideMenuModel.swift in Sources */,
+				867200B82A5F91D900C6CBC7 /* ViewController.swift in Sources */,
+				867200B92A5F91D900C6CBC7 /* ErrorAlertDailogViewController.swift in Sources */,
+				867200BA2A5F91D900C6CBC7 /* ABGaugeView.swift in Sources */,
+				867200BB2A5F91D900C6CBC7 /* BLETableViewCell.swift in Sources */,
+				867200BC2A5F91D900C6CBC7 /* AceLiteBleNotifyCallback.swift in Sources */,
+				867200BD2A5F91D900C6CBC7 /* ArrayX.swift in Sources */,
+				867200BE2A5F91D900C6CBC7 /* BuildConfig.swift in Sources */,
+				867200BF2A5F91D900C6CBC7 /* GetS3PreSingedViewModel.swift in Sources */,
+				867200C02A5F91D900C6CBC7 /* ExternalAccessory.swift in Sources */,
+				867200C12A5F91D900C6CBC7 /* FirebaseLogging.swift in Sources */,
+				867200C22A5F91D900C6CBC7 /* SubmitBatteryFilesWithSOCModel.swift in Sources */,
+				867200C32A5F91D900C6CBC7 /* DataManager.swift in Sources */,
+				867200C42A5F91D900C6CBC7 /* CustomAlertView.swift in Sources */,
+				867200C52A5F91D900C6CBC7 /* ArcModel.swift in Sources */,
+				867200C62A5F91D900C6CBC7 /* VehicalDetailsModel.swift in Sources */,
+				867200C72A5F91D900C6CBC7 /* API.swift in Sources */,
+				867200C82A5F91D900C6CBC7 /* WorkOrderViewController.swift in Sources */,
+				867200C92A5F91D900C6CBC7 /* AppDelegate.swift in Sources */,
+				867200CA2A5F91D900C6CBC7 /* InfoPopUpViewController.swift in Sources */,
+				867200CB2A5F91D900C6CBC7 /* Logger.swift in Sources */,
+				867200CC2A5F91D900C6CBC7 /* TestViewModel.swift in Sources */,
+				867200CD2A5F91D900C6CBC7 /* VehicleVinScannerViewModel.swift in Sources */,
+				867200CE2A5F91D900C6CBC7 /* VehicalInformationViewController.swift in Sources */,
+				867200CF2A5F91D900C6CBC7 /* FirebaseConstants.swift in Sources */,
+				867200D02A5F91D900C6CBC7 /* BatteryHealthCheckViewController.swift in Sources */,
+				867200D12A5F91D900C6CBC7 /* ScannerViewController.swift in Sources */,
+				867200D22A5F91D900C6CBC7 /* SceneDelegate.swift in Sources */,
+				867200D32A5F91D900C6CBC7 /* TestingViewController.swift in Sources */,
+				867200D42A5F91D900C6CBC7 /* ExportAsCSV.swift in Sources */,
+				867200D52A5F91D900C6CBC7 /* SideMenuViewController.swift in Sources */,
+				867200D62A5F91D900C6CBC7 /* MainViewController.swift in Sources */,
+				867200D72A5F91D900C6CBC7 /* ScanHistoryViewController.swift in Sources */,
+				867200D82A5F91D900C6CBC7 /* BatteryHealthViewController.swift in Sources */,
+				867200D92A5F91D900C6CBC7 /* AceLiteServices.swift in Sources */,
+				867200DA2A5F91D900C6CBC7 /* AceLiteBleWriteCallback.swift in Sources */,
+				867200DB2A5F91D900C6CBC7 /* Constants.swift in Sources */,
+				867200DC2A5F91D900C6CBC7 /* BluetoothServices.swift in Sources */,
+				867200DD2A5F91D900C6CBC7 /* UploadAnimationViewModel.swift in Sources */,
+				867200DE2A5F91D900C6CBC7 /* MultipartRequest.swift in Sources */,
+				867200DF2A5F91D900C6CBC7 /* UploadAnimationViewController.swift in Sources */,
+				867200E02A5F91D900C6CBC7 /* SideMenuCell.swift in Sources */,
+				867200E12A5F91D900C6CBC7 /* AceliteColors.swift in Sources */,
+				867200E22A5F91D900C6CBC7 /* ScanBleDevicesViewController.swift in Sources */,
+				867200E32A5F91D900C6CBC7 /* ColorX.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -945,7 +1213,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = PROD;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
-				VALIDATE_PRODUCT = YES;
+				VALIDATE_PRODUCT = NO;
 			};
 			name = "Prod Release";
 		};
@@ -1030,6 +1298,7 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = NO;
 			};
 			name = "Prod Release";
 		};
@@ -1109,68 +1378,7 @@
 			};
 			name = "Prod Release";
 		};
-		86E727E229FEE23B0057C546 /* Dev Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = iphoneos;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-			};
-			name = "Dev Release";
-		};
-		86E727E329FEE23B0057C546 /* Dev Release */ = {
+		867200FF2A5F91D900C6CBC7 /* Dev Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -1181,7 +1389,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = QMYQQM43B7;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Acelite/Info.plist;
+				INFOPLIST_FILE = Acelite_Prod.plist;
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "We need to access your bluetooth for scanning ble devices.";
 				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "We need to access your bluetooth for scanning ble devices.";
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need to access your camera for scanning barcode.";
@@ -1199,114 +1407,20 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 0.2.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.cox.acelite;
+				PRODUCT_BUNDLE_IDENTIFIER = com.coxauto.acelite.prod;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEV;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG DEV";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
-			name = "Dev Release";
+			name = "Dev Debug";
 		};
-		86E727E429FEE23B0057C546 /* Dev Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = ZGGV82GHKB;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.cox.acelite.AceliteTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Acelite.app/Acelite";
-			};
-			name = "Dev Release";
-		};
-		86E727E529FEE23B0057C546 /* Dev Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = ZGGV82GHKB;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.cox.acelite.AceliteUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = Acelite;
-			};
-			name = "Dev Release";
-		};
-		86E727E629FEE24D0057C546 /* Prod Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				MTL_FAST_MATH = YES;
-				SDKROOT = iphoneos;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG PROD";
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = "Prod Debug";
-		};
-		86E727E729FEE24D0057C546 /* Prod Debug */ = {
+		867201012A5F91D900C6CBC7 /* Prod Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -1317,7 +1431,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = QMYQQM43B7;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Acelite/Info.plist;
+				INFOPLIST_FILE = Acelite_Prod.plist;
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "We need to access your bluetooth for scanning ble devices.";
 				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "We need to access your bluetooth for scanning ble devices.";
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need to access your camera for scanning barcode.";
@@ -1335,56 +1449,18 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 0.2.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.cox.acelite;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cox.auto.acelite;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "PROD DEBUG";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = PROD;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
-			name = "Prod Debug";
-		};
-		86E727E829FEE24D0057C546 /* Prod Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = ZGGV82GHKB;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.cox.acelite.AceliteTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Acelite.app/Acelite";
-			};
-			name = "Prod Debug";
-		};
-		86E727E929FEE24D0057C546 /* Prod Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = ZGGV82GHKB;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.cox.acelite.AceliteUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = Acelite;
-			};
-			name = "Prod Debug";
+			name = "Prod Release";
 		};
 /* End XCBuildConfiguration section */
 
@@ -1393,9 +1469,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				861E6EEE2953789D00443F12 /* Dev Debug */,
-				86E727E229FEE23B0057C546 /* Dev Release */,
 				861E6EEF2953789D00443F12 /* Prod Release */,
-				86E727E629FEE24D0057C546 /* Prod Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = "Prod Release";
@@ -1404,9 +1478,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				861E6EF12953789D00443F12 /* Dev Debug */,
-				86E727E329FEE23B0057C546 /* Dev Release */,
 				861E6EF22953789D00443F12 /* Prod Release */,
-				86E727E729FEE24D0057C546 /* Prod Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = "Prod Release";
@@ -1415,9 +1487,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				861E6EF42953789D00443F12 /* Dev Debug */,
-				86E727E429FEE23B0057C546 /* Dev Release */,
 				861E6EF52953789D00443F12 /* Prod Release */,
-				86E727E829FEE24D0057C546 /* Prod Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = "Prod Release";
@@ -1426,9 +1496,16 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				861E6EF72953789D00443F12 /* Dev Debug */,
-				86E727E529FEE23B0057C546 /* Dev Release */,
 				861E6EF82953789D00443F12 /* Prod Release */,
-				86E727E929FEE24D0057C546 /* Prod Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = "Prod Release";
+		};
+		867200FE2A5F91D900C6CBC7 /* Build configuration list for PBXNativeTarget "Acelite_Prod" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				867200FF2A5F91D900C6CBC7 /* Dev Debug */,
+				867201012A5F91D900C6CBC7 /* Prod Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = "Prod Release";
@@ -1450,6 +1527,22 @@
 			requirement = {
 				kind = exactVersion;
 				version = 0.51.2;
+			};
+		};
+		8672009B2A5F91D900C6CBC7 /* XCRemoteSwiftPackageReference "apollo-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apollographql/apollo-ios.git";
+			requirement = {
+				kind = exactVersion;
+				version = 0.51.2;
+			};
+		};
+		8672009D2A5F91D900C6CBC7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.0.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -1504,6 +1597,56 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 866CDB472982E80400ADFB50 /* XCRemoteSwiftPackageReference "apollo-ios" */;
 			productName = Apollo;
+		};
+		8672009A2A5F91D900C6CBC7 /* Apollo */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8672009B2A5F91D900C6CBC7 /* XCRemoteSwiftPackageReference "apollo-ios" */;
+			productName = Apollo;
+		};
+		8672009C2A5F91D900C6CBC7 /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8672009D2A5F91D900C6CBC7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		8672009E2A5F91D900C6CBC7 /* FirebaseAnalyticsSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8672009D2A5F91D900C6CBC7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalyticsSwift;
+		};
+		8672009F2A5F91D900C6CBC7 /* FirebaseCrashlytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8672009D2A5F91D900C6CBC7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCrashlytics;
+		};
+		867200A02A5F91D900C6CBC7 /* FirebaseDatabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8672009D2A5F91D900C6CBC7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabase;
+		};
+		867200A12A5F91D900C6CBC7 /* FirebaseDatabaseSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8672009D2A5F91D900C6CBC7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabaseSwift;
+		};
+		867200A22A5F91D900C6CBC7 /* FirebaseInAppMessagingSwift-Beta */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8672009D2A5F91D900C6CBC7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = "FirebaseInAppMessagingSwift-Beta";
+		};
+		867200A32A5F91D900C6CBC7 /* FirebaseMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8672009D2A5F91D900C6CBC7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseMessaging;
+		};
+		867200A42A5F91D900C6CBC7 /* FirebaseRemoteConfig */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8672009D2A5F91D900C6CBC7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseRemoteConfig;
+		};
+		867200A52A5F91D900C6CBC7 /* FirebaseRemoteConfigSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8672009D2A5F91D900C6CBC7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseRemoteConfigSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

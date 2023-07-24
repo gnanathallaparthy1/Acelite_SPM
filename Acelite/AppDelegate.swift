@@ -39,6 +39,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
 			}
 		}
 		
+#if DEV
+	  print("This is a Development Environment")
+#else
+		print("This is a Production Environment")
+#endif
+		
+		
 		return true
 	}
 	
