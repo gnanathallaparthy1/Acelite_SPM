@@ -74,7 +74,10 @@ class WorkOrderViewController: UIViewController {
 	}
 	
 	@IBAction func nextButtonAction(_ sender: UIButton) {
-		//if let workOrder = self.barCodeTextField?.text?.description
+		guard let workOrder = self.barCodeTextField?.text, workOrder.count > 0 else {
+			self.showAlertMessage(message: "Please enter valid Work order number.")
+			return
+		}
 		let paramDictionary = [
 			Parameters.workOrder: self.barCodeTextField?.text?.description ?? "N/A"
 		  ]

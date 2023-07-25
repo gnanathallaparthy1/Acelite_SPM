@@ -48,7 +48,6 @@ class UploadAnimationViewController: UIViewController {
 	var remoteConfig = RemoteConfig.remoteConfig()
 	var isJsonEnabled : Bool = false
 	public var sampledCommandsList = [TestCommandExecution]()
-	
 	var finalJsonString: String = ""
 	//========================
 	
@@ -133,7 +132,16 @@ class UploadAnimationViewController: UIViewController {
 		let fileManager = FileManager.default
 		do {
 			let path = try fileManager.url(for: .documentDirectory, in: .allDomainsMask, appropriateFor: nil, create: false)
-			let fileURL = path.appendingPathComponent("final_vin.json")
+			//"${FILE_ACELITE_TEST_PRE_FIX}_${vinNumber}_${workOrder}_${make}_${model}_${year}_${trim}$JSON_EXTENSION"
+			//AceLite_Test__1N4BZ1CV2NC557788_123_Nissan_LEAF_2022_SV_PLUS.json
+			let vinNumber = self.vehicleInfo?.vin ?? ""
+			let make = self.vehicleInfo?.make ?? ""
+			let model = self.vehicleInfo?.modelName ?? ""
+			let year = self.vehicleInfo?.year ?? 0
+			let trim = self.vehicleInfo?.trimName ?? ""
+			let workOrder = self.workOrder ?? ""
+			
+			let fileURL = path.appendingPathComponent("\(Constants.ACELITE_TEST)_\(vinNumber)_\(workOrder)_\(make)_\(model)_\(year)_\(trim)\(Constants.FILE_TYPE)")
 			try self.finalJsonString.write(to: fileURL, atomically: true, encoding: .utf8)
 			print(fileURL)
 			self.stackView.removeFromSuperview()

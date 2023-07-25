@@ -605,7 +605,7 @@ class BatteryHealthCheckViewModel {
 	
 	private  func getStartTime() -> String {
 		let dateString = Date().iso8601withFractionalSeconds
-		print("DATE:::::::", dateString)
+		//print("DATE:::::::", dateString)
 		  return dateString
 	  }
 	//iso8601

@@ -505,6 +505,7 @@ extension BatteryHealthCheckViewController: GetPreSignedUrlDelegate, UploadAndSu
 		   vc.sampledCommandsList = Network.shared.sampledCommandsList
 	   //}
 		vc.isJsonEnabled = self.viewModel?.isJSON ?? false
+		vc.workOrder = self.viewModel?.workOrder
 	   if let pc = viewModel?.packCurrentData {
 		   vc.packCurrentData = pc
 	   }

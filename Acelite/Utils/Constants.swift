@@ -45,6 +45,9 @@ class Constants {
 	static let QUESTION_MARK = "?"
 	static let NODATA = "NODATA"
 	static let ERROR = "ERROR"
+	
+	static let FILE_TYPE = ".json"
+	static let ACELITE_TEST = "AceLite_Test"
 
 	func currentDateTime() -> String {
 		let dateFormatter : DateFormatter = DateFormatter()
