@@ -24,7 +24,6 @@ class BatteryHealthViewController: UIViewController {
 	}
 	@IBOutlet weak var gaugeView: ABGaugeView!
 	@IBOutlet weak var imageView: UIImageView!
-	@IBOutlet weak var gradeLabel: UILabel!
 	@IBOutlet weak var vinLabel: UILabel!
 	@IBOutlet weak var modelNameLabel: UILabel!
 	
@@ -48,7 +47,6 @@ class BatteryHealthViewController: UIViewController {
 		
 		
 		self.navigationItem.hidesBackButton = true
-		self.gradeLabel.text =  "Grade:" + "\(viewModel?.grade?.title ?? "")"
 		let healthScore = viewModel?.healthScore ?? 0
 		let testInstruc = viewModel?.testInstructionsId
 		self.scoreLabel.text = "\(healthScore)"

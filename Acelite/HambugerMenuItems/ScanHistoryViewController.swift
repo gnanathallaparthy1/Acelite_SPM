@@ -86,7 +86,6 @@ class ScanHistoryViewController: UIViewController, UITableViewDelegate, UITableV
 		cell?.healthLabelValue.text = vinData["Health"]
 		cell?.vehicleTitleLabel.text = vinData["Title"]
 		cell?.scoreLabelValue.text = vinData["Score"]
-		cell?.gradeLabelValue.text = vinData["Grade"]
         return cell ?? UITableViewCell()
         
     }
