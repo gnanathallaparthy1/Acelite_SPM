@@ -21,7 +21,7 @@ class ScanBleDevicesViewController: UIViewController {
 	private var blePeripheralDevice = [DeviceModel]()
 	private var selectedIndex: IndexPath?
 	private var selectedRow: Int?
-	var bleServices: BluetoothServices!
+	var bleServices: BluetoothServices?
 	var scanTimer = Timer()
 	
 	override func viewDidLoad() {
@@ -44,42 +44,51 @@ class ScanBleDevicesViewController: UIViewController {
 	
 	override func viewWillAppear(_ animated: Bool) {
 		self.navigationItem.setHidesBackButton(true, animated:true)
-		
 		let menuBarButton = UIBarButtonItem(image: UIImage(systemName: "line.3.horizontal"), style: .plain, target: self, action: #selector(self.menuButtonAction(_ :)))
 		menuBarButton.tintColor = UIColor.appPrimaryColor()
 		self.navigationItem.leftBarButtonItem  = menuBarButton
 		
 		let terminalBarButtonItem = UIBarButtonItem(title: "Terminal", style: .done, target: self, action: #selector(navigateToTerminal))
-		  self.navigationItem.rightBarButtonItem  = terminalBarButtonItem
+		terminalBarButtonItem.tintColor = UIColor.appPrimaryColor()
+		self.navigationItem.rightBarButtonItem  = terminalBarButtonItem
 		
-		#if DEV
+#if DEV
 		
 		print("Dev")
-		#else
+#else
 		print("Prod")
-		#endif
+#endif
 		
 		
 	}
 	
 	@objc func navigateToTerminal(){
-		let storyBoard = UIStoryboard.init(name: "Main", bundle: nil)
-		  let vehicalVC = storyBoard.instantiateViewController(withIdentifier: "TerminalViewController") as! TerminalViewController
-		vehicalVC.bluetoothService(bleServices: self.bleServices)
-		  self.navigationController?.pushViewController(vehicalVC, animated: false)
+		if self.bleServices?.rxCharacteristic?.uuid.uuidString != nil {
+			let storyBoard = UIStoryboard.init(name: "Main", bundle: nil)
+			let vehicalVC = storyBoard.instantiateViewController(withIdentifier: "TerminalViewController") as! TerminalViewController
+			vehicalVC.bluetoothService(bleServices: self.bleServices ?? BluetoothServices())
+			self.navigationController?.pushViewController(vehicalVC, animated: false)
+		} else {
+			var dialogMessage = UIAlertController(title: "Alert", message: "Please scan and connect to BLE device", preferredStyle: .alert)
+			
+			// Create OK button with action handler
+			let ok = UIAlertAction(title: "OK", style: .default, handler: { (action) -> Void in
+				print("Ok button tapped")
+			})
+			dialogMessage.addAction(ok)
+			self.present(dialogMessage, animated: true, completion: nil)
+			
+		}
 	}
 	
 	@objc func showScanTimeoutView()  {
-		DispatchQueue.main.async {
-			print("20 sec completed")
-			print(self.bleServices.isPeripheralIdentified)
-			
+		DispatchQueue.main.async {			
 			if self.blePeripheralDevice.count == 0 {
 				
 				self.view.activityStopAnimating()
 				// Create new Alert
 				self.scanTimer.invalidate()
-				self.bleServices.isPeripheralIdentified = false
+				self.bleServices?.isPeripheralIdentified = false
 				var dialogMessage = UIAlertController(title: "Alert", message: "Please try agian!", preferredStyle: .alert)
 				
 				// Create OK button with action handler
@@ -105,9 +114,9 @@ class ScanBleDevicesViewController: UIViewController {
 	
 	@IBAction func scanButtonAction(_ sender: UIButton) {
 		self.bleServices = BluetoothServices()
-		self.bleServices.delegate = self
+		self.bleServices?.delegate = self
 		if self.scanButton.titleLabel?.text == "Stop Scanning" {
-			if let cbManager = self.bleServices.centralManager {
+			if let cbManager = self.bleServices?.centralManager {
 				FirebaseLogging.instance.logEvent(eventName:BluetoothScreenEvents.bleScanStop, parameters: nil)
 				cbManager.stopScan()
 				self.scanButton.setTitle("START SCANNING FOR OBD II DEVICES", for: .normal)
@@ -118,7 +127,7 @@ class ScanBleDevicesViewController: UIViewController {
 		DispatchQueue.main.async {
 			self.scanTimer = Timer.scheduledTimer(timeInterval: 20.0, target: self, selector: #selector(self.showScanTimeoutView), userInfo: nil, repeats: false)
 		}
-		self.bleServices.callBack = { devices in
+		self.bleServices?.callBack = { devices in
 			self.blePeripheralDevice.removeAll()
 			self.blePeripheralDevice = devices
 			self.view.activityStopAnimating()
@@ -126,10 +135,10 @@ class ScanBleDevicesViewController: UIViewController {
 			//print(devices.first)
 			if self.blePeripheralDevice.count == 0 {
 				FirebaseLogging.instance.logEvent(eventName:BluetoothScreenEvents.bleConnectionFailure, parameters: nil)
-				self.bleServices.isPeripheralIdentified = true
+				self.bleServices?.isPeripheralIdentified = true
 			} else {
 				FirebaseLogging.instance.logEvent(eventName:BluetoothScreenEvents.bleConnectionSuccess, parameters: nil)
-				self.bleServices.isPeripheralIdentified = false
+				self.bleServices?.isPeripheralIdentified = false
 			}
 		}
 		Network.shared.bluetoothService = self.bleServices
@@ -191,12 +200,12 @@ extension ScanBleDevicesViewController: UITableViewDelegate, UITableViewDataSour
 		self.selectedRow = sender.tag
 		if self.selectedIndex == IndexPath(row: sender.tag, section: 0) {
 			self.selectedIndex = IndexPath(row: sender.tag, section: 0)
-			bleServices.disconnectDevice(peripheral: deviceModel.peripheral)
+			bleServices?.disconnectDevice(peripheral: deviceModel.peripheral)
 		} else {
 			disconnectPreviousConnectedDevices()
 			self.selectedIndex = IndexPath(row: sender.tag, section: 0)
-			bleServices.bluetoothPeripheral = deviceModel.peripheral
-			bleServices.connectDevices(peripheral: deviceModel.peripheral)
+			bleServices?.bluetoothPeripheral = deviceModel.peripheral
+			bleServices?.connectDevices(peripheral: deviceModel.peripheral)
 			Network.shared.myPeripheral = deviceModel.peripheral
 		}
 		//self.bleTableView.reloadData()
@@ -219,7 +228,7 @@ extension ScanBleDevicesViewController: UITableViewDelegate, UITableViewDataSour
 	
 	func disconnectPreviousConnectedDevices() {
 		guard let previousDevice = Network.shared.myPeripheral  else { return  }
-		bleServices.disconnectDevice(peripheral: previousDevice)
+		bleServices?.disconnectDevice(peripheral: previousDevice)
 		//TODO update UI state
 	}
 	
