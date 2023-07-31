@@ -49,6 +49,24 @@ class ScanBleDevicesViewController: UIViewController {
 		menuBarButton.tintColor = UIColor.appPrimaryColor()
 		self.navigationItem.leftBarButtonItem  = menuBarButton
 		
+		let terminalBarButtonItem = UIBarButtonItem(title: "Terminal", style: .done, target: self, action: #selector(navigateToTerminal))
+		  self.navigationItem.rightBarButtonItem  = terminalBarButtonItem
+		
+		#if DEV
+		
+		print("Dev")
+		#else
+		print("Prod")
+		#endif
+		
+		
+	}
+	
+	@objc func navigateToTerminal(){
+		let storyBoard = UIStoryboard.init(name: "Main", bundle: nil)
+		  let vehicalVC = storyBoard.instantiateViewController(withIdentifier: "TerminalViewController") as! TerminalViewController
+		vehicalVC.bluetoothService(bleServices: self.bleServices)
+		  self.navigationController?.pushViewController(vehicalVC, animated: false)
 	}
 	
 	@objc func showScanTimeoutView()  {

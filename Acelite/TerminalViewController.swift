@@ -6,7 +6,7 @@
 //
 
 import UIKit
-
+import CoreBluetooth
 class TerminalViewController: UIViewController {
 
 	@IBOutlet weak var commandResponseTextView: UITextView!
@@ -25,11 +25,11 @@ class TerminalViewController: UIViewController {
 		cancelButton.layer.cornerRadius = 10
 		sendButton.layer.cornerRadius = 10
 		commandResponseTextView.text = ""
-		notificationCenter.addObserver(self, selector: #selector(self.loginSuccess(_:)), name: NSNotification.Name.init(rawValue: "BLEResponse"), object: nil)
+		notificationCenter.addObserver(self, selector: #selector(self.debugBleResponse(_:)), name: NSNotification.Name.init(rawValue: "BLEResponse"), object: nil)
 
     }
 	//MARK: - Receive User Details
-	@objc func loginSuccess(_ notification: Notification) {
+	@objc func debugBleResponse(_ notification: Notification) {
 		
 		let notificationobject = notification.object as? [String: Any] ?? [:]
 		let commandResponse = notificationobject["BLEResponse"]
@@ -47,6 +47,8 @@ class TerminalViewController: UIViewController {
 	}
 	func bluetoothService(bleServices: BluetoothServices)  {
 		self.bluetoothService = bleServices
+		print(self.bluetoothService?.txCharacteristic?.uuid.uuidString)
+		print(self.bluetoothService?.rxCharacteristic?.uuid.uuidString)
 	}
 	
 	@IBAction func cancelButtonAction(_ sender: UIButton) {
@@ -57,7 +59,7 @@ class TerminalViewController: UIViewController {
 		guard let commandData = self.commandTextFiled.text, commandData.count > 0 else {
 			return
 		}
-		
+		self.bluetoothService?.writeByteData(data: commandData + Constants.NEW_LINE_CHARACTER)
 		//self.bluetoothService?.writeBytesData(data: commandData, completionHandler: <#((String) -> ())?#>)
 		commandTextFiled.resignFirstResponder()
 	}
@@ -86,4 +88,6 @@ extension TerminalViewController: UITextViewDelegate {
 		return true
 	}
 }
+
+
 

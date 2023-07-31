@@ -50,7 +50,7 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 	private var bluetoothWriteCallback: AceLiteBleWriteCallback? = nil
 	private var bluetoothNotifyCallback: AceLiteBleNotifyCallback? = nil
 	var completionHandler: ((Data)->())?
-	//var completionHandler: ((String)->())?
+	var termainalCompletionHandler: ((String)->())?
 	public var isPeripheralIdentified = false
 	//var emptyArray : Int[] = []
 	private var fromDate = Date()
@@ -91,6 +91,16 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 //	} 	public func writeBytesData(flowControl: FlowControlInstructionType, commandType: CommandType, data: String, completionHandler: ((String)->())?) {
 
 	//MARK: - WriteByteArrayToDevice
+	
+	func writeByteData(data: String) {
+		print("command:::", data)
+		guard let characterstics = txCharacteristic else {
+			return
+		}
+		//print("request data:::::", data)
+		let dataToSend: Data = data.data(using: .utf8)!
+		bluetoothPeripheral?.writeValue(dataToSend, for: characterstics, type: .withResponse)
+	}
 	
 	public func writeByteDataOnDevice(commandType: CommandType, data: String, completionHandler: ((Data)->())? ) {
 	}
@@ -206,6 +216,7 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 			let parseData: String = String.init(data: value, encoding: .utf8) ?? ""
 			//check if needed
 			//Network.shared.bleData.append(parseData)
+			NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "BLEResponse"), object: ["BLEResponse": parseData], userInfo: nil)
 			Network.shared.bleData.append(value)
 			//let byteArray: [UInt8] = Array(value)
 			print(Date(), "notify obtained bytes : \(parseData)", to: &Log.log)
