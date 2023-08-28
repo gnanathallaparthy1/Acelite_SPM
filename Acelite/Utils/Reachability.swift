@@ -12,7 +12,7 @@ import SystemConfiguration
 protocol Utilities {
 }
 
-extension NSObject:Utilities{
+extension NSObject:Utilities {
     
     enum ReachabilityStatus {
         case notReachable

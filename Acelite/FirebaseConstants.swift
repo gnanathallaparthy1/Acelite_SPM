@@ -19,12 +19,14 @@ struct ClassNames {
 	static let vehicleInformation = "vehicle_information"
 	static let workOrder = "work_order"
 	static let testInstructions = "test_instructions"
+	static let upload = "upload_data"
 	static let confirmation = "confirmation"
 	static let scanHistory = "scan_history"
 	static let testableModels = "testable_models"
 }
 
 struct BluetoothScreenEvents {
+	static let networkDropped = "network_connection_dropped"
 	static let bleScanStart = "ble_scan_start"
 	static let bleScanStop = "ble_scan_stop"
 	static let bleDeniedPermission = "ble_denied_permission"

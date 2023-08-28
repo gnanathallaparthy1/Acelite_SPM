@@ -10,7 +10,7 @@ import UIKit
 import FirebaseDatabase
 import Firebase
 
-class UploadAnimationViewController: UIViewController {
+class UploadAnimationViewController: BaseViewController {
 	private let stackView: UIStackView = {
 		$0.distribution = .fill
 		$0.axis = .horizontal
@@ -76,6 +76,7 @@ class UploadAnimationViewController: UIViewController {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		FirebaseLogging.instance.logScreen(screenName: ClassNames.upload)
 		print(Date(), "upload animation VC", to: &Log.log)
 		navigationItem.hidesBackButton = true
 		let label = UILabel(frame: CGRect(x: 0, y: 0, width: 250, height: 21))
@@ -253,27 +254,27 @@ class UploadAnimationViewController: UIViewController {
 			
 			if result.count == 0 {
 				let paramDictionary = [
-				   "file_type": "CELL_VOLTAGE"
-				  ]
+					"file_type": "CELL_VOLTAGE"
+				]
 				FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.uploadFileError, parameters: paramDictionary)
 				print(Date(), "error CELL_VOLTAGE generation", to: &Log.log)
 				return
 			} else if self.packCurrentData.count == 0 {
 				let paramDictionary = [
-				   "file_type": "PACK_CURRENT"
-				  ]
+					"file_type": "PACK_CURRENT"
+				]
 				FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.uploadFileError, parameters: paramDictionary)
 				print(Date(), "error PACK_CURRENT generation", to: &Log.log)
 				return
 			} else if self.packVoltageData.count == 0 {
 				let paramDictionary = [
-				   "file_type": "PACK_VOLTAGE"
-				  ]
+					"file_type": "PACK_VOLTAGE"
+				]
 				FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.uploadFileError, parameters: paramDictionary)
 				print(Date(), "error PACK_VOLTAGE generation", to: &Log.log)
 				return
 			}
-
+			
 			minVlaue = listCount.min() ?? 0
 			print("min value from count array", minVlaue)
 			if minVlaue == 0 {
@@ -603,9 +604,7 @@ class UploadAnimationViewController: UIViewController {
 				print(Date(), "SOC:submit API Error :\(error)", to: &Log.log)
 				break
 			}
-			
 		}
-		
 	}
 	
 	private func submitBatteryDataFileWithBMSGraphRequest() {
@@ -754,9 +753,7 @@ class UploadAnimationViewController: UIViewController {
 				}
 				break
 			}
-			
 		}
-		
 	}
 	
 	func submitSuccessForSubmitAPI(transactionID: String, vinMake: String, score: String, vinModels: String, submitType: String, vinNumber: String, year: Int) {

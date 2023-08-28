@@ -11,7 +11,7 @@ import CoreBluetooth
 
 
 
-class ScanBleDevicesViewController: UIViewController {
+class ScanBleDevicesViewController: BaseViewController {
 
 	@IBOutlet weak var scanButton: UIButton!
 	@IBOutlet weak var bleTableView: UITableView!
@@ -28,6 +28,7 @@ class ScanBleDevicesViewController: UIViewController {
 		super.viewDidLoad()
 		FirebaseLogging.instance.logScreen(screenName: ClassNames.bluetoothScan)
 		uiUpdates()
+		
 	}
 	
 	override func viewDidDisappear(_ animated: Bool) {
@@ -43,24 +44,22 @@ class ScanBleDevicesViewController: UIViewController {
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {
-		self.navigationItem.setHidesBackButton(true, animated:true)
-		let menuBarButton = UIBarButtonItem(image: UIImage(systemName: "line.3.horizontal"), style: .plain, target: self, action: #selector(self.menuButtonAction(_ :)))
-		menuBarButton.tintColor = UIColor.appPrimaryColor()
-		self.navigationItem.leftBarButtonItem  = menuBarButton
-		
-		let terminalBarButtonItem = UIBarButtonItem(title: "Terminal", style: .done, target: self, action: #selector(navigateToTerminal))
-		terminalBarButtonItem.tintColor = UIColor.appPrimaryColor()
-		self.navigationItem.rightBarButtonItem  = terminalBarButtonItem
-		
+		super.viewWillAppear(animated)
+			self.navigationItem.setHidesBackButton(true, animated:true)
+			let menuBarButton = UIBarButtonItem(image: UIImage(systemName: "line.3.horizontal"), style: .plain, target: self, action: #selector(self.menuButtonAction(_ :)))
+			menuBarButton.tintColor = UIColor.appPrimaryColor()
+			self.navigationItem.leftBarButtonItem  = menuBarButton
+			
 #if DEV
-		
-		print("Dev")
+		let terminalBarButtonItem = UIBarButtonItem(title: "Terminal", style: .done, target: self, action: #selector(navigateToTerminal))
+			terminalBarButtonItem.tintColor = UIColor.appPrimaryColor()
+			self.navigationItem.rightBarButtonItem  = terminalBarButtonItem
 #else
 		print("Prod")
 #endif
-		
-		
+				
 	}
+	
 	
 	@objc func navigateToTerminal(){
 		if self.bleServices?.rxCharacteristic?.uuid.uuidString != nil {
@@ -167,7 +166,6 @@ extension ScanBleDevicesViewController: UITableViewDelegate, UITableViewDataSour
 												 for: indexPath) as? BLETableViewCell
 		let deviceModel = self.blePeripheralDevice[indexPath.row]
 		cell?.bleNameLable.text = deviceModel.peripheral.name
-		//cell?.bleAddress.text = "\(deviceModel.peripheral.identifier)"
 		cell?.connectButton.tag = indexPath.row
 		
 		
@@ -175,22 +173,6 @@ extension ScanBleDevicesViewController: UITableViewDelegate, UITableViewDataSour
 		
 		cell?.connectButton.setTitle("Connect", for: .normal)
 		cell?.testButton.isHidden = true
-		
-//		if  self.selectedIndex == indexPath {
-//			if cell?.connectButton.titleLabel?.text == "Disconnected" {
-//				cell?.connectButton.setTitle("Connect", for: .normal)
-//				cell?.testButton.isHidden = false
-//			} else {
-//				cell?.connectButton.setTitle("Disconnected", for: .normal)
-//				cell?.testButton.isHidden = true
-//			}
-//			//cell?.connectButton.setTitle("Disconnected", for: .normal)
-//			cell?.testButton.isHidden = false
-//			cell?.testButton.addTarget(self, action: #selector(self.testbuttonAction(_ :)), for: .touchUpInside)
-//		} else {
-//			cell?.connectButton.setTitle("Connect", for: .normal)
-//			cell?.testButton.isHidden = true
-//		}
 		cell?.connectButton.addTarget(self, action: #selector(self.connectBleDevice(_ :)), for: .touchUpInside)
 		return cell ?? UITableViewCell()
 	}
@@ -238,19 +220,8 @@ extension ScanBleDevicesViewController: UITableViewDelegate, UITableViewDataSour
 		Network.shared.bluetoothService?.centralManager.stopScan()
 		FirebaseLogging.instance.logEvent(eventName:BluetoothScreenEvents.bleTest, parameters: nil)
 		let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
-		//let testVC = storyboard.instantiateViewController(withIdentifier: "TerminalViewController") as! TerminalViewController
-		//testVC.bluetoothService(bleServices: self.bleServices)
-		
-//		let viVC = storyboard.instantiateViewController(withIdentifier: "VehicalInformationViewController") as! VehicalInformationViewController
-//		let vm = VehicleInformationViewModel(vinNumber: "")
-////		 viVC = VehicalInformationViewController(viewModel: vm)
-//		viVC.viewModel = vm
-//		//viVC.delegate =
-//		self.navigationController?.pushViewController(viVC, animated: true)
 		let vm = VehicleVinScannerViewModel()
-	////		 viVC = VehicalInformationViewController(viewModel: vm)
 		let vehicleVinScan = storyboard.instantiateViewController(withIdentifier: "VehicalVINScannerViewController") as! VehicalVINScannerViewController
-		//vehicleVinScan.vehicleInfo = viewModel?.vehicleInformation
 		vehicleVinScan.viewModel = vm
 		self.navigationController?.pushViewController(vehicleVinScan, animated: true)
 	}
@@ -279,88 +250,11 @@ extension ScanBleDevicesViewController: BLEPermissionDelegate {
 		let alert = UIAlertController(title: "Alert", message: "Please enable Bluetooth in the settings.", preferredStyle: .alert)
 		alert.addAction(UIAlertAction(title: "Go to -> Settings", style: .default, handler: { action in
 			UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
-			
-			
-//			let url = URL(string: "App-Prefs:root=Privacy&path=Bluetooth") //for bluetooth setting
-//			   let app = UIApplication.shared
-//			   app.openURL(url!)
 		}))
 		self.present(alert, animated: true, completion: nil)
 	}
 	
-	
 }
-
-//extension ScanBleDevicesViewController:  CBPeripheralDelegate, CBCentralManagerDelegate {
-//
-//	func centralManagerDidUpdateState(_ central: CBCentralManager) {
-//		if central.state == .poweredOn {
-//			central.scanForPeripherals(withServices: nil, options: nil)
-//			print("Scanning...")
-//		}
-//
-//
-//		if central.state == CBManagerState.poweredOn {
-//			print("BLE powered on")
-//
-//			// Turned on
-//			central.scanForPeripherals(withServices: nil, options: nil)
-//
-//		}
-//		else {
-//			print("Something wrong with BLE")
-//			// Not on, but can have different issues
-//		}
-//	}
-//
-//	func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
-//		print(peripheral)
-//		print(advertisementData)
-//
-//		if let pname = peripheral.name {
-//			let deviceModel = DeviceModel(id: pname, peripheral: peripheral)
-//			self.blePeripheralDevice.append(deviceModel)
-//			filterPeripharalNames()
-//		}
-//	}
-//
-//	func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
-//		if let peripheral = self.myPeripheral {
-//		print("Connected peripheral::::::", peripheral.name ?? "")
-//		self.myPeripheral.discoverServices(nil)
-//		}
-//
-//		if self.myPeripheral.state == .connected {
-//			DispatchQueue.main.async {
-//				let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
-//				let viVC = storyboard.instantiateViewController(withIdentifier: "VehicalInformationViewController") as! VehicalInformationViewController
-//				self.navigationController?.pushViewController(viVC, animated: true)
-//			}
-//		}
-//	}
-//
-//	func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
-//		//print("Disconver services", peripheral.services)
-//	}
-//
-//	func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
-//		//print("characterstics", service.characteristics)
-//	}
-//
-//	func filterPeripharalNames()  {
-//		var alreadyThere = Set<DeviceModel>()
-//		let uniquePosts = blePeripheralDevice.compactMap { (post) -> DeviceModel? in
-//			guard !alreadyThere.contains(post) else { return nil }
-//			alreadyThere.insert(post)
-//			return post
-//		}
-//		self.blePeripheralDevice.removeAll()
-//		self.blePeripheralDevice = uniquePosts
-//		self.bleTableView.reloadData()
-//
-//	}
-//}
-
 
 struct DeviceModel: Hashable, Identifiable {
 	let id: String

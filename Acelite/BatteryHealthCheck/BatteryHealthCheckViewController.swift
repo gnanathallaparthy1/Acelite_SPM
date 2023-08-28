@@ -68,7 +68,7 @@ enum BatteryHealthInstruction: Int {
 	}
 	
 }
-class BatteryHealthCheckViewController: UIViewController {
+class BatteryHealthCheckViewController: BaseViewController {
 	
 	@IBOutlet weak var bodyContentHeightConstrants: NSLayoutConstraint!
 	

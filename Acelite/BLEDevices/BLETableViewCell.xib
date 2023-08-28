@@ -23,31 +23,37 @@
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="adZ-oq-HFT">
-                        <rect key="frame" x="157" y="8" width="48" height="28"/>
-                        <color key="backgroundColor" red="0.35686274509999999" green="0.48627450979999998" blue="0.23137254900000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <constraints>
-                            <constraint firstAttribute="height" relation="lessThanOrEqual" constant="40" id="8fz-qK-la6"/>
-                        </constraints>
-                        <state key="normal" title="Button"/>
-                        <buttonConfiguration key="configuration" style="plain" title="Test">
-                            <fontDescription key="titleFontDescription" type="boldSystem" pointSize="11"/>
-                            <color key="baseForegroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        </buttonConfiguration>
-                    </button>
-                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mSn-pJ-KTk">
-                        <rect key="frame" x="208" y="7.5" width="107" height="29"/>
-                        <color key="backgroundColor" red="0.35686274509999999" green="0.48627450979999998" blue="0.23137254900000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <constraints>
-                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="100" id="ZrR-YP-F5s"/>
-                            <constraint firstAttribute="height" relation="lessThanOrEqual" constant="40" id="bbA-8h-fna"/>
-                        </constraints>
-                        <state key="normal" title="Button"/>
-                        <buttonConfiguration key="configuration" style="plain" title="Disconnected">
-                            <fontDescription key="titleFontDescription" type="boldSystem" pointSize="12"/>
-                            <color key="baseForegroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        </buttonConfiguration>
-                    </button>
+                    <stackView opaque="NO" contentMode="scaleToFill" spacing="3" translatesAutoresizingMaskIntoConstraints="NO" id="kGJ-VY-c2W">
+                        <rect key="frame" x="118" y="8" width="197" height="28.5"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="adZ-oq-HFT">
+                                <rect key="frame" x="0.0" y="0.0" width="97" height="28.5"/>
+                                <color key="backgroundColor" red="0.35686274509999999" green="0.48627450979999998" blue="0.23137254900000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <fontDescription key="fontDescription" name="ArialMT" family="Arial" pointSize="14"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="Test">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <buttonConfiguration key="configuration" style="plain" title="Test">
+                                    <fontDescription key="titleFontDescription" name="ArialMT" family="Arial" pointSize="17"/>
+                                    <color key="baseForegroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </buttonConfiguration>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mSn-pJ-KTk">
+                                <rect key="frame" x="100" y="0.0" width="97" height="28.5"/>
+                                <color key="backgroundColor" red="0.35686274509999999" green="0.48627450979999998" blue="0.23137254900000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <fontDescription key="fontDescription" name="ArialMT" family="Arial" pointSize="12"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="Disconnected">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <buttonConfiguration key="configuration" style="plain" title="Disconnected">
+                                    <fontDescription key="titleFontDescription" name="ArialMT" family="Arial" pointSize="12"/>
+                                    <color key="baseForegroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </buttonConfiguration>
+                            </button>
+                        </subviews>
+                    </stackView>
                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_ble" translatesAutoresizingMaskIntoConstraints="NO" id="BcF-NW-OgY">
                         <rect key="frame" x="4" y="9.5" width="25" height="25"/>
                         <constraints>
@@ -57,16 +63,14 @@
                     </imageView>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="mSn-pJ-KTk" firstAttribute="leading" secondItem="adZ-oq-HFT" secondAttribute="trailing" constant="3" id="1LU-Y6-qen"/>
                     <constraint firstItem="fqz-HE-wWi" firstAttribute="leading" secondItem="BcF-NW-OgY" secondAttribute="trailing" constant="7" id="3YQ-To-oco"/>
-                    <constraint firstItem="adZ-oq-HFT" firstAttribute="top" secondItem="skn-1A-e93" secondAttribute="top" constant="8" id="CP9-TC-9H4"/>
-                    <constraint firstItem="adZ-oq-HFT" firstAttribute="centerY" secondItem="fqz-HE-wWi" secondAttribute="centerY" id="ZXb-KG-KUu"/>
+                    <constraint firstAttribute="trailing" secondItem="kGJ-VY-c2W" secondAttribute="trailing" constant="5" id="LmZ-yy-kgR"/>
+                    <constraint firstAttribute="bottom" secondItem="kGJ-VY-c2W" secondAttribute="bottom" constant="7.5" id="ThS-Fw-uhu"/>
+                    <constraint firstItem="BcF-NW-OgY" firstAttribute="top" secondItem="skn-1A-e93" secondAttribute="top" constant="9.5" id="bTl-tr-ESS"/>
                     <constraint firstItem="fqz-HE-wWi" firstAttribute="top" secondItem="skn-1A-e93" secondAttribute="top" id="gDn-5b-Ii1"/>
                     <constraint firstAttribute="bottom" secondItem="fqz-HE-wWi" secondAttribute="bottom" id="iEo-Zc-qos"/>
-                    <constraint firstAttribute="trailing" secondItem="mSn-pJ-KTk" secondAttribute="trailing" constant="5" id="jbK-F9-KMF"/>
-                    <constraint firstItem="mSn-pJ-KTk" firstAttribute="bottom" secondItem="skn-1A-e93" secondAttribute="bottomMargin" constant="3.5" id="mx4-bc-8dk"/>
+                    <constraint firstItem="kGJ-VY-c2W" firstAttribute="top" secondItem="skn-1A-e93" secondAttribute="top" constant="8" id="jmW-BA-ZLr"/>
                     <constraint firstItem="BcF-NW-OgY" firstAttribute="leading" secondItem="skn-1A-e93" secondAttribute="leading" constant="4" id="ost-bU-gnk"/>
-                    <constraint firstItem="fqz-HE-wWi" firstAttribute="centerY" secondItem="BcF-NW-OgY" secondAttribute="centerY" id="wPJ-Zq-IkW"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="DZf-4d-7b2"/>

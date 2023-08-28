@@ -82,6 +82,7 @@ class BatteryHealthViewController: UIViewController {
 			"Model": vinModels,
 			"Body Style": bodyStyle,
 			"Health": "\(String(describing: viewModel?.health))"
+			"json": "file"
 		]
     }
 	

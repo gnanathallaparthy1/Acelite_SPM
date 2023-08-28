@@ -10,17 +10,13 @@ import ExternalAccessory
 import UserNotifications
 enum ScreenState {
 case ConnectOBDdevice
-//case StartCar
-//	//scan
-//case VehicalInfo
 }
 
 extension ViewController: EAAccessoryDelegate {
 	
 }
-class ViewController: UIViewController {
+class ViewController: BaseViewController {
 	var accessoryManger: EAAccessoryManager!
-	//@IBOutlet weak var sideMenuBtn: UIBarButtonItem!
 	@IBOutlet weak var imageTitleLabel: UILabel!
 	var screenState = ScreenState.ConnectOBDdevice
 	
@@ -37,12 +33,7 @@ class ViewController: UIViewController {
 			cancelButton.layer.cornerRadius = 8
 		}
 	}
-	//@IBOutlet weak var backButton: UIButton! {
-//		didSet {
-//			backButton.layer.cornerRadius = 8
-//
-//		}
-//	}
+	
 	@IBOutlet weak var nextButton: UIButton! {
 		didSet {
 			nextButton.layer.cornerRadius = 8
@@ -57,19 +48,15 @@ class ViewController: UIViewController {
 		FirebaseLogging.instance.setUserProperty(value: "StarCharm", forProperty: UserProperty().productType)
 		self.navigationController?.setStatusBar(backgroundColor: UIColor.appPrimaryColor())
 		self.navigationController?.navigationBar.setNeedsLayout()
-	
+		
 		let menuBarButton = UIBarButtonItem(image: UIImage(systemName: "line.3.horizontal"), style: .plain, target: self, action: #selector(self.menuButtonAction(_ :)))
 		menuBarButton.tintColor = UIColor.appPrimaryColor()
 		self.navigationItem.leftBarButtonItem  = menuBarButton
-		//sideMenuBtn.target = revealViewController()
-		//sideMenuBtn.action = #selector(revealViewController()?.revealSideMenu)
 		
 		nextButton.addTarget(self, action: #selector(self.nextButtonAction(_:)), for: .touchUpInside)
 		
-	//backButton.addTarget(self, action: #selector(self.backButtonAction(_:)), for: .touchUpInside)
-		
 		cancelButton.addTarget(self, action: #selector(self.cancelButtonAction(_:)), for: .touchUpInside)
-	
+		
 		uiViewUpdate()
 		
 		
@@ -77,13 +64,13 @@ class ViewController: UIViewController {
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(accessoryConnected), name: NSNotification.Name.EAAccessoryDidConnect, object: nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(accessoryDisconnected), name: NSNotification.Name.EAAccessoryDidDisconnect, object: nil)
-print("Connected/Disconnected notification centers")
+		print("Connected/Disconnected notification centers")
 		print(AceliteExternalAccessory.accessoryManager.connectedAccessories)
 		EAAccessoryManager.shared().registerForLocalNotifications()
 		
 		// Remote Notification
 		NotificationCenter.default.addObserver(self, selector: #selector(self.goToVc(notification:)), name:NSNotification.Name(rawValue:"identifier"), object: nil)
-
+		
 	}
 	
 	@objc func goToVc(notification:Notification) {
@@ -95,7 +82,7 @@ print("Connected/Disconnected notification centers")
 			self.navigationController?.pushViewController(vc, animated: true)
 		}
 		
-   }
+	}
 	
 	@objc func accessoryConnected(notification: NSNotification) {
 		print("connected notification called")
@@ -109,8 +96,8 @@ print("Connected/Disconnected notification centers")
 			}
 		}
 	}
- 
-
+	
+	
 	@objc func accessoryDisconnected(notification: NSNotification) {
 		print("disconnected notification called")
 		if let accessory = notification.userInfo?[EAAccessoryKey] as? EAAccessory {
@@ -131,21 +118,17 @@ print("Connected/Disconnected notification centers")
 	
 	
 	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(true)
 		imageTitleLabel.text = "Connect The OBD-II Device"
 		cancelButton.backgroundColor = .lightGray
 		cancelButton.isUserInteractionEnabled = false
 		cancelButton.isHidden = true
-		//backButton.isHidden = true
-//			backButton.backgroundColor = .lightGray
-//			backButton.isUserInteractionEnabled = false
 		imageView.image = UIImage.init(named: "1-5")
 		screenCountLabel.text = "1/5"
 		
 		// Remote Nitification
 		NotificationCenter.default.addObserver(self, selector: #selector(self.goToVc(notification:)), name:NSNotification.Name(rawValue:"identifier"), object: nil)
-		//self.navigationItem.setHidesBackButton(true, animated: true)
-			//setNavigationBar(bgColor: UIColor(red: 0.00, green: 0.76, blue: 0.84, alpha: 1.00), TitleColor: UIColor.white, title: "" ,imageLeft: UIImage(named: "menu")!,imageRight: UIImage(named: "menu")!, leftbarImageisHide: false, rightbarImageisHide: true, popView: false)
-		}
+	}
 	
 	private func uiViewUpdate()  {
 		nextButton.backgroundColor = UIColor.appPrimaryColor()
@@ -154,9 +137,6 @@ print("Connected/Disconnected notification centers")
 			cancelButton.backgroundColor = .lightGray
 			cancelButton.isUserInteractionEnabled = false
 			cancelButton.isHidden = true
-			//backButton.isHidden = true
-//			backButton.backgroundColor = .lightGray
-//			backButton.isUserInteractionEnabled = false
 			imageView.image = UIImage.init(named: "1-5")
 			screenCountLabel.text = "1/5"
 		} else {
@@ -165,7 +145,7 @@ print("Connected/Disconnected notification centers")
 			let vehicalVC = storyBoard.instantiateViewController(withIdentifier: "ScanBleDevicesViewController") as! ScanBleDevicesViewController
 			self.navigationController?.pushViewController(vehicalVC, animated: false)
 		}
-	
+		
 	}
 	
 	@IBAction func backButtonAction(_ sender: UIButton) {
@@ -181,38 +161,11 @@ print("Connected/Disconnected notification centers")
 	
 	@IBAction func nextButtonAction(_ sender: UIButton) {
 		
-		
-		/*
-		 let storyboard = UIStoryboard.init(name: "BatteryHealthCheck", bundle: nil)
-				 let vc = storyboard.instantiateViewController(withIdentifier: "ErrorAlertDailogViewController") as! ErrorAlertDailogViewController
-				 vc.modalPresentationStyle = .fullScreen
-		 vc.popoverPresentationController?.delegate = self
-		 self.navigationController?.present(vc, animated: true)
-		 */
-	
-				//self.present(vc, animated: true)
-		
-//		if screenState == .ConnectOBDdevice {
-//			screenState = .StartCar
-//		} else if screenState == .StartCar {
-//			screenState = .VehicalInfo
-//		} else {
-//			screenState = .ConnectOBDdevice
-//		}
-//		uiViewUpdate()
-//		let storyBaord = UIStoryboard.init(name: "Main", bundle: nil)
-//		let vc = storyBaord.instantiateViewController(withIdentifier: "BatteryHealthViewController") as! BatteryHealthViewController
-//		let vm = BatteryHealthViewModel(healthScore: 2.0)
-//		//BatteryHealthViewModel(vehicleInfo: veh, transactionID: "", healthSc"ore: , grade:.A, health: "Good")
-//		
-//		vc.viewModel = vm
-//		self.navigationController?.pushViewController(vc, animated: true)
-		
 		let storyBoard = UIStoryboard.init(name: "Main", bundle: nil)
 		let vehicalVC = storyBoard.instantiateViewController(withIdentifier: "ScanBleDevicesViewController") as! ScanBleDevicesViewController
 		self.navigationController?.pushViewController(vehicalVC, animated: false)
 	}
-
+	
 }
 
 extension ViewController: UIPopoverPresentationControllerDelegate {

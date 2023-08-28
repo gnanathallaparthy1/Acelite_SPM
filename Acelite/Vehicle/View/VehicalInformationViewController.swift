@@ -7,7 +7,7 @@
 
 import UIKit
 
-class VehicalInformationViewController: UIViewController {
+class VehicalInformationViewController: BaseViewController {
 	
 	init(viewModel: VehicleInformationViewModel) {
 		super.init(nibName: nil, bundle: nil)

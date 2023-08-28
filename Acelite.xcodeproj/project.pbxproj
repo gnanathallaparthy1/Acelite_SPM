@@ -35,6 +35,10 @@
 		861EDE7529B7AFC0003A1C81 /* ABGaugeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861EDE7129B7AFC0003A1C81 /* ABGaugeView.swift */; };
 		861EDE7629B7AFC0003A1C81 /* ArrayX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861EDE7229B7AFC0003A1C81 /* ArrayX.swift */; };
 		861F3A122A11CC3500F963A9 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861F3A112A11CC3500F963A9 /* Reachability.swift */; };
+		8621C7B62A8A8EE900CFE0DF /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8621C7B52A8A8EE900CFE0DF /* BaseViewController.swift */; };
+		8621C7B72A8A8EF000CFE0DF /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8621C7B52A8A8EE900CFE0DF /* BaseViewController.swift */; };
+		8621C7B92A8BFA6800CFE0DF /* FirebaseInAppMessagingSwift-Beta in Frameworks */ = {isa = PBXBuildFile; productRef = 8621C7B82A8BFA6800CFE0DF /* FirebaseInAppMessagingSwift-Beta */; };
+		8621C7BC2A8D222800CFE0DF /* Acelite_Prod.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8621C7BB2A8D222800CFE0DF /* Acelite_Prod.plist */; };
 		8636D41129CE201C0045BD53 /* ScanHistoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8636D40B29CE201B0045BD53 /* ScanHistoryTableViewCell.swift */; };
 		8636D41229CE201C0045BD53 /* ScanHistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8636D40C29CE201B0045BD53 /* ScanHistoryViewController.swift */; };
 		8636D41329CE201C0045BD53 /* TestableTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8636D40D29CE201B0045BD53 /* TestableTableViewCell.xib */; };
@@ -57,7 +61,6 @@
 		864667B12A436D4500C85ABD /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 864667B02A436D4500C85ABD /* FirebaseCrashlytics */; };
 		864667B32A436D4500C85ABD /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 864667B22A436D4500C85ABD /* FirebaseDatabase */; };
 		864667B52A436D4500C85ABD /* FirebaseDatabaseSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 864667B42A436D4500C85ABD /* FirebaseDatabaseSwift */; };
-		864667B72A436D4500C85ABD /* FirebaseInAppMessagingSwift-Beta in Frameworks */ = {isa = PBXBuildFile; productRef = 864667B62A436D4500C85ABD /* FirebaseInAppMessagingSwift-Beta */; };
 		864667B92A436D4500C85ABD /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 864667B82A436D4500C85ABD /* FirebaseMessaging */; };
 		864667BB2A436D4500C85ABD /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = 864667BA2A436D4500C85ABD /* FirebaseRemoteConfig */; };
 		864667BD2A436D4500C85ABD /* FirebaseRemoteConfigSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 864667BC2A436D4500C85ABD /* FirebaseRemoteConfigSwift */; };
@@ -162,6 +165,12 @@
 		867BBF7929673D7400DC4842 /* AceliteColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867BBF7829673D7400DC4842 /* AceliteColors.swift */; };
 		867BBF7B296744CD00DC4842 /* AceliteConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867BBF7A296744CD00DC4842 /* AceliteConstants.swift */; };
 		8691E0F229B2B877002C6E05 /* SubmitBatteryFilesWithSOCModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8691E0F129B2B877002C6E05 /* SubmitBatteryFilesWithSOCModel.swift */; };
+		8697905D2A88606500FA6440 /* OfflineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8697905C2A88606500FA6440 /* OfflineViewController.swift */; };
+		8697905F2A88624600FA6440 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8697905E2A88624600FA6440 /* NetworkManager.swift */; };
+		869790622A88630400FA6440 /* Reachability in Frameworks */ = {isa = PBXBuildFile; productRef = 869790612A88630400FA6440 /* Reachability */; };
+		869790632A89460100FA6440 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8697905E2A88624600FA6440 /* NetworkManager.swift */; };
+		869790642A89461100FA6440 /* OfflineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8697905C2A88606500FA6440 /* OfflineViewController.swift */; };
+		869790662A89489C00FA6440 /* Reachability in Frameworks */ = {isa = PBXBuildFile; productRef = 869790652A89489C00FA6440 /* Reachability */; };
 		869D86AA2968982500503B9C /* BLETableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 869D86A82968982500503B9C /* BLETableViewCell.swift */; };
 		869D86AB2968982500503B9C /* BLETableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 869D86A92968982500503B9C /* BLETableViewCell.xib */; };
 		86A68D4C29AD2A3C000F2188 /* GetS3PreSingedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A68D4B29AD2A3C000F2188 /* GetS3PreSingedViewModel.swift */; };
@@ -230,6 +239,8 @@
 		861EDE7129B7AFC0003A1C81 /* ABGaugeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ABGaugeView.swift; sourceTree = "<group>"; };
 		861EDE7229B7AFC0003A1C81 /* ArrayX.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArrayX.swift; sourceTree = "<group>"; };
 		861F3A112A11CC3500F963A9 /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
+		8621C7B52A8A8EE900CFE0DF /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
+		8621C7BB2A8D222800CFE0DF /* Acelite_Prod.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Acelite_Prod.plist; sourceTree = "<group>"; };
 		8636D40B29CE201B0045BD53 /* ScanHistoryTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanHistoryTableViewCell.swift; sourceTree = "<group>"; };
 		8636D40C29CE201B0045BD53 /* ScanHistoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanHistoryViewController.swift; sourceTree = "<group>"; };
 		8636D40D29CE201B0045BD53 /* TestableTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TestableTableViewCell.xib; sourceTree = "<group>"; };
@@ -259,7 +270,6 @@
 		866CDB64298CB02700ADFB50 /* SpinnerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinnerViewController.swift; sourceTree = "<group>"; };
 		866CDB69298D743E00ADFB50 /* TestViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestViewModel.swift; sourceTree = "<group>"; };
 		867201032A5F91D900C6CBC7 /* Acelite_Prod.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Acelite_Prod.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		867201042A5F91DA00C6CBC7 /* Acelite_Prod.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Acelite_Prod.plist; path = /Users/Gnana.Thallaparthy/Documents/Acelite/Acelite_Prod.plist; sourceTree = "<absolute>"; };
 		8672010B2A60701D00C6CBC7 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		8672010D2A60701D00C6CBC7 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		8677DBAA29BFA73A001C42CD /* CircularProgressBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgressBarView.swift; sourceTree = "<group>"; };
@@ -267,6 +277,8 @@
 		867BBF7829673D7400DC4842 /* AceliteColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AceliteColors.swift; sourceTree = "<group>"; };
 		867BBF7A296744CD00DC4842 /* AceliteConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AceliteConstants.swift; sourceTree = "<group>"; };
 		8691E0F129B2B877002C6E05 /* SubmitBatteryFilesWithSOCModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubmitBatteryFilesWithSOCModel.swift; sourceTree = "<group>"; };
+		8697905C2A88606500FA6440 /* OfflineViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineViewController.swift; sourceTree = "<group>"; };
+		8697905E2A88624600FA6440 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		869D86A82968982500503B9C /* BLETableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLETableViewCell.swift; sourceTree = "<group>"; };
 		869D86A92968982500503B9C /* BLETableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BLETableViewCell.xib; sourceTree = "<group>"; };
 		86A68D4B29AD2A3C000F2188 /* GetS3PreSingedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetS3PreSingedViewModel.swift; sourceTree = "<group>"; };
@@ -298,9 +310,10 @@
 				864667AD2A436D4500C85ABD /* FirebaseAnalytics in Frameworks */,
 				864667B12A436D4500C85ABD /* FirebaseCrashlytics in Frameworks */,
 				866CDB492982E80400ADFB50 /* Apollo in Frameworks */,
+				8621C7B92A8BFA6800CFE0DF /* FirebaseInAppMessagingSwift-Beta in Frameworks */,
 				864667B32A436D4500C85ABD /* FirebaseDatabase in Frameworks */,
+				869790622A88630400FA6440 /* Reachability in Frameworks */,
 				864667BD2A436D4500C85ABD /* FirebaseRemoteConfigSwift in Frameworks */,
-				864667B72A436D4500C85ABD /* FirebaseInAppMessagingSwift-Beta in Frameworks */,
 				864667AF2A436D4500C85ABD /* FirebaseAnalyticsSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -332,6 +345,7 @@
 				867200EB2A5F91D900C6CBC7 /* FirebaseCrashlytics in Frameworks */,
 				867200EC2A5F91D900C6CBC7 /* Apollo in Frameworks */,
 				867200ED2A5F91D900C6CBC7 /* FirebaseDatabase in Frameworks */,
+				869790662A89489C00FA6440 /* Reachability in Frameworks */,
 				867200EE2A5F91D900C6CBC7 /* FirebaseRemoteConfigSwift in Frameworks */,
 				867200EF2A5F91D900C6CBC7 /* FirebaseInAppMessagingSwift-Beta in Frameworks */,
 				867200F02A5F91D900C6CBC7 /* FirebaseAnalyticsSwift in Frameworks */,
@@ -359,7 +373,6 @@
 				861E6EE92953789D00443F12 /* AceliteUITests */,
 				861E6EC72953789B00443F12 /* Products */,
 				861E6F0F295E118000443F12 /* Frameworks */,
-				867201042A5F91DA00C6CBC7 /* Acelite_Prod.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -377,6 +390,7 @@
 		861E6EC82953789B00443F12 /* Acelite */ = {
 			isa = PBXGroup;
 			children = (
+				8697905B2A88604300FA6440 /* Offline */,
 				864667C22A4379A300C85ABD /* Acelite.entitlements */,
 				86F3786D2A041A6C004601D9 /* Firebases */,
 				8639CDB729F85268004E813D /* Alerts */,
@@ -388,7 +402,6 @@
 				866CDB66298D73A000ADFB50 /* TestingViewController */,
 				866CDB63298CAFF100ADFB50 /* ResusableComponents */,
 				866CDB5D298C202600ADFB50 /* Vehicle */,
-				866CDB58298AD41600ADFB50 /* GraphQL */,
 				866CDB522982FD1700ADFB50 /* Services */,
 				866CDB4D2982FC0600ADFB50 /* Utils */,
 				866CDB4A2982F60300ADFB50 /* Models */,
@@ -477,6 +490,7 @@
 			children = (
 				86E33DFB2A1E7D3C00E2F167 /* ExternalAccessory.framework */,
 				861E6F10295E118000443F12 /* CoreBluetooth.framework */,
+				8621C7BB2A8D222800CFE0DF /* Acelite_Prod.plist */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -542,11 +556,13 @@
 		866CDB4D2982FC0600ADFB50 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				866CDB58298AD41600ADFB50 /* GraphQL */,
 				861F3A112A11CC3500F963A9 /* Reachability.swift */,
 				866CDB4E2982FC1200ADFB50 /* BuildConfig.swift */,
 				866CDB502982FCC100ADFB50 /* Constants.swift */,
 				8639046729940178008D5A0A /* Themes+Colors.swift */,
 				867B607F29A937CE0050411C /* ExportAsCSV.swift */,
+				8697905E2A88624600FA6440 /* NetworkManager.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -660,6 +676,15 @@
 			path = Dev;
 			sourceTree = "<group>";
 		};
+		8697905B2A88604300FA6440 /* Offline */ = {
+			isa = PBXGroup;
+			children = (
+				8697905C2A88606500FA6440 /* OfflineViewController.swift */,
+				8621C7B52A8A8EE900CFE0DF /* BaseViewController.swift */,
+			);
+			path = Offline;
+			sourceTree = "<group>";
+		};
 		86CDBA6729B6539800956B4C /* UploadAnimation */ = {
 			isa = PBXGroup;
 			children = (
@@ -704,10 +729,11 @@
 				864667B02A436D4500C85ABD /* FirebaseCrashlytics */,
 				864667B22A436D4500C85ABD /* FirebaseDatabase */,
 				864667B42A436D4500C85ABD /* FirebaseDatabaseSwift */,
-				864667B62A436D4500C85ABD /* FirebaseInAppMessagingSwift-Beta */,
 				864667B82A436D4500C85ABD /* FirebaseMessaging */,
 				864667BA2A436D4500C85ABD /* FirebaseRemoteConfig */,
 				864667BC2A436D4500C85ABD /* FirebaseRemoteConfigSwift */,
+				869790612A88630400FA6440 /* Reachability */,
+				8621C7B82A8BFA6800CFE0DF /* FirebaseInAppMessagingSwift-Beta */,
 			);
 			productName = Acelite;
 			productReference = 861E6EC62953789B00443F12 /* Acelite.app */;
@@ -774,6 +800,7 @@
 				867200A32A5F91D900C6CBC7 /* FirebaseMessaging */,
 				867200A42A5F91D900C6CBC7 /* FirebaseRemoteConfig */,
 				867200A52A5F91D900C6CBC7 /* FirebaseRemoteConfigSwift */,
+				869790652A89489C00FA6440 /* Reachability */,
 			);
 			productName = Acelite;
 			productReference = 867201032A5F91D900C6CBC7 /* Acelite_Prod.app */;
@@ -814,6 +841,7 @@
 			packageReferences = (
 				866CDB472982E80400ADFB50 /* XCRemoteSwiftPackageReference "apollo-ios" */,
 				864667AB2A436D4500C85ABD /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				869790602A88630300FA6440 /* XCRemoteSwiftPackageReference "Reachability" */,
 			);
 			productRefGroup = 861E6EC72953789B00443F12 /* Products */;
 			projectDirPath = "";
@@ -869,6 +897,7 @@
 				867200F32A5F91D900C6CBC7 /* TestableTableViewCell.xib in Resources */,
 				867200F42A5F91D900C6CBC7 /* LaunchScreen.storyboard in Resources */,
 				867200F52A5F91D900C6CBC7 /* Queries.graphql in Resources */,
+				8621C7BC2A8D222800CFE0DF /* Acelite_Prod.plist in Resources */,
 				867200F62A5F91D900C6CBC7 /* schema.json in Resources */,
 				867201112A607CF300C6CBC7 /* GoogleService-Info.plist in Resources */,
 				867200F82A5F91D900C6CBC7 /* CustomAlertView.xib in Resources */,
@@ -931,6 +960,7 @@
 				867BBF7B296744CD00DC4842 /* AceliteConstants.swift in Sources */,
 				8636D41129CE201C0045BD53 /* ScanHistoryTableViewCell.swift in Sources */,
 				8636D41829D1430D0045BD53 /* BatteryHealthViewModel.swift in Sources */,
+				8621C7B62A8A8EE900CFE0DF /* BaseViewController.swift in Sources */,
 				8636D41629CE201C0045BD53 /* TestableTableViewCell.swift in Sources */,
 				8636D42229DC88EE0045BD53 /* SubmitBatteryModel.swift in Sources */,
 				8636D41429CE201C0045BD53 /* TestableModelsViewController.swift in Sources */,
@@ -961,6 +991,7 @@
 				86B908A0297079A9001CAB90 /* WorkOrderViewController.swift in Sources */,
 				861E6ECA2953789B00443F12 /* AppDelegate.swift in Sources */,
 				86AF929429B585AF00FDA4C3 /* InfoPopUpViewController.swift in Sources */,
+				8697905F2A88624600FA6440 /* NetworkManager.swift in Sources */,
 				8609394E29BE6E27001DE232 /* Logger.swift in Sources */,
 				866CDB6A298D743E00ADFB50 /* TestViewModel.swift in Sources */,
 				8639CDB629F7FFF5004E813D /* VehicleVinScannerViewModel.swift in Sources */,
@@ -975,6 +1006,7 @@
 				861E6EFF2957733000443F12 /* MainViewController.swift in Sources */,
 				8636D41229CE201C0045BD53 /* ScanHistoryViewController.swift in Sources */,
 				861EDE6D29B7A9F3003A1C81 /* BatteryHealthViewController.swift in Sources */,
+				8697905D2A88606500FA6440 /* OfflineViewController.swift in Sources */,
 				866CDB542982FD3400ADFB50 /* AceLiteServices.swift in Sources */,
 				8639046C29957ED1008D5A0A /* AceLiteBleWriteCallback.swift in Sources */,
 				866CDB512982FCC100ADFB50 /* Constants.swift in Sources */,
@@ -1015,10 +1047,12 @@
 				867200AA2A5F91D900C6CBC7 /* AceliteConstants.swift in Sources */,
 				867200AB2A5F91D900C6CBC7 /* ScanHistoryTableViewCell.swift in Sources */,
 				867200AC2A5F91D900C6CBC7 /* BatteryHealthViewModel.swift in Sources */,
+				8621C7B72A8A8EF000CFE0DF /* BaseViewController.swift in Sources */,
 				867200AD2A5F91D900C6CBC7 /* TestableTableViewCell.swift in Sources */,
 				867200AE2A5F91D900C6CBC7 /* SubmitBatteryModel.swift in Sources */,
 				867200AF2A5F91D900C6CBC7 /* TestableModelsViewController.swift in Sources */,
 				867200B02A5F91D900C6CBC7 /* TerminalViewController.swift in Sources */,
+				869790632A89460100FA6440 /* NetworkManager.swift in Sources */,
 				867200B12A5F91D900C6CBC7 /* VehicalVINScannerViewController.swift in Sources */,
 				867200B22A5F91D900C6CBC7 /* CircularProgressBarView.swift in Sources */,
 				867200B32A5F91D900C6CBC7 /* VehicleInformationViewModel.swift in Sources */,
@@ -1045,6 +1079,7 @@
 				867200C82A5F91D900C6CBC7 /* WorkOrderViewController.swift in Sources */,
 				867200C92A5F91D900C6CBC7 /* AppDelegate.swift in Sources */,
 				867200CA2A5F91D900C6CBC7 /* InfoPopUpViewController.swift in Sources */,
+				869790642A89461100FA6440 /* OfflineViewController.swift in Sources */,
 				867200CB2A5F91D900C6CBC7 /* Logger.swift in Sources */,
 				867200CC2A5F91D900C6CBC7 /* TestViewModel.swift in Sources */,
 				867200CD2A5F91D900C6CBC7 /* VehicleVinScannerViewModel.swift in Sources */,
@@ -1158,6 +1193,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				VALIDATE_PRODUCT = YES;
 			};
 			name = "Dev Debug";
 		};
@@ -1227,6 +1263,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = QMYQQM43B7;
+				GCC_OPTIMIZATION_LEVEL = s;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Acelite/Info.plist;
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "We need to access your bluetooth for scanning ble devices.";
@@ -1240,7 +1277,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UISupportsDocumentBrowser = YES;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1282,7 +1319,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UISupportsDocumentBrowser = YES;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1296,6 +1333,7 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = PROD;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = NO;
@@ -1401,13 +1439,13 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UISupportsDocumentBrowser = YES;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 0.2.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.coxauto.acelite.prod;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cox.acelite;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1443,7 +1481,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UISupportsDocumentBrowser = YES;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1545,9 +1583,22 @@
 				minimumVersion = 9.0.0;
 			};
 		};
+		869790602A88630300FA6440 /* XCRemoteSwiftPackageReference "Reachability" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ashleymills/Reachability.swift";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		8621C7B82A8BFA6800CFE0DF /* FirebaseInAppMessagingSwift-Beta */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 864667AB2A436D4500C85ABD /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = "FirebaseInAppMessagingSwift-Beta";
+		};
 		864667AC2A436D4500C85ABD /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 864667AB2A436D4500C85ABD /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
@@ -1572,11 +1623,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 864667AB2A436D4500C85ABD /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseDatabaseSwift;
-		};
-		864667B62A436D4500C85ABD /* FirebaseInAppMessagingSwift-Beta */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 864667AB2A436D4500C85ABD /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = "FirebaseInAppMessagingSwift-Beta";
 		};
 		864667B82A436D4500C85ABD /* FirebaseMessaging */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -1647,6 +1693,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 8672009D2A5F91D900C6CBC7 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseRemoteConfigSwift;
+		};
+		869790612A88630400FA6440 /* Reachability */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 869790602A88630300FA6440 /* XCRemoteSwiftPackageReference "Reachability" */;
+			productName = Reachability;
+		};
+		869790652A89489C00FA6440 /* Reachability */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 869790602A88630300FA6440 /* XCRemoteSwiftPackageReference "Reachability" */;
+			productName = Reachability;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

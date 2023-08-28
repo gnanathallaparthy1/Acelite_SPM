@@ -10,7 +10,7 @@ import FirebaseDatabase
 import Firebase
 import UIKit
 
-class TestableModelsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class TestableModelsViewController: BaseViewController, UITableViewDelegate, UITableViewDataSource {
 	
 	@IBOutlet weak var goToSettings: UIButton!
 	let notificationCenter = NotificationCenter.default
@@ -39,7 +39,6 @@ class TestableModelsViewController: UIViewController, UITableViewDelegate, UITab
 	
 	override func viewWillAppear(_ animated: Bool) {
 		setDefaultRemoteConfigDefaults()
-		//fetchRemoteConfigForTestablemodels()
 		self.title = "Testable Models".uppercased()
 		self.navigationItem.setHidesBackButton(true, animated:true)
 		
@@ -88,34 +87,6 @@ class TestableModelsViewController: UIViewController, UITableViewDelegate, UITab
 		}
 	}
 	
-	
-	func fetchRemoteConfigForTestablemodels() {
-		//FIXME remove this before we go in production
-		//	let debugSettings = FIRRemoteConfigSettings(developerModeEnabled: true)
-		//RemoteConfig.remoteConfig().configSettings =
-		RemoteConfig.remoteConfig().fetch(withExpirationDuration: 0) { (status, error) in
-			guard error == nil else {
-				print("Got an error fetching remote values: \(String(describing: error))")
-				//self.setDefaultRemoteConfigDefaults()
-				//self.updateViewWithRCValues()
-				//				let alertViewController = UIAlertController.init(title: "Oops!", message: "Please check your network connection", preferredStyle: .alert)
-				//				let ok = UIAlertAction(title: "Ok", style: .default, handler: { (action) -> Void in
-				////					let url = URL(string: "App-Prefs:root=Privacy&path=Bluetooth") //for bluetooth setting
-				////								   let app = UIApplication.shared
-				////								   app.openURL(url!)
-				//				})
-				//				alertViewController.addAction(ok)
-				//				self.present(alertViewController, animated: true, completion: nil)
-				return
-			}
-			RemoteConfig.remoteConfig().fetchAndActivate()
-			self.messageObserver()
-		}
-	}
-	
-	
-	
-	
 	@IBAction func menuButtonAction(_ sender: UIBarButtonItem) {
 		if self.isModallyPresented == true {
 			self.navigationController?.dismiss(animated: true)
@@ -129,21 +100,22 @@ class TestableModelsViewController: UIViewController, UITableViewDelegate, UITab
 	}
 	
 	private func messageObserver()  {
-//		if currentReachabilityStatus != .notReachable {
-//			DispatchQueue.main.async {
-//				self.NoDataLabel.isHidden = false
-//				self.nodataFoundLable(message: "Please check your network connection")
-//			}
-//		} else {
+		if NetworkManager.sharedInstance.reachability.connection == .unavailable {
+			DispatchQueue.main.async {
+				self.NoDataLabel.isHidden = false
+				self.modelTableView.isHidden = true
+				self.nodataFoundLable(message: "Looks like there is no internet connection.Please connect to Mobile Data or Wifi and try again!")
+			}
+		} else {
 			// if net available
 			remoteConfig.fetch(withExpirationDuration: 0) { [unowned self] (status, error) in
 				guard error == nil else {
+					self.NoDataLabel.isHidden = false
+					self.modelTableView.isHidden = true
 					self.nodataFoundLable(message: "Error Retreiving Data.Please try again later")
 					return }
 				print("got remote")
 				remoteConfig.activate()
-				self.NoDataLabel.isHidden = false
-				self.modelTableView.isHidden = true
 				let testableModels = remoteConfig.configValue(forKey: "testable_models").jsonValue as? AnyObject
 				let array = testableModels?.value(forKey: "testableModels") as? NSArray
 				guard let testableModel = array, testableModel.count > 0 else {
@@ -162,7 +134,7 @@ class TestableModelsViewController: UIViewController, UITableViewDelegate, UITab
 				}
 			}
 			
-		//}
+		}
 	}
 	
 	func nodataFoundLable(message: String) {

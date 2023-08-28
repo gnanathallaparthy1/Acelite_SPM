@@ -7,7 +7,7 @@
 
 import UIKit
 
-class VehicalVINScannerViewController: UIViewController {
+class VehicalVINScannerViewController: BaseViewController {
 
 	init(viewModel: VehicleVinScannerViewModel) {
 		super.init(nibName: nil, bundle: nil)
