@@ -39,6 +39,8 @@
 		8621C7B72A8A8EF000CFE0DF /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8621C7B52A8A8EE900CFE0DF /* BaseViewController.swift */; };
 		8621C7B92A8BFA6800CFE0DF /* FirebaseInAppMessagingSwift-Beta in Frameworks */ = {isa = PBXBuildFile; productRef = 8621C7B82A8BFA6800CFE0DF /* FirebaseInAppMessagingSwift-Beta */; };
 		8621C7BC2A8D222800CFE0DF /* Acelite_Prod.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8621C7BB2A8D222800CFE0DF /* Acelite_Prod.plist */; };
+		86322CD62A9CF866004E16BB /* VinData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 86322CD42A9CF866004E16BB /* VinData.xcdatamodeld */; };
+		86322CD72A9CF866004E16BB /* VinData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 86322CD42A9CF866004E16BB /* VinData.xcdatamodeld */; };
 		8636D41129CE201C0045BD53 /* ScanHistoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8636D40B29CE201B0045BD53 /* ScanHistoryTableViewCell.swift */; };
 		8636D41229CE201C0045BD53 /* ScanHistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8636D40C29CE201B0045BD53 /* ScanHistoryViewController.swift */; };
 		8636D41329CE201C0045BD53 /* TestableTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8636D40D29CE201B0045BD53 /* TestableTableViewCell.xib */; };
@@ -241,6 +243,7 @@
 		861F3A112A11CC3500F963A9 /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		8621C7B52A8A8EE900CFE0DF /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		8621C7BB2A8D222800CFE0DF /* Acelite_Prod.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Acelite_Prod.plist; sourceTree = "<group>"; };
+		86322CD52A9CF866004E16BB /* VinData.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = VinData.xcdatamodel; sourceTree = "<group>"; };
 		8636D40B29CE201B0045BD53 /* ScanHistoryTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanHistoryTableViewCell.swift; sourceTree = "<group>"; };
 		8636D40C29CE201B0045BD53 /* ScanHistoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanHistoryViewController.swift; sourceTree = "<group>"; };
 		8636D40D29CE201B0045BD53 /* TestableTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TestableTableViewCell.xib; sourceTree = "<group>"; };
@@ -424,6 +427,7 @@
 				86636DC8297B0AA2001240FB /* TerminalViewController.swift */,
 				86AF929329B585AF00FDA4C3 /* InfoPopUpViewController.swift */,
 				8609395429BF8C98001DE232 /* BatteryHealthCheck.storyboard */,
+				86322CD42A9CF866004E16BB /* VinData.xcdatamodeld */,
 			);
 			path = Acelite;
 			sourceTree = "<group>";
@@ -974,6 +978,7 @@
 				861E6F032957737D00443F12 /* SideMenuModel.swift in Sources */,
 				861E6ECE2953789B00443F12 /* ViewController.swift in Sources */,
 				8639CDB929F852A9004E813D /* ErrorAlertDailogViewController.swift in Sources */,
+				86322CD62A9CF866004E16BB /* VinData.xcdatamodeld in Sources */,
 				861EDE7529B7AFC0003A1C81 /* ABGaugeView.swift in Sources */,
 				869D86AA2968982500503B9C /* BLETableViewCell.swift in Sources */,
 				8639046E29957F43008D5A0A /* AceLiteBleNotifyCallback.swift in Sources */,
@@ -1061,6 +1066,7 @@
 				867200B62A5F91D900C6CBC7 /* SpinnerViewController.swift in Sources */,
 				867200B72A5F91D900C6CBC7 /* SideMenuModel.swift in Sources */,
 				867200B82A5F91D900C6CBC7 /* ViewController.swift in Sources */,
+				86322CD72A9CF866004E16BB /* VinData.xcdatamodeld in Sources */,
 				867200B92A5F91D900C6CBC7 /* ErrorAlertDailogViewController.swift in Sources */,
 				867200BA2A5F91D900C6CBC7 /* ABGaugeView.swift in Sources */,
 				867200BB2A5F91D900C6CBC7 /* BLETableViewCell.swift in Sources */,
@@ -1705,6 +1711,19 @@
 			productName = Reachability;
 		};
 /* End XCSwiftPackageProductDependency section */
+
+/* Begin XCVersionGroup section */
+		86322CD42A9CF866004E16BB /* VinData.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				86322CD52A9CF866004E16BB /* VinData.xcdatamodel */,
+			);
+			currentVersion = 86322CD52A9CF866004E16BB /* VinData.xcdatamodel */;
+			path = VinData.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 861E6EBE2953789B00443F12 /* Project object */;
 }

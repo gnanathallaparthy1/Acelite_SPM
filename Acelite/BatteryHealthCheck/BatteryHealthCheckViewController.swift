@@ -68,7 +68,7 @@ enum BatteryHealthInstruction: Int {
 	}
 	
 }
-class BatteryHealthCheckViewController: BaseViewController {
+class BatteryHealthCheckViewController: UIViewController {
 	
 	@IBOutlet weak var bodyContentHeightConstrants: NSLayoutConstraint!
 	
@@ -149,8 +149,8 @@ class BatteryHealthCheckViewController: BaseViewController {
 			}
 			RemoteConfig.remoteConfig().fetchAndActivate()
 			
-			//self.viewModel?.isJSON  = true
-			self.viewModel?.isJSON = RemoteConfig.remoteConfig().configValue(forKey: "submit_json_version_enabled").boolValue
+		self.viewModel?.isJSON  = true
+			//self.viewModel?.isJSON = RemoteConfig.remoteConfig().configValue(forKey: "submit_json_version_enabled").boolValue
 			print("XXXX:::::::::::::::",(self.viewModel?.isJSON ?? false) as Bool)
 			self.updateViewWithRCValues()
 		}
@@ -295,22 +295,22 @@ class BatteryHealthCheckViewController: BaseViewController {
 		var timerValue: NSNumber?
 		switch batteryHealthInstruction {
 		case .startTheCar:
-			//timerValue = 5000
+			//timerValue = 60000
 			timerValue = RemoteConfig.remoteConfig().configValue(forKey: "firstStepTimeInMs").numberValue
 		case .startClimateControls:
-			 //timerValue = 10000
+			 //timerValue = 60000
 			timerValue = RemoteConfig.remoteConfig().configValue(forKey: "secondStepTimeInMs").numberValue
 			self.view.layoutSubviews()
 		case .testInProgresInitial:
-			 //timerValue = 15000
+			 //timerValue = 60000
 			timerValue = RemoteConfig.remoteConfig().configValue(forKey: "firstStepTimeInMs").numberValue
 			self.view.layoutSubviews()
 		case .turnOffClimateControls:
-			// timerValue = 10000
+			 //timerValue = 60000
 			timerValue = RemoteConfig.remoteConfig().configValue(forKey: "firstStepTimeInMs").numberValue
 		case .testInprogressFinal:
 			self.updateBodyContentView(batteryHealthInstruction: .testInprogressFinal)
-			//timerValue = 5000
+			//timerValue = 60000
 			timerValue = RemoteConfig.remoteConfig().configValue(forKey: "firstStepTimeInMs").numberValue
 		}
 		if let timer =  timerValue {
@@ -483,19 +483,19 @@ extension BatteryHealthCheckViewController: GetPreSignedUrlDelegate, UploadAndSu
 			let packCurrentScan = ["packCurrentScan": self.viewModel?.packCurrentArray]
 			let packCellVoltageScan = ["packCellVoltageScan": self.viewModel?.multiCellVoltageArray]
 			
-			print("packVoltageScan::::::", packVoltageScan)
-			print("packCurrentScan::::", packCurrentScan)
-			print("packCellVoltageScan::::", packCellVoltageScan)
+//			print("packVoltageScan::::::", packVoltageScan)
+//			print("packCurrentScan::::", packCurrentScan)
+//			print("packCellVoltageScan::::", packCellVoltageScan)
 			
 //			let finalDictionary: AnyObject = [packVoltageScan, packCurrentScan, packCellVoltageScan] as AnyObject
 			let finalDictionary = ([packVoltageScan, packCurrentScan, packCellVoltageScan] as? [[String : [[String : Any]]]])
 			jsonString = self.convertToJSONString(value: finalDictionary as AnyObject) ?? ""
-			print("finalDictionary::::::", finalDictionary as Any)
+//			print("finalDictionary::::::", finalDictionary as Any)
 //			let jsonOobject = finalDictionary.toJSONString()
 //			jsonString = self.convertToJSONString(value: finalDictionary) ?? ""
-			print("JSON String ::::", jsonString)
+//			print("JSON String ::::", jsonString)
 			vc.finalJsonString = jsonString
-			print("final json size::::", vc.finalJsonString.count)
+//			print("final json size::::", vc.finalJsonString.count)
 		}
 	   //let vm = UploadAnimationViewModel(delegate: self.viewModel?.uploadAndSubmitDelegate)
 	

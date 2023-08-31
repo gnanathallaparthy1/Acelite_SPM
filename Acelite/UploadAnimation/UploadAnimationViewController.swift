@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 import FirebaseDatabase
 import Firebase
+import CoreData
 
 class UploadAnimationViewController: BaseViewController {
 	private let stackView: UIStackView = {
@@ -98,8 +99,9 @@ class UploadAnimationViewController: BaseViewController {
 			$0.widthAnchor.constraint(equalToConstant: 20).isActive = true
 			$0.heightAnchor.constraint(equalTo: $0.widthAnchor).isActive = true
 		}
-		self.getTransectionId()
+		//self.getTransectionId()
 		print("finalJsonString size", finalJsonString.count)
+		saveOfflineData()
 		//self.notificationCenter.addObserver(self, selector: #selector(navigateToHealthS), name: NSNotification.Name.init(rawValue: "GotAllData"), object: nil)
 	}
 	
@@ -126,7 +128,88 @@ class UploadAnimationViewController: BaseViewController {
 	@objc func navigateToHealthS() {
 		print(Date(), "upload animation VC", to: &Log.log)
 		Network.shared.bluetoothService?.disconnectDevice(peripheral: Network.shared.myPeripheral)
-		self.getTransectionId()
+//		if currentReachabilityStatus != .notReachable {
+//			self.getTransectionId()
+//		} else {
+			saveOfflineData()
+//		}
+	}
+	
+	private func saveOfflineData() {
+		//As we know that container is set up in the AppDelegates so we need to refer that container.
+		guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+		//We need to create a context from this container
+		let managedContext = appDelegate.persistentContainer.viewContext
+		//Now let’s create an entity and new user records.
+		let userEntity = NSEntityDescription.entity(forEntityName: "BatteryInstructionsData", in: managedContext)!
+		//final, we need to add some data to our newly created record for each keys using
+		
+		let vinNumber = self.vehicleInfo?.vin ?? ""
+		let make = self.vehicleInfo?.make ?? ""
+		let model = self.vehicleInfo?.modelName ?? ""
+		let year = self.vehicleInfo?.year ?? 0
+		let trim = self.vehicleInfo?.trimName ?? ""
+		let workOrder = self.workOrder ?? ""
+		
+		let vidata = NSManagedObject(entity: userEntity, insertInto: managedContext)
+		vidata.setValue(self.getDateAndTime(), forKey: "dateAndTime")
+		vidata.setValue(self.finalJsonString, forKey: "finalJsonData")
+		vidata.setValue(make, forKey: "make")
+		vidata.setValue(model, forKey: "model")
+		vidata.setValue(trim, forKey: "trim")
+		vidata.setValue(vinNumber, forKey: "vinNumber")
+		vidata.setValue(workOrder, forKey: "workOrder")
+		vidata.setValue(year, forKey: "year")
+		//Now we have set all the values. The next step is to save them inside the Core Data
+		do {
+			try managedContext.save()
+			print("saved data")
+			updateJONSFile()
+			//alert
+			let alertViewController = UIAlertController.init(title: "Success!", message: "Please check Scan History for DB offline data", preferredStyle: .alert)
+			let ok = UIAlertAction(title: "OK", style: .default, handler: { (action) -> Void in
+				DispatchQueue.main.async {
+					self.navigationController?.popToRootViewController(animated: true)
+				}
+			})
+			alertViewController.addAction(ok)
+			self.present(alertViewController, animated: true, completion: nil)
+		   
+		} catch let error as NSError {
+			print("Could not save. \(error), \(error.userInfo)")
+		}
+	}
+	
+	
+	func retrieveData() {
+		//As we know that container is set up in the AppDelegates so we need to refer that container.
+		guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+		//We need to create a context from this container
+		let managedContext = appDelegate.persistentContainer.viewContext
+		//Prepare the request of type NSFetchRequest  for the entity
+		let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "BatteryInstructionsData")
+		do {
+			let result = try managedContext.fetch(fetchRequest)
+			for data in result as! [NSManagedObject] {
+				print(data.value(forKey: "dateAndTime") as! String)
+				print(data.value(forKey: "finalJsonData") as! String)
+				print(data.value(forKey: "make") as! String)
+				print(data.value(forKey: "model") as! String)
+				print(data.value(forKey: "trim") as! String)
+				print(data.value(forKey: "vinNumber") as! String)
+				print(data.value(forKey: "workOrder") as! String)
+			}
+		} catch {
+			print("Failed")
+		}
+	}
+	
+	private func getDateAndTime() -> String {
+		let date = Date()
+		let df = DateFormatter()
+		df.dateFormat = "yyyy-MM-dd HH:mm:ss"
+		let dateString = df.string(from: date)
+		return dateString
 	}
 	
 	private func updateJONSFile() {

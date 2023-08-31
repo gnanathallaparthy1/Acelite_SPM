@@ -37,7 +37,7 @@ class OfflineViewController: UIViewController {
 	@IBAction func okButtonAction(_ sender: UIButton) {
 		self.dismiss(animated: true, completion: {
 			DispatchQueue.main.async {
-				self.delegate?.navigateToRootView()
+				//self.delegate?.navigateToRootView()
 			}
 		})
 		

@@ -7,7 +7,7 @@
 
 import UIKit
 
-class WorkOrderViewController: BaseViewController {
+class WorkOrderViewController: UIViewController {
 	//pass this ia view model later
 	public var vehicleInfo: Vehicle?
 	
