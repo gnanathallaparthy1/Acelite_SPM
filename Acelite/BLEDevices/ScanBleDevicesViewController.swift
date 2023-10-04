@@ -13,6 +13,8 @@ import CoreBluetooth
 
 class ScanBleDevicesViewController: BaseViewController {
 
+	@IBOutlet weak var offlineView: UIView!
+	@IBOutlet weak var offlineViewHeight: NSLayoutConstraint!
 	@IBOutlet weak var scanButton: UIButton!
 	@IBOutlet weak var bleTableView: UITableView!
 	private var bleDevicesArray = [CBPeripheral]()
@@ -23,12 +25,16 @@ class ScanBleDevicesViewController: BaseViewController {
 	private var selectedRow: Int?
 	var bleServices: BluetoothServices?
 	var scanTimer = Timer()
+	var networkStatus = NotificationCenter.default
+	let natificationName = NSNotification.Name(rawValue:"InternetObserver")
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		FirebaseLogging.instance.logScreen(screenName: ClassNames.bluetoothScan)
 		uiUpdates()
-		
+		offlineViewHeight.constant = 0
+		offlineView.isHidden = true
+		addCustomView()
 	}
 	
 	override func viewDidDisappear(_ animated: Bool) {
@@ -41,6 +47,20 @@ class ScanBleDevicesViewController: BaseViewController {
 		bleTableView.dataSource = self
 		bleTableView.register(UINib(nibName: "BLETableViewCell", bundle: nil), forCellReuseIdentifier: "BLECell")
 		scanButton.layer.cornerRadius = 10
+	}
+	
+	private func addCustomView() {
+		let allViewsInXibArray = Bundle.main.loadNibNamed("CustomView", owner: self, options: nil)
+		let view = allViewsInXibArray?.first as! CustomView
+		view.frame = self.offlineView.bounds
+		view.viewType = .WARINING
+		view.arrowButton.isHidden = true
+		view.layer.borderColor = UIColor.offlineViewBorderColor().cgColor
+		view.layer.borderWidth = 4
+		view.layer.cornerRadius = 8
+		view.backgroundColor = .white
+		view.setupView(message: Constants.OFFLINE_MESSAGE)
+		self.offlineView.addSubview(view)
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {
@@ -57,9 +77,35 @@ class ScanBleDevicesViewController: BaseViewController {
 #else
 		print("Prod")
 #endif
-				
+		if  NetworkManager.sharedInstance.reachability.connection == .unavailable {
+			self.showAndHideOffline(isShowOfflineView: true)
+		}
+
+		networkStatus.addObserver(self, selector: #selector(self.showOffileViews(_:)), name: natificationName, object: nil)
+		
 	}
 	
+	@objc func showOffileViews(_ notification: Notification) {
+		
+		let notificationobject = notification.object as? [String: Any] ?? [:]
+		guard let isShowOfflineView: Bool = notificationobject["isConected"] as? Bool else {
+			return
+		}
+		self.showAndHideOffline(isShowOfflineView: isShowOfflineView)
+	}
+	
+	private func showAndHideOffline(isShowOfflineView: Bool) {
+		if isShowOfflineView  {
+			offlineViewHeight.constant = 60
+			offlineView.layer.cornerRadius = 8
+			offlineView.layer.borderColor = UIColor.offlineViewBorderColor().cgColor
+			offlineView.layer.borderWidth = 4
+			offlineView.isHidden = false
+		} else {
+			offlineViewHeight.constant = 0
+			offlineView.isHidden = true
+		}
+	}
 	
 	@objc func navigateToTerminal(){
 		if self.bleServices?.rxCharacteristic?.uuid.uuidString != nil {
@@ -68,7 +114,7 @@ class ScanBleDevicesViewController: BaseViewController {
 			vehicalVC.bluetoothService(bleServices: self.bleServices ?? BluetoothServices())
 			self.navigationController?.pushViewController(vehicalVC, animated: false)
 		} else {
-			var dialogMessage = UIAlertController(title: "Alert", message: "Please scan and connect to BLE device", preferredStyle: .alert)
+			let dialogMessage = UIAlertController(title: "Alert", message: "Please scan and connect to BLE device", preferredStyle: .alert)
 			
 			// Create OK button with action handler
 			let ok = UIAlertAction(title: "OK", style: .default, handler: { (action) -> Void in
@@ -81,14 +127,14 @@ class ScanBleDevicesViewController: BaseViewController {
 	}
 	
 	@objc func showScanTimeoutView()  {
-		DispatchQueue.main.async {			
+		DispatchQueue.main.async {
 			if self.blePeripheralDevice.count == 0 {
 				
 				self.view.activityStopAnimating()
 				// Create new Alert
 				self.scanTimer.invalidate()
 				self.bleServices?.isPeripheralIdentified = false
-				var dialogMessage = UIAlertController(title: "Alert", message: "Please try agian!", preferredStyle: .alert)
+				let dialogMessage = UIAlertController(title: "Alert", message: "Please try agian!", preferredStyle: .alert)
 				
 				// Create OK button with action handler
 				let ok = UIAlertAction(title: "OK", style: .default, handler: { (action) -> Void in
@@ -106,6 +152,7 @@ class ScanBleDevicesViewController: BaseViewController {
 	}
 	
 	@IBAction func menuButtonAction(_ sender: UIBarButtonItem) {
+		
 		sender.target = revealViewController()
 		sender.action = #selector(revealViewController()?.revealSideMenu)
 	}
@@ -131,7 +178,6 @@ class ScanBleDevicesViewController: BaseViewController {
 			self.blePeripheralDevice = devices
 			self.view.activityStopAnimating()
 			self.bleTableView.reloadData()
-			//print(devices.first)
 			if self.blePeripheralDevice.count == 0 {
 				FirebaseLogging.instance.logEvent(eventName:BluetoothScreenEvents.bleConnectionFailure, parameters: nil)
 				self.bleServices?.isPeripheralIdentified = true
@@ -141,12 +187,6 @@ class ScanBleDevicesViewController: BaseViewController {
 			}
 		}
 		Network.shared.bluetoothService = self.bleServices
-//		if bleServices.myPeripheral.state == .connected {
-//			print("Connected::::::::::::::::")
-//		} else {
-//			print("Not Connected::::::::::::::::")
-//		}
-//		centralManager = CBCentralManager(delegate: self, queue: nil)
 		if self.scanButton.titleLabel?.text == "START SCANNING FOR OBD II DEVICES" {
 		FirebaseLogging.instance.logEvent(eventName:BluetoothScreenEvents.bleScanStart, parameters: nil)
 		self.scanButton.setTitle("STOP SCANNING FOR OBD II DEVICES", for: .normal)
@@ -167,10 +207,6 @@ extension ScanBleDevicesViewController: UITableViewDelegate, UITableViewDataSour
 		let deviceModel = self.blePeripheralDevice[indexPath.row]
 		cell?.bleNameLable.text = deviceModel.peripheral.name
 		cell?.connectButton.tag = indexPath.row
-		
-		
-		
-		
 		cell?.connectButton.setTitle("Connect", for: .normal)
 		cell?.testButton.isHidden = true
 		cell?.connectButton.addTarget(self, action: #selector(self.connectBleDevice(_ :)), for: .touchUpInside)
@@ -190,10 +226,7 @@ extension ScanBleDevicesViewController: UITableViewDelegate, UITableViewDataSour
 			bleServices?.connectDevices(peripheral: deviceModel.peripheral)
 			Network.shared.myPeripheral = deviceModel.peripheral
 		}
-		//self.bleTableView.reloadData()
 		let cell = bleTableView.cellForRow(at: self.selectedIndex ?? IndexPath()) as! BLETableViewCell
-		//print(cell.connectButton?.titleLabel?.text)
-		
 		if cell.connectButton?.titleLabel?.text == "Connect" {
 			FirebaseLogging.instance.logEvent(eventName:BluetoothScreenEvents.bleConnect, parameters: nil)
 			cell.connectButton.setTitle("Disconnect", for: .normal)
@@ -204,8 +237,6 @@ extension ScanBleDevicesViewController: UITableViewDelegate, UITableViewDataSour
 			cell.connectButton.setTitle("Connect", for: .normal)
 			cell.testButton.isHidden = true
 		}
-		
-		//self.bleTableView.reloadRows(at: [self.selectedIndex ?? IndexPath()], with: .none)
 	}
 	
 	func disconnectPreviousConnectedDevices() {
@@ -213,8 +244,6 @@ extension ScanBleDevicesViewController: UITableViewDelegate, UITableViewDataSour
 		bleServices?.disconnectDevice(peripheral: previousDevice)
 		//TODO update UI state
 	}
-	
-	
 	
 	@IBAction func testbuttonAction(_ sender: UIButton) {
 		Network.shared.bluetoothService?.centralManager.stopScan()
@@ -225,8 +254,6 @@ extension ScanBleDevicesViewController: UITableViewDelegate, UITableViewDataSour
 		vehicleVinScan.viewModel = vm
 		self.navigationController?.pushViewController(vehicleVinScan, animated: true)
 	}
-	
-	
 }
 
 extension ScanBleDevicesViewController: BLEPermissionDelegate {

@@ -68,10 +68,13 @@ enum BatteryHealthInstruction: Int {
 	}
 	
 }
-class BatteryHealthCheckViewController: UIViewController {
+class BatteryHealthCheckViewController:  BaseViewController {
 	
+	@IBOutlet weak var offlineView: UIView!
+	
+	@IBOutlet weak var offlineViewHeight: NSLayoutConstraint!
 	@IBOutlet weak var bodyContentHeightConstrants: NSLayoutConstraint!
-	
+	@IBOutlet weak var centerViewContentHeight: NSLayoutConstraint!
 	//One
 	@IBOutlet weak var climateControlImageOne: UIImageView!
 	
@@ -97,6 +100,8 @@ class BatteryHealthCheckViewController: UIViewController {
 	private var backgroundTask: UIBackgroundTaskIdentifier = .invalid
 
 	public var viewModel: BatteryHealthCheckViewModel?
+	var networkStatus = NotificationCenter.default
+	let natificationName = NSNotification.Name(rawValue:"InternetObserver")
 	
 	init(viewModel: BatteryHealthCheckViewModel) {
 		super.init(nibName: nil, bundle: nil)
@@ -119,6 +124,23 @@ class BatteryHealthCheckViewController: UIViewController {
 		self.navigationItem.hidesBackButton = true
 		self.viewModel?.preSignedDelegate = self
 		self.viewModel?.uploadAndSubmitDelegate = self
+		offlineViewHeight.constant = 0
+		offlineView.isHidden = true
+		addCustomView()
+	}
+	
+	private func addCustomView() {
+		let allViewsInXibArray = Bundle.main.loadNibNamed("CustomView", owner: self, options: nil)
+		let view = allViewsInXibArray?.first as! CustomView
+		view.frame = self.offlineView.bounds
+		view.viewType = .WARINING
+		view.arrowButton.isHidden = true
+		view.layer.borderColor = UIColor.offlineViewBorderColor().cgColor
+		view.layer.borderWidth = 4
+		view.layer.cornerRadius = 8
+		view.backgroundColor = .white
+		view.setupView(message: Constants.APP_RECONNECT_INTERNET_MESSAGE)
+		self.offlineView.addSubview(view)
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {
@@ -126,32 +148,45 @@ class BatteryHealthCheckViewController: UIViewController {
 		self.updateBodyContentView(batteryHealthInstruction: .startTheCar)
 		setDefaultRemoteConfigDefaults()
 		fetchRemoteConfig()
+		if  NetworkManager.sharedInstance.reachability.connection == .unavailable {
+			self.showAndHideOffline(isShowOfflineView: true)
+		}
+		networkStatus.addObserver(self, selector: #selector(self.showOffileViews(_:)), name: natificationName, object: nil)
+	}
+	
+	@objc func showOffileViews(_ notification: Notification) {
+		
+		let notificationobject = notification.object as? [String: Any] ?? [:]
+		guard let isShowOfflineView: Bool = notificationobject["isConected"] as? Bool else {
+			return
+		}
+		self.showAndHideOffline(isShowOfflineView: isShowOfflineView)
+	}
+	
+	private func showAndHideOffline(isShowOfflineView: Bool) {
+		if isShowOfflineView  {
+			offlineViewHeight.constant = 60
+			offlineView.layer.cornerRadius = 8
+			offlineView.layer.borderColor = UIColor.offlineViewBorderColor().cgColor
+			offlineView.layer.borderWidth = 4
+			offlineView.isHidden = false
+		} else {
+			offlineViewHeight.constant = 0
+			offlineView.isHidden = true
+		}
 	}
 	
 	func fetchRemoteConfig() {
-		//FIXME remove this before we go in production
-	//	let debugSettings = FIRRemoteConfigSettings(developerModeEnabled: true)
-		//RemoteConfig.remoteConfig().configSettings =
+
 		RemoteConfig.remoteConfig().fetch(withExpirationDuration: 0) { (status, error) in
 			guard error == nil else {
 				print("Got an error fetching remote values: \(String(describing: error))")
 				self.setDefaultRemoteConfigDefaults()
 				self.updateViewWithRCValues()
-//				let alertViewController = UIAlertController.init(title: "Oops!", message: "Please check your network connection", preferredStyle: .alert)
-//				let ok = UIAlertAction(title: "Ok", style: .default, handler: { (action) -> Void in
-////					let url = URL(string: "App-Prefs:root=Privacy&path=Bluetooth") //for bluetooth setting
-////								   let app = UIApplication.shared
-////								   app.openURL(url!)
-//				})
-//				alertViewController.addAction(ok)
-//				self.present(alertViewController, animated: true, completion: nil)
 				return
 			}
 			RemoteConfig.remoteConfig().fetchAndActivate()
-			
 		self.viewModel?.isJSON  = true
-			//self.viewModel?.isJSON = RemoteConfig.remoteConfig().configValue(forKey: "submit_json_version_enabled").boolValue
-			print("XXXX:::::::::::::::",(self.viewModel?.isJSON ?? false) as Bool)
 			self.updateViewWithRCValues()
 		}
 	}
@@ -174,14 +209,13 @@ class BatteryHealthCheckViewController: UIViewController {
 		backgroundTask = UIApplication.shared.beginBackgroundTask { [weak self] in
 			self?.endBackgroundTask()
 		}
-		//deleteExistingLogFile()
 		switch batteryHealthInstruction {
 		case .startTheCar:
 			deleteExistingLogFile()
 			FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.instructionsStep1Started, parameters: nil)
 			// both booleans are true
 				self.viewModel?.initialCommand()
-			    self.viewModel?.isTimeInProgress = true
+				self.viewModel?.isTimeInProgress = true
 			self.timer = Timer.scheduledTimer(timeInterval: 1, target: self,   selector:(#selector(updateTimerforStartCar)), userInfo: nil, repeats: true)
 		case .startClimateControls:
 			FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.instructionsStep2Started, parameters: nil)
@@ -198,7 +232,6 @@ class BatteryHealthCheckViewController: UIViewController {
 			updateViewWithRCValues()
 			self.timer = Timer.scheduledTimer(timeInterval: 1, target: self,   selector:(#selector(updateTimerforTestInProgressFinal)), userInfo: nil, repeats: true)
 		}
-		
 		circleView.progressAnimation(duration: TimeInterval(secoonds ))
 	}
 	private func endBackgroundTask() {
@@ -215,6 +248,7 @@ class BatteryHealthCheckViewController: UIViewController {
 			firstViewSubtitle.text =  batteryHealthInstruction.bodySubtitle
 			firstViewTitle.font = UIFont(name: "Arial", size: 14)
 			firstViewSubtitle.textColor = .red
+			centerViewContentHeight.constant = 380
 			bodyContentHeightConstrants.constant = 70
 			imageOneWidthConstraint.constant = 0
 			imageTwoWidthConstraint.constant = 0
@@ -228,7 +262,8 @@ class BatteryHealthCheckViewController: UIViewController {
 			firstViewTitle.font = UIFont(name: "Arial-BoldMT", size: 14)
 			firstViewSubtitle.text = batteryHealthInstruction.bodySubtitle
 			firstViewSubtitle.textColor = UIColor.bodySubtitleTextColor()
-			bodyContentHeightConstrants.constant = 160
+			centerViewContentHeight.constant = 425
+			bodyContentHeightConstrants.constant = 140
 			imageOneWidthConstraint.constant = 50
 			imageTwoWidthConstraint.constant = 50
 			secondViewTitle.text = "If the weather is hot…"
@@ -242,6 +277,7 @@ class BatteryHealthCheckViewController: UIViewController {
 			firstViewSubtitle.text = ""
 			firstViewSubtitle.textColor = .lightGray
 			firstViewTitle.textColor = UIColor.warningColor()
+			centerViewContentHeight.constant = 380
 			bodyContentHeightConstrants.constant = 60
 			imageOneWidthConstraint.constant = 0
 			imageTwoWidthConstraint.constant = 0
@@ -256,6 +292,7 @@ class BatteryHealthCheckViewController: UIViewController {
 			firstViewTitle.font = UIFont(name: "Arial-BoldMT", size: 14)
 			firstViewSubtitle.text = ""
 			firstViewSubtitle.textColor = .lightGray
+			centerViewContentHeight.constant = 380
 			bodyContentHeightConstrants.constant = 60
 			imageOneWidthConstraint.constant = 0
 			imageTwoWidthConstraint.constant = 0
@@ -270,6 +307,7 @@ class BatteryHealthCheckViewController: UIViewController {
 			firstViewTitle.font = UIFont(name: "Arial-BoldMT", size: 14)
 			firstViewSubtitle.text = ""
 			firstViewSubtitle.textColor = .lightGray
+			centerViewContentHeight.constant = 380
 			bodyContentHeightConstrants.constant = 60
 			imageOneWidthConstraint.constant = 0
 			imageTwoWidthConstraint.constant = 0
@@ -346,12 +384,11 @@ class BatteryHealthCheckViewController: UIViewController {
 			self.startButton.backgroundColor = UIColor.appPrimaryColor()
 			self.updateBodyContentView(batteryHealthInstruction: .startClimateControls)
 			self.updateViewWithRCValues()
-			//self.circleView.changeProgresslayerStockeColor(progress: UIColor.warningColor(), circle: .white)
-
+			
 		} else {
 			self.secoonds -= 1
 			DispatchQueue.main.async  {
-				self.timeLabel.text = self.timeString(time: TimeInterval(self.secoonds ?? 0)) //This will update the label.
+				self.timeLabel.text = self.timeString(time: TimeInterval(self.secoonds )) //This will update the label.
 			}
 		
 		}
@@ -372,7 +409,7 @@ class BatteryHealthCheckViewController: UIViewController {
 		} else {
 			self.secoonds -= 1
 			DispatchQueue.main.async  {
-				self.timeLabel.text = self.timeString(time: TimeInterval(self.secoonds ?? 0)) //This will update the label.
+				self.timeLabel.text = self.timeString(time: TimeInterval(self.secoonds )) //This will update the label.
 			}
 		
 		}
@@ -409,9 +446,7 @@ class BatteryHealthCheckViewController: UIViewController {
 		if self.secoonds == 0  {
 			timer?.invalidate()
 			self.startButton.isUserInteractionEnabled = true
-			//self.viewModel?.isLoopingTimeInProgress = false
 			self.viewModel?.isTimeInProgress = false
-//			self.updateBodyContentView(batteryHealthInstruction: .testInprogressFinal)
 			self.batteryHealthInstruction = .testInprogressFinal
 		} else {
 			self.secoonds -= 1
@@ -443,7 +478,6 @@ class BatteryHealthCheckViewController: UIViewController {
 extension BatteryHealthCheckViewController: GetPreSignedUrlDelegate, UploadAndSubmitDataDelegate {
 	@objc func navigateToHealthScoreVC() {
 		self.notificationCenter.post(name: NSNotification.Name(rawValue: "GotAllData"), object: nil)
-		//post(name: "GotAllData", object: nil)
    }
    
 	func navigateToAnimationVC() {
@@ -472,38 +506,31 @@ extension BatteryHealthCheckViewController: GetPreSignedUrlDelegate, UploadAndSu
 			if self.viewModel?.multiCellVoltageArray.count ?? 0 > minVlaue {
 				self.viewModel?.multiCellVoltageArray.removeLast()
 			}
-			
-			
-			
-//			let packVoltageArray = self.viewModel?.packVoltageArray[0...minVlaue - 1]
-//			let packCurrentArray = self.viewModel?.packCurrentArray[0...minVlaue - 1]
-//			let multiCellVoltageArray = self.viewModel?.multiCellVoltageArray[0...minVlaue - 1]
-			
+		
 			let packVoltageScan = ["packVoltageScan": self.viewModel?.packVoltageArray]
 			let packCurrentScan = ["packCurrentScan": self.viewModel?.packCurrentArray]
 			let packCellVoltageScan = ["packCellVoltageScan": self.viewModel?.multiCellVoltageArray]
 			
-//			print("packVoltageScan::::::", packVoltageScan)
-//			print("packCurrentScan::::", packCurrentScan)
-//			print("packCellVoltageScan::::", packCellVoltageScan)
-			
-//			let finalDictionary: AnyObject = [packVoltageScan, packCurrentScan, packCellVoltageScan] as AnyObject
-			let finalDictionary = ([packVoltageScan, packCurrentScan, packCellVoltageScan] as? [[String : [[String : Any]]]])
+			let mergedDictionary = packVoltageScan.merged(with: packCurrentScan)
+				   let finalDictionary = mergedDictionary.merged(with: packCellVoltageScan)
+
 			jsonString = self.convertToJSONString(value: finalDictionary as AnyObject) ?? ""
-//			print("finalDictionary::::::", finalDictionary as Any)
-//			let jsonOobject = finalDictionary.toJSONString()
-//			jsonString = self.convertToJSONString(value: finalDictionary) ?? ""
-//			print("JSON String ::::", jsonString)
+			
+			let finalDictJSON = self.convertToJSONString(value: finalDictionary as AnyObject) ?? ""
+			
+			print(finalDictJSON)
+			
+			let packVoltageScanString =  self.convertToJSONString(value: packVoltageScan as AnyObject) ?? ""
+			let packCurrentScanString = self.convertToJSONString(value: packCurrentScan as AnyObject) ?? ""
+			let packCellVoltageScanString = self.convertToJSONString(value: packCellVoltageScan as AnyObject) ?? ""
+			let _ = packVoltageScanString + "," + packCurrentScanString + "," + packCellVoltageScanString
+			
 			vc.finalJsonString = jsonString
-//			print("final json size::::", vc.finalJsonString.count)
+
 		}
-	   //let vm = UploadAnimationViewModel(delegate: self.viewModel?.uploadAndSubmitDelegate)
-	
-	   vc.vehicleInfo = viewModel?.vehicleInfo
-		
-	   //if let sp =  {
-		   vc.sampledCommandsList = Network.shared.sampledCommandsList
-	   //}
+	  
+		vc.vehicleInfo = viewModel?.vehicleInfo
+		vc.sampledCommandsList = Network.shared.sampledCommandsList
 		vc.isJsonEnabled = self.viewModel?.isJSON ?? false
 		vc.workOrder = self.viewModel?.workOrder
 	   if let pc = viewModel?.packCurrentData {
@@ -605,5 +632,19 @@ extension Dictionary {
 		}
 		
 		return "[]"
+	}
+}
+
+// MARK: - Merging two dictionariess
+extension Dictionary {
+
+	mutating func merge(with dictionary: Dictionary) {
+		dictionary.forEach { updateValue($1, forKey: $0) }
+	}
+
+	func merged(with dictionary: Dictionary) -> Dictionary {
+		var dict = self
+		dict.merge(with: dictionary)
+		return dict
 	}
 }

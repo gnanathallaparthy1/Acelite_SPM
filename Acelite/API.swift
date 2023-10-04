@@ -278,8 +278,9 @@ public struct SubmitBatteryDataFilesVehicleInput: GraphQLMapConvertible {
   ///   - make: The given vehicle's make.
   ///   - model: The given vehicle's model.
   ///   - year: The given vehicle's year.
-  public init(vin: String, make: String, model: String, year: Int) {
-    graphQLMap = ["vin": vin, "make": make, "model": model, "year": year]
+  ///   - trim: A particular version of a model with a particular set of configuration.
+  public init(vin: String, make: String, model: String, year: Int, trim: Swift.Optional<String?> = nil) {
+    graphQLMap = ["vin": vin, "make": make, "model": model, "year": year, "trim": trim]
   }
 
   /// The given vehicle's VIN.
@@ -321,24 +322,62 @@ public struct SubmitBatteryDataFilesVehicleInput: GraphQLMapConvertible {
       graphQLMap.updateValue(newValue, forKey: "year")
     }
   }
+
+  /// A particular version of a model with a particular set of configuration.
+  public var trim: Swift.Optional<String?> {
+    get {
+      return graphQLMap["trim"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "trim")
+    }
+  }
 }
 
-public struct SubmitBatteryDataFilesPropsInput: GraphQLMapConvertible {
+public struct CalculateBatteryHealthInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
   /// - Parameters:
-  ///   - locationCode: The vehicle's Manheim Location Code, matching one of the LocationCode enum values.
-  ///   - odometer: The vehicle's current odometer reading, in miles.
-  ///   - totalNumberOfCharges: The total number of L1 + L2 + Fast charges
-  ///   - lifetimeCharge: ??
-  ///   - lifetimeDischarge: ??
-  ///   - packVoltageFilename: The actual file name of the pack-voltage csv file uploaded by the user which containing the list of voltages collected from the battery pack in volts
-  ///   - packCurrentFilename: The actual file name of the pack-current csv file uploaded by the user which containing the list of currents collected from the battery pack in amps
-  ///   - cellVoltagesFilename: The actual name of the cell-voltages csv file uploaded by the user which containing the list of cell voltages for each cell in the battery
-  ///   - transactionId: The unique id used to identify the uploaded files in S3
   ///   - vehicleProfile: Vehicle's profile information
-  public init(locationCode: Swift.Optional<LocationCode?> = nil, odometer: Swift.Optional<Int?> = nil, totalNumberOfCharges: Swift.Optional<Int?> = nil, lifetimeCharge: Swift.Optional<Double?> = nil, lifetimeDischarge: Swift.Optional<Double?> = nil, packVoltageFilename: String, packCurrentFilename: String, cellVoltagesFilename: String, transactionId: String, vehicleProfile: SubmitBatteryDataVehicleProfileInput) {
-    graphQLMap = ["locationCode": locationCode, "odometer": odometer, "totalNumberOfCharges": totalNumberOfCharges, "lifetimeCharge": lifetimeCharge, "lifetimeDischarge": lifetimeDischarge, "packVoltageFilename": packVoltageFilename, "packCurrentFilename": packCurrentFilename, "cellVoltagesFilename": cellVoltagesFilename, "transactionId": transactionId, "vehicleProfile": vehicleProfile]
+  ///   - obd2Test: Input for direct current internal resistance (also known as Alfred), gathered by issuing OBD2 commands.
+  ///   - dashData: Input for data collected from the vehicle's dash, infotainment system, phone app, etc.
+  ///   - locationCode: The vehicle's Manheim Location Code, matching one of the LocationCode enum values.
+  ///   - workOrderNumber: The work order number associated with this battery data submission.
+  ///   - totalNumberOfCharges: The total number of L1 + L2 + Fast charges
+  ///   - lifetimeCharge: The total amount of electric charge that the battery has received over its lifespan, measured in Ah.
+  ///   - lifetimeDischarge: The total amount of electric charge that the battery has discharged over its lifespan, measured in Ah.
+  public init(vehicleProfile: Swift.Optional<CalculateBatteryHealthVehicleProfileInput?> = nil, obd2Test: Swift.Optional<OBD2TestInput?> = nil, dashData: Swift.Optional<DashDataInput?> = nil, locationCode: Swift.Optional<LocationCode?> = nil, workOrderNumber: Swift.Optional<String?> = nil, totalNumberOfCharges: Swift.Optional<Int?> = nil, lifetimeCharge: Swift.Optional<Double?> = nil, lifetimeDischarge: Swift.Optional<Double?> = nil) {
+    graphQLMap = ["vehicleProfile": vehicleProfile, "obd2Test": obd2Test, "dashData": dashData, "locationCode": locationCode, "workOrderNumber": workOrderNumber, "totalNumberOfCharges": totalNumberOfCharges, "lifetimeCharge": lifetimeCharge, "lifetimeDischarge": lifetimeDischarge]
+  }
+
+  /// Vehicle's profile information
+  public var vehicleProfile: Swift.Optional<CalculateBatteryHealthVehicleProfileInput?> {
+    get {
+      return graphQLMap["vehicleProfile"] as? Swift.Optional<CalculateBatteryHealthVehicleProfileInput?> ?? Swift.Optional<CalculateBatteryHealthVehicleProfileInput?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "vehicleProfile")
+    }
+  }
+
+  /// Input for direct current internal resistance (also known as Alfred), gathered by issuing OBD2 commands.
+  public var obd2Test: Swift.Optional<OBD2TestInput?> {
+    get {
+      return graphQLMap["obd2Test"] as? Swift.Optional<OBD2TestInput?> ?? Swift.Optional<OBD2TestInput?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "obd2Test")
+    }
+  }
+
+  /// Input for data collected from the vehicle's dash, infotainment system, phone app, etc.
+  public var dashData: Swift.Optional<DashDataInput?> {
+    get {
+      return graphQLMap["dashData"] as? Swift.Optional<DashDataInput?> ?? Swift.Optional<DashDataInput?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "dashData")
+    }
   }
 
   /// The vehicle's Manheim Location Code, matching one of the LocationCode enum values.
@@ -351,13 +390,13 @@ public struct SubmitBatteryDataFilesPropsInput: GraphQLMapConvertible {
     }
   }
 
-  /// The vehicle's current odometer reading, in miles.
-  public var odometer: Swift.Optional<Int?> {
+  /// The work order number associated with this battery data submission.
+  public var workOrderNumber: Swift.Optional<String?> {
     get {
-      return graphQLMap["odometer"] as? Swift.Optional<Int?> ?? Swift.Optional<Int?>.none
+      return graphQLMap["workOrderNumber"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
     }
     set {
-      graphQLMap.updateValue(newValue, forKey: "odometer")
+      graphQLMap.updateValue(newValue, forKey: "workOrderNumber")
     }
   }
 
@@ -371,7 +410,7 @@ public struct SubmitBatteryDataFilesPropsInput: GraphQLMapConvertible {
     }
   }
 
-  /// ??
+  /// The total amount of electric charge that the battery has received over its lifespan, measured in Ah.
   public var lifetimeCharge: Swift.Optional<Double?> {
     get {
       return graphQLMap["lifetimeCharge"] as? Swift.Optional<Double?> ?? Swift.Optional<Double?>.none
@@ -381,7 +420,7 @@ public struct SubmitBatteryDataFilesPropsInput: GraphQLMapConvertible {
     }
   }
 
-  /// ??
+  /// The total amount of electric charge that the battery has discharged over its lifespan, measured in Ah.
   public var lifetimeDischarge: Swift.Optional<Double?> {
     get {
       return graphQLMap["lifetimeDischarge"] as? Swift.Optional<Double?> ?? Swift.Optional<Double?>.none
@@ -390,34 +429,115 @@ public struct SubmitBatteryDataFilesPropsInput: GraphQLMapConvertible {
       graphQLMap.updateValue(newValue, forKey: "lifetimeDischarge")
     }
   }
+}
 
-  /// The actual file name of the pack-voltage csv file uploaded by the user which containing the list of voltages collected from the battery pack in volts
-  public var packVoltageFilename: String {
+public struct CalculateBatteryHealthVehicleProfileInput: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  /// - Parameters:
+  ///   - nominalVoltage: The rated voltage at which the battery is designed to operate, measured in volts.
+  ///   - energyAtBirth: The total amount of energy the battery can store when when fully charged at the time of its production, measured in kWh.
+  ///   - batteryType: The battery's current type, matching one of the BatteryType enum values.
+  ///   - capacityAtBirth: The maximum amount of electric charge the battery can hold when fully charged at the time of its production, measured in Ah.
+  ///   - rangeAtBirth: The battery's range when brand new, in miles.
+  ///   - designChargeCycles: The number of charge-discharge cycles that the battery is designed to endure throughout its lifespan.
+  public init(nominalVoltage: Swift.Optional<Double?> = nil, energyAtBirth: Swift.Optional<Double?> = nil, batteryType: Swift.Optional<BatteryType?> = nil, capacityAtBirth: Swift.Optional<Double?> = nil, rangeAtBirth: Swift.Optional<Double?> = nil, designChargeCycles: Swift.Optional<Double?> = nil) {
+    graphQLMap = ["nominalVoltage": nominalVoltage, "energyAtBirth": energyAtBirth, "batteryType": batteryType, "capacityAtBirth": capacityAtBirth, "rangeAtBirth": rangeAtBirth, "designChargeCycles": designChargeCycles]
+  }
+
+  /// The rated voltage at which the battery is designed to operate, measured in volts.
+  public var nominalVoltage: Swift.Optional<Double?> {
     get {
-      return graphQLMap["packVoltageFilename"] as! String
+      return graphQLMap["nominalVoltage"] as? Swift.Optional<Double?> ?? Swift.Optional<Double?>.none
     }
     set {
-      graphQLMap.updateValue(newValue, forKey: "packVoltageFilename")
+      graphQLMap.updateValue(newValue, forKey: "nominalVoltage")
     }
   }
 
-  /// The actual file name of the pack-current csv file uploaded by the user which containing the list of currents collected from the battery pack in amps
-  public var packCurrentFilename: String {
+  /// The total amount of energy the battery can store when when fully charged at the time of its production, measured in kWh.
+  public var energyAtBirth: Swift.Optional<Double?> {
     get {
-      return graphQLMap["packCurrentFilename"] as! String
+      return graphQLMap["energyAtBirth"] as? Swift.Optional<Double?> ?? Swift.Optional<Double?>.none
     }
     set {
-      graphQLMap.updateValue(newValue, forKey: "packCurrentFilename")
+      graphQLMap.updateValue(newValue, forKey: "energyAtBirth")
     }
   }
 
-  /// The actual name of the cell-voltages csv file uploaded by the user which containing the list of cell voltages for each cell in the battery
-  public var cellVoltagesFilename: String {
+  /// The battery's current type, matching one of the BatteryType enum values.
+  public var batteryType: Swift.Optional<BatteryType?> {
     get {
-      return graphQLMap["cellVoltagesFilename"] as! String
+      return graphQLMap["batteryType"] as? Swift.Optional<BatteryType?> ?? Swift.Optional<BatteryType?>.none
     }
     set {
-      graphQLMap.updateValue(newValue, forKey: "cellVoltagesFilename")
+      graphQLMap.updateValue(newValue, forKey: "batteryType")
+    }
+  }
+
+  /// The maximum amount of electric charge the battery can hold when fully charged at the time of its production, measured in Ah.
+  public var capacityAtBirth: Swift.Optional<Double?> {
+    get {
+      return graphQLMap["capacityAtBirth"] as? Swift.Optional<Double?> ?? Swift.Optional<Double?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "capacityAtBirth")
+    }
+  }
+
+  /// The battery's range when brand new, in miles.
+  public var rangeAtBirth: Swift.Optional<Double?> {
+    get {
+      return graphQLMap["rangeAtBirth"] as? Swift.Optional<Double?> ?? Swift.Optional<Double?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "rangeAtBirth")
+    }
+  }
+
+  /// The number of charge-discharge cycles that the battery is designed to endure throughout its lifespan.
+  public var designChargeCycles: Swift.Optional<Double?> {
+    get {
+      return graphQLMap["designChargeCycles"] as? Swift.Optional<Double?> ?? Swift.Optional<Double?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "designChargeCycles")
+    }
+  }
+}
+
+/// Input for DCIR (direct current internal resistance), also referred to as Alfred. This input type will primarily be
+/// used by Mobility in conjunction with the Battery Interrogation service. Data is primarily gathered by issuing OBD2
+/// commands to a vehicle's BMS (Battery Management System).
+public struct OBD2TestInput: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  /// - Parameters:
+  ///   - filename: The file name of the pack-voltage, pack-current, or cell-voltages JSON file uploaded by the user, which
+  /// contains the list of voltages collected from the battery pack in volts, the list of currents
+  /// collected from the battery pack in amps, or the list of cell voltages for each cell in the battery.
+  ///   - transactionId: The unique id used to identify the uploaded files in S3
+  ///   - instructionSetId: Challenge Instruction Set Id
+  ///   - odometer: The vehicle's current odometer reading, in miles.
+  ///   - currentEnergy: Current energy of battery in kWh at the current state of charge. If provided, this will be used along with
+  /// stateOfCharge to calculate estimated range.
+  ///   - stateOfCharge: The current state of charge, between 0 and 100. If provided, this will be used along with currentEnergy to
+  /// calculate estimated range.
+  ///   - bmsCapacity: The current BMS capacity in Ah. This will be used to calculate estimated range if stateOfCharge and
+  /// currentEnergy are not provided.
+  public init(filename: String, transactionId: String, instructionSetId: Swift.Optional<String?> = nil, odometer: Swift.Optional<Int?> = nil, currentEnergy: Swift.Optional<Double?> = nil, stateOfCharge: Swift.Optional<Double?> = nil, bmsCapacity: Swift.Optional<Double?> = nil) {
+    graphQLMap = ["filename": filename, "transactionId": transactionId, "instructionSetId": instructionSetId, "odometer": odometer, "currentEnergy": currentEnergy, "stateOfCharge": stateOfCharge, "bmsCapacity": bmsCapacity]
+  }
+
+  /// The file name of the pack-voltage, pack-current, or cell-voltages JSON file uploaded by the user, which
+  /// contains the list of voltages collected from the battery pack in volts, the list of currents
+  /// collected from the battery pack in amps, or the list of cell voltages for each cell in the battery.
+  public var filename: String {
+    get {
+      return graphQLMap["filename"] as! String
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "filename")
     }
   }
 
@@ -431,13 +551,100 @@ public struct SubmitBatteryDataFilesPropsInput: GraphQLMapConvertible {
     }
   }
 
-  /// Vehicle's profile information
-  public var vehicleProfile: SubmitBatteryDataVehicleProfileInput {
+  /// Challenge Instruction Set Id
+  public var instructionSetId: Swift.Optional<String?> {
     get {
-      return graphQLMap["vehicleProfile"] as! SubmitBatteryDataVehicleProfileInput
+      return graphQLMap["instructionSetId"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
     }
     set {
-      graphQLMap.updateValue(newValue, forKey: "vehicleProfile")
+      graphQLMap.updateValue(newValue, forKey: "instructionSetId")
+    }
+  }
+
+  /// The vehicle's current odometer reading, in miles.
+  public var odometer: Swift.Optional<Int?> {
+    get {
+      return graphQLMap["odometer"] as? Swift.Optional<Int?> ?? Swift.Optional<Int?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "odometer")
+    }
+  }
+
+  /// Current energy of battery in kWh at the current state of charge. If provided, this will be used along with
+  /// stateOfCharge to calculate estimated range.
+  public var currentEnergy: Swift.Optional<Double?> {
+    get {
+      return graphQLMap["currentEnergy"] as? Swift.Optional<Double?> ?? Swift.Optional<Double?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "currentEnergy")
+    }
+  }
+
+  /// The current state of charge, between 0 and 100. If provided, this will be used along with currentEnergy to
+  /// calculate estimated range.
+  public var stateOfCharge: Swift.Optional<Double?> {
+    get {
+      return graphQLMap["stateOfCharge"] as? Swift.Optional<Double?> ?? Swift.Optional<Double?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "stateOfCharge")
+    }
+  }
+
+  /// The current BMS capacity in Ah. This will be used to calculate estimated range if stateOfCharge and
+  /// currentEnergy are not provided.
+  public var bmsCapacity: Swift.Optional<Double?> {
+    get {
+      return graphQLMap["bmsCapacity"] as? Swift.Optional<Double?> ?? Swift.Optional<Double?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "bmsCapacity")
+    }
+  }
+}
+
+/// Data collected vehicle's Dash, Infotainment System, phone app, etc. which is not explicitly pulled from a vehicle's BMS.
+/// The accuracy of this data is not trusted implicitly.
+public struct DashDataInput: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  /// - Parameters:
+  ///   - odometer: The vehicle's current odometer reading, in miles.
+  ///   - remainingMileage: The remaining mileage on the given state of charge.
+  ///   - stateOfCharge: The current state of charge, between 0 and 100
+  public init(odometer: Swift.Optional<Int?> = nil, remainingMileage: Swift.Optional<Double?> = nil, stateOfCharge: Swift.Optional<Double?> = nil) {
+    graphQLMap = ["odometer": odometer, "remainingMileage": remainingMileage, "stateOfCharge": stateOfCharge]
+  }
+
+  /// The vehicle's current odometer reading, in miles.
+  public var odometer: Swift.Optional<Int?> {
+    get {
+      return graphQLMap["odometer"] as? Swift.Optional<Int?> ?? Swift.Optional<Int?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "odometer")
+    }
+  }
+
+  /// The remaining mileage on the given state of charge.
+  public var remainingMileage: Swift.Optional<Double?> {
+    get {
+      return graphQLMap["remainingMileage"] as? Swift.Optional<Double?> ?? Swift.Optional<Double?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "remainingMileage")
+    }
+  }
+
+  /// The current state of charge, between 0 and 100
+  public var stateOfCharge: Swift.Optional<Double?> {
+    get {
+      return graphQLMap["stateOfCharge"] as? Swift.Optional<Double?> ?? Swift.Optional<Double?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "stateOfCharge")
     }
   }
 }
@@ -848,106 +1055,6 @@ public enum LocationCode: RawRepresentable, Equatable, Hashable, CaseIterable, A
   }
 }
 
-public struct SubmitBatteryDataVehicleProfileInput: GraphQLMapConvertible {
-  public var graphQLMap: GraphQLMap
-
-  /// - Parameters:
-  ///   - nominalVoltage
-  ///   - energyAtBirth
-  ///   - batteryType
-  ///   - capacityAtBirth
-  ///   - rangeAtBirth
-  ///   - designChargeCycles
-  public init(nominalVoltage: Double, energyAtBirth: Double, batteryType: BatteryType, capacityAtBirth: Double, rangeAtBirth: Swift.Optional<Double?> = nil, designChargeCycles: Swift.Optional<Double?> = nil) {
-    graphQLMap = ["nominalVoltage": nominalVoltage, "energyAtBirth": energyAtBirth, "batteryType": batteryType, "capacityAtBirth": capacityAtBirth, "rangeAtBirth": rangeAtBirth, "designChargeCycles": designChargeCycles]
-  }
-
-  public var nominalVoltage: Double {
-    get {
-      return graphQLMap["nominalVoltage"] as! Double
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "nominalVoltage")
-    }
-  }
-
-  public var energyAtBirth: Double {
-    get {
-      return graphQLMap["energyAtBirth"] as! Double
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "energyAtBirth")
-    }
-  }
-
-  public var batteryType: BatteryType {
-    get {
-      return graphQLMap["batteryType"] as! BatteryType
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "batteryType")
-    }
-  }
-
-  public var capacityAtBirth: Double {
-    get {
-      return graphQLMap["capacityAtBirth"] as! Double
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "capacityAtBirth")
-    }
-  }
-
-  public var rangeAtBirth: Swift.Optional<Double?> {
-    get {
-      return graphQLMap["rangeAtBirth"] as? Swift.Optional<Double?> ?? Swift.Optional<Double?>.none
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "rangeAtBirth")
-    }
-  }
-
-  public var designChargeCycles: Swift.Optional<Double?> {
-    get {
-      return graphQLMap["designChargeCycles"] as? Swift.Optional<Double?> ?? Swift.Optional<Double?>.none
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "designChargeCycles")
-    }
-  }
-}
-
-public struct StateOfChargePropsInput: GraphQLMapConvertible {
-  public var graphQLMap: GraphQLMap
-
-  /// - Parameters:
-  ///   - stateOfCharge: The current state of charge, between 0 and 100
-  ///   - currentEnergy: Current energy of battery in kWh at the current state of charge
-  public init(stateOfCharge: Double, currentEnergy: Swift.Optional<Double?> = nil) {
-    graphQLMap = ["stateOfCharge": stateOfCharge, "currentEnergy": currentEnergy]
-  }
-
-  /// The current state of charge, between 0 and 100
-  public var stateOfCharge: Double {
-    get {
-      return graphQLMap["stateOfCharge"] as! Double
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "stateOfCharge")
-    }
-  }
-
-  /// Current energy of battery in kWh at the current state of charge
-  public var currentEnergy: Swift.Optional<Double?> {
-    get {
-      return graphQLMap["currentEnergy"] as? Swift.Optional<Double?> ?? Swift.Optional<Double?>.none
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "currentEnergy")
-    }
-  }
-}
-
 /// The possible battery score grade values.
 public enum Grade: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
   public typealias RawValue = String
@@ -1103,6 +1210,236 @@ public enum TypeSource: RawRepresentable, Equatable, Hashable, CaseIterable, Apo
       .ingestion,
       .ymm,
     ]
+  }
+}
+
+public struct SubmitBatteryDataFilesPropsInput: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  /// - Parameters:
+  ///   - locationCode: The vehicle's Manheim Location Code, matching one of the LocationCode enum values.
+  ///   - odometer: The vehicle's current odometer reading, in miles.
+  ///   - totalNumberOfCharges: The total number of L1 + L2 + Fast charges
+  ///   - lifetimeCharge: ??
+  ///   - lifetimeDischarge: ??
+  ///   - packVoltageFilename: The actual file name of the pack-voltage csv file uploaded by the user which containing the list of voltages collected from the battery pack in volts
+  ///   - packCurrentFilename: The actual file name of the pack-current csv file uploaded by the user which containing the list of currents collected from the battery pack in amps
+  ///   - cellVoltagesFilename: The actual name of the cell-voltages csv file uploaded by the user which containing the list of cell voltages for each cell in the battery
+  ///   - transactionId: The unique id used to identify the uploaded files in S3
+  ///   - vehicleProfile: Vehicle's profile information
+  ///   - instructionSetId: Challenge Instruction Set Id
+  public init(locationCode: Swift.Optional<LocationCode?> = nil, odometer: Swift.Optional<Int?> = nil, totalNumberOfCharges: Swift.Optional<Int?> = nil, lifetimeCharge: Swift.Optional<Double?> = nil, lifetimeDischarge: Swift.Optional<Double?> = nil, packVoltageFilename: String, packCurrentFilename: String, cellVoltagesFilename: String, transactionId: String, vehicleProfile: SubmitBatteryDataVehicleProfileInput, instructionSetId: Swift.Optional<String?> = nil) {
+    graphQLMap = ["locationCode": locationCode, "odometer": odometer, "totalNumberOfCharges": totalNumberOfCharges, "lifetimeCharge": lifetimeCharge, "lifetimeDischarge": lifetimeDischarge, "packVoltageFilename": packVoltageFilename, "packCurrentFilename": packCurrentFilename, "cellVoltagesFilename": cellVoltagesFilename, "transactionId": transactionId, "vehicleProfile": vehicleProfile, "instructionSetId": instructionSetId]
+  }
+
+  /// The vehicle's Manheim Location Code, matching one of the LocationCode enum values.
+  public var locationCode: Swift.Optional<LocationCode?> {
+    get {
+      return graphQLMap["locationCode"] as? Swift.Optional<LocationCode?> ?? Swift.Optional<LocationCode?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "locationCode")
+    }
+  }
+
+  /// The vehicle's current odometer reading, in miles.
+  public var odometer: Swift.Optional<Int?> {
+    get {
+      return graphQLMap["odometer"] as? Swift.Optional<Int?> ?? Swift.Optional<Int?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "odometer")
+    }
+  }
+
+  /// The total number of L1 + L2 + Fast charges
+  public var totalNumberOfCharges: Swift.Optional<Int?> {
+    get {
+      return graphQLMap["totalNumberOfCharges"] as? Swift.Optional<Int?> ?? Swift.Optional<Int?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "totalNumberOfCharges")
+    }
+  }
+
+  /// ??
+  public var lifetimeCharge: Swift.Optional<Double?> {
+    get {
+      return graphQLMap["lifetimeCharge"] as? Swift.Optional<Double?> ?? Swift.Optional<Double?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "lifetimeCharge")
+    }
+  }
+
+  /// ??
+  public var lifetimeDischarge: Swift.Optional<Double?> {
+    get {
+      return graphQLMap["lifetimeDischarge"] as? Swift.Optional<Double?> ?? Swift.Optional<Double?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "lifetimeDischarge")
+    }
+  }
+
+  /// The actual file name of the pack-voltage csv file uploaded by the user which containing the list of voltages collected from the battery pack in volts
+  public var packVoltageFilename: String {
+    get {
+      return graphQLMap["packVoltageFilename"] as! String
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "packVoltageFilename")
+    }
+  }
+
+  /// The actual file name of the pack-current csv file uploaded by the user which containing the list of currents collected from the battery pack in amps
+  public var packCurrentFilename: String {
+    get {
+      return graphQLMap["packCurrentFilename"] as! String
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "packCurrentFilename")
+    }
+  }
+
+  /// The actual name of the cell-voltages csv file uploaded by the user which containing the list of cell voltages for each cell in the battery
+  public var cellVoltagesFilename: String {
+    get {
+      return graphQLMap["cellVoltagesFilename"] as! String
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "cellVoltagesFilename")
+    }
+  }
+
+  /// The unique id used to identify the uploaded files in S3
+  public var transactionId: String {
+    get {
+      return graphQLMap["transactionId"] as! String
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "transactionId")
+    }
+  }
+
+  /// Vehicle's profile information
+  public var vehicleProfile: SubmitBatteryDataVehicleProfileInput {
+    get {
+      return graphQLMap["vehicleProfile"] as! SubmitBatteryDataVehicleProfileInput
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "vehicleProfile")
+    }
+  }
+
+  /// Challenge Instruction Set Id
+  public var instructionSetId: Swift.Optional<String?> {
+    get {
+      return graphQLMap["instructionSetId"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "instructionSetId")
+    }
+  }
+}
+
+public struct SubmitBatteryDataVehicleProfileInput: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  /// - Parameters:
+  ///   - nominalVoltage
+  ///   - energyAtBirth
+  ///   - batteryType
+  ///   - capacityAtBirth
+  ///   - rangeAtBirth
+  ///   - designChargeCycles
+  public init(nominalVoltage: Double, energyAtBirth: Double, batteryType: BatteryType, capacityAtBirth: Double, rangeAtBirth: Swift.Optional<Double?> = nil, designChargeCycles: Swift.Optional<Double?> = nil) {
+    graphQLMap = ["nominalVoltage": nominalVoltage, "energyAtBirth": energyAtBirth, "batteryType": batteryType, "capacityAtBirth": capacityAtBirth, "rangeAtBirth": rangeAtBirth, "designChargeCycles": designChargeCycles]
+  }
+
+  public var nominalVoltage: Double {
+    get {
+      return graphQLMap["nominalVoltage"] as! Double
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "nominalVoltage")
+    }
+  }
+
+  public var energyAtBirth: Double {
+    get {
+      return graphQLMap["energyAtBirth"] as! Double
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "energyAtBirth")
+    }
+  }
+
+  public var batteryType: BatteryType {
+    get {
+      return graphQLMap["batteryType"] as! BatteryType
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "batteryType")
+    }
+  }
+
+  public var capacityAtBirth: Double {
+    get {
+      return graphQLMap["capacityAtBirth"] as! Double
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "capacityAtBirth")
+    }
+  }
+
+  public var rangeAtBirth: Swift.Optional<Double?> {
+    get {
+      return graphQLMap["rangeAtBirth"] as? Swift.Optional<Double?> ?? Swift.Optional<Double?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "rangeAtBirth")
+    }
+  }
+
+  public var designChargeCycles: Swift.Optional<Double?> {
+    get {
+      return graphQLMap["designChargeCycles"] as? Swift.Optional<Double?> ?? Swift.Optional<Double?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "designChargeCycles")
+    }
+  }
+}
+
+public struct StateOfChargePropsInput: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  /// - Parameters:
+  ///   - stateOfCharge: The current state of charge, between 0 and 100
+  ///   - currentEnergy: Current energy of battery in kWh at the current state of charge
+  public init(stateOfCharge: Double, currentEnergy: Double) {
+    graphQLMap = ["stateOfCharge": stateOfCharge, "currentEnergy": currentEnergy]
+  }
+
+  /// The current state of charge, between 0 and 100
+  public var stateOfCharge: Double {
+    get {
+      return graphQLMap["stateOfCharge"] as! Double
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "stateOfCharge")
+    }
+  }
+
+  /// Current energy of battery in kWh at the current state of charge
+  public var currentEnergy: Double {
+    get {
+      return graphQLMap["currentEnergy"] as! Double
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "currentEnergy")
+    }
   }
 }
 
@@ -1766,8 +2103,8 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
             return TestCommand(unsafeResultMap: ["__typename": "BroadcastTestCommands"])
           }
 
-          public static func makeChallengeTestCommands(id: GraphQLID, vehicleProfile: AsChallengeTestCommands.VehicleProfile? = nil, odometer: AsChallengeTestCommands.Odometer, stateOfHealthCommands: AsChallengeTestCommands.StateOfHealthCommand, sampledCommands: AsChallengeTestCommands.SampledCommand, batteryAge: AsChallengeTestCommands.BatteryAge? = nil, diagnosticSession: AsChallengeTestCommands.DiagnosticSession? = nil, miscCommands: [AsChallengeTestCommands.MiscCommand?]? = nil) -> TestCommand {
-            return TestCommand(unsafeResultMap: ["__typename": "ChallengeTestCommands", "id": id, "vehicleProfile": vehicleProfile.flatMap { (value: AsChallengeTestCommands.VehicleProfile) -> ResultMap in value.resultMap }, "odometer": odometer.resultMap, "stateOfHealthCommands": stateOfHealthCommands.resultMap, "sampledCommands": sampledCommands.resultMap, "batteryAge": batteryAge.flatMap { (value: AsChallengeTestCommands.BatteryAge) -> ResultMap in value.resultMap }, "diagnosticSession": diagnosticSession.flatMap { (value: AsChallengeTestCommands.DiagnosticSession) -> ResultMap in value.resultMap }, "miscCommands": miscCommands.flatMap { (value: [AsChallengeTestCommands.MiscCommand?]) -> [ResultMap?] in value.map { (value: AsChallengeTestCommands.MiscCommand?) -> ResultMap? in value.flatMap { (value: AsChallengeTestCommands.MiscCommand) -> ResultMap in value.resultMap } } }])
+          public static func makeChallengeTestCommands(id: GraphQLID, vehicleProfile: AsChallengeTestCommands.VehicleProfile? = nil, odometer: AsChallengeTestCommands.Odometer? = nil, stateOfHealthCommands: AsChallengeTestCommands.StateOfHealthCommand? = nil, sampledCommands: AsChallengeTestCommands.SampledCommand? = nil, batteryAge: AsChallengeTestCommands.BatteryAge? = nil, diagnosticSession: AsChallengeTestCommands.DiagnosticSession? = nil, miscCommands: [AsChallengeTestCommands.MiscCommand?]? = nil) -> TestCommand {
+            return TestCommand(unsafeResultMap: ["__typename": "ChallengeTestCommands", "id": id, "vehicleProfile": vehicleProfile.flatMap { (value: AsChallengeTestCommands.VehicleProfile) -> ResultMap in value.resultMap }, "odometer": odometer.flatMap { (value: AsChallengeTestCommands.Odometer) -> ResultMap in value.resultMap }, "stateOfHealthCommands": stateOfHealthCommands.flatMap { (value: AsChallengeTestCommands.StateOfHealthCommand) -> ResultMap in value.resultMap }, "sampledCommands": sampledCommands.flatMap { (value: AsChallengeTestCommands.SampledCommand) -> ResultMap in value.resultMap }, "batteryAge": batteryAge.flatMap { (value: AsChallengeTestCommands.BatteryAge) -> ResultMap in value.resultMap }, "diagnosticSession": diagnosticSession.flatMap { (value: AsChallengeTestCommands.DiagnosticSession) -> ResultMap in value.resultMap }, "miscCommands": miscCommands.flatMap { (value: [AsChallengeTestCommands.MiscCommand?]) -> [ResultMap?] in value.map { (value: AsChallengeTestCommands.MiscCommand?) -> ResultMap? in value.flatMap { (value: AsChallengeTestCommands.MiscCommand) -> ResultMap in value.resultMap } } }])
           }
 
           public var __typename: String {
@@ -1799,9 +2136,9 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                 GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
                 GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
                 GraphQLField("vehicleProfile", type: .object(VehicleProfile.selections)),
-                GraphQLField("odometer", type: .nonNull(.object(Odometer.selections))),
-                GraphQLField("stateOfHealthCommands", type: .nonNull(.object(StateOfHealthCommand.selections))),
-                GraphQLField("sampledCommands", type: .nonNull(.object(SampledCommand.selections))),
+                GraphQLField("odometer", type: .object(Odometer.selections)),
+                GraphQLField("stateOfHealthCommands", type: .object(StateOfHealthCommand.selections)),
+                GraphQLField("sampledCommands", type: .object(SampledCommand.selections)),
                 GraphQLField("batteryAge", type: .object(BatteryAge.selections)),
                 GraphQLField("diagnosticSession", type: .object(DiagnosticSession.selections)),
                 GraphQLField("miscCommands", type: .list(.object(MiscCommand.selections))),
@@ -1814,8 +2151,8 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
               self.resultMap = unsafeResultMap
             }
 
-            public init(id: GraphQLID, vehicleProfile: VehicleProfile? = nil, odometer: Odometer, stateOfHealthCommands: StateOfHealthCommand, sampledCommands: SampledCommand, batteryAge: BatteryAge? = nil, diagnosticSession: DiagnosticSession? = nil, miscCommands: [MiscCommand?]? = nil) {
-              self.init(unsafeResultMap: ["__typename": "ChallengeTestCommands", "id": id, "vehicleProfile": vehicleProfile.flatMap { (value: VehicleProfile) -> ResultMap in value.resultMap }, "odometer": odometer.resultMap, "stateOfHealthCommands": stateOfHealthCommands.resultMap, "sampledCommands": sampledCommands.resultMap, "batteryAge": batteryAge.flatMap { (value: BatteryAge) -> ResultMap in value.resultMap }, "diagnosticSession": diagnosticSession.flatMap { (value: DiagnosticSession) -> ResultMap in value.resultMap }, "miscCommands": miscCommands.flatMap { (value: [MiscCommand?]) -> [ResultMap?] in value.map { (value: MiscCommand?) -> ResultMap? in value.flatMap { (value: MiscCommand) -> ResultMap in value.resultMap } } }])
+            public init(id: GraphQLID, vehicleProfile: VehicleProfile? = nil, odometer: Odometer? = nil, stateOfHealthCommands: StateOfHealthCommand? = nil, sampledCommands: SampledCommand? = nil, batteryAge: BatteryAge? = nil, diagnosticSession: DiagnosticSession? = nil, miscCommands: [MiscCommand?]? = nil) {
+              self.init(unsafeResultMap: ["__typename": "ChallengeTestCommands", "id": id, "vehicleProfile": vehicleProfile.flatMap { (value: VehicleProfile) -> ResultMap in value.resultMap }, "odometer": odometer.flatMap { (value: Odometer) -> ResultMap in value.resultMap }, "stateOfHealthCommands": stateOfHealthCommands.flatMap { (value: StateOfHealthCommand) -> ResultMap in value.resultMap }, "sampledCommands": sampledCommands.flatMap { (value: SampledCommand) -> ResultMap in value.resultMap }, "batteryAge": batteryAge.flatMap { (value: BatteryAge) -> ResultMap in value.resultMap }, "diagnosticSession": diagnosticSession.flatMap { (value: DiagnosticSession) -> ResultMap in value.resultMap }, "miscCommands": miscCommands.flatMap { (value: [MiscCommand?]) -> [ResultMap?] in value.map { (value: MiscCommand?) -> ResultMap? in value.flatMap { (value: MiscCommand) -> ResultMap in value.resultMap } } }])
             }
 
             public var __typename: String {
@@ -1846,30 +2183,31 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
               }
             }
 
-            public var odometer: Odometer {
+            public var odometer: Odometer? {
               get {
-                return Odometer(unsafeResultMap: resultMap["odometer"]! as! ResultMap)
+                return (resultMap["odometer"] as? ResultMap).flatMap { Odometer(unsafeResultMap: $0) }
               }
               set {
-                resultMap.updateValue(newValue.resultMap, forKey: "odometer")
+                resultMap.updateValue(newValue?.resultMap, forKey: "odometer")
               }
             }
 
-            public var stateOfHealthCommands: StateOfHealthCommand {
+            @available(*, deprecated, message: "it is replaced with nullable stateOfCharge, energyToEmpty, and bmsCapacity")
+            public var stateOfHealthCommands: StateOfHealthCommand? {
               get {
-                return StateOfHealthCommand(unsafeResultMap: resultMap["stateOfHealthCommands"]! as! ResultMap)
+                return (resultMap["stateOfHealthCommands"] as? ResultMap).flatMap { StateOfHealthCommand(unsafeResultMap: $0) }
               }
               set {
-                resultMap.updateValue(newValue.resultMap, forKey: "stateOfHealthCommands")
+                resultMap.updateValue(newValue?.resultMap, forKey: "stateOfHealthCommands")
               }
             }
 
-            public var sampledCommands: SampledCommand {
+            public var sampledCommands: SampledCommand? {
               get {
-                return SampledCommand(unsafeResultMap: resultMap["sampledCommands"]! as! ResultMap)
+                return (resultMap["sampledCommands"] as? ResultMap).flatMap { SampledCommand(unsafeResultMap: $0) }
               }
               set {
-                resultMap.updateValue(newValue.resultMap, forKey: "sampledCommands")
+                resultMap.updateValue(newValue?.resultMap, forKey: "sampledCommands")
               }
             }
 
@@ -2377,12 +2715,12 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                 self.resultMap = unsafeResultMap
               }
 
-              public static func makeChallengeStateOfChargeCommands(stateOfCharge: AsChallengeStateOfChargeCommands.StateOfCharge, energyToEmpty: AsChallengeStateOfChargeCommands.EnergyToEmpty? = nil) -> StateOfHealthCommand {
-                return StateOfHealthCommand(unsafeResultMap: ["__typename": "ChallengeStateOfChargeCommands", "stateOfCharge": stateOfCharge.resultMap, "energyToEmpty": energyToEmpty.flatMap { (value: AsChallengeStateOfChargeCommands.EnergyToEmpty) -> ResultMap in value.resultMap }])
+              public static func makeChallengeStateOfChargeCommands(stateOfCharge: AsChallengeStateOfChargeCommands.StateOfCharge? = nil, energyToEmpty: AsChallengeStateOfChargeCommands.EnergyToEmpty? = nil) -> StateOfHealthCommand {
+                return StateOfHealthCommand(unsafeResultMap: ["__typename": "ChallengeStateOfChargeCommands", "stateOfCharge": stateOfCharge.flatMap { (value: AsChallengeStateOfChargeCommands.StateOfCharge) -> ResultMap in value.resultMap }, "energyToEmpty": energyToEmpty.flatMap { (value: AsChallengeStateOfChargeCommands.EnergyToEmpty) -> ResultMap in value.resultMap }])
               }
 
-              public static func makeChallengeBMSCapacityCommands(bmsCapacity: AsChallengeBmsCapacityCommands.BmsCapacity) -> StateOfHealthCommand {
-                return StateOfHealthCommand(unsafeResultMap: ["__typename": "ChallengeBMSCapacityCommands", "bmsCapacity": bmsCapacity.resultMap])
+              public static func makeChallengeBMSCapacityCommands(bmsCapacity: AsChallengeBmsCapacityCommands.BmsCapacity? = nil) -> StateOfHealthCommand {
+                return StateOfHealthCommand(unsafeResultMap: ["__typename": "ChallengeBMSCapacityCommands", "bmsCapacity": bmsCapacity.flatMap { (value: AsChallengeBmsCapacityCommands.BmsCapacity) -> ResultMap in value.resultMap }])
               }
 
               public var __typename: String {
@@ -2412,7 +2750,7 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                   return [
                     GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
                     GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-                    GraphQLField("stateOfCharge", type: .nonNull(.object(StateOfCharge.selections))),
+                    GraphQLField("stateOfCharge", type: .object(StateOfCharge.selections)),
                     GraphQLField("energyToEmpty", type: .object(EnergyToEmpty.selections)),
                   ]
                 }
@@ -2423,8 +2761,8 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                   self.resultMap = unsafeResultMap
                 }
 
-                public init(stateOfCharge: StateOfCharge, energyToEmpty: EnergyToEmpty? = nil) {
-                  self.init(unsafeResultMap: ["__typename": "ChallengeStateOfChargeCommands", "stateOfCharge": stateOfCharge.resultMap, "energyToEmpty": energyToEmpty.flatMap { (value: EnergyToEmpty) -> ResultMap in value.resultMap }])
+                public init(stateOfCharge: StateOfCharge? = nil, energyToEmpty: EnergyToEmpty? = nil) {
+                  self.init(unsafeResultMap: ["__typename": "ChallengeStateOfChargeCommands", "stateOfCharge": stateOfCharge.flatMap { (value: StateOfCharge) -> ResultMap in value.resultMap }, "energyToEmpty": energyToEmpty.flatMap { (value: EnergyToEmpty) -> ResultMap in value.resultMap }])
                 }
 
                 public var __typename: String {
@@ -2436,12 +2774,12 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                   }
                 }
 
-                public var stateOfCharge: StateOfCharge {
+                public var stateOfCharge: StateOfCharge? {
                   get {
-                    return StateOfCharge(unsafeResultMap: resultMap["stateOfCharge"]! as! ResultMap)
+                    return (resultMap["stateOfCharge"] as? ResultMap).flatMap { StateOfCharge(unsafeResultMap: $0) }
                   }
                   set {
-                    resultMap.updateValue(newValue.resultMap, forKey: "stateOfCharge")
+                    resultMap.updateValue(newValue?.resultMap, forKey: "stateOfCharge")
                   }
                 }
 
@@ -3205,7 +3543,7 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                   return [
                     GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
                     GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-                    GraphQLField("bmsCapacity", type: .nonNull(.object(BmsCapacity.selections))),
+                    GraphQLField("bmsCapacity", type: .object(BmsCapacity.selections)),
                   ]
                 }
 
@@ -3215,8 +3553,8 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                   self.resultMap = unsafeResultMap
                 }
 
-                public init(bmsCapacity: BmsCapacity) {
-                  self.init(unsafeResultMap: ["__typename": "ChallengeBMSCapacityCommands", "bmsCapacity": bmsCapacity.resultMap])
+                public init(bmsCapacity: BmsCapacity? = nil) {
+                  self.init(unsafeResultMap: ["__typename": "ChallengeBMSCapacityCommands", "bmsCapacity": bmsCapacity.flatMap { (value: BmsCapacity) -> ResultMap in value.resultMap }])
                 }
 
                 public var __typename: String {
@@ -3228,12 +3566,12 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                   }
                 }
 
-                public var bmsCapacity: BmsCapacity {
+                public var bmsCapacity: BmsCapacity? {
                   get {
-                    return BmsCapacity(unsafeResultMap: resultMap["bmsCapacity"]! as! ResultMap)
+                    return (resultMap["bmsCapacity"] as? ResultMap).flatMap { BmsCapacity(unsafeResultMap: $0) }
                   }
                   set {
-                    resultMap.updateValue(newValue.resultMap, forKey: "bmsCapacity")
+                    resultMap.updateValue(newValue?.resultMap, forKey: "bmsCapacity")
                   }
                 }
 
@@ -3613,9 +3951,9 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                   GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
                   GraphQLField("protocol", type: .nonNull(.object(`Protocol`.selections))),
                   GraphQLField("packTemperature", type: .list(.nonNull(.object(PackTemperature.selections)))),
-                  GraphQLField("packVoltage", type: .nonNull(.object(PackVoltage.selections))),
-                  GraphQLField("packCurrent", type: .nonNull(.object(PackCurrent.selections))),
-                  GraphQLField("cellVoltage", type: .nonNull(.list(.nonNull(.object(CellVoltage.selections))))),
+                  GraphQLField("packVoltage", type: .object(PackVoltage.selections)),
+                  GraphQLField("packCurrent", type: .object(PackCurrent.selections)),
+                  GraphQLField("cellVoltage", type: .list(.nonNull(.object(CellVoltage.selections)))),
                 ]
               }
 
@@ -3625,8 +3963,8 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                 self.resultMap = unsafeResultMap
               }
 
-              public init(`protocol`: `Protocol`, packTemperature: [PackTemperature]? = nil, packVoltage: PackVoltage, packCurrent: PackCurrent, cellVoltage: [CellVoltage]) {
-                self.init(unsafeResultMap: ["__typename": "SampledCommands", "protocol": `protocol`.resultMap, "packTemperature": packTemperature.flatMap { (value: [PackTemperature]) -> [ResultMap] in value.map { (value: PackTemperature) -> ResultMap in value.resultMap } }, "packVoltage": packVoltage.resultMap, "packCurrent": packCurrent.resultMap, "cellVoltage": cellVoltage.map { (value: CellVoltage) -> ResultMap in value.resultMap }])
+              public init(`protocol`: `Protocol`, packTemperature: [PackTemperature]? = nil, packVoltage: PackVoltage? = nil, packCurrent: PackCurrent? = nil, cellVoltage: [CellVoltage]? = nil) {
+                self.init(unsafeResultMap: ["__typename": "SampledCommands", "protocol": `protocol`.resultMap, "packTemperature": packTemperature.flatMap { (value: [PackTemperature]) -> [ResultMap] in value.map { (value: PackTemperature) -> ResultMap in value.resultMap } }, "packVoltage": packVoltage.flatMap { (value: PackVoltage) -> ResultMap in value.resultMap }, "packCurrent": packCurrent.flatMap { (value: PackCurrent) -> ResultMap in value.resultMap }, "cellVoltage": cellVoltage.flatMap { (value: [CellVoltage]) -> [ResultMap] in value.map { (value: CellVoltage) -> ResultMap in value.resultMap } }])
               }
 
               public var __typename: String {
@@ -3656,30 +3994,30 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                 }
               }
 
-              public var packVoltage: PackVoltage {
+              public var packVoltage: PackVoltage? {
                 get {
-                  return PackVoltage(unsafeResultMap: resultMap["packVoltage"]! as! ResultMap)
+                  return (resultMap["packVoltage"] as? ResultMap).flatMap { PackVoltage(unsafeResultMap: $0) }
                 }
                 set {
-                  resultMap.updateValue(newValue.resultMap, forKey: "packVoltage")
+                  resultMap.updateValue(newValue?.resultMap, forKey: "packVoltage")
                 }
               }
 
-              public var packCurrent: PackCurrent {
+              public var packCurrent: PackCurrent? {
                 get {
-                  return PackCurrent(unsafeResultMap: resultMap["packCurrent"]! as! ResultMap)
+                  return (resultMap["packCurrent"] as? ResultMap).flatMap { PackCurrent(unsafeResultMap: $0) }
                 }
                 set {
-                  resultMap.updateValue(newValue.resultMap, forKey: "packCurrent")
+                  resultMap.updateValue(newValue?.resultMap, forKey: "packCurrent")
                 }
               }
 
-              public var cellVoltage: [CellVoltage] {
+              public var cellVoltage: [CellVoltage]? {
                 get {
-                  return (resultMap["cellVoltage"] as! [ResultMap]).map { (value: ResultMap) -> CellVoltage in CellVoltage(unsafeResultMap: value) }
+                  return (resultMap["cellVoltage"] as? [ResultMap]).flatMap { (value: [ResultMap]) -> [CellVoltage] in value.map { (value: ResultMap) -> CellVoltage in CellVoltage(unsafeResultMap: value) } }
                 }
                 set {
-                  resultMap.updateValue(newValue.map { (value: CellVoltage) -> ResultMap in value.resultMap }, forKey: "cellVoltage")
+                  resultMap.updateValue(newValue.flatMap { (value: [CellVoltage]) -> [ResultMap] in value.map { (value: CellVoltage) -> ResultMap in value.resultMap } }, forKey: "cellVoltage")
                 }
               }
 
@@ -5472,6 +5810,7 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                 }
               }
 
+              /// Challenge is nullable for Diagnostic, Can Filters and Masks added to Diagnostic Mode Challenges
               public var challenge: Challenge? {
                 get {
                   return (resultMap["challenge"] as? ResultMap).flatMap { Challenge(unsafeResultMap: $0) }
@@ -5533,7 +5872,7 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
               }
 
               public struct Challenge: GraphQLSelectionSet {
-                public static let possibleTypes: [String] = ["DiagnosticChallenge"]
+                public static let possibleTypes: [String] = ["Challenge"]
 
                 public static var selections: [GraphQLSelection] {
                   return [
@@ -5550,7 +5889,7 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                 }
 
                 public init(header: String, pid: String) {
-                  self.init(unsafeResultMap: ["__typename": "DiagnosticChallenge", "header": header, "pid": pid])
+                  self.init(unsafeResultMap: ["__typename": "Challenge", "header": header, "pid": pid])
                 }
 
                 public var __typename: String {
@@ -5590,7 +5929,7 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                 return [
                   GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
                   GraphQLField("label", type: .nonNull(.scalar(String.self))),
-                  GraphQLField("instruction", type: .nonNull(.object(Instruction.selections))),
+                  GraphQLField("instruction", type: .object(Instruction.selections)),
                 ]
               }
 
@@ -5600,8 +5939,8 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                 self.resultMap = unsafeResultMap
               }
 
-              public init(label: String, instruction: Instruction) {
-                self.init(unsafeResultMap: ["__typename": "MiscChallengeInstruction", "label": label, "instruction": instruction.resultMap])
+              public init(label: String, instruction: Instruction? = nil) {
+                self.init(unsafeResultMap: ["__typename": "MiscChallengeInstruction", "label": label, "instruction": instruction.flatMap { (value: Instruction) -> ResultMap in value.resultMap }])
               }
 
               public var __typename: String {
@@ -5622,12 +5961,12 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                 }
               }
 
-              public var instruction: Instruction {
+              public var instruction: Instruction? {
                 get {
-                  return Instruction(unsafeResultMap: resultMap["instruction"]! as! ResultMap)
+                  return (resultMap["instruction"] as? ResultMap).flatMap { Instruction(unsafeResultMap: $0) }
                 }
                 set {
-                  resultMap.updateValue(newValue.resultMap, forKey: "instruction")
+                  resultMap.updateValue(newValue?.resultMap, forKey: "instruction")
                 }
               }
 
@@ -6213,6 +6552,379 @@ public final class GetS3PreSingedUrlQuery: GraphQLQuery {
   }
 }
 
+public final class SubmitBatteryJsonFilesWithStateOfChargeMutation: GraphQLMutation {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition: String =
+    """
+    mutation SubmitBatteryJSONFilesWithStateOfCharge($Vehicle: SubmitBatteryDataFilesVehicleInput!, $calculateBatteryHealthInput: CalculateBatteryHealthInput!) {
+      calculateBatteryHealth(
+        vehicle: $Vehicle
+        calculateBatteryHealthInput: $calculateBatteryHealthInput
+      ) {
+        __typename
+        code
+        message
+        success
+        calculatedBatteryHealth {
+          __typename
+          batteryScore {
+            __typename
+            score
+            grade
+            health
+            factorsUsed {
+              __typename
+              name
+              type
+            }
+          }
+          estimatedRange {
+            __typename
+            estimatedRangeMin
+            estimatedRangeMax
+          }
+        }
+      }
+    }
+    """
+
+  public let operationName: String = "SubmitBatteryJSONFilesWithStateOfCharge"
+
+  public var Vehicle: SubmitBatteryDataFilesVehicleInput
+  public var calculateBatteryHealthInput: CalculateBatteryHealthInput
+
+  public init(Vehicle: SubmitBatteryDataFilesVehicleInput, calculateBatteryHealthInput: CalculateBatteryHealthInput) {
+    self.Vehicle = Vehicle
+    self.calculateBatteryHealthInput = calculateBatteryHealthInput
+  }
+
+  public var variables: GraphQLMap? {
+    return ["Vehicle": Vehicle, "calculateBatteryHealthInput": calculateBatteryHealthInput]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Mutation"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("calculateBatteryHealth", arguments: ["vehicle": GraphQLVariable("Vehicle"), "calculateBatteryHealthInput": GraphQLVariable("calculateBatteryHealthInput")], type: .object(CalculateBatteryHealth.selections)),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(calculateBatteryHealth: CalculateBatteryHealth? = nil) {
+      self.init(unsafeResultMap: ["__typename": "Mutation", "calculateBatteryHealth": calculateBatteryHealth.flatMap { (value: CalculateBatteryHealth) -> ResultMap in value.resultMap }])
+    }
+
+    public var calculateBatteryHealth: CalculateBatteryHealth? {
+      get {
+        return (resultMap["calculateBatteryHealth"] as? ResultMap).flatMap { CalculateBatteryHealth(unsafeResultMap: $0) }
+      }
+      set {
+        resultMap.updateValue(newValue?.resultMap, forKey: "calculateBatteryHealth")
+      }
+    }
+
+    public struct CalculateBatteryHealth: GraphQLSelectionSet {
+      public static let possibleTypes: [String] = ["CalculateBatteryHealthResponse"]
+
+      public static var selections: [GraphQLSelection] {
+        return [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("code", type: .nonNull(.scalar(String.self))),
+          GraphQLField("message", type: .nonNull(.scalar(String.self))),
+          GraphQLField("success", type: .nonNull(.scalar(Bool.self))),
+          GraphQLField("calculatedBatteryHealth", type: .object(CalculatedBatteryHealth.selections)),
+        ]
+      }
+
+      public private(set) var resultMap: ResultMap
+
+      public init(unsafeResultMap: ResultMap) {
+        self.resultMap = unsafeResultMap
+      }
+
+      public init(code: String, message: String, success: Bool, calculatedBatteryHealth: CalculatedBatteryHealth? = nil) {
+        self.init(unsafeResultMap: ["__typename": "CalculateBatteryHealthResponse", "code": code, "message": message, "success": success, "calculatedBatteryHealth": calculatedBatteryHealth.flatMap { (value: CalculatedBatteryHealth) -> ResultMap in value.resultMap }])
+      }
+
+      public var __typename: String {
+        get {
+          return resultMap["__typename"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      public var code: String {
+        get {
+          return resultMap["code"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "code")
+        }
+      }
+
+      public var message: String {
+        get {
+          return resultMap["message"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "message")
+        }
+      }
+
+      public var success: Bool {
+        get {
+          return resultMap["success"]! as! Bool
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "success")
+        }
+      }
+
+      public var calculatedBatteryHealth: CalculatedBatteryHealth? {
+        get {
+          return (resultMap["calculatedBatteryHealth"] as? ResultMap).flatMap { CalculatedBatteryHealth(unsafeResultMap: $0) }
+        }
+        set {
+          resultMap.updateValue(newValue?.resultMap, forKey: "calculatedBatteryHealth")
+        }
+      }
+
+      public struct CalculatedBatteryHealth: GraphQLSelectionSet {
+        public static let possibleTypes: [String] = ["CalculatedBatteryHealth"]
+
+        public static var selections: [GraphQLSelection] {
+          return [
+            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+            GraphQLField("batteryScore", type: .object(BatteryScore.selections)),
+            GraphQLField("estimatedRange", type: .object(EstimatedRange.selections)),
+          ]
+        }
+
+        public private(set) var resultMap: ResultMap
+
+        public init(unsafeResultMap: ResultMap) {
+          self.resultMap = unsafeResultMap
+        }
+
+        public init(batteryScore: BatteryScore? = nil, estimatedRange: EstimatedRange? = nil) {
+          self.init(unsafeResultMap: ["__typename": "CalculatedBatteryHealth", "batteryScore": batteryScore.flatMap { (value: BatteryScore) -> ResultMap in value.resultMap }, "estimatedRange": estimatedRange.flatMap { (value: EstimatedRange) -> ResultMap in value.resultMap }])
+        }
+
+        public var __typename: String {
+          get {
+            return resultMap["__typename"]! as! String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        public var batteryScore: BatteryScore? {
+          get {
+            return (resultMap["batteryScore"] as? ResultMap).flatMap { BatteryScore(unsafeResultMap: $0) }
+          }
+          set {
+            resultMap.updateValue(newValue?.resultMap, forKey: "batteryScore")
+          }
+        }
+
+        public var estimatedRange: EstimatedRange? {
+          get {
+            return (resultMap["estimatedRange"] as? ResultMap).flatMap { EstimatedRange(unsafeResultMap: $0) }
+          }
+          set {
+            resultMap.updateValue(newValue?.resultMap, forKey: "estimatedRange")
+          }
+        }
+
+        public struct BatteryScore: GraphQLSelectionSet {
+          public static let possibleTypes: [String] = ["BatteryScore"]
+
+          public static var selections: [GraphQLSelection] {
+            return [
+              GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+              GraphQLField("score", type: .nonNull(.scalar(Double.self))),
+              GraphQLField("grade", type: .nonNull(.scalar(Grade.self))),
+              GraphQLField("health", type: .nonNull(.scalar(Health.self))),
+              GraphQLField("factorsUsed", type: .nonNull(.list(.object(FactorsUsed.selections)))),
+            ]
+          }
+
+          public private(set) var resultMap: ResultMap
+
+          public init(unsafeResultMap: ResultMap) {
+            self.resultMap = unsafeResultMap
+          }
+
+          public init(score: Double, grade: Grade, health: Health, factorsUsed: [FactorsUsed?]) {
+            self.init(unsafeResultMap: ["__typename": "BatteryScore", "score": score, "grade": grade, "health": health, "factorsUsed": factorsUsed.map { (value: FactorsUsed?) -> ResultMap? in value.flatMap { (value: FactorsUsed) -> ResultMap in value.resultMap } }])
+          }
+
+          public var __typename: String {
+            get {
+              return resultMap["__typename"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "__typename")
+            }
+          }
+
+          /// The given vehicle's battery score value, on a scale of 1.0 to 5.0 inclusive
+          public var score: Double {
+            get {
+              return resultMap["score"]! as! Double
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "score")
+            }
+          }
+
+          /// The given vehicle's battery score grade value
+          public var grade: Grade {
+            get {
+              return resultMap["grade"]! as! Grade
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "grade")
+            }
+          }
+
+          /// The given vehicle's battery score health value
+          public var health: Health {
+            get {
+              return resultMap["health"]! as! Health
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "health")
+            }
+          }
+
+          /// The list of Factor objects used in the Battery Score calculation
+          public var factorsUsed: [FactorsUsed?] {
+            get {
+              return (resultMap["factorsUsed"] as! [ResultMap?]).map { (value: ResultMap?) -> FactorsUsed? in value.flatMap { (value: ResultMap) -> FactorsUsed in FactorsUsed(unsafeResultMap: value) } }
+            }
+            set {
+              resultMap.updateValue(newValue.map { (value: FactorsUsed?) -> ResultMap? in value.flatMap { (value: FactorsUsed) -> ResultMap in value.resultMap } }, forKey: "factorsUsed")
+            }
+          }
+
+          public struct FactorsUsed: GraphQLSelectionSet {
+            public static let possibleTypes: [String] = ["Factor"]
+
+            public static var selections: [GraphQLSelection] {
+              return [
+                GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                GraphQLField("name", type: .nonNull(.scalar(String.self))),
+                GraphQLField("type", type: .nonNull(.scalar(TypeSource.self))),
+              ]
+            }
+
+            public private(set) var resultMap: ResultMap
+
+            public init(unsafeResultMap: ResultMap) {
+              self.resultMap = unsafeResultMap
+            }
+
+            public init(name: String, type: TypeSource) {
+              self.init(unsafeResultMap: ["__typename": "Factor", "name": name, "type": type])
+            }
+
+            public var __typename: String {
+              get {
+                return resultMap["__typename"]! as! String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "__typename")
+              }
+            }
+
+            /// The given factor's name.
+            public var name: String {
+              get {
+                return resultMap["name"]! as! String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "name")
+              }
+            }
+
+            /// The given factor's type.
+            public var type: TypeSource {
+              get {
+                return resultMap["type"]! as! TypeSource
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "type")
+              }
+            }
+          }
+        }
+
+        public struct EstimatedRange: GraphQLSelectionSet {
+          public static let possibleTypes: [String] = ["EstimatedRange"]
+
+          public static var selections: [GraphQLSelection] {
+            return [
+              GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+              GraphQLField("estimatedRangeMin", type: .scalar(Double.self)),
+              GraphQLField("estimatedRangeMax", type: .scalar(Double.self)),
+            ]
+          }
+
+          public private(set) var resultMap: ResultMap
+
+          public init(unsafeResultMap: ResultMap) {
+            self.resultMap = unsafeResultMap
+          }
+
+          public init(estimatedRangeMin: Double? = nil, estimatedRangeMax: Double? = nil) {
+            self.init(unsafeResultMap: ["__typename": "EstimatedRange", "estimatedRangeMin": estimatedRangeMin, "estimatedRangeMax": estimatedRangeMax])
+          }
+
+          public var __typename: String {
+            get {
+              return resultMap["__typename"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "__typename")
+            }
+          }
+
+          /// The given vehicle's minimum estimated range calculation.
+          public var estimatedRangeMin: Double? {
+            get {
+              return resultMap["estimatedRangeMin"] as? Double
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "estimatedRangeMin")
+            }
+          }
+
+          /// The given vehicle's maximum estimated range calculation.
+          public var estimatedRangeMax: Double? {
+            get {
+              return resultMap["estimatedRangeMax"] as? Double
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "estimatedRangeMax")
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 public final class SubmitBatteryFilesWithStateOfChargeMutation: GraphQLMutation {
   /// The raw GraphQL definition of this operation.
   public let operationDefinition: String =
@@ -6279,6 +6991,7 @@ public final class SubmitBatteryFilesWithStateOfChargeMutation: GraphQLMutation 
       self.init(unsafeResultMap: ["__typename": "Mutation", "submitBatteryDataFilesWithStateOfCharge": submitBatteryDataFilesWithStateOfCharge.flatMap { (value: SubmitBatteryDataFilesWithStateOfCharge) -> ResultMap in value.resultMap }])
     }
 
+    @available(*, deprecated, message: "A new endpoint 'calculateBatteryHealth' has been created which supports Json file input.")
     public var submitBatteryDataFilesWithStateOfCharge: SubmitBatteryDataFilesWithStateOfCharge? {
       get {
         return (resultMap["submitBatteryDataFilesWithStateOfCharge"] as? ResultMap).flatMap { SubmitBatteryDataFilesWithStateOfCharge(unsafeResultMap: $0) }
@@ -6318,7 +7031,6 @@ public final class SubmitBatteryFilesWithStateOfChargeMutation: GraphQLMutation 
         }
       }
 
-      /// An EstimatedRange object containing the minimum and maximum estimated range calculated for the given vehicle.
       public var estimatedRange: EstimatedRange? {
         get {
           return (resultMap["estimatedRange"] as? ResultMap).flatMap { EstimatedRange(unsafeResultMap: $0) }
@@ -6328,8 +7040,6 @@ public final class SubmitBatteryFilesWithStateOfChargeMutation: GraphQLMutation 
         }
       }
 
-      /// A SubmitResponse object containing the score, grade, and health of the given vehicle, and a list of Factors used
-      /// in the calculation.
       public var batteryScore: BatteryScore? {
         get {
           return (resultMap["batteryScore"] as? ResultMap).flatMap { BatteryScore(unsafeResultMap: $0) }
@@ -6583,6 +7293,7 @@ public final class SubmitBatteryDataFilesWithBmsCapacityMutation: GraphQLMutatio
       self.init(unsafeResultMap: ["__typename": "Mutation", "submitBatteryDataFilesWithBmsCapacity": submitBatteryDataFilesWithBmsCapacity.flatMap { (value: SubmitBatteryDataFilesWithBmsCapacity) -> ResultMap in value.resultMap }])
     }
 
+    @available(*, deprecated, message: "A new endpoint 'calculateBatteryHealth' has been created which supports Json file input.")
     public var submitBatteryDataFilesWithBmsCapacity: SubmitBatteryDataFilesWithBmsCapacity? {
       get {
         return (resultMap["submitBatteryDataFilesWithBmsCapacity"] as? ResultMap).flatMap { SubmitBatteryDataFilesWithBmsCapacity(unsafeResultMap: $0) }
@@ -6622,7 +7333,6 @@ public final class SubmitBatteryDataFilesWithBmsCapacityMutation: GraphQLMutatio
         }
       }
 
-      /// An EstimatedRange object containing the minimum and maximum estimated range calculated for the given vehicle.
       public var estimatedRange: EstimatedRange? {
         get {
           return (resultMap["estimatedRange"] as? ResultMap).flatMap { EstimatedRange(unsafeResultMap: $0) }
@@ -6632,8 +7342,6 @@ public final class SubmitBatteryDataFilesWithBmsCapacityMutation: GraphQLMutatio
         }
       }
 
-      /// A SubmitResponse object containing the score, grade, and health of the given vehicle, and a list of Factors used
-      /// in the calculation.
       public var batteryScore: BatteryScore? {
         get {
           return (resultMap["batteryScore"] as? ResultMap).flatMap { BatteryScore(unsafeResultMap: $0) }

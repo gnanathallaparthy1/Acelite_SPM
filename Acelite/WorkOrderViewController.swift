@@ -7,8 +7,10 @@
 
 import UIKit
 
-class WorkOrderViewController: UIViewController {
-	//pass this ia view model later
+class WorkOrderViewController: BaseViewController {
+	
+	@IBOutlet weak var offlineViewHeight: NSLayoutConstraint!
+	@IBOutlet weak var offlineView: UIView!
 	public var vehicleInfo: Vehicle?
 	
 	@IBOutlet weak var cancelButton: UIButton! {
@@ -37,15 +39,30 @@ class WorkOrderViewController: UIViewController {
 	
 	@IBOutlet weak var barCodeTextField: UITextField!
 	@objc public weak var delegate: ScannerViewDelegate?
+	var networkStatus = NotificationCenter.default
+	let natificationName = NSNotification.Name(rawValue:"InternetObserver")
+	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		FirebaseLogging.instance.logScreen(screenName: ClassNames.workOrder)
 		barCodeTextField.delegate = self
-		let vimDetails = Network.shared.vehicleInformation
-		print(vimDetails?.vehicle?.title ?? "")
-		
-		
-		// Do any additional setup after loading the view.
+		offlineViewHeight.constant = 0
+		offlineView.isHidden = true
+		addCustomView()
+	}
+	
+	private func addCustomView() {
+		let allViewsInXibArray = Bundle.main.loadNibNamed("CustomView", owner: self, options: nil)
+		let view = allViewsInXibArray?.first as! CustomView
+		view.frame = self.offlineView.bounds
+		view.viewType = .WARINING
+		view.arrowButton.isHidden = true
+		view.layer.borderColor = UIColor.offlineViewBorderColor().cgColor
+		view.layer.borderWidth = 4
+		view.layer.cornerRadius = 8
+		view.backgroundColor = .white
+		view.setupView(message: Constants.OFFLINE_MESSAGE)
+		self.offlineView.addSubview(view)
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {
@@ -54,6 +71,31 @@ class WorkOrderViewController: UIViewController {
 		let menuBarButton = UIBarButtonItem(image: UIImage(systemName: "line.3.horizontal"), style: .plain, target: self, action: #selector(self.menuButtonAction(_ :)))
 		menuBarButton.tintColor = UIColor.appPrimaryColor()
 		self.navigationItem.leftBarButtonItem  = menuBarButton
+		if  NetworkManager.sharedInstance.reachability.connection == .unavailable {
+			self.showAndHideOffline(isShowOfflineView: true)
+		}
+		networkStatus.addObserver(self, selector: #selector(self.showOffileViews(_:)), name: natificationName, object: nil)
+	}
+	@objc func showOffileViews(_ notification: Notification) {
+		
+		let notificationobject = notification.object as? [String: Any] ?? [:]
+		guard let isShowOfflineView: Bool = notificationobject["isConected"] as? Bool else {
+			return
+		}
+		self.showAndHideOffline(isShowOfflineView: isShowOfflineView)
+	}
+	
+	private func showAndHideOffline(isShowOfflineView: Bool) {
+		if isShowOfflineView  {
+			offlineViewHeight.constant = 60
+			offlineView.layer.cornerRadius = 8
+			offlineView.layer.borderColor = UIColor.offlineViewBorderColor().cgColor
+			offlineView.layer.borderWidth = 4
+			offlineView.isHidden = false
+		} else {
+			offlineViewHeight.constant = 0
+			offlineView.isHidden = true
+		}
 	}
 	
 	@IBAction func menuButtonAction(_ sender: UIBarButtonItem) {
@@ -111,9 +153,6 @@ extension WorkOrderViewController: UITextFieldDelegate {
 		let ok = UIAlertAction(title: "Ok", style: .default, handler: { (action) -> Void in
 
 		})
-		//self.nextButton.isUserInteractionEnabled = false
-		//self.nextButton.isEnabled = false
-		//Add OK button to a dialog message
 		dialogMessage.addAction(ok)
 		// Present Alert to
 		self.present(dialogMessage, animated: true, completion: nil)

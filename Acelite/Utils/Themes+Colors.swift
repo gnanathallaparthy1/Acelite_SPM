@@ -56,6 +56,9 @@ extension UIColor {
 		static let hotRed  = "#FE6358"
 		static let bodySubtitleTextColor = "#2F3138"
 		static let warningColor = "#DB5C58"
+		static let offileViewBorder = "#A10B00"
+		static let viewBackgroundColor = "#F2F2F7"
+		//static let infoIconCOlor =  "#0041C2"
 	}
 
 	// MARK: - Initializations -
@@ -142,6 +145,14 @@ extension UIColor {
 	class func warningColor() -> UIColor {
 		return UIColor(hexString: Colors.warningColor, alpha: 1.0)
 	}
+	class func offlineViewBorderColor() -> UIColor {
+		return UIColor(hexString: Colors.offileViewBorder, alpha: 1.0)
+	}
+	
+	class func viewBackgroundColor() -> UIColor {
+		return UIColor(hexString: Colors.viewBackgroundColor, alpha: 1.0)
+	}
+	
 	
 	//bodySubtitleTextColor
 	

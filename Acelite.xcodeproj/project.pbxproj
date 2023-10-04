@@ -41,6 +41,10 @@
 		8621C7BC2A8D222800CFE0DF /* Acelite_Prod.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8621C7BB2A8D222800CFE0DF /* Acelite_Prod.plist */; };
 		86322CD62A9CF866004E16BB /* VinData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 86322CD42A9CF866004E16BB /* VinData.xcdatamodeld */; };
 		86322CD72A9CF866004E16BB /* VinData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 86322CD42A9CF866004E16BB /* VinData.xcdatamodeld */; };
+		8632D72C2AC203A600BA612E /* CustomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8632D72B2AC203A600BA612E /* CustomView.swift */; };
+		8632D72D2AC203A600BA612E /* CustomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8632D72B2AC203A600BA612E /* CustomView.swift */; };
+		8632D72F2AC203DC00BA612E /* CustomView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8632D72E2AC203DC00BA612E /* CustomView.xib */; };
+		8632D7302AC203DC00BA612E /* CustomView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8632D72E2AC203DC00BA612E /* CustomView.xib */; };
 		8636D41129CE201C0045BD53 /* ScanHistoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8636D40B29CE201B0045BD53 /* ScanHistoryTableViewCell.swift */; };
 		8636D41229CE201C0045BD53 /* ScanHistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8636D40C29CE201B0045BD53 /* ScanHistoryViewController.swift */; };
 		8636D41329CE201C0045BD53 /* TestableTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8636D40D29CE201B0045BD53 /* TestableTableViewCell.xib */; };
@@ -108,7 +112,6 @@
 		867200C42A5F91D900C6CBC7 /* CustomAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86B169E629B54FCD0024EFFF /* CustomAlertView.swift */; };
 		867200C52A5F91D900C6CBC7 /* ArcModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861EDE6F29B7AFC0003A1C81 /* ArcModel.swift */; };
 		867200C62A5F91D900C6CBC7 /* VehicalDetailsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866CDB4B2982F63700ADFB50 /* VehicalDetailsModel.swift */; };
-		867200C72A5F91D900C6CBC7 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C2BB9D29F1A23D004D4D42 /* API.swift */; };
 		867200C82A5F91D900C6CBC7 /* WorkOrderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86B9089F297079A9001CAB90 /* WorkOrderViewController.swift */; };
 		867200C92A5F91D900C6CBC7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861E6EC92953789B00443F12 /* AppDelegate.swift */; };
 		867200CA2A5F91D900C6CBC7 /* InfoPopUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86AF929329B585AF00FDA4C3 /* InfoPopUpViewController.swift */; };
@@ -166,6 +169,8 @@
 		867B608029A937CE0050411C /* ExportAsCSV.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867B607F29A937CE0050411C /* ExportAsCSV.swift */; };
 		867BBF7929673D7400DC4842 /* AceliteColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867BBF7829673D7400DC4842 /* AceliteColors.swift */; };
 		867BBF7B296744CD00DC4842 /* AceliteConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867BBF7A296744CD00DC4842 /* AceliteConstants.swift */; };
+		8680BF2D2AB3659800A370F9 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8680BF2C2AB3659700A370F9 /* API.swift */; };
+		8680BF2E2AB365C300A370F9 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8680BF2C2AB3659700A370F9 /* API.swift */; };
 		8691E0F229B2B877002C6E05 /* SubmitBatteryFilesWithSOCModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8691E0F129B2B877002C6E05 /* SubmitBatteryFilesWithSOCModel.swift */; };
 		8697905D2A88606500FA6440 /* OfflineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8697905C2A88606500FA6440 /* OfflineViewController.swift */; };
 		8697905F2A88624600FA6440 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8697905E2A88624600FA6440 /* NetworkManager.swift */; };
@@ -184,7 +189,6 @@
 		86B908A0297079A9001CAB90 /* WorkOrderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86B9089F297079A9001CAB90 /* WorkOrderViewController.swift */; };
 		86B908A22970854A001CAB90 /* TestingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86B908A12970854A001CAB90 /* TestingViewController.swift */; };
 		86C2BB9A29F19310004D4D42 /* schema.json in Resources */ = {isa = PBXBuildFile; fileRef = 86C2BB9929F19310004D4D42 /* schema.json */; };
-		86C2BB9E29F1A23D004D4D42 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C2BB9D29F1A23D004D4D42 /* API.swift */; };
 		86CDBA6629B632D600956B4C /* UploadAnimationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86CDBA6529B632D600956B4C /* UploadAnimationViewController.swift */; };
 		86CDBA6929B653D400956B4C /* UploadAnimationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86CDBA6829B653D400956B4C /* UploadAnimationViewModel.swift */; };
 		86E33DFC2A1E7D3C00E2F167 /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86E33DFB2A1E7D3C00E2F167 /* ExternalAccessory.framework */; };
@@ -244,6 +248,8 @@
 		8621C7B52A8A8EE900CFE0DF /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		8621C7BB2A8D222800CFE0DF /* Acelite_Prod.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Acelite_Prod.plist; sourceTree = "<group>"; };
 		86322CD52A9CF866004E16BB /* VinData.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = VinData.xcdatamodel; sourceTree = "<group>"; };
+		8632D72B2AC203A600BA612E /* CustomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomView.swift; sourceTree = "<group>"; };
+		8632D72E2AC203DC00BA612E /* CustomView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomView.xib; sourceTree = "<group>"; };
 		8636D40B29CE201B0045BD53 /* ScanHistoryTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanHistoryTableViewCell.swift; sourceTree = "<group>"; };
 		8636D40C29CE201B0045BD53 /* ScanHistoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanHistoryViewController.swift; sourceTree = "<group>"; };
 		8636D40D29CE201B0045BD53 /* TestableTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TestableTableViewCell.xib; sourceTree = "<group>"; };
@@ -279,6 +285,7 @@
 		867B607F29A937CE0050411C /* ExportAsCSV.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportAsCSV.swift; sourceTree = "<group>"; };
 		867BBF7829673D7400DC4842 /* AceliteColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AceliteColors.swift; sourceTree = "<group>"; };
 		867BBF7A296744CD00DC4842 /* AceliteConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AceliteConstants.swift; sourceTree = "<group>"; };
+		8680BF2C2AB3659700A370F9 /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = API.swift; path = Acelite/API.swift; sourceTree = SOURCE_ROOT; };
 		8691E0F129B2B877002C6E05 /* SubmitBatteryFilesWithSOCModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubmitBatteryFilesWithSOCModel.swift; sourceTree = "<group>"; };
 		8697905C2A88606500FA6440 /* OfflineViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineViewController.swift; sourceTree = "<group>"; };
 		8697905E2A88624600FA6440 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
@@ -293,7 +300,6 @@
 		86B9089F297079A9001CAB90 /* WorkOrderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkOrderViewController.swift; sourceTree = "<group>"; };
 		86B908A12970854A001CAB90 /* TestingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestingViewController.swift; sourceTree = "<group>"; };
 		86C2BB9929F19310004D4D42 /* schema.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = schema.json; sourceTree = "<group>"; };
-		86C2BB9D29F1A23D004D4D42 /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		86CDBA6529B632D600956B4C /* UploadAnimationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadAnimationViewController.swift; sourceTree = "<group>"; };
 		86CDBA6829B653D400956B4C /* UploadAnimationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadAnimationViewModel.swift; sourceTree = "<group>"; };
 		86E33DFB2A1E7D3C00E2F167 /* ExternalAccessory.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ExternalAccessory.framework; path = System/Library/Frameworks/ExternalAccessory.framework; sourceTree = SDKROOT; };
@@ -518,6 +524,15 @@
 			path = GreatView;
 			sourceTree = "<group>";
 		};
+		8632D72A2AC2021300BA612E /* CustomeView */ = {
+			isa = PBXGroup;
+			children = (
+				8632D72B2AC203A600BA612E /* CustomView.swift */,
+				8632D72E2AC203DC00BA612E /* CustomView.xib */,
+			);
+			path = CustomeView;
+			sourceTree = "<group>";
+		};
 		8639CDB429F7FF75004E813D /* VehicleScan */ = {
 			isa = PBXGroup;
 			children = (
@@ -581,7 +596,7 @@
 		866CDB58298AD41600ADFB50 /* GraphQL */ = {
 			isa = PBXGroup;
 			children = (
-				86C2BB9D29F1A23D004D4D42 /* API.swift */,
+				8680BF2C2AB3659700A370F9 /* API.swift */,
 				866CDB532982FD3400ADFB50 /* AceLiteServices.swift */,
 			);
 			path = GraphQL;
@@ -615,6 +630,7 @@
 		866CDB63298CAFF100ADFB50 /* ResusableComponents */ = {
 			isa = PBXGroup;
 			children = (
+				8632D72A2AC2021300BA612E /* CustomeView */,
 				866CDB64298CB02700ADFB50 /* SpinnerViewController.swift */,
 				86B169E429B549E80024EFFF /* CustomAlertView.xib */,
 				86B169E629B54FCD0024EFFF /* CustomAlertView.swift */,
@@ -871,6 +887,7 @@
 				86C2BB9A29F19310004D4D42 /* schema.json in Resources */,
 				867201122A607F2700C6CBC7 /* GoogleService-Info.plist in Resources */,
 				86B169E529B549E80024EFFF /* CustomAlertView.xib in Resources */,
+				8632D72F2AC203DC00BA612E /* CustomView.xib in Resources */,
 				869D86AB2968982500503B9C /* BLETableViewCell.xib in Resources */,
 				861E6F0A295778A100443F12 /* Main.storyboard in Resources */,
 				861E6ED32953789D00443F12 /* Assets.xcassets in Resources */,
@@ -908,6 +925,7 @@
 				867200F92A5F91D900C6CBC7 /* BLETableViewCell.xib in Resources */,
 				867200FA2A5F91D900C6CBC7 /* Main.storyboard in Resources */,
 				867200FB2A5F91D900C6CBC7 /* Assets.xcassets in Resources */,
+				8632D7302AC203DC00BA612E /* CustomView.xib in Resources */,
 				867200FC2A5F91D900C6CBC7 /* SideMenuCell.xib in Resources */,
 				867200FD2A5F91D900C6CBC7 /* ScanHistoryTableViewCell.xib in Resources */,
 			);
@@ -918,7 +936,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		866CDB55298AD34600ADFB50 /* Apollo */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 8;
+			buildActionMask = 12;
 			files = (
 			);
 			inputFileListPaths = (
@@ -930,7 +948,7 @@
 			);
 			outputPaths = (
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\n# Go to the build root and search up the chain to find the Derived Data Path where the source packages are checked out.\nDERIVED_DATA_CANDIDATE=\"${BUILD_ROOT}\"\n\nwhile ! [ -d \"${DERIVED_DATA_CANDIDATE}/SourcePackages\" ]; do\n  if [ \"${DERIVED_DATA_CANDIDATE}\" = / ]; then\n    echo >&2 \"error: Unable to locate SourcePackages directory from BUILD_ROOT: '${BUILD_ROOT}'\"\n    exit 1\n  fi\n\n  DERIVED_DATA_CANDIDATE=\"$(dirname \"${DERIVED_DATA_CANDIDATE}\")\"\ndone\n\n# Grab a reference to the directory where scripts are checked out\nSCRIPT_PATH=\"${DERIVED_DATA_CANDIDATE}/SourcePackages/checkouts/apollo-ios/scripts\"\n\nif [ -z \"${SCRIPT_PATH}\" ]; then\n    echo >&2 \"error: Couldn't find the CLI script in your checked out SPM packages; make sure to add the framework to your project.\"\n    exit 1\nfi\n\ncd \"${SRCROOT}/${TARGET_NAME}\"\n\"${SCRIPT_PATH}\"/run-bundled-codegen.sh codegen:generate --target=swift --includes=./**/*.graphql --localSchemaFile=\"schema.json\" API.swift\n\n#\"${SCRIPT_PATH}\"/run-bundled-codegen.sh schema:download --endpoint=\"https://api.fleet.io.nonprod.caioptimizations.com/graphql\" --header=\"x-api-key: 0FPKgwbkWP6wkOov1jTFO2BLfWhesqBY8dPBZB45\"\n\n\n\n";
 		};
@@ -992,13 +1010,13 @@
 				86B169E729B54FCD0024EFFF /* CustomAlertView.swift in Sources */,
 				861EDE7329B7AFC0003A1C81 /* ArcModel.swift in Sources */,
 				866CDB4C2982F63700ADFB50 /* VehicalDetailsModel.swift in Sources */,
-				86C2BB9E29F1A23D004D4D42 /* API.swift in Sources */,
 				86B908A0297079A9001CAB90 /* WorkOrderViewController.swift in Sources */,
 				861E6ECA2953789B00443F12 /* AppDelegate.swift in Sources */,
 				86AF929429B585AF00FDA4C3 /* InfoPopUpViewController.swift in Sources */,
 				8697905F2A88624600FA6440 /* NetworkManager.swift in Sources */,
 				8609394E29BE6E27001DE232 /* Logger.swift in Sources */,
 				866CDB6A298D743E00ADFB50 /* TestViewModel.swift in Sources */,
+				8632D72C2AC203A600BA612E /* CustomView.swift in Sources */,
 				8639CDB629F7FFF5004E813D /* VehicleVinScannerViewModel.swift in Sources */,
 				861E6EFC29561D1A00443F12 /* VehicalInformationViewController.swift in Sources */,
 				864667A72A436C5100C85ABD /* FirebaseConstants.swift in Sources */,
@@ -1022,6 +1040,7 @@
 				861E6F07295773C100443F12 /* SideMenuCell.swift in Sources */,
 				867BBF7929673D7400DC4842 /* AceliteColors.swift in Sources */,
 				861E6F13295E11BE00443F12 /* ScanBleDevicesViewController.swift in Sources */,
+				8680BF2D2AB3659800A370F9 /* API.swift in Sources */,
 				861EDE7429B7AFC0003A1C81 /* ColorX.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1081,12 +1100,12 @@
 				867200C42A5F91D900C6CBC7 /* CustomAlertView.swift in Sources */,
 				867200C52A5F91D900C6CBC7 /* ArcModel.swift in Sources */,
 				867200C62A5F91D900C6CBC7 /* VehicalDetailsModel.swift in Sources */,
-				867200C72A5F91D900C6CBC7 /* API.swift in Sources */,
 				867200C82A5F91D900C6CBC7 /* WorkOrderViewController.swift in Sources */,
 				867200C92A5F91D900C6CBC7 /* AppDelegate.swift in Sources */,
 				867200CA2A5F91D900C6CBC7 /* InfoPopUpViewController.swift in Sources */,
 				869790642A89461100FA6440 /* OfflineViewController.swift in Sources */,
 				867200CB2A5F91D900C6CBC7 /* Logger.swift in Sources */,
+				8632D72D2AC203A600BA612E /* CustomView.swift in Sources */,
 				867200CC2A5F91D900C6CBC7 /* TestViewModel.swift in Sources */,
 				867200CD2A5F91D900C6CBC7 /* VehicleVinScannerViewModel.swift in Sources */,
 				867200CE2A5F91D900C6CBC7 /* VehicalInformationViewController.swift in Sources */,
@@ -1110,6 +1129,7 @@
 				867200E02A5F91D900C6CBC7 /* SideMenuCell.swift in Sources */,
 				867200E12A5F91D900C6CBC7 /* AceliteColors.swift in Sources */,
 				867200E22A5F91D900C6CBC7 /* ScanBleDevicesViewController.swift in Sources */,
+				8680BF2E2AB365C300A370F9 /* API.swift in Sources */,
 				867200E32A5F91D900C6CBC7 /* ColorX.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

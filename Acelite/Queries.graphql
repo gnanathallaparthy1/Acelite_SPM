@@ -315,6 +315,36 @@ query getS3PreSingedURL($vin:String!){
   }
 }
 
+mutation SubmitBatteryJSONFilesWithStateOfCharge (
+    $Vehicle: SubmitBatteryDataFilesVehicleInput!,
+    $calculateBatteryHealthInput: CalculateBatteryHealthInput!
+){
+    calculateBatteryHealth(
+        vehicle: $Vehicle,
+        calculateBatteryHealthInput: $calculateBatteryHealthInput
+    ) {
+        code
+        message
+        success
+        calculatedBatteryHealth {
+            batteryScore {
+                score
+                grade
+                health
+                factorsUsed {
+                    name
+                    type
+                }
+            }
+            estimatedRange {
+                estimatedRangeMin
+                estimatedRangeMax
+            }
+        }
+    }
+}
+
+
 mutation SubmitBatteryFilesWithStateOfCharge(
 	$Vehicle: SubmitBatteryDataFilesVehicleInput!
 	$submitBatteryDataFilesProps: SubmitBatteryDataFilesPropsInput!

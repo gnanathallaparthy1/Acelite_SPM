@@ -7,32 +7,22 @@
 
 import UIKit
 
-class VehicalInformationViewController: BaseViewController {
+class VehicalInformationViewController:  BaseViewController {
+	
+	@IBOutlet weak var offlineView: UIView!
+	@IBOutlet weak var offlineViewHeight: NSLayoutConstraint!
 	
 	init(viewModel: VehicleInformationViewModel) {
 		super.init(nibName: nil, bundle: nil)
 		self.viewModel = viewModel
 		//super.init()
 	}
-	//gameDetailsViewController.delegate = self
-	
-//	init() {
-//
-//	}
-	
 	required init?(coder: NSCoder) {
 		//form = Form()
 		super.init(coder: coder)
 	}
-
-//	required init?(coder: NSCoder) {
-//		fatalError("init(coder:) has not been implemented")
-//	}
 	var delegate:UpdateVehicleInformationDelegate?
 	public var viewModel: VehicleInformationViewModel?
-	
-	
-	
 	@IBOutlet weak var clearButton: UIButton!{
 		didSet {
 			clearButton.layer.cornerRadius = 5
@@ -77,9 +67,11 @@ class VehicalInformationViewController: BaseViewController {
 	@IBOutlet weak var vimModel: UILabel!
 	@IBOutlet weak var vimYear: UILabel!
 	@IBOutlet weak var vimBodyStyle: UILabel!
-		
-    override func viewDidLoad() {
-        super.viewDidLoad()
+	var networkStatus = NotificationCenter.default
+	let natificationName = NSNotification.Name(rawValue:"InternetObserver")
+	
+	override func viewDidLoad() {
+		super.viewDidLoad()
 		FirebaseLogging.instance.logScreen(screenName: ClassNames.vehicleInformation)
 		viewModel?.delegate = self
 		//self.barcodeTextField.delegate = self
@@ -91,14 +83,13 @@ class VehicalInformationViewController: BaseViewController {
 		self.vimYear.text = "\(String(describing: yr))"
 		self.vimBodyStyle.text = viewModel?.vehicleInformation?.bodyStyle
 		self.vehicleInfoLabel.text = viewModel?.vinNumber
-//		self.nextButton.isUserInteractionEnabled = true
-//		self.nextButton.isEnabled = true
 		nextButton.addTarget(self, action: #selector(self.nextButtonAction(_:)), for: .touchUpInside)
-//		backButton.addTarget(self, action: #selector(self.backButtonAction(_:)), for: .touchUpInside)
 		cancelButton.addTarget(self, action: #selector(self.cancelButtonAction(_:)), for: .touchUpInside)
-		//barcodeTextField.text = "3FA6P0SU1KR191846"
-        // Do any additional setup after loading the view.
-    }
+		// Do any additional setup after loading the view.
+		offlineViewHeight.constant = 0
+		offlineView.isHidden = true
+		addCustomView()
+	}
 	
 	override func viewWillAppear(_ animated: Bool) {
 		self.navigationItem.setHidesBackButton(true, animated:true)
@@ -106,6 +97,46 @@ class VehicalInformationViewController: BaseViewController {
 		let menuBarButton = UIBarButtonItem(image: UIImage(systemName: "line.3.horizontal"), style: .plain, target: self, action: #selector(self.menuButtonAction(_ :)))
 		menuBarButton.tintColor = UIColor.appPrimaryColor()
 		self.navigationItem.leftBarButtonItem  = menuBarButton
+		if  NetworkManager.sharedInstance.reachability.connection == .unavailable {
+			self.showOffile(isShowOfflineView: true)
+		}
+		networkStatus.addObserver(self, selector: #selector(self.showOffileViews(_:)), name: natificationName, object: nil)
+	}
+	
+	private func addCustomView() {
+		let allViewsInXibArray = Bundle.main.loadNibNamed("CustomView", owner: self, options: nil)
+		let view = allViewsInXibArray?.first as! CustomView
+		view.frame = self.offlineView.bounds
+		view.viewType = .WARINING
+		view.arrowButton.isHidden = true
+		view.layer.borderColor = UIColor.offlineViewBorderColor().cgColor
+		view.layer.borderWidth = 4
+		view.layer.cornerRadius = 8
+		view.backgroundColor = .white
+		view.setupView(message: Constants.OFFLINE_MESSAGE)
+		self.offlineView.addSubview(view)
+	}
+	
+	@objc func showOffileViews(_ notification: Notification) {
+		
+		let notificationobject = notification.object as? [String: Any] ?? [:]
+		guard let isShowOfflineView: Bool = notificationobject["isConected"] as? Bool else {
+			return
+		}
+		self.showOffile(isShowOfflineView: isShowOfflineView)
+	}
+	
+	private func showOffile(isShowOfflineView: Bool) {
+		if isShowOfflineView  {
+			offlineViewHeight.constant = 60
+			offlineView.layer.cornerRadius = 8
+			offlineView.layer.borderColor = UIColor.offlineViewBorderColor().cgColor
+			offlineView.layer.borderWidth = 4
+			offlineView.isHidden = false
+		} else {
+			offlineViewHeight.constant = 0
+			offlineView.isHidden = true
+		}
 	}
 	
 	@IBAction func menuButtonAction(_ sender: UIBarButtonItem) {
@@ -119,8 +150,7 @@ class VehicalInformationViewController: BaseViewController {
 		vc.delegate = self
 		self.navigationController?.pushViewController(vc, animated: true)
 	}
-	
-	
+		
 	@IBAction func cancelButtonAction(_ sender: UIButton) {
 		self.navigationController?.popViewController(animated: true)
 	}

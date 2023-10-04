@@ -40,22 +40,36 @@ enum ScreenType {
 		}
 	}
 }
+
+protocol OffileDelegate: AnyObject {
+	func internetStatus(status: Bool)
+}
+
+
 class BaseViewController: UIViewController, OffileViewDelegate {
 	private let notificationCenter = NotificationCenter.default
 	let network = NetworkManager.sharedInstance
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
+	var isNetworkAvailable: Bool = false
+	var baseDelegate: OffileDelegate?
+	override func viewDidLoad() {
+		super.viewDidLoad()
+	}
 	
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		if  NetworkManager.sharedInstance.reachability.connection == .unavailable {
-			self.showOfflinePage()
+			self.networkStatusObserver(isConnected: true)
+			isNetworkAvailable = false
+			self.baseDelegate?.internetStatus(status: true)
+			//self.showOfflinePage()
 		}
 		//else {
 			//status update
 			NetworkManager.sharedInstance.reachability.whenUnreachable = { reachability in
-				self.showOfflinePage()
+				//self.showOfflinePage()
+				self.isNetworkAvailable = false
+				self.baseDelegate?.internetStatus(status: true)
+				self.networkStatusObserver(isConnected: true)
 			}
 		//}
 		notificationCenter.addObserver(self, selector: #selector(self.networkResponse(_:)), name: NSNotification.Name.init(rawValue: "Network"), object: nil)
@@ -66,12 +80,13 @@ class BaseViewController: UIViewController, OffileViewDelegate {
 	@objc func networkResponse(_ notification: Notification) {
 		
 		let notificationobject = notification.object as? [String: Any] ?? [:]
-		let commandResponse = notificationobject["Network"]
-		//print("command Response::::::", commandResponse ?? "")
 		guard let commandResponse: String = notificationobject["Network"] as? String, commandResponse.count > 0 else {
 			return
 		}
 		if commandResponse.contains("unavailable") {
+			self.isNetworkAvailable = false
+			self.baseDelegate?.internetStatus(status: true)
+			networkStatusObserver(isConnected: true)
 			if let vc = self.navigationController?.topViewController {
 				let vcName = NSStringFromClass(vc.classForCoder)
 				// To drop the module name from the string
@@ -99,24 +114,30 @@ class BaseViewController: UIViewController, OffileViewDelegate {
 					default:
 						FirebaseLogging.instance.logEvent(eventName:BluetoothScreenEvents.networkDropped, parameters: ["ScreenName": vcName])
 					}
-					notificationCenter.removeObserver(self)
+					//notificationCenter.removeObserver(self)
 				}
 				
 			}
 		} else {
-			self.dismiss(animated: true)
+			self.isNetworkAvailable = true
+			//self.dismiss(animated: true)
+			self.baseDelegate?.internetStatus(status: false)
+			networkStatusObserver(isConnected: false)
 		}
 		print("network reponse", commandResponse)
 	}
 	
-    
+	func networkStatusObserver(isConnected: Bool) {
+		NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "InternetObserver"), object: ["isConected": isConnected], userInfo: nil)
+	}
+	
 	func showOfflinePage() -> Void {
 		 DispatchQueue.main.async {
-			 let storyBaord = UIStoryboard.init(name: "BatteryHealthCheck", bundle: nil)
-			 let vc = storyBaord.instantiateViewController(withIdentifier: "OfflineViewController") as! OfflineViewController
-			 vc.delegate = self
-			 vc.modalPresentationStyle = .overFullScreen
-			 self.present(vc, animated: true)
+//			 let storyBaord = UIStoryboard.init(name: "BatteryHealthCheck", bundle: nil)
+//			 let vc = storyBaord.instantiateViewController(withIdentifier: "OfflineViewController") as! OfflineViewController
+//			 vc.delegate = self
+//			 vc.modalPresentationStyle = .overFullScreen
+//			 self.present(vc, animated: true)
 		 }
 	 }
 

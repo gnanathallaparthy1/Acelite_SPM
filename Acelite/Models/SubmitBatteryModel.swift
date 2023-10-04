@@ -39,3 +39,31 @@ struct FactorsUsed: Codable {
 struct EstimatedRange: Codable {
 	let estimatedRangeMin, estimatedRangeMax: JSONNull?
 }
+
+
+
+
+// MARK: - Welcome
+struct SubmitJsonData: Codable {
+	var data: JSONDataClass?
+}
+
+// MARK: - DataClass
+struct JSONDataClass: Codable {
+	var calculateBatteryHealth: NewCalculateBatteryHealth?
+}
+
+// MARK: - CalculateBatteryHealth
+struct NewCalculateBatteryHealth: Codable {
+	var code, message: String?
+	var success: Bool?
+	var calculatedBatteryHealth: CalculatedBatteryHealth?
+
+}
+
+struct CalculatedBatteryHealth: Codable {
+	let estimatedRange: EstimatedRange?
+	let batteryScore: BatteryScore?
+}
+
+

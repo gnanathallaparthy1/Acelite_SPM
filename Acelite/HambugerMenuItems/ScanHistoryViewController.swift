@@ -6,7 +6,7 @@
 //
 
 import UIKit
-import CoreData
+
 class ScanHistoryViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
    
     
@@ -44,9 +44,7 @@ class ScanHistoryViewController: UIViewController, UITableViewDelegate, UITableV
 
 	
 	private func loadDataIntoVinArray() {
-		//coredate
-		self.retrieveData()
-		//vinDataArray = userDefaults.object(forKey: "myKey") as? [[String : String]] ?? [[String: String]]()
+		vinDataArray = userDefaults.object(forKey: "myKey") as? [[String : String]] ?? [[String: String]]()
 		if vinDataArray.count > 0 {
 			historyTableView.isHidden = false
 			dataNotAvilableLabel.isHidden = true
@@ -56,32 +54,6 @@ class ScanHistoryViewController: UIViewController, UITableViewDelegate, UITableV
 			dataNotAvilableLabel.isHidden = false
 		}		
 	}
-	
-	func retrieveData() {
-		//As we know that container is set up in the AppDelegates so we need to refer that container.
-		guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
-		//We need to create a context from this container
-		let managedContext = appDelegate.persistentContainer.viewContext
-		//Prepare the request of type NSFetchRequest  for the entity
-		let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "BatteryInstructionsData")
-		do {
-			let result = try managedContext.fetch(fetchRequest)
-			for data in result as! [NSManagedObject] {
-				var dict = [String: String]()
-				dict["dateAndTime"] = data.value(forKey: "dateAndTime") as? String
-				dict["make"] = data.value(forKey: "make") as? String
-				dict["model"] = data.value(forKey: "model") as? String
-				dict["trim"] = data.value(forKey: "trim") as? String
-				dict["vinNumber"] = data.value(forKey: "vinNumber") as? String
-				dict["workOrder"] = data.value(forKey: "workOrder") as? String
-				//print(data.value(forKey: "finalJsonData") as! String)
-				vinDataArray.append(dict)
-			}
-		} catch {
-			print("Failed")
-		}
-	}
-	
 	
 	
 	override func viewWillAppear(_ animated: Bool) {
@@ -103,21 +75,17 @@ class ScanHistoryViewController: UIViewController, UITableViewDelegate, UITableV
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "ScanHistoryCell") as? ScanHistoryTableViewCell
 		let vinData = vinDataArray[indexPath.row]
-		cell?.makeLabel.text = vinData["make"]
-		//cell?.yearLabelValue.text = vinData["Year"]
-		cell?.yearLabelValue.text = "Test 2003"
-		cell?.dateTimeLabelValue.text = vinData["dateAndTime"]
-		//cell?.transectionIdLabelValue.text = vinData["Transaction ID"]
-		cell?.transectionIdLabelValue.text = "Test123456"
-		//cell?.bodyStyleLabelValue.text = vinData["Body Style"]
-		cell?.vinNumberLabelValue.text = vinData["vinNumber"]
-		cell?.modelLabelValue.text = vinData["model"]
-		cell?.workOrderLabelValue.text = vinData["workOrder"]
+		cell?.makeLabel.text = vinData["Make"]
+		cell?.yearLabelValue.text = vinData["Year"]
+		cell?.dateTimeLabelValue.text = vinData["Date-Time"]
+		cell?.transectionIdLabelValue.text = vinData["Transaction ID"]
+		cell?.bodyStyleLabelValue.text = vinData["Body Style"]
+		cell?.vinNumberLabelValue.text = vinData["Vin number"]
+		cell?.modelLabelValue.text = vinData["Model"]
+		cell?.workOrderLabelValue.text = vinData["Work order"]
 		cell?.healthLabelValue.text = vinData["Health"]
-		//cell?.vehicleTitleLabel.text = vinData["Title"]
-		cell?.vehicleTitleLabel.text = "Test Title"
-		//cell?.scoreLabelValue.text = vinData["Score"]
-		cell?.scoreLabelValue.text = "Test No Score"
+		cell?.vehicleTitleLabel.text = vinData["Title"]
+		cell?.scoreLabelValue.text = vinData["Score"]
         return cell ?? UITableViewCell()
         
     }
