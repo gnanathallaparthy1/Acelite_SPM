@@ -56,6 +56,7 @@ class ViewController: BaseViewController {
 	var networkStatus = NotificationCenter.default
 	let natificationName = NSNotification.Name(rawValue:"InternetObserver")
 	var batteryInstructionArray = [[String: Any]]()
+	var managedObject = [NSManagedObject]()
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -100,6 +101,7 @@ class ViewController: BaseViewController {
 		view.frame = self.offlineView.bounds
 		view.viewType = .INFO
 		view.setupView(message: Constants.APP_UNSUBMITTED)
+		view.arrowButton.addTarget(self, action: #selector(navigateVINOfflineDataViewController(_ :)), for: .touchUpInside)
 		self.showOfflineDataMessageView.isHidden = true
 		self.offlineMessageViewHeight.constant = 60
 		showOfflineDataMessageView.frame.size.height = 60
@@ -107,6 +109,8 @@ class ViewController: BaseViewController {
 	}
 	
 	private func getBatteryInstructionData() {
+		self.batteryInstructionArray.removeAll()
+		self.managedObject.removeAll()
 		//As we know that container is set up in the AppDelegates so we need to refer that container.
 		guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
 		//We need to create a context from this container
@@ -116,13 +120,24 @@ class ViewController: BaseViewController {
 		do {
 			let result = try managedContext.fetch(fetchRequest)
 			for data in result as! [NSManagedObject] {
+				self.managedObject.append(data)
 				var instructionDict = [String: Any]()
+				
+				let numberOfCell = data.value(forKey: Constants.NUMBER_OF_CELL)
+				let bms = data.value(forKey: Constants.BMS)
+				let odometer = data.value(forKey: Constants.ODOMETER)
+				let stateOfCharge = data.value(forKey: Constants.STATE_OF_CHARGE)
+				let currentEnergy = data.value(forKey: Constants.CURRENT_ENERGY)
+				
+				instructionDict[Constants.CURRENT_ENERGY] = currentEnergy as? Double
+				instructionDict[Constants.STATE_OF_CHARGE] = stateOfCharge as? Double
+				instructionDict[Constants.ODOMETER] = odometer as? Double
+				instructionDict[Constants.BMS] = bms as? Double
+				instructionDict[Constants.NUMBER_OF_CELL] = numberOfCell as? Int				
 				instructionDict[Constants.DATE_TIME] = data.value(forKey: Constants.DATE_TIME) as? String
 				instructionDict[Constants.FINAL_JSON_DATA] = data.value(forKey: Constants.FINAL_JSON_DATA) as? String
-				instructionDict[Constants.MAKE] = data.value(forKey: Constants.MAKE) as? String
-				instructionDict[Constants.TRIM] = data.value(forKey: Constants.TRIM) as? String
-				instructionDict[Constants.VIN_NUMBER] = data.value(forKey: Constants.VIN_NUMBER) as? String
 				instructionDict[Constants.WORK_ORDER] = data.value(forKey: Constants.WORK_ORDER) as? String
+				instructionDict[Constants.VEHICAL] = data.value(forKey: Constants.VEHICAL) as? String
 				self.batteryInstructionArray.append(instructionDict)
 			}
 		} catch {
@@ -139,6 +154,15 @@ class ViewController: BaseViewController {
 			}
 		})
 		
+	}
+	
+	@IBAction func navigateVINOfflineDataViewController(_ sender: UIButton) {
+		print(Date(), "Navigate to OfflineVINDataVC", to: &Log.log)
+		let storyBaord = UIStoryboard.init(name: "Main", bundle: nil)
+		let vc = storyBaord.instantiateViewController(withIdentifier: "OfflineVINDataViewController") as! OfflineVINDataViewController
+		vc.managedObject = self.managedObject
+		vc.batteryInstructionArray = self.batteryInstructionArray
+		self.navigationController?.pushViewController(vc, animated: true)
 	}
 	
 	@objc func showOffileViews(_ notification: Notification) {

@@ -31,14 +31,14 @@ class UploadAnimationViewController: BaseViewController {
 	public var packCurrentData = [Double]()
 	public var packTemperatureData = [Double]()
 	public var cellVoltageData = [Double]()
-	public var stateOfCharge: Double?
-	public var odometer: Double?
-	public var currentEnerygy: Double?
-	public var numberofCells: Int?
+	public var stateOfCharge: Double? = 0.0
+	public var odometer: Double? = 0.0
+	public var currentEnerygy: Double? = 0.0
+	public var numberofCells: Int? = 0
 	public var multiCellVoltageData = [[Double]]()
-	public var bmsCapacity: Double?
+	public var bmsCapacity: Double? = 0.0
 	public var testInstructionsId: String?
-	public var workOrder: String?
+	public var workOrder: String? = ""
 	private var transactionId: String?
 	private var healthScore: String?
 	var csvDispatchGroup = DispatchGroup()
@@ -52,6 +52,9 @@ class UploadAnimationViewController: BaseViewController {
 	private var uploadFileName: String = ""
 	var networkStatus = NotificationCenter.default
 	let notificationName = NSNotification.Name(rawValue:"InternetObserver")
+	//var managedObject: NSManagedObject?
+
+	
 	func animate() {
 		
 		let jumpDuration: Double = 0.30
@@ -139,21 +142,25 @@ class UploadAnimationViewController: BaseViewController {
 		guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
 		let managedContext = appDelegate.persistentContainer.viewContext
 		let userEntity = NSEntityDescription.entity(forEntityName: "BatteryInstructionsData", in: managedContext)!
-		let vinNumber = self.vehicleInfo?.vin ?? ""
-		let make = self.vehicleInfo?.make ?? ""
-		let model = self.vehicleInfo?.modelName ?? ""
-		let year = self.vehicleInfo?.year ?? 0
-		let trim = self.vehicleInfo?.trimName ?? ""
+		
 		let workOrder = self.workOrder ?? ""
+		
+		// Encode
+		let jsonEncoder = JSONEncoder()
+		let jsonData = try! jsonEncoder.encode(self.vehicleInfo)
+		let vehicalInformation = String(data: jsonData, encoding: String.Encoding.utf8)
+		//print(json)
 		let vidata = NSManagedObject(entity: userEntity, insertInto: managedContext)
 		vidata.setValue(self.getDateAndTime(), forKey: Constants.DATE_TIME)
 		vidata.setValue(self.finalJsonString, forKey: Constants.FINAL_JSON_DATA)
-		vidata.setValue(make, forKey: Constants.MAKE)
-		vidata.setValue(model, forKey: Constants.MODEL)
-		vidata.setValue(trim, forKey: Constants.TRIM)
-		vidata.setValue(vinNumber, forKey: Constants.VIN_NUMBER)
+		vidata.setValue(vehicalInformation, forKey: Constants.VEHICAL)
 		vidata.setValue(workOrder, forKey: Constants.WORK_ORDER)
-		vidata.setValue(year, forKey: Constants.VIN_YEAR)
+		vidata.setValue(bmsCapacity, forKey: Constants.BMS)
+		vidata.setValue(numberofCells, forKey: Constants.NUMBER_OF_CELL)
+		vidata.setValue(stateOfCharge, forKey: Constants.STATE_OF_CHARGE)
+		vidata.setValue(odometer, forKey: Constants.ODOMETER)
+		vidata.setValue(currentEnerygy, forKey: Constants.CURRENT_ENERGY)
+
 		//Now we have set all the values. The next step is to save them inside the Core Data
 		do {
 			try managedContext.save()
@@ -270,7 +277,7 @@ class UploadAnimationViewController: BaseViewController {
 					}
 				}
 				
-			case .failure(let _):
+			case .failure( _):
 				self.offlineAlertViewController()
 				print(Date(), "preSignedResponse Error", to: &Log.log)
 				FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.s3PreSignedUrlError, parameters: nil)
@@ -551,6 +558,7 @@ class UploadAnimationViewController: BaseViewController {
 									self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "Battery Score is Null", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years)
 									return
 								} else {
+									self.deleteUploadedRecordInCoreData()
 									let batteryHealth = submitBatteryData.calculatedBatteryHealth?.batteryScore
 									print("battery health:: SCORE --- \(batteryHealth?.score ?? 0.0)")
 									let storyBaord = UIStoryboard.init(name: "Main", bundle: nil)
@@ -584,6 +592,22 @@ class UploadAnimationViewController: BaseViewController {
 				break
 			}
 		}
+	}
+	
+	private
+	func deleteUploadedRecordInCoreData() {
+		guard let managedObject = self.viewModel?.managedObject else {
+			print(Date(), "CoreData: ManagedOBject is empty", to: &Log.log)
+			return
+		}
+		//As we know that container is set up in the AppDelegates so we need to refer that container.
+		guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+		//We need to create a context from this container
+		let managedContext = appDelegate.persistentContainer.viewContext
+		 managedContext.delete(managedObject)
+		print(Date(), "CoreData: Selected ManagedObject is deleted", to: &Log.log)
+		appDelegate.saveContext()
+		print(Date(), "CoreData: Updated save context", to: &Log.log)
 	}
 	
 	func csvFileUploadingIntoS3Bucket(fileName: String) {
@@ -1011,6 +1035,9 @@ class UploadAnimationViewController: BaseViewController {
 			for workOrderVc in viewControllers {
 				if workOrderVc is WorkOrderViewController {
 					self.navigationController?.popToViewController(workOrderVc, animated: true)
+					break
+				} else {
+					self.navigationController?.popToRootViewController(animated: true)
 					break
 				}
 			}

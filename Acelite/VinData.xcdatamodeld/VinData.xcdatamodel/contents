@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21513" systemVersion="22D68" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21513" systemVersion="22G120" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="BatteryInstructionsData" representedClassName="BatteryInstructionsData" syncable="YES" codeGenerationType="class">
+        <attribute name="batteryInstructionId" optional="YES" attributeType="String"/>
+        <attribute name="bms" optional="YES" attributeType="String"/>
+        <attribute name="currentEnergy" optional="YES" attributeType="String"/>
         <attribute name="dateAndTime" optional="YES" attributeType="String"/>
         <attribute name="finalJsonData" optional="YES" attributeType="String"/>
-        <attribute name="make" optional="YES" attributeType="String"/>
-        <attribute name="model" optional="YES" attributeType="String"/>
-        <attribute name="trim" optional="YES" attributeType="String"/>
-        <attribute name="vinNumber" optional="YES" attributeType="String"/>
+        <attribute name="numberOfCell" optional="YES" attributeType="String"/>
+        <attribute name="odometer" optional="YES" attributeType="String"/>
+        <attribute name="stateOfCharge" optional="YES" attributeType="String"/>
+        <attribute name="vehical" optional="YES" attributeType="String"/>
         <attribute name="workOrder" optional="YES" attributeType="String"/>
-        <attribute name="year" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>
 </model>

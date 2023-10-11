@@ -60,6 +60,12 @@
 		8639CDB329F6FCF8004E813D /* VehicalVINScannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8639CDB229F6FCF8004E813D /* VehicalVINScannerViewController.swift */; };
 		8639CDB629F7FFF5004E813D /* VehicleVinScannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8639CDB529F7FFF5004E813D /* VehicleVinScannerViewModel.swift */; };
 		8639CDB929F852A9004E813D /* ErrorAlertDailogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8639CDB829F852A9004E813D /* ErrorAlertDailogViewController.swift */; };
+		863E76742ACF20DE00CBEEEB /* OfflineVINDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 863E76732ACF20DE00CBEEEB /* OfflineVINDataViewController.swift */; };
+		863E76752ACF20DE00CBEEEB /* OfflineVINDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 863E76732ACF20DE00CBEEEB /* OfflineVINDataViewController.swift */; };
+		863E76782ACF20FB00CBEEEB /* VINDataTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 863E76762ACF20FB00CBEEEB /* VINDataTableViewCell.swift */; };
+		863E76792ACF20FB00CBEEEB /* VINDataTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 863E76762ACF20FB00CBEEEB /* VINDataTableViewCell.swift */; };
+		863E767A2ACF20FB00CBEEEB /* VINDataTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 863E76772ACF20FB00CBEEEB /* VINDataTableViewCell.xib */; };
+		863E767B2ACF20FB00CBEEEB /* VINDataTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 863E76772ACF20FB00CBEEEB /* VINDataTableViewCell.xib */; };
 		864667A72A436C5100C85ABD /* FirebaseConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 864667A52A436C5100C85ABD /* FirebaseConstants.swift */; };
 		864667A82A436C5100C85ABD /* FirebaseLogging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 864667A62A436C5100C85ABD /* FirebaseLogging.swift */; };
 		864667AD2A436D4500C85ABD /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 864667AC2A436D4500C85ABD /* FirebaseAnalytics */; };
@@ -265,6 +271,9 @@
 		8639CDB229F6FCF8004E813D /* VehicalVINScannerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicalVINScannerViewController.swift; sourceTree = "<group>"; };
 		8639CDB529F7FFF5004E813D /* VehicleVinScannerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleVinScannerViewModel.swift; sourceTree = "<group>"; };
 		8639CDB829F852A9004E813D /* ErrorAlertDailogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorAlertDailogViewController.swift; sourceTree = "<group>"; };
+		863E76732ACF20DE00CBEEEB /* OfflineVINDataViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OfflineVINDataViewController.swift; sourceTree = "<group>"; };
+		863E76762ACF20FB00CBEEEB /* VINDataTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VINDataTableViewCell.swift; sourceTree = "<group>"; };
+		863E76772ACF20FB00CBEEEB /* VINDataTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VINDataTableViewCell.xib; sourceTree = "<group>"; };
 		864667A52A436C5100C85ABD /* FirebaseConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FirebaseConstants.swift; path = Acelite/FirebaseConstants.swift; sourceTree = SOURCE_ROOT; };
 		864667A62A436C5100C85ABD /* FirebaseLogging.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FirebaseLogging.swift; path = Acelite/FirebaseLogging.swift; sourceTree = SOURCE_ROOT; };
 		864667C22A4379A300C85ABD /* Acelite.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Acelite.entitlements; sourceTree = "<group>"; };
@@ -399,6 +408,7 @@
 		861E6EC82953789B00443F12 /* Acelite */ = {
 			isa = PBXGroup;
 			children = (
+				863E76722ACF20C000CBEEEB /* OfflineVinData */,
 				8697905B2A88604300FA6440 /* Offline */,
 				864667C22A4379A300C85ABD /* Acelite.entitlements */,
 				86F3786D2A041A6C004601D9 /* Firebases */,
@@ -548,6 +558,24 @@
 				8639CDB829F852A9004E813D /* ErrorAlertDailogViewController.swift */,
 			);
 			path = Alerts;
+			sourceTree = "<group>";
+		};
+		863E76722ACF20C000CBEEEB /* OfflineVinData */ = {
+			isa = PBXGroup;
+			children = (
+				863E767C2ACF210600CBEEEB /* Cell */,
+				863E76732ACF20DE00CBEEEB /* OfflineVINDataViewController.swift */,
+			);
+			path = OfflineVinData;
+			sourceTree = "<group>";
+		};
+		863E767C2ACF210600CBEEEB /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				863E76762ACF20FB00CBEEEB /* VINDataTableViewCell.swift */,
+				863E76772ACF20FB00CBEEEB /* VINDataTableViewCell.xib */,
+			);
+			path = Cell;
 			sourceTree = "<group>";
 		};
 		8651312329CB88C400886134 /* HambugerMenuItems */ = {
@@ -881,6 +909,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8609395529BF8C98001DE232 /* BatteryHealthCheck.storyboard in Resources */,
+				863E767A2ACF20FB00CBEEEB /* VINDataTableViewCell.xib in Resources */,
 				8636D41329CE201C0045BD53 /* TestableTableViewCell.xib in Resources */,
 				861E6ED62953789D00443F12 /* LaunchScreen.storyboard in Resources */,
 				866CDB5A298AD44400ADFB50 /* Queries.graphql in Resources */,
@@ -920,6 +949,7 @@
 				867200F52A5F91D900C6CBC7 /* Queries.graphql in Resources */,
 				8621C7BC2A8D222800CFE0DF /* Acelite_Prod.plist in Resources */,
 				867200F62A5F91D900C6CBC7 /* schema.json in Resources */,
+				863E767B2ACF20FB00CBEEEB /* VINDataTableViewCell.xib in Resources */,
 				867201112A607CF300C6CBC7 /* GoogleService-Info.plist in Resources */,
 				867200F82A5F91D900C6CBC7 /* CustomAlertView.xib in Resources */,
 				867200F92A5F91D900C6CBC7 /* BLETableViewCell.xib in Resources */,
@@ -983,6 +1013,7 @@
 				8636D41129CE201C0045BD53 /* ScanHistoryTableViewCell.swift in Sources */,
 				8636D41829D1430D0045BD53 /* BatteryHealthViewModel.swift in Sources */,
 				8621C7B62A8A8EE900CFE0DF /* BaseViewController.swift in Sources */,
+				863E76742ACF20DE00CBEEEB /* OfflineVINDataViewController.swift in Sources */,
 				8636D41629CE201C0045BD53 /* TestableTableViewCell.swift in Sources */,
 				8636D42229DC88EE0045BD53 /* SubmitBatteryModel.swift in Sources */,
 				8636D41429CE201C0045BD53 /* TestableModelsViewController.swift in Sources */,
@@ -996,6 +1027,7 @@
 				861E6F032957737D00443F12 /* SideMenuModel.swift in Sources */,
 				861E6ECE2953789B00443F12 /* ViewController.swift in Sources */,
 				8639CDB929F852A9004E813D /* ErrorAlertDailogViewController.swift in Sources */,
+				863E76782ACF20FB00CBEEEB /* VINDataTableViewCell.swift in Sources */,
 				86322CD62A9CF866004E16BB /* VinData.xcdatamodeld in Sources */,
 				861EDE7529B7AFC0003A1C81 /* ABGaugeView.swift in Sources */,
 				869D86AA2968982500503B9C /* BLETableViewCell.swift in Sources */,
@@ -1072,6 +1104,7 @@
 				867200AB2A5F91D900C6CBC7 /* ScanHistoryTableViewCell.swift in Sources */,
 				867200AC2A5F91D900C6CBC7 /* BatteryHealthViewModel.swift in Sources */,
 				8621C7B72A8A8EF000CFE0DF /* BaseViewController.swift in Sources */,
+				863E76752ACF20DE00CBEEEB /* OfflineVINDataViewController.swift in Sources */,
 				867200AD2A5F91D900C6CBC7 /* TestableTableViewCell.swift in Sources */,
 				867200AE2A5F91D900C6CBC7 /* SubmitBatteryModel.swift in Sources */,
 				867200AF2A5F91D900C6CBC7 /* TestableModelsViewController.swift in Sources */,
@@ -1085,6 +1118,7 @@
 				867200B62A5F91D900C6CBC7 /* SpinnerViewController.swift in Sources */,
 				867200B72A5F91D900C6CBC7 /* SideMenuModel.swift in Sources */,
 				867200B82A5F91D900C6CBC7 /* ViewController.swift in Sources */,
+				863E76792ACF20FB00CBEEEB /* VINDataTableViewCell.swift in Sources */,
 				86322CD72A9CF866004E16BB /* VinData.xcdatamodeld in Sources */,
 				867200B92A5F91D900C6CBC7 /* ErrorAlertDailogViewController.swift in Sources */,
 				867200BA2A5F91D900C6CBC7 /* ABGaugeView.swift in Sources */,
