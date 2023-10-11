@@ -248,6 +248,11 @@ class ViewController: BaseViewController {
 		let storyBoard = UIStoryboard.init(name: "Main", bundle: nil)
 		let vehicalVC = storyBoard.instantiateViewController(withIdentifier: "ScanBleDevicesViewController") as! ScanBleDevicesViewController
 		self.navigationController?.pushViewController(vehicalVC, animated: false)
+		
+	}
+	
+	override func navigateToRootView() {
+		print("i am in VC")
 	}
 	
 }
@@ -273,3 +278,17 @@ extension UINavigationController {
 	}
 	
 }
+
+
+/*
+ DispatchQueue.main.async {
+	 let viewModel = OfflineViewModel(message: "Error Message two", submitApiResponse: .ERROR_TWO)
+	 let storyBaord = UIStoryboard.init(name: "BatteryHealthCheck", bundle: nil)
+	 let vc = storyBaord.instantiateViewController(withIdentifier: "OfflineViewController") as! OfflineViewController
+	 vc.delegate = self
+	 vc.viewModel = viewModel
+	 vc.modalPresentationStyle = .overFullScreen
+	 self.present(vc, animated: true)
+ }
+ */
+

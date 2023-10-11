@@ -45,7 +45,7 @@ class UploadAnimationViewController: BaseViewController {
 	var preSignedData: GetS3PreSingedURL?
 	var textCommands = ""
 	var remoteConfig = RemoteConfig.remoteConfig()
-	var isJsonEnabled : Bool = false
+	var isJsonEnabled : Bool = true
 	public var sampledCommandsList = [TestCommandExecution]()
 	var finalJsonString: String = ""
 	private var jsonFilePath: String = ""
@@ -130,7 +130,7 @@ class UploadAnimationViewController: BaseViewController {
 				
 			}
 			remoteConfig.activate()
-			self.isJsonEnabled = remoteConfig.configValue(forKey: "submit_json_version_enabled").boolValue
+			//self.isJsonEnabled = remoteConfig.configValue(forKey: "submit_json_version_enabled").boolValue
 			createJsonDataFile()
 		}
 	}
@@ -965,6 +965,10 @@ class UploadAnimationViewController: BaseViewController {
 		let rootRef = Database.database().reference()
 		let ref = rootRef.child("submit_error_details").childByAutoId()
 		let vinBatteryInfo: [String: String?] = ["battery_test_instructions_id": self.testInstructionsId,"make": vinMake, "message": message, "model": vinModels, "platform": "iOS", "submit_type": submitType, "time_stamp": Constants().currentDateTime(), "transaction_id": transactionID, "vin_number": vinNumber, "year": String(year), "work_order": "\(String(describing: self.workOrder))"]
+		// online - submit api fail- show new sheet
+		//404/ reachabiloty
+		//Based on error code-> sheet - ok- homepage
+	
 		ref.setValue(vinBatteryInfo) {
 			(error:Error?, ref:DatabaseReference) in
 			if let _ = error {
@@ -973,6 +977,7 @@ class UploadAnimationViewController: BaseViewController {
 				//print("Fail data saved successfully!")
 			}
 		}
+		
 		self.stackView.removeFromSuperview()
 		let dialogMessage = UIAlertController(title: "Error", message: "Sorry,something went wrong.Please try again", preferredStyle: .alert)
 		

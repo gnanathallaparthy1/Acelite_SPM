@@ -70,6 +70,7 @@
 		864667B92A436D4500C85ABD /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 864667B82A436D4500C85ABD /* FirebaseMessaging */; };
 		864667BB2A436D4500C85ABD /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = 864667BA2A436D4500C85ABD /* FirebaseRemoteConfig */; };
 		864667BD2A436D4500C85ABD /* FirebaseRemoteConfigSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 864667BC2A436D4500C85ABD /* FirebaseRemoteConfigSwift */; };
+		8648999B2AD718CC003E1132 /* OfflineViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8648999A2AD718CC003E1132 /* OfflineViewModel.swift */; };
 		86636DC729785A14001240FB /* BluetoothServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86636DC629785A14001240FB /* BluetoothServices.swift */; };
 		86636DC9297B0AA2001240FB /* TerminalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86636DC8297B0AA2001240FB /* TerminalViewController.swift */; };
 		866CDB492982E80400ADFB50 /* Apollo in Frameworks */ = {isa = PBXBuildFile; productRef = 866CDB482982E80400ADFB50 /* Apollo */; };
@@ -268,6 +269,7 @@
 		864667A52A436C5100C85ABD /* FirebaseConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FirebaseConstants.swift; path = Acelite/FirebaseConstants.swift; sourceTree = SOURCE_ROOT; };
 		864667A62A436C5100C85ABD /* FirebaseLogging.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FirebaseLogging.swift; path = Acelite/FirebaseLogging.swift; sourceTree = SOURCE_ROOT; };
 		864667C22A4379A300C85ABD /* Acelite.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Acelite.entitlements; sourceTree = "<group>"; };
+		8648999A2AD718CC003E1132 /* OfflineViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineViewModel.swift; sourceTree = "<group>"; };
 		86636DC629785A14001240FB /* BluetoothServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothServices.swift; sourceTree = "<group>"; };
 		86636DC8297B0AA2001240FB /* TerminalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalViewController.swift; sourceTree = "<group>"; };
 		866CDB4B2982F63700ADFB50 /* VehicalDetailsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicalDetailsModel.swift; sourceTree = "<group>"; };
@@ -701,6 +703,7 @@
 			children = (
 				8697905C2A88606500FA6440 /* OfflineViewController.swift */,
 				8621C7B52A8A8EE900CFE0DF /* BaseViewController.swift */,
+				8648999A2AD718CC003E1132 /* OfflineViewModel.swift */,
 			);
 			path = Offline;
 			sourceTree = "<group>";
@@ -1031,6 +1034,7 @@
 				861EDE6D29B7A9F3003A1C81 /* BatteryHealthViewController.swift in Sources */,
 				8697905D2A88606500FA6440 /* OfflineViewController.swift in Sources */,
 				866CDB542982FD3400ADFB50 /* AceLiteServices.swift in Sources */,
+				8648999B2AD718CC003E1132 /* OfflineViewModel.swift in Sources */,
 				8639046C29957ED1008D5A0A /* AceLiteBleWriteCallback.swift in Sources */,
 				866CDB512982FCC100ADFB50 /* Constants.swift in Sources */,
 				86636DC729785A14001240FB /* BluetoothServices.swift in Sources */,

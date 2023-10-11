@@ -333,23 +333,23 @@ class BatteryHealthCheckViewController:  BaseViewController {
 		var timerValue: NSNumber?
 		switch batteryHealthInstruction {
 		case .startTheCar:
-			//timerValue = 60000
-			timerValue = RemoteConfig.remoteConfig().configValue(forKey: "firstStepTimeInMs").numberValue
+			timerValue = 60000
+			//timerValue = RemoteConfig.remoteConfig().configValue(forKey: "firstStepTimeInMs").numberValue
 		case .startClimateControls:
-			 //timerValue = 60000
-			timerValue = RemoteConfig.remoteConfig().configValue(forKey: "secondStepTimeInMs").numberValue
+			 timerValue = 60000
+			//timerValue = RemoteConfig.remoteConfig().configValue(forKey: "secondStepTimeInMs").numberValue
 			self.view.layoutSubviews()
 		case .testInProgresInitial:
-			 //timerValue = 60000
-			timerValue = RemoteConfig.remoteConfig().configValue(forKey: "firstStepTimeInMs").numberValue
+			 timerValue = 60000
+			//timerValue = RemoteConfig.remoteConfig().configValue(forKey: "firstStepTimeInMs").numberValue
 			self.view.layoutSubviews()
 		case .turnOffClimateControls:
-			 //timerValue = 60000
-			timerValue = RemoteConfig.remoteConfig().configValue(forKey: "firstStepTimeInMs").numberValue
+			 timerValue = 60000
+			//timerValue = RemoteConfig.remoteConfig().configValue(forKey: "firstStepTimeInMs").numberValue
 		case .testInprogressFinal:
 			self.updateBodyContentView(batteryHealthInstruction: .testInprogressFinal)
-			//timerValue = 60000
-			timerValue = RemoteConfig.remoteConfig().configValue(forKey: "firstStepTimeInMs").numberValue
+			timerValue = 60000
+			//timerValue = RemoteConfig.remoteConfig().configValue(forKey: "firstStepTimeInMs").numberValue
 		}
 		if let timer =  timerValue {
 			secoonds = Int(truncating: timer) / 1000
