@@ -25,7 +25,7 @@ class OfflineViewController: UIViewController {
 		okButton.layer.cornerRadius = 10
 		bttomSheetView.layer.cornerRadius = 10
 		self.view.backgroundColor = UIColor.black.withAlphaComponent(0.5)
-		massageLabel.text = viewModel?.message
+		massageLabel.text = viewModel?.submitApiResponse.message
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {
