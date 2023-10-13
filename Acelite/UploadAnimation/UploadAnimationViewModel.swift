@@ -7,15 +7,20 @@
 
 
 import Foundation
-import Apollo
-import UIKit
-
+import CoreData
 
 class UploadAnimationViewModel {
-	public var delegate: UploadAndSubmitDataDelegate?
-	public var numberOfCells: Int?
-	init(delegate: UploadAndSubmitDataDelegate?, numberOfCells: Int) {
-		self.delegate = delegate
-		self.numberOfCells = numberOfCells
+	
+	
+	var managedObject: NSManagedObject?
+	
+	init(managedObject: NSManagedObject) {
+		self.managedObject = managedObject
 	}
+//	public var delegate: UploadAndSubmitDataDelegate?
+//	public var numberOfCells: Int?
+//	init(delegate: UploadAndSubmitDataDelegate?, numberOfCells: Int) {
+//		self.delegate = delegate
+//		self.numberOfCells = numberOfCells
+//	}
 }

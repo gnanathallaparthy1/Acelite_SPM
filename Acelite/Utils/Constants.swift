@@ -52,14 +52,26 @@ class Constants {
 	static let APP_UNSUBMITTED = "You have unsubmitted test results from runnning tests in offline mode."
 	static let APP_RECONNECT_INTERNET_MESSAGE = "Internet connection is not available, but data will be retained and uploaded when connection is re-established."
 	static let BATTERY_INSTRUCTIONS_DATA = "BatteryInstructionsData"
-	static let DATE_TIME = "dateAndTime"
-	static let  FINAL_JSON_DATA = "finalJsonData"
+
 	static let MAKE = "make"
 	static let TRIM = "trim"
 	static let MODEL = "model"
 	static let VIN_NUMBER = "vinNumber"
-	static let WORK_ORDER = "workOrder"
 	static let VIN_YEAR = "year"
+	static let MID = "mid"
+	
+	static let DATE_TIME = "dateAndTime"
+	static let FINAL_JSON_DATA = "finalJsonData"
+	static let WORK_ORDER = "workOrder"
+	static let VEHICAL = "vehical"
+	static let BMS = "bms"
+	static let STATE_OF_CHARGE = "stateOfCharge"
+	static let ODOMETER = "odometer"
+	static let BATTERY_INSTRUCTION_ID = "batteryInstructionId"
+	static let CURRENT_ENERGY = "currentEnergy"
+	static let NUMBER_OF_CELL = "numberOfCell"
+	
+	
 	func currentDateTime() -> String {
 		let dateFormatter : DateFormatter = DateFormatter()
 		dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"

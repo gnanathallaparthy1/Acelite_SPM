@@ -143,7 +143,12 @@ class BatteryHealthCheckViewModel {
 	}
 	
 	private func runProtocolCommand() {
-		
+		guard let testCommand = vehicleInfo?.getBatteryTestInstructions, testCommand.count > 0 else {
+			return
+		}
+		let testCommands = testCommand[0].testCommands
+		self.numberOfCells = testCommands?.sampledCommands.cellVoltage.count
+
 			let elmValue = self.elm327ProtocolPreset?.replacingOccurrences(of: "_", with: "")
 			let ATSP_Command = Constants.ATSP + "\(elmValue ?? Constants.DEFAULT_PROTOCOL)" + Constants.NEW_LINE_CHARACTER
 //			Network.shared.bluetoothService?.writeBytesData(data: ATSP_Command, completionHandler: { data in

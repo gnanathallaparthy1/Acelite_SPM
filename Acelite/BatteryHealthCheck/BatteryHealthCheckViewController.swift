@@ -333,23 +333,23 @@ class BatteryHealthCheckViewController:  BaseViewController {
 		var timerValue: NSNumber?
 		switch batteryHealthInstruction {
 		case .startTheCar:
-			timerValue = 60000
-			//timerValue = RemoteConfig.remoteConfig().configValue(forKey: "firstStepTimeInMs").numberValue
+			//timerValue = 60000
+			timerValue = RemoteConfig.remoteConfig().configValue(forKey: "firstStepTimeInMs").numberValue
 		case .startClimateControls:
-			 timerValue = 60000
-			//timerValue = RemoteConfig.remoteConfig().configValue(forKey: "secondStepTimeInMs").numberValue
+			// timerValue = 60000
+			timerValue = RemoteConfig.remoteConfig().configValue(forKey: "secondStepTimeInMs").numberValue
 			self.view.layoutSubviews()
 		case .testInProgresInitial:
-			 timerValue = 60000
-			//timerValue = RemoteConfig.remoteConfig().configValue(forKey: "firstStepTimeInMs").numberValue
+			 //timerValue = 60000
+			timerValue = RemoteConfig.remoteConfig().configValue(forKey: "firstStepTimeInMs").numberValue
 			self.view.layoutSubviews()
 		case .turnOffClimateControls:
-			 timerValue = 60000
-			//timerValue = RemoteConfig.remoteConfig().configValue(forKey: "firstStepTimeInMs").numberValue
+			 //timerValue = 60000
+			timerValue = RemoteConfig.remoteConfig().configValue(forKey: "firstStepTimeInMs").numberValue
 		case .testInprogressFinal:
 			self.updateBodyContentView(batteryHealthInstruction: .testInprogressFinal)
-			timerValue = 60000
-			//timerValue = RemoteConfig.remoteConfig().configValue(forKey: "firstStepTimeInMs").numberValue
+			//timerValue = 60000
+			timerValue = RemoteConfig.remoteConfig().configValue(forKey: "firstStepTimeInMs").numberValue
 		}
 		if let timer =  timerValue {
 			secoonds = Int(truncating: timer) / 1000
@@ -487,24 +487,27 @@ extension BatteryHealthCheckViewController: GetPreSignedUrlDelegate, UploadAndSu
 		let vc = UploadAnimationViewController()
 		if self.viewModel?.isJSON == true {
 			var minVlaue: Int = 0
-			let listCount: [Int] = [self.viewModel?.packVoltageArray.count ?? 0,  self.viewModel?.packCurrentArray.count ?? 0, self.viewModel?.multiCellVoltageArray.count ?? 0]
+			let listCount: [Int] = [self.viewModel?.packVoltageArray.count ?? 0,  self.viewModel?.packCurrentArray.count ?? 0, ((self.viewModel?.multiCellVoltageArray.count ?? 0) / (self.viewModel?.numberOfCells ?? 0)) ]
 		   
 			minVlaue = listCount.min() ?? 0
 			if minVlaue == 0 {
 				print(Date(), "Min Count of the Data Files Not Fullfilled", to: &Log.log)
 				return
 			}
-			
+		 
 			if self.viewModel?.packVoltageArray.count ?? 0 > minVlaue {
-				self.viewModel?.packVoltageArray.removeLast()
+				var pvDiff =  (self.viewModel?.packVoltageArray.count ?? 0) - minVlaue
+				self.viewModel?.packVoltageArray.removeLast(pvDiff)
 			}
 			
 			if self.viewModel?.packCurrentArray.count ?? 0 > minVlaue {
-				self.viewModel?.packCurrentArray.removeLast()
+				let pcDiff =  (self.viewModel?.packCurrentArray.count ?? 0) - minVlaue
+				self.viewModel?.packCurrentArray.removeLast(pcDiff)
 			}
 			
 			if self.viewModel?.multiCellVoltageArray.count ?? 0 > minVlaue {
-				self.viewModel?.multiCellVoltageArray.removeLast()
+				let cvDiff = (self.viewModel?.multiCellVoltageArray.count ?? 0) - minVlaue
+				self.viewModel?.multiCellVoltageArray.removeLast(cvDiff)
 			}
 		
 			let packVoltageScan = ["packVoltageScan": self.viewModel?.packVoltageArray]
@@ -512,7 +515,7 @@ extension BatteryHealthCheckViewController: GetPreSignedUrlDelegate, UploadAndSu
 			let packCellVoltageScan = ["packCellVoltageScan": self.viewModel?.multiCellVoltageArray]
 			
 			let mergedDictionary = packVoltageScan.merged(with: packCurrentScan)
-				   let finalDictionary = mergedDictionary.merged(with: packCellVoltageScan)
+			let finalDictionary = mergedDictionary.merged(with: packCellVoltageScan)
 
 			jsonString = self.convertToJSONString(value: finalDictionary as AnyObject) ?? ""
 			
