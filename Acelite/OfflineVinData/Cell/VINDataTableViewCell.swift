@@ -34,10 +34,10 @@ class VINDataTableViewCell: UITableViewCell {
 		let vinData = vehicalData.vin
 		let dateTime = data.value(forKey: Constants.DATE_TIME)
 		let workOrder = data.value(forKey: Constants.WORK_ORDER)
-		let ymmt = vehicalData.year
+		let ymmt = "\(vehicalData.year)" + " " + vehicalData.make + " " + vehicalData.modelName + " " + vehicalData.trimName
 		vinLabel.text = "Vin: " + "\(vinData )"
 		dateTimeLable.text = "Date-Time: " + "\(dateTime ?? "")"
-		workOrderLabel.text = "Worker Order: " + "\(workOrder ?? "")"
+		workOrderLabel.text = "Woker Order: " + "\(workOrder ?? "")"
 		ymmtLabel.text = "YMMT: " + "\(ymmt )"
 	}
 	

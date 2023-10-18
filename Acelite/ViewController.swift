@@ -80,7 +80,8 @@ class ViewController: BaseViewController {
 		EAAccessoryManager.shared().registerForLocalNotifications()
 		
 		networkStatus.addObserver(self, selector: #selector(self.showOffileViews(_:)), name: natificationName, object: nil)
-		offlineView.isHidden = false
+		offlineView.isHidden = true
+		viewHeightConstraint.constant = 0
 		self.addCustomView()
 		addOfflineDataMessageCustomView()
 	}

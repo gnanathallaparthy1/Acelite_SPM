@@ -117,6 +117,8 @@ extension OfflineVINDataViewController: UITableViewDataSource, UITableViewDelega
 			vc.currentEnerygy = currentEnergy
 			let numberOfCell = cellData[Constants.NUMBER_OF_CELL] as? Int ?? 0
 			vc.numberofCells = numberOfCell
+			let bmsCapacity: Double =  cellData[Constants.BMS] as? Double ?? 0.0
+			vc.bmsCapacity = bmsCapacity
 			self.navigationController?.pushViewController(vc, animated: true)
 		}
 		

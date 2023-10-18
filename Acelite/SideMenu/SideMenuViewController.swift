@@ -21,7 +21,7 @@ class SideMenuViewController: UIViewController {
 	var menu: [SideMenuModel] = [
 		SideMenuModel(title: "Start Test"),
 		SideMenuModel( title: "Battery Health Scan History"),
-		SideMenuModel(title: "Teastable Models"),
+		SideMenuModel(title: "Testable Models"),
 	]
 	
 	override func viewDidLoad() {
