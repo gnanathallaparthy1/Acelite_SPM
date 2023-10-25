@@ -53,6 +53,7 @@ class UploadAnimationViewController: BaseViewController {
 	private var uploadFileName: String = ""
 	var networkStatus = NotificationCenter.default
 	let notificationName = NSNotification.Name(rawValue:"InternetObserver")
+	var errorSheetSource = ErrorSheetSource.INSTRUCTION_FLOW
 	func animate() {
 		
 		let jumpDuration: Double = 0.30
@@ -150,6 +151,7 @@ class UploadAnimationViewController: BaseViewController {
 		//print(json)
 		let vidata = NSManagedObject(entity: userEntity, insertInto: managedContext)
 		vidata.setValue(self.getDateAndTime(), forKey: Constants.DATE_TIME)
+		//vidata.setValue("2023-10-20 13:25:22", forKey: Constants.DATE_TIME)
 		vidata.setValue(self.finalJsonString, forKey: Constants.FINAL_JSON_DATA)
 		vidata.setValue(vehicalInformation, forKey: Constants.VEHICAL)
 		vidata.setValue(workOrder, forKey: Constants.WORK_ORDER)
@@ -743,6 +745,12 @@ class UploadAnimationViewController: BaseViewController {
 		if errorCode != "" {
 			for item in SubmitApiResponse.allCases {
 				if item.rawValue == errorCode {
+					
+					let paramDictionary = [
+						Parameters.code : item.rawValue,
+						Parameters.source : errorSheetSource.rawValue ]
+					FirebaseLogging.instance.logEvent(eventName:OfflineEvents.offlineErrorSheet, parameters: paramDictionary)
+
 					self.showBottomSheet(message: item)
 					return
 				}

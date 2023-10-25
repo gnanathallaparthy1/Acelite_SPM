@@ -7,6 +7,11 @@
 
 import UIKit
 
+enum ErrorSheetSource: String {
+	case OFFLINE_LIST = "offline_list"
+	case INSTRUCTION_FLOW = "instructions_flow"
+}
+
 protocol OffileViewDelegate: AnyObject {
 	func navigateToRootView()
 }
@@ -22,10 +27,12 @@ class OfflineViewController: UIViewController {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		FirebaseLogging.instance.logEvent(eventName:OfflineEvents.offlineErrorSheet, parameters: nil)
 		okButton.layer.cornerRadius = 10
 		bttomSheetView.layer.cornerRadius = 10
 		self.view.backgroundColor = UIColor.black.withAlphaComponent(0.5)
 		massageLabel.text = viewModel?.submitApiResponse.message
+		
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {

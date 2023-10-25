@@ -170,6 +170,7 @@ class BatteryHealthCheckViewController:  BaseViewController {
 			offlineView.layer.borderColor = UIColor.offlineViewBorderColor().cgColor
 			offlineView.layer.borderWidth = 4
 			offlineView.isHidden = false
+			FirebaseLogging.instance.logEvent(eventName:OfflineEvents.offlineBannerVisible, parameters: nil)
 		} else {
 			offlineViewHeight.constant = 0
 			offlineView.isHidden = true
@@ -485,6 +486,7 @@ extension BatteryHealthCheckViewController: GetPreSignedUrlDelegate, UploadAndSu
 	   timer = nil
 	   var jsonString = ""
 		let vc = UploadAnimationViewController()
+		vc.errorSheetSource = .INSTRUCTION_FLOW
 		if self.viewModel?.isJSON == true {
 			var minVlaue: Int = 0
 			let listCount: [Int] = [self.viewModel?.packVoltageArray.count ?? 0,  self.viewModel?.packCurrentArray.count ?? 0, ((self.viewModel?.multiCellVoltageArray.count ?? 0) / (self.viewModel?.numberOfCells ?? 0)) ]

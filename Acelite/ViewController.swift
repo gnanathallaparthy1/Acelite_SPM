@@ -9,6 +9,8 @@ import UIKit
 import ExternalAccessory
 import UserNotifications
 import CoreData
+import FirebaseDatabase
+import Firebase
 
 enum ScreenState {
 	case ConnectOBDdevice
@@ -57,7 +59,8 @@ class ViewController: BaseViewController {
 	let natificationName = NSNotification.Name(rawValue:"InternetObserver")
 	var batteryInstructionArray = [[String: Any]]()
 	var managedObject = [NSManagedObject]()
-	
+	var offlineHrsLimit: Int = 0
+	var remoteConfig = RemoteConfig.remoteConfig()
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		accessoryManger = EAAccessoryManager.shared()
@@ -84,6 +87,21 @@ class ViewController: BaseViewController {
 		viewHeightConstraint.constant = 0
 		self.addCustomView()
 		addOfflineDataMessageCustomView()
+		getDatabaseTimeLimit()
+	}
+	
+	private func getDatabaseTimeLimit() {
+		
+		remoteConfig.fetch(withExpirationDuration: 0) { [unowned self] (status, error) in
+			guard error == nil else {print("FBase network fail")
+				return
+			}
+		}
+		remoteConfig.activate()
+		let number = remoteConfig.configValue(forKey: "json_files_deletion_interval_in_hours").numberValue
+		print(Date(), "Firebase json delete time interval\(number)", to: &Log.log)
+		self.offlineHrsLimit = Int(truncating: number)
+		print(Date(), "Firebase json delete time interval\(self.offlineHrsLimit)", to: &Log.log)
 	}
 	
 	private func addCustomView() {
@@ -144,17 +162,11 @@ class ViewController: BaseViewController {
 		} catch {
 			print("Failed")
 		}
-		
-		DispatchQueue.main.async(execute: {
-			if self.batteryInstructionArray.count > 0 {
-				self.showOfflineDataMessageView.isHidden = false
-				self.offlineMessageViewHeight.constant = 60
-			} else {
-				self.showOfflineDataMessageView.isHidden = true
-				self.offlineMessageViewHeight.constant = 0
-			}
-		})
-		
+
+		if self.managedObject.count > 0 {
+			self.offlineDataTimeDifference()
+		}
+		showOfflineDataActionbutton()
 	}
 	
 	@IBAction func navigateVINOfflineDataViewController(_ sender: UIButton) {
@@ -176,6 +188,7 @@ class ViewController: BaseViewController {
 			viewHeightConstraint.constant = 60
 			offlineView.layer.cornerRadius = 8
 			offlineView.isHidden = false
+			FirebaseLogging.instance.logEvent(eventName:OfflineEvents.offlineBannerVisible, parameters: nil)
 		} else {
 			viewHeightConstraint.constant = 0
 			offlineView.isHidden = true
@@ -275,6 +288,55 @@ class ViewController: BaseViewController {
 		self.navigationController?.pushViewController(vehicalVC, animated: false)
 	}
 	
+	//MARK: - Logic : Based on time difference condition removed DB data
+	private func offlineDataTimeDifference() {
+		//for item in self.managedObject {
+		print(Date(), "Offline Data: Time difference Calculation", to: &Log.log)
+		for (index, item) in self.managedObject.enumerated() {
+			let savedDate: String = item.value(forKey: Constants.DATE_TIME) as! String
+			let formatter = DateFormatter()
+			let calendar = Calendar.current
+			formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+			let startDate = formatter.date(from: savedDate)
+			let diff = calendar.dateComponents([.hour], from: startDate!, to: Date())
+			print("Time Difference",diff)
+			guard let totalHrs = diff.hour, totalHrs > self.offlineHrsLimit else {
+				return
+			}
+			print(Date(), "Offline Data: Time difference -> \(totalHrs)", to: &Log.log)
+			self.deleteUploadedRecordInCoreData(deletedObject: item)
+			self.managedObject.remove(at: index)
+		}
+		self.showOfflineDataActionbutton()
+		
+	}
+	
+	private func showOfflineDataActionbutton() {
+		DispatchQueue.main.async(execute: {
+			if self.managedObject.count > 0 {
+				print("show offline control")
+				self.showOfflineDataMessageView.isHidden = false
+				self.offlineMessageViewHeight.constant = 60
+			} else {
+				print("hide offline control")
+				self.showOfflineDataMessageView.isHidden = true
+				self.offlineMessageViewHeight.constant = 0
+			}
+		})
+	}
+	
+	
+	private func deleteUploadedRecordInCoreData(deletedObject: NSManagedObject) {
+		//As we know that container is set up in the AppDelegates so we need to refer that container.
+		guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+		//We need to create a context from this container
+		let managedContext = appDelegate.persistentContainer.viewContext
+		managedContext.delete(deletedObject)
+		print(Date(), "CoreData: Selected ManagedObject is deleted", to: &Log.log)
+		appDelegate.saveContext()
+		print(Date(), "CoreData: Updated save context", to: &Log.log)
+	}
+		
 }
 
 extension ViewController: UIPopoverPresentationControllerDelegate {

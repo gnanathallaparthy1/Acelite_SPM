@@ -139,6 +139,7 @@ class VehicalVINScannerViewController:  BaseViewController {
 			offlineView.layer.borderColor = UIColor.offlineViewBorderColor().cgColor
 			offlineView.layer.borderWidth = 4
 			offlineView.isHidden = false
+			FirebaseLogging.instance.logEvent(eventName:OfflineEvents.offlineBannerVisible, parameters: nil)
 		} else {
 			offlineViewHeight.constant = 0
 			offlineView.isHidden = true

@@ -28,6 +28,9 @@ class OfflineVINDataViewController: UIViewController {
     }
 	
 	override func viewWillAppear(_ animated: Bool) {
+		FirebaseLogging.instance.logScreen(screenName: ClassNames.offlineTestList)
+		
+		
 		networkStatus.addObserver(self, selector: #selector(self.showOffileViews(_:)), name: natificationName, object: nil)
 		
 		navigationItem.backButtonTitle = ""
@@ -103,6 +106,7 @@ extension OfflineVINDataViewController: UITableViewDataSource, UITableViewDelega
 			
 			
 			let vc = UploadAnimationViewController()
+			vc.errorSheetSource  = .OFFLINE_LIST
 			let viewModel = UploadAnimationViewModel.init(managedObject: dataObject)
 			vc.viewModel = viewModel
 			//vc.managedObject = dataObject ?? NSManagedObject()
@@ -119,6 +123,12 @@ extension OfflineVINDataViewController: UITableViewDataSource, UITableViewDelega
 			vc.numberofCells = numberOfCell
 			let bmsCapacity: Double =  cellData[Constants.BMS] as? Double ?? 0.0
 			vc.bmsCapacity = bmsCapacity
+			
+			let paramDictionary = [
+				Parameters.workOrder: "\(dataObject.value(forKey: Constants.WORK_ORDER) ?? "")",
+				Parameters.batteryTestInstructionsId: "\(dataObject.value(forKey: Constants.BATTERY_INSTRUCTION_ID) ?? "")",
+				Parameters.year: "\(vehicalInfo.year)", Parameters.make : "\(vehicalInfo.make)", Parameters.model: "\(vehicalInfo.modelName)", Parameters.trim: "\(vehicalInfo.trimName)" ]
+			FirebaseLogging.instance.logEvent(eventName:OfflineEvents.offlineUploadTest, parameters: paramDictionary)
 			self.navigationController?.pushViewController(vc, animated: true)
 		}
 		

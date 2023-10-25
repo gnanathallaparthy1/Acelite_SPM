@@ -23,6 +23,7 @@ struct ClassNames {
 	static let confirmation = "confirmation"
 	static let scanHistory = "scan_history"
 	static let testableModels = "testable_models"
+	static let offlineTestList = "offline_tests_list"
 }
 
 struct BluetoothScreenEvents {
@@ -66,6 +67,11 @@ struct ConfirmationScreenEvents {
 	static let confirmation = "confirmation"
 }
 
+struct OfflineEvents {
+	static let offlineUploadTest = "upload_offline_test"
+	static let offlineBannerVisible = "offline_banner_visible"
+	static let offlineErrorSheet = "error_sheet"
+}
 struct Parameters {
 	static let score = "score"
 	static let batteryTestInstructionsId = "batter_test_instructions_id"
@@ -75,8 +81,17 @@ struct Parameters {
 	static let vinNumber = "vin_number"
 	static let error = "error"
 	static let workOrder = "work_order"
+	static let make = "make"
+	static let year = "year"
+	static let model = "model"
+	static let trim = "trim"
+	static let code = "code"
+	static let source = "source"
+	
+	
 }
 struct UserProperties {
 	static let productType = "product_type"
 	static let flowType = "flow_type"
 }
+
