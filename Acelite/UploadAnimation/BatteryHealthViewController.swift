@@ -97,7 +97,7 @@ class BatteryHealthViewController: UIViewController {
 	private func getCurrentDateAndTime() -> String {
 		let dateFormatter : DateFormatter = DateFormatter()
 		//  dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-		dateFormatter.dateFormat = "dd-mm-yyyy HH:mm:ss"
+		dateFormatter.dateFormat = "MM-dd-yyyy HH:mm:ss"
 		let date = Date()
 		let dateString = dateFormatter.string(from: date)
 		return dateString
