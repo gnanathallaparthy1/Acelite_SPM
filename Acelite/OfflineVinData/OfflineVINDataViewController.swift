@@ -97,32 +97,36 @@ extension OfflineVINDataViewController: UITableViewDataSource, UITableViewDelega
 			let dataObject = self.managedObject[sender.tag]
 			print(Date(), "Navigate to UploadAnimationVC", to: &Log.log)
 			let cellData = batteryInstructionArray[sender.tag]
-			let finalJsonData = cellData[Constants.FINAL_JSON_DATA]
+			let finalJsonData: String = cellData[Constants.FINAL_JSON_DATA] as? String ?? ""
 			let vehicalInformation =  "\(cellData[Constants.VEHICAL] ?? "")"
 			// Decode
 			let data = Data(vehicalInformation.utf8)
 			let jsonDecoder = JSONDecoder()
 			let vehicalInfo = try! jsonDecoder.decode(Vehicle.self, from: data)
 			
-			
-			let vc = UploadAnimationViewController()
+			let viewModel = UploadAnimationViewModel.init(vehicleInfo: vehicalInfo, workOrder: "", isShortProfile: finalJsonData.isEmpty ? true : false, managedObject: dataObject)
+			let vc = UploadAnimationViewController(viewModel: viewModel)
 			vc.errorSheetSource  = .OFFLINE_LIST
-			let viewModel = UploadAnimationViewModel.init(managedObject: dataObject)
+			
 			vc.viewModel = viewModel
 			//vc.managedObject = dataObject ?? NSManagedObject()
-			vc.finalJsonString = "\(finalJsonData ?? "")"
+			vc.finalJsonString = "\(finalJsonData )"
 			vc.vehicleInfo = vehicalInfo
 			vc.workOrder = "\(cellData[Constants.WORK_ORDER] ?? "")"
 			let stateOfCharge: Double = cellData[Constants.STATE_OF_CHARGE] as? Double ?? 0.0
 			vc.stateOfCharge = stateOfCharge
+			vc.viewModel?.stateOfCharge = stateOfCharge
 			let odemeter: Double = cellData[Constants.ODOMETER] as? Double ?? 0.0
 			vc.odometer = odemeter
+			vc.viewModel?.odometer = odemeter
 			let currentEnergy = cellData[Constants.CURRENT_ENERGY] as? Double ?? 0.0
 			vc.currentEnerygy = currentEnergy
+			vc.viewModel?.currentEnergy = currentEnergy
 			let numberOfCell = cellData[Constants.NUMBER_OF_CELL] as? Int ?? 0
 			vc.numberofCells = numberOfCell
 			let bmsCapacity: Double =  cellData[Constants.BMS] as? Double ?? 0.0
 			vc.bmsCapacity = bmsCapacity
+			vc.viewModel?.bms = bmsCapacity
 			
 			let paramDictionary = [
 				Parameters.workOrder: "\(dataObject.value(forKey: Constants.WORK_ORDER) ?? "")",

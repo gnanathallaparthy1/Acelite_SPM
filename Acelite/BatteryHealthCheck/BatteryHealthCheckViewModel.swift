@@ -89,18 +89,21 @@ class BatteryHealthCheckViewModel {
 				testCommands?.odometer?.odometerProtocol?.elm327ProtocolPreset else {
 			return
 		}
-		guard let elm327ProtoclStateChange = testCommands?.stateOfHealthCommands?.stateOfCharge?.odometerProtocol?.elm327ProtocolPreset else {
-			return
-		}
+//		guard let elm327ProtoclStateChange = testCommands?.stateOfCharge?.odometerProtocol?.elm327ProtocolPreset else {
+//			return
+//		}
 		guard let elm327Sampled = testCommands?.sampledCommands.sampledCommandsProtocol.elm327ProtocolPreset else { return
 		}
 		if elm327ProtocolOdometer.count > 0 {
 			self.elm327ProtocolPreset = elm327ProtocolOdometer
 			return
-		} else if elm327ProtoclStateChange.count > 0 {
-			self.elm327ProtocolPreset = elm327ProtoclStateChange
-			return
-		} else if elm327Sampled.count > 0 {
+		}
+//		else if elm327ProtoclStateChange.count > 0 {
+//			self.elm327ProtocolPreset = elm327ProtoclStateChange
+//			return
+//		}
+		else
+		if elm327Sampled.count > 0 {
 			self.elm327ProtocolPreset = elm327Sampled
 			return
 		} else {

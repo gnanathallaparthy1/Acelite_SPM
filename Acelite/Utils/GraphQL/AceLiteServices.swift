@@ -15,7 +15,7 @@ import CoreBluetooth
 
 class Network {
 	static let shared = Network()
-	var vehicleInformation:  GetBatteryTestInstructionsQuery.Data?
+	var vehicleInformation:  GetBatteryTestInstruction?
 	var bluetoothService: BluetoothServices?
 	var myPeripheral: CBPeripheral!
 	public var byteDataArray: [UInt8] = []

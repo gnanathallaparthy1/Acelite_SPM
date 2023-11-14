@@ -38,6 +38,9 @@ class BatteryHealthViewController: UIViewController {
 		var dict: [[String: String]] = userDefaults.object(forKey: "myKey") as? [[String : String]] ?? [[String : String]]()
 		dict.append(dictionary)
 		userDefaults.set(dict, forKey: "myKey")
+		if let pheriPheral = Network.shared.myPeripheral {
+			Network.shared.bluetoothService?.disconnectDevice(peripheral: pheriPheral)
+		}
 		self.navigationController?.popToRootViewController(animated: true)
 	}
 	

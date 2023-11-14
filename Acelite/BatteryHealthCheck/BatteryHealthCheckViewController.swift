@@ -7,6 +7,7 @@
 
 import UIKit
 import Firebase
+import CoreData
 
 enum BatteryHealthInstruction: Int {
    case startTheCar = 0
@@ -485,7 +486,8 @@ extension BatteryHealthCheckViewController: GetPreSignedUrlDelegate, UploadAndSu
 	   timer?.invalidate()
 	   timer = nil
 	   var jsonString = ""
-		let vc = UploadAnimationViewController()
+		let vm = UploadAnimationViewModel(vehicleInfo: (self.viewModel?.vehicleInfo)!, workOrder: self.viewModel?.workOrder, isShortProfile: false, managedObject: NSManagedObject())
+		let vc = UploadAnimationViewController(viewModel: vm)
 		vc.errorSheetSource = .INSTRUCTION_FLOW
 		if self.viewModel?.isJSON == true {
 			var minVlaue: Int = 0

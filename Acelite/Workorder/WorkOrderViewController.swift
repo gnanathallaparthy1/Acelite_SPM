@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreData
 
 class WorkOrderViewController: BaseViewController {
 	
@@ -36,12 +37,26 @@ class WorkOrderViewController: BaseViewController {
 			
 		}
 	}
-	
+	@IBOutlet weak var quickTextButton: UIButton! {
+		didSet {
+			quickTextButton.layer.cornerRadius = 8
+		}
+	}
 	@IBOutlet weak var barCodeTextField: UITextField!
 	@objc public weak var delegate: ScannerViewDelegate?
 	var networkStatus = NotificationCenter.default
 	let natificationName = NSNotification.Name(rawValue:"InternetObserver")
+	var viewModel: WorkOrderViewModel?
 	
+	init(viewModel: WorkOrderViewModel) {
+		super.init(nibName: nil, bundle: nil)
+		self.viewModel = viewModel
+		//super.init()
+	}
+
+	required init?(coder: NSCoder) {
+		super.init(coder: coder)
+	}
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		FirebaseLogging.instance.logScreen(screenName: ClassNames.workOrder)
@@ -114,8 +129,18 @@ class WorkOrderViewController: BaseViewController {
 	@IBAction func cancelButtonAction(_ sender: UIButton) {
 		self.navigationController?.popViewController(animated: true)
 	}
+		
+	@IBAction func quickTestButtonAction(_ sender: UIButton) {
+		self.viewModel?.isShortProfile = true
+		navigateToNextViewController()
+	}
 	
 	@IBAction func nextButtonAction(_ sender: UIButton) {
+		self.viewModel?.isShortProfile = false
+		navigateToNextViewController()
+	}
+	
+	private func navigateToNextViewController() {
 		guard let workOrder = self.barCodeTextField?.text, workOrder.count > 0 else {
 			self.showAlertMessage(message: "Please enter valid Work order number.")
 			return
@@ -124,16 +149,24 @@ class WorkOrderViewController: BaseViewController {
 			Parameters.workOrder: self.barCodeTextField?.text?.description ?? "N/A"
 		  ]
 		FirebaseLogging.instance.logEvent(eventName: WorkOrderScreenEvents.workOrderInput, parameters: paramDictionary)
-		let storyBoard = UIStoryboard.init(name: "BatteryHealthCheck", bundle: nil)
-		let testingVC = storyBoard.instantiateViewController(withIdentifier: "BatteryHealthCheckViewController") as! BatteryHealthCheckViewController
 		
-		if let vehicleInfo = self.vehicleInfo {
-			let vm = BatteryHealthCheckViewModel(vehicleInfo: vehicleInfo, workOrder: self.barCodeTextField?.text?.description)
-			testingVC.viewModel = vm
-		}
+		if self.viewModel?.isShortProfile == true {
+			let vm = UploadAnimationViewModel(vehicleInfo: vehicleInfo, workOrder: self.barCodeTextField?.text?.description, isShortProfile: true, managedObject: NSManagedObject())
+			let uploadVC = UploadAnimationViewController(viewModel: vm)
+			uploadVC.workOrder = self.viewModel?.workOrder
+			uploadVC.vehicleInfo = self.vehicleInfo
+			self.navigationController?.pushViewController(uploadVC, animated: true)
+		} else {
 			
-		self.navigationController?.pushViewController(testingVC, animated: true)
-		
+			let storyBoard = UIStoryboard.init(name: "BatteryHealthCheck", bundle: nil)
+			let testingVC = storyBoard.instantiateViewController(withIdentifier: "BatteryHealthCheckViewController") as! BatteryHealthCheckViewController
+			
+			if let vehicleInfo = self.vehicleInfo {
+				let vm = BatteryHealthCheckViewModel(vehicleInfo: vehicleInfo, workOrder: self.barCodeTextField?.text?.description)
+				testingVC.viewModel = vm
+			}
+			self.navigationController?.pushViewController(testingVC, animated: true)
+		}
 	}
 }
 

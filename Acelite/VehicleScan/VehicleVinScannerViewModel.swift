@@ -20,7 +20,7 @@ class VehicleVinScannerViewModel {
 	weak var delegate: PassVehicleInformationDelegate? = nil
 	
 	func fetchVehicalInformation(vim: String)  {
-	   Network.shared.apollo.fetch(query: GetBatteryTestInstructionsQuery(vin: vim)) { result in
+		Network.shared.apollo.fetch(query: VehicleInfoQueryQuery(vin: vim)) { result in
 		   // 3
 		   switch result {
 		   case .success(let graphQLResult):
@@ -98,21 +98,21 @@ class VehicleVinScannerViewModel {
 
 			let odo = TestCommandExecution(type: .ODOMETER , resProtocal: (odometer?.odometerProtocol)!, challenge: (odometer?.challenge)!, response: odometer!.response, validation: odometer!.validation)
 			Network.shared.normalCommandsList.append(odo)
-			let stateOfCharge = command.testCommands?.stateOfHealthCommands?.stateOfCharge
-			let bms = command.testCommands?.stateOfHealthCommands?.bmsCapacity
-			let energyToEmpty = command.testCommands?.stateOfHealthCommands?.energyToEmpty
-			if let elmProtocol  = stateOfCharge?.odometerProtocol, let chal = stateOfCharge?.challenge, let res = stateOfCharge?.response, let val = stateOfCharge?.validation {
+			let stateOfCharge = command.testCommands?.stateOfCharge
+			let bms = command.testCommands?.bmsCapacity
+			let energyToEmpty = command.testCommands?.energyToEmpty
+			if let elmProtocol  = stateOfCharge?.bmsCapacityProtocol, let chal = stateOfCharge?.challenge, let res = stateOfCharge?.response, let val = stateOfCharge?.validation {
 				let soc = TestCommandExecution(type: .STATEOFCHARGE , resProtocal: elmProtocol, challenge: chal, response: res, validation: val)
 				Network.shared.normalCommandsList.append(soc)
 			}
 			
-			if let elmProtocol  = bms?.odometerProtocol, let chal = bms?.challenge, let res = bms?.response, let val = bms?.validation {
+			if let elmProtocol  = bms?.bmsCapacityProtocol, let chal = bms?.challenge, let res = bms?.response, let val = bms?.validation {
 				
 				let bmsComands = TestCommandExecution(type: .BMS_CAPACITY , resProtocal: elmProtocol, challenge: chal, response: res, validation: val)
 				Network.shared.normalCommandsList.append(bmsComands)
 			}
 			
-			if let elmProtocol  = energyToEmpty?.odometerProtocol, let chal = energyToEmpty?.challenge, let res = energyToEmpty?.response, let val = energyToEmpty?.validation {
+			if let elmProtocol  = energyToEmpty?.bmsCapacityProtocol, let chal = energyToEmpty?.challenge, let res = energyToEmpty?.response, let val = energyToEmpty?.validation {
 				
 				let energyToEmptyCommand = TestCommandExecution(type: .ENERGY_TO_EMPTY , resProtocal: elmProtocol, challenge: chal, response: res, validation: val)
 				Network.shared.normalCommandsList.append(energyToEmptyCommand)

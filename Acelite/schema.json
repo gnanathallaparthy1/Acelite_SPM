@@ -905,6 +905,22 @@
             "deprecationReason": null
           },
           {
+            "name": "rating",
+            "description": "The given vehicle's battery rating value, on a scale of 0 to 100 inclusive",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "health",
             "description": "The given vehicle's battery score health value",
             "args": [],
@@ -1267,7 +1283,7 @@
           },
           {
             "name": "diagnosticSession",
-            "description": " on certain models, you must enter diagnostic mode first",
+            "description": "On certain models, you must enter diagnostic mode first",
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "DiagnosticInstructionInput",
@@ -3903,6 +3919,118 @@
         "possibleTypes": null
       },
       {
+        "kind": "INPUT_OBJECT",
+        "name": "ChallengeTestCommandsInput",
+        "description": null,
+        "specifiedByUrl": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "odometer",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "ChallengeInstructionInput",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "bmsCapacity",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "ChallengeInstructionInput",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "stateOfCharge",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "ChallengeInstructionInput",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "energyToEmpty",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "ChallengeInstructionInput",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "sampledCommands",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "SampledCommandsInput",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "batteryAge",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "ChallengeInstructionInput",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "diagnosticSession",
+            "description": "On certain models, you must enter diagnostic mode first",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "DiagnosticInstructionInput",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "miscCommands",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "MiscChallengeInstructionInput",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
         "kind": "OBJECT",
         "name": "ChallengeValidation",
         "description": null,
@@ -4997,6 +5125,66 @@
                 "name": "Float",
                 "ofType": null
               }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "ElectricComponentInformation",
+        "description": null,
+        "specifiedByUrl": null,
+        "fields": [
+          {
+            "name": "batteryRange",
+            "description": "Unit of Measure: miles",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "batteryCapacity",
+            "description": "Unit of Measure: kilowatt hours",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "batteryEnergyCapacity",
+            "description": "Unit of Measure: ampere-hours",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "batteryType",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -8532,6 +8720,127 @@
             "deprecationReason": null
           },
           {
+            "name": "uploadChallengeInstructions",
+            "description": null,
+            "args": [
+              {
+                "name": "startYear",
+                "description": "The start year in the range of years given for a vehicle - A four-digit number to describe approximately when a catalog vehicle was produced and/or sold as 'New' in the market.",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "endYear",
+                "description": "The end year in the range of years given for a vehicle - A four-digit number to describe approximately when a catalog vehicle was produced and/or sold as 'New' in the market.",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "make",
+                "description": "The brand or marquee used to describe the catalog vehicle made by an automotive manufacturer.",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "model",
+                "description": "A standardized version of the Proposed Marketing Model Name that maintains consistency year over year.",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "trim",
+                "description": "A particular version of a model with a particular set of configuration.",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "vehicleProfile",
+                "description": null,
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "VehicleProfileInput",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "testCommands",
+                "description": "Set of test commands to be uploaded",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "ChallengeTestCommandsInput",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "UploadChallengeInstructionResult",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "uploadChallengeInstructionWithSOC",
             "description": null,
             "args": [
@@ -8649,8 +8958,8 @@
                 "ofType": null
               }
             },
-            "isDeprecated": false,
-            "deprecationReason": null
+            "isDeprecated": true,
+            "deprecationReason": "A new endpoint 'uploadChallengeInstructions' has been created which supports nullable fields."
           },
           {
             "name": "uploadChallengeInstructionWithBMS",
@@ -8770,8 +9079,8 @@
                 "ofType": null
               }
             },
-            "isDeprecated": false,
-            "deprecationReason": null
+            "isDeprecated": true,
+            "deprecationReason": "A new endpoint 'uploadChallengeInstructions' has been created which supports nullable fields."
           },
           {
             "name": "uploadBroadcastInstructionWithSOC",
@@ -9537,13 +9846,9 @@
             "name": "filename",
             "description": "The file name of the pack-voltage, pack-current, or cell-voltages JSON file uploaded by the user, which\ncontains the list of voltages collected from the battery pack in volts, the list of currents\ncollected from the battery pack in amps, or the list of cell voltages for each cell in the battery.",
             "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
             },
             "defaultValue": null,
             "isDeprecated": false,
@@ -9553,13 +9858,9 @@
             "name": "transactionId",
             "description": "The unique id used to identify the uploaded files in S3",
             "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
             },
             "defaultValue": null,
             "isDeprecated": false,
@@ -11394,8 +11695,8 @@
                 }
               }
             },
-            "isDeprecated": false,
-            "deprecationReason": null
+            "isDeprecated": true,
+            "deprecationReason": "No longer supported"
           },
           {
             "name": "getFactors",
@@ -14464,7 +14765,7 @@
           },
           {
             "name": "diagnosticSession",
-            "description": " on certain models, you must enter diagnostic mode first",
+            "description": "On certain models, you must enter diagnostic mode first",
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "DiagnosticInstructionInput",
@@ -16116,6 +16417,18 @@
             "deprecationReason": null
           },
           {
+            "name": "electricComponentInformation",
+            "description": "An ElectricComponentInformation object, which contains attributes for electric vehicles",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "ElectricComponentInformation",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "getBatteryHealth",
             "description": null,
             "args": [
@@ -16337,6 +16650,51 @@
                 }
               }
             },
+            "isDeprecated": true,
+            "deprecationReason": "No longer supported"
+          },
+          {
+            "name": "uploadChallengeInstructions",
+            "description": null,
+            "args": [
+              {
+                "name": "vehicleProfile",
+                "description": null,
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "VehicleProfileInput",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "testCommands",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "ChallengeTestCommandsInput",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "UploadChallengeInstructionResult",
+                "ofType": null
+              }
+            },
             "isDeprecated": false,
             "deprecationReason": null
           },
@@ -16382,8 +16740,8 @@
                 "ofType": null
               }
             },
-            "isDeprecated": false,
-            "deprecationReason": null
+            "isDeprecated": true,
+            "deprecationReason": "A new endpoint 'uploadChallengeInstructions' has been created which supports nullable fields."
           },
           {
             "name": "uploadChallengeInstructionWithBMS",
@@ -16427,8 +16785,8 @@
                 "ofType": null
               }
             },
-            "isDeprecated": false,
-            "deprecationReason": null
+            "isDeprecated": true,
+            "deprecationReason": "A new endpoint 'uploadChallengeInstructions' has been created which supports nullable fields."
           },
           {
             "name": "uploadBroadcastInstructionWithSOC",

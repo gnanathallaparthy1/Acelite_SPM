@@ -525,16 +525,16 @@ public struct OBD2TestInput: GraphQLMapConvertible {
   /// calculate estimated range.
   ///   - bmsCapacity: The current BMS capacity in Ah. This will be used to calculate estimated range if stateOfCharge and
   /// currentEnergy are not provided.
-  public init(filename: String, transactionId: String, instructionSetId: Swift.Optional<String?> = nil, odometer: Swift.Optional<Int?> = nil, currentEnergy: Swift.Optional<Double?> = nil, stateOfCharge: Swift.Optional<Double?> = nil, bmsCapacity: Swift.Optional<Double?> = nil) {
+  public init(filename: Swift.Optional<String?> = nil, transactionId: Swift.Optional<String?> = nil, instructionSetId: Swift.Optional<String?> = nil, odometer: Swift.Optional<Int?> = nil, currentEnergy: Swift.Optional<Double?> = nil, stateOfCharge: Swift.Optional<Double?> = nil, bmsCapacity: Swift.Optional<Double?> = nil) {
     graphQLMap = ["filename": filename, "transactionId": transactionId, "instructionSetId": instructionSetId, "odometer": odometer, "currentEnergy": currentEnergy, "stateOfCharge": stateOfCharge, "bmsCapacity": bmsCapacity]
   }
 
   /// The file name of the pack-voltage, pack-current, or cell-voltages JSON file uploaded by the user, which
   /// contains the list of voltages collected from the battery pack in volts, the list of currents
   /// collected from the battery pack in amps, or the list of cell voltages for each cell in the battery.
-  public var filename: String {
+  public var filename: Swift.Optional<String?> {
     get {
-      return graphQLMap["filename"] as! String
+      return graphQLMap["filename"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
     }
     set {
       graphQLMap.updateValue(newValue, forKey: "filename")
@@ -542,9 +542,9 @@ public struct OBD2TestInput: GraphQLMapConvertible {
   }
 
   /// The unique id used to identify the uploaded files in S3
-  public var transactionId: String {
+  public var transactionId: Swift.Optional<String?> {
     get {
-      return graphQLMap["transactionId"] as! String
+      return graphQLMap["transactionId"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
     }
     set {
       graphQLMap.updateValue(newValue, forKey: "transactionId")
@@ -1463,11 +1463,11 @@ public struct BMSCapacityPropsInput: GraphQLMapConvertible {
   }
 }
 
-public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
+public final class VehicleInfoQueryQuery: GraphQLQuery {
   /// The raw GraphQL definition of this operation.
   public let operationDefinition: String =
     """
-    query GetBatteryTestInstructions($vin: String) {
+    query VehicleInfoQuery($vin: String) {
       vehicle(vin: $vin) {
         __typename
         make
@@ -1507,6 +1507,8 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                 }
                 challenge {
                   __typename
+                  canFilter
+                  canMask
                   header
                   pid
                   flowControl {
@@ -1529,106 +1531,103 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                   upperBounds
                 }
               }
-              stateOfHealthCommands {
+              stateOfCharge {
                 __typename
-                ... on ChallengeStateOfChargeCommands {
+                protocol {
                   __typename
-                  stateOfCharge {
+                  elm327ProtocolPreset
+                  obdLinkProtocolPreset
+                }
+                validation {
+                  __typename
+                  upperBounds
+                  lowerBounds
+                  numberOfFrames
+                }
+                challenge {
+                  __typename
+                  canFilter
+                  canMask
+                  header
+                  pid
+                  flowControl {
                     __typename
-                    protocol {
-                      __typename
-                      elm327ProtocolPreset
-                      obdLinkProtocolPreset
-                    }
-                    challenge {
-                      __typename
-                      header
-                      pid
-                      flowControl {
-                        __typename
-                        flowControlHeader
-                        flowControlData
-                      }
-                    }
-                    response {
-                      __typename
-                      startByte
-                      endByte
-                      multiplier
-                      constant
-                    }
-                    validation {
-                      __typename
-                      numberOfFrames
-                      lowerBounds
-                      upperBounds
-                    }
-                  }
-                  energyToEmpty {
-                    __typename
-                    protocol {
-                      __typename
-                      elm327ProtocolPreset
-                      obdLinkProtocolPreset
-                    }
-                    challenge {
-                      __typename
-                      header
-                      pid
-                      flowControl {
-                        __typename
-                        flowControlHeader
-                        flowControlData
-                      }
-                    }
-                    response {
-                      __typename
-                      startByte
-                      endByte
-                      multiplier
-                      constant
-                    }
-                    validation {
-                      __typename
-                      numberOfFrames
-                      lowerBounds
-                      upperBounds
-                    }
+                    flowControlHeader
+                    flowControlData
                   }
                 }
-                ... on ChallengeBMSCapacityCommands {
+                response {
                   __typename
-                  bmsCapacity {
+                  constant
+                  multiplier
+                  startByte
+                  endByte
+                }
+              }
+              energyToEmpty {
+                __typename
+                protocol {
+                  __typename
+                  elm327ProtocolPreset
+                  obdLinkProtocolPreset
+                }
+                challenge {
+                  __typename
+                  canFilter
+                  canMask
+                  header
+                  pid
+                  flowControl {
                     __typename
-                    challenge {
-                      __typename
-                      header
-                      pid
-                      flowControl {
-                        __typename
-                        flowControlHeader
-                        flowControlData
-                      }
-                    }
-                    protocol {
-                      __typename
-                      elm327ProtocolPreset
-                      obdLinkProtocolPreset
-                    }
-                    response {
-                      __typename
-                      constant
-                      endByte
-                      startByte
-                      multiplier
-                    }
-                    validation {
-                      __typename
-                      lowerBounds
-                      upperBounds
-                      numberOfFrames
-                    }
+                    flowControlHeader
+                    flowControlData
                   }
+                }
+                response {
+                  __typename
+                  startByte
+                  endByte
+                  multiplier
+                  constant
+                }
+                validation {
+                  __typename
+                  numberOfFrames
+                  lowerBounds
+                  upperBounds
+                }
+              }
+              bmsCapacity {
+                __typename
+                challenge {
+                  __typename
+                  canFilter
+                  canMask
+                  header
+                  pid
+                  flowControl {
+                    __typename
+                    flowControlHeader
+                    flowControlData
+                  }
+                }
+                protocol {
+                  __typename
+                  elm327ProtocolPreset
+                  obdLinkProtocolPreset
+                }
+                response {
+                  __typename
+                  constant
+                  endByte
+                  startByte
+                  multiplier
+                }
+                validation {
+                  __typename
+                  lowerBounds
+                  upperBounds
+                  numberOfFrames
                 }
               }
               sampledCommands {
@@ -1642,6 +1641,8 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                   __typename
                   challenge {
                     __typename
+                    canFilter
+                    canMask
                     header
                     pid
                     flowControl {
@@ -1673,6 +1674,8 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                   __typename
                   challenge {
                     __typename
+                    canFilter
+                    canMask
                     header
                     pid
                     flowControl {
@@ -1699,6 +1702,8 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                   __typename
                   challenge {
                     __typename
+                    canFilter
+                    canMask
                     header
                     pid
                     flowControl {
@@ -1725,6 +1730,8 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                   __typename
                   challenge {
                     __typename
+                    canFilter
+                    canMask
                     header
                     pid
                     flowControl {
@@ -1762,6 +1769,8 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                 }
                 challenge {
                   __typename
+                  canFilter
+                  canMask
                   header
                   pid
                   flowControl {
@@ -1793,6 +1802,8 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                 }
                 challenge {
                   __typename
+                  canFilter
+                  canMask
                   header
                   pid
                 }
@@ -1804,6 +1815,8 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                   __typename
                   challenge {
                     __typename
+                    canFilter
+                    canMask
                     header
                     pid
                     flowControl {
@@ -1839,7 +1852,7 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
     }
     """
 
-  public let operationName: String = "GetBatteryTestInstructions"
+  public let operationName: String = "VehicleInfoQuery"
 
   public var vin: String?
 
@@ -2103,8 +2116,8 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
             return TestCommand(unsafeResultMap: ["__typename": "BroadcastTestCommands"])
           }
 
-          public static func makeChallengeTestCommands(id: GraphQLID, vehicleProfile: AsChallengeTestCommands.VehicleProfile? = nil, odometer: AsChallengeTestCommands.Odometer? = nil, stateOfHealthCommands: AsChallengeTestCommands.StateOfHealthCommand? = nil, sampledCommands: AsChallengeTestCommands.SampledCommand? = nil, batteryAge: AsChallengeTestCommands.BatteryAge? = nil, diagnosticSession: AsChallengeTestCommands.DiagnosticSession? = nil, miscCommands: [AsChallengeTestCommands.MiscCommand?]? = nil) -> TestCommand {
-            return TestCommand(unsafeResultMap: ["__typename": "ChallengeTestCommands", "id": id, "vehicleProfile": vehicleProfile.flatMap { (value: AsChallengeTestCommands.VehicleProfile) -> ResultMap in value.resultMap }, "odometer": odometer.flatMap { (value: AsChallengeTestCommands.Odometer) -> ResultMap in value.resultMap }, "stateOfHealthCommands": stateOfHealthCommands.flatMap { (value: AsChallengeTestCommands.StateOfHealthCommand) -> ResultMap in value.resultMap }, "sampledCommands": sampledCommands.flatMap { (value: AsChallengeTestCommands.SampledCommand) -> ResultMap in value.resultMap }, "batteryAge": batteryAge.flatMap { (value: AsChallengeTestCommands.BatteryAge) -> ResultMap in value.resultMap }, "diagnosticSession": diagnosticSession.flatMap { (value: AsChallengeTestCommands.DiagnosticSession) -> ResultMap in value.resultMap }, "miscCommands": miscCommands.flatMap { (value: [AsChallengeTestCommands.MiscCommand?]) -> [ResultMap?] in value.map { (value: AsChallengeTestCommands.MiscCommand?) -> ResultMap? in value.flatMap { (value: AsChallengeTestCommands.MiscCommand) -> ResultMap in value.resultMap } } }])
+          public static func makeChallengeTestCommands(id: GraphQLID, vehicleProfile: AsChallengeTestCommands.VehicleProfile? = nil, odometer: AsChallengeTestCommands.Odometer? = nil, stateOfCharge: AsChallengeTestCommands.StateOfCharge? = nil, energyToEmpty: AsChallengeTestCommands.EnergyToEmpty? = nil, bmsCapacity: AsChallengeTestCommands.BmsCapacity? = nil, sampledCommands: AsChallengeTestCommands.SampledCommand? = nil, batteryAge: AsChallengeTestCommands.BatteryAge? = nil, diagnosticSession: AsChallengeTestCommands.DiagnosticSession? = nil, miscCommands: [AsChallengeTestCommands.MiscCommand?]? = nil) -> TestCommand {
+            return TestCommand(unsafeResultMap: ["__typename": "ChallengeTestCommands", "id": id, "vehicleProfile": vehicleProfile.flatMap { (value: AsChallengeTestCommands.VehicleProfile) -> ResultMap in value.resultMap }, "odometer": odometer.flatMap { (value: AsChallengeTestCommands.Odometer) -> ResultMap in value.resultMap }, "stateOfCharge": stateOfCharge.flatMap { (value: AsChallengeTestCommands.StateOfCharge) -> ResultMap in value.resultMap }, "energyToEmpty": energyToEmpty.flatMap { (value: AsChallengeTestCommands.EnergyToEmpty) -> ResultMap in value.resultMap }, "bmsCapacity": bmsCapacity.flatMap { (value: AsChallengeTestCommands.BmsCapacity) -> ResultMap in value.resultMap }, "sampledCommands": sampledCommands.flatMap { (value: AsChallengeTestCommands.SampledCommand) -> ResultMap in value.resultMap }, "batteryAge": batteryAge.flatMap { (value: AsChallengeTestCommands.BatteryAge) -> ResultMap in value.resultMap }, "diagnosticSession": diagnosticSession.flatMap { (value: AsChallengeTestCommands.DiagnosticSession) -> ResultMap in value.resultMap }, "miscCommands": miscCommands.flatMap { (value: [AsChallengeTestCommands.MiscCommand?]) -> [ResultMap?] in value.map { (value: AsChallengeTestCommands.MiscCommand?) -> ResultMap? in value.flatMap { (value: AsChallengeTestCommands.MiscCommand) -> ResultMap in value.resultMap } } }])
           }
 
           public var __typename: String {
@@ -2137,7 +2150,9 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                 GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
                 GraphQLField("vehicleProfile", type: .object(VehicleProfile.selections)),
                 GraphQLField("odometer", type: .object(Odometer.selections)),
-                GraphQLField("stateOfHealthCommands", type: .object(StateOfHealthCommand.selections)),
+                GraphQLField("stateOfCharge", type: .object(StateOfCharge.selections)),
+                GraphQLField("energyToEmpty", type: .object(EnergyToEmpty.selections)),
+                GraphQLField("bmsCapacity", type: .object(BmsCapacity.selections)),
                 GraphQLField("sampledCommands", type: .object(SampledCommand.selections)),
                 GraphQLField("batteryAge", type: .object(BatteryAge.selections)),
                 GraphQLField("diagnosticSession", type: .object(DiagnosticSession.selections)),
@@ -2151,8 +2166,8 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
               self.resultMap = unsafeResultMap
             }
 
-            public init(id: GraphQLID, vehicleProfile: VehicleProfile? = nil, odometer: Odometer? = nil, stateOfHealthCommands: StateOfHealthCommand? = nil, sampledCommands: SampledCommand? = nil, batteryAge: BatteryAge? = nil, diagnosticSession: DiagnosticSession? = nil, miscCommands: [MiscCommand?]? = nil) {
-              self.init(unsafeResultMap: ["__typename": "ChallengeTestCommands", "id": id, "vehicleProfile": vehicleProfile.flatMap { (value: VehicleProfile) -> ResultMap in value.resultMap }, "odometer": odometer.flatMap { (value: Odometer) -> ResultMap in value.resultMap }, "stateOfHealthCommands": stateOfHealthCommands.flatMap { (value: StateOfHealthCommand) -> ResultMap in value.resultMap }, "sampledCommands": sampledCommands.flatMap { (value: SampledCommand) -> ResultMap in value.resultMap }, "batteryAge": batteryAge.flatMap { (value: BatteryAge) -> ResultMap in value.resultMap }, "diagnosticSession": diagnosticSession.flatMap { (value: DiagnosticSession) -> ResultMap in value.resultMap }, "miscCommands": miscCommands.flatMap { (value: [MiscCommand?]) -> [ResultMap?] in value.map { (value: MiscCommand?) -> ResultMap? in value.flatMap { (value: MiscCommand) -> ResultMap in value.resultMap } } }])
+            public init(id: GraphQLID, vehicleProfile: VehicleProfile? = nil, odometer: Odometer? = nil, stateOfCharge: StateOfCharge? = nil, energyToEmpty: EnergyToEmpty? = nil, bmsCapacity: BmsCapacity? = nil, sampledCommands: SampledCommand? = nil, batteryAge: BatteryAge? = nil, diagnosticSession: DiagnosticSession? = nil, miscCommands: [MiscCommand?]? = nil) {
+              self.init(unsafeResultMap: ["__typename": "ChallengeTestCommands", "id": id, "vehicleProfile": vehicleProfile.flatMap { (value: VehicleProfile) -> ResultMap in value.resultMap }, "odometer": odometer.flatMap { (value: Odometer) -> ResultMap in value.resultMap }, "stateOfCharge": stateOfCharge.flatMap { (value: StateOfCharge) -> ResultMap in value.resultMap }, "energyToEmpty": energyToEmpty.flatMap { (value: EnergyToEmpty) -> ResultMap in value.resultMap }, "bmsCapacity": bmsCapacity.flatMap { (value: BmsCapacity) -> ResultMap in value.resultMap }, "sampledCommands": sampledCommands.flatMap { (value: SampledCommand) -> ResultMap in value.resultMap }, "batteryAge": batteryAge.flatMap { (value: BatteryAge) -> ResultMap in value.resultMap }, "diagnosticSession": diagnosticSession.flatMap { (value: DiagnosticSession) -> ResultMap in value.resultMap }, "miscCommands": miscCommands.flatMap { (value: [MiscCommand?]) -> [ResultMap?] in value.map { (value: MiscCommand?) -> ResultMap? in value.flatMap { (value: MiscCommand) -> ResultMap in value.resultMap } } }])
             }
 
             public var __typename: String {
@@ -2192,13 +2207,30 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
               }
             }
 
-            @available(*, deprecated, message: "it is replaced with nullable stateOfCharge, energyToEmpty, and bmsCapacity")
-            public var stateOfHealthCommands: StateOfHealthCommand? {
+            public var stateOfCharge: StateOfCharge? {
               get {
-                return (resultMap["stateOfHealthCommands"] as? ResultMap).flatMap { StateOfHealthCommand(unsafeResultMap: $0) }
+                return (resultMap["stateOfCharge"] as? ResultMap).flatMap { StateOfCharge(unsafeResultMap: $0) }
               }
               set {
-                resultMap.updateValue(newValue?.resultMap, forKey: "stateOfHealthCommands")
+                resultMap.updateValue(newValue?.resultMap, forKey: "stateOfCharge")
+              }
+            }
+
+            public var energyToEmpty: EnergyToEmpty? {
+              get {
+                return (resultMap["energyToEmpty"] as? ResultMap).flatMap { EnergyToEmpty(unsafeResultMap: $0) }
+              }
+              set {
+                resultMap.updateValue(newValue?.resultMap, forKey: "energyToEmpty")
+              }
+            }
+
+            public var bmsCapacity: BmsCapacity? {
+              get {
+                return (resultMap["bmsCapacity"] as? ResultMap).flatMap { BmsCapacity(unsafeResultMap: $0) }
+              }
+              set {
+                resultMap.updateValue(newValue?.resultMap, forKey: "bmsCapacity")
               }
             }
 
@@ -2454,6 +2486,8 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                 public static var selections: [GraphQLSelection] {
                   return [
                     GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("canFilter", type: .scalar(String.self)),
+                    GraphQLField("canMask", type: .scalar(String.self)),
                     GraphQLField("header", type: .nonNull(.scalar(String.self))),
                     GraphQLField("pid", type: .nonNull(.scalar(String.self))),
                     GraphQLField("flowControl", type: .object(FlowControl.selections)),
@@ -2466,8 +2500,8 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                   self.resultMap = unsafeResultMap
                 }
 
-                public init(header: String, pid: String, flowControl: FlowControl? = nil) {
-                  self.init(unsafeResultMap: ["__typename": "Challenge", "header": header, "pid": pid, "flowControl": flowControl.flatMap { (value: FlowControl) -> ResultMap in value.resultMap }])
+                public init(canFilter: String? = nil, canMask: String? = nil, header: String, pid: String, flowControl: FlowControl? = nil) {
+                  self.init(unsafeResultMap: ["__typename": "Challenge", "canFilter": canFilter, "canMask": canMask, "header": header, "pid": pid, "flowControl": flowControl.flatMap { (value: FlowControl) -> ResultMap in value.resultMap }])
                 }
 
                 public var __typename: String {
@@ -2476,6 +2510,24 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                   }
                   set {
                     resultMap.updateValue(newValue, forKey: "__typename")
+                  }
+                }
+
+                public var canFilter: String? {
+                  get {
+                    return resultMap["canFilter"] as? String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "canFilter")
+                  }
+                }
+
+                public var canMask: String? {
+                  get {
+                    return resultMap["canMask"] as? String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "canMask")
                   }
                 }
 
@@ -2695,17 +2747,16 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
               }
             }
 
-            public struct StateOfHealthCommand: GraphQLSelectionSet {
-              public static let possibleTypes: [String] = ["ChallengeStateOfChargeCommands", "ChallengeBMSCapacityCommands"]
+            public struct StateOfCharge: GraphQLSelectionSet {
+              public static let possibleTypes: [String] = ["ChallengeInstruction"]
 
               public static var selections: [GraphQLSelection] {
                 return [
-                  GraphQLTypeCase(
-                    variants: ["ChallengeStateOfChargeCommands": AsChallengeStateOfChargeCommands.selections, "ChallengeBMSCapacityCommands": AsChallengeBmsCapacityCommands.selections],
-                    default: [
-                      GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-                    ]
-                  )
+                  GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                  GraphQLField("protocol", type: .nonNull(.object(`Protocol`.selections))),
+                  GraphQLField("validation", type: .nonNull(.object(Validation.selections))),
+                  GraphQLField("challenge", type: .nonNull(.object(Challenge.selections))),
+                  GraphQLField("response", type: .nonNull(.object(Response.selections))),
                 ]
               }
 
@@ -2715,12 +2766,8 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                 self.resultMap = unsafeResultMap
               }
 
-              public static func makeChallengeStateOfChargeCommands(stateOfCharge: AsChallengeStateOfChargeCommands.StateOfCharge? = nil, energyToEmpty: AsChallengeStateOfChargeCommands.EnergyToEmpty? = nil) -> StateOfHealthCommand {
-                return StateOfHealthCommand(unsafeResultMap: ["__typename": "ChallengeStateOfChargeCommands", "stateOfCharge": stateOfCharge.flatMap { (value: AsChallengeStateOfChargeCommands.StateOfCharge) -> ResultMap in value.resultMap }, "energyToEmpty": energyToEmpty.flatMap { (value: AsChallengeStateOfChargeCommands.EnergyToEmpty) -> ResultMap in value.resultMap }])
-              }
-
-              public static func makeChallengeBMSCapacityCommands(bmsCapacity: AsChallengeBmsCapacityCommands.BmsCapacity? = nil) -> StateOfHealthCommand {
-                return StateOfHealthCommand(unsafeResultMap: ["__typename": "ChallengeBMSCapacityCommands", "bmsCapacity": bmsCapacity.flatMap { (value: AsChallengeBmsCapacityCommands.BmsCapacity) -> ResultMap in value.resultMap }])
+              public init(`protocol`: `Protocol`, validation: Validation, challenge: Challenge, response: Response) {
+                self.init(unsafeResultMap: ["__typename": "ChallengeInstruction", "protocol": `protocol`.resultMap, "validation": validation.resultMap, "challenge": challenge.resultMap, "response": response.resultMap])
               }
 
               public var __typename: String {
@@ -2732,26 +2779,50 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                 }
               }
 
-              public var asChallengeStateOfChargeCommands: AsChallengeStateOfChargeCommands? {
+              public var `protocol`: `Protocol` {
                 get {
-                  if !AsChallengeStateOfChargeCommands.possibleTypes.contains(__typename) { return nil }
-                  return AsChallengeStateOfChargeCommands(unsafeResultMap: resultMap)
+                  return `Protocol`(unsafeResultMap: resultMap["protocol"]! as! ResultMap)
                 }
                 set {
-                  guard let newValue = newValue else { return }
-                  resultMap = newValue.resultMap
+                  resultMap.updateValue(newValue.resultMap, forKey: "protocol")
                 }
               }
 
-              public struct AsChallengeStateOfChargeCommands: GraphQLSelectionSet {
-                public static let possibleTypes: [String] = ["ChallengeStateOfChargeCommands"]
+              public var validation: Validation {
+                get {
+                  return Validation(unsafeResultMap: resultMap["validation"]! as! ResultMap)
+                }
+                set {
+                  resultMap.updateValue(newValue.resultMap, forKey: "validation")
+                }
+              }
+
+              public var challenge: Challenge {
+                get {
+                  return Challenge(unsafeResultMap: resultMap["challenge"]! as! ResultMap)
+                }
+                set {
+                  resultMap.updateValue(newValue.resultMap, forKey: "challenge")
+                }
+              }
+
+              public var response: Response {
+                get {
+                  return Response(unsafeResultMap: resultMap["response"]! as! ResultMap)
+                }
+                set {
+                  resultMap.updateValue(newValue.resultMap, forKey: "response")
+                }
+              }
+
+              public struct `Protocol`: GraphQLSelectionSet {
+                public static let possibleTypes: [String] = ["OBD2Protocol"]
 
                 public static var selections: [GraphQLSelection] {
                   return [
                     GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-                    GraphQLField("stateOfCharge", type: .object(StateOfCharge.selections)),
-                    GraphQLField("energyToEmpty", type: .object(EnergyToEmpty.selections)),
+                    GraphQLField("elm327ProtocolPreset", type: .scalar(ELM327ProtocolPreset.self)),
+                    GraphQLField("obdLinkProtocolPreset", type: .scalar(OBDLinkProtocolPreset.self)),
                   ]
                 }
 
@@ -2761,8 +2832,8 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                   self.resultMap = unsafeResultMap
                 }
 
-                public init(stateOfCharge: StateOfCharge? = nil, energyToEmpty: EnergyToEmpty? = nil) {
-                  self.init(unsafeResultMap: ["__typename": "ChallengeStateOfChargeCommands", "stateOfCharge": stateOfCharge.flatMap { (value: StateOfCharge) -> ResultMap in value.resultMap }, "energyToEmpty": energyToEmpty.flatMap { (value: EnergyToEmpty) -> ResultMap in value.resultMap }])
+                public init(elm327ProtocolPreset: ELM327ProtocolPreset? = nil, obdLinkProtocolPreset: OBDLinkProtocolPreset? = nil) {
+                  self.init(unsafeResultMap: ["__typename": "OBD2Protocol", "elm327ProtocolPreset": elm327ProtocolPreset, "obdLinkProtocolPreset": obdLinkProtocolPreset])
                 }
 
                 public var __typename: String {
@@ -2774,776 +2845,36 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                   }
                 }
 
-                public var stateOfCharge: StateOfCharge? {
+                /// elm327ProtocolPreset will be null if obdLinkProtocolPreset doesn't map to elm327ProtocolPreset ENUM
+                public var elm327ProtocolPreset: ELM327ProtocolPreset? {
                   get {
-                    return (resultMap["stateOfCharge"] as? ResultMap).flatMap { StateOfCharge(unsafeResultMap: $0) }
+                    return resultMap["elm327ProtocolPreset"] as? ELM327ProtocolPreset
                   }
                   set {
-                    resultMap.updateValue(newValue?.resultMap, forKey: "stateOfCharge")
+                    resultMap.updateValue(newValue, forKey: "elm327ProtocolPreset")
                   }
                 }
 
-                public var energyToEmpty: EnergyToEmpty? {
+                /// obdLinkProtocolPreset will be null if options is provided upon on creation
+                public var obdLinkProtocolPreset: OBDLinkProtocolPreset? {
                   get {
-                    return (resultMap["energyToEmpty"] as? ResultMap).flatMap { EnergyToEmpty(unsafeResultMap: $0) }
+                    return resultMap["obdLinkProtocolPreset"] as? OBDLinkProtocolPreset
                   }
                   set {
-                    resultMap.updateValue(newValue?.resultMap, forKey: "energyToEmpty")
-                  }
-                }
-
-                public struct StateOfCharge: GraphQLSelectionSet {
-                  public static let possibleTypes: [String] = ["ChallengeInstruction"]
-
-                  public static var selections: [GraphQLSelection] {
-                    return [
-                      GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-                      GraphQLField("protocol", type: .nonNull(.object(`Protocol`.selections))),
-                      GraphQLField("challenge", type: .nonNull(.object(Challenge.selections))),
-                      GraphQLField("response", type: .nonNull(.object(Response.selections))),
-                      GraphQLField("validation", type: .nonNull(.object(Validation.selections))),
-                    ]
-                  }
-
-                  public private(set) var resultMap: ResultMap
-
-                  public init(unsafeResultMap: ResultMap) {
-                    self.resultMap = unsafeResultMap
-                  }
-
-                  public init(`protocol`: `Protocol`, challenge: Challenge, response: Response, validation: Validation) {
-                    self.init(unsafeResultMap: ["__typename": "ChallengeInstruction", "protocol": `protocol`.resultMap, "challenge": challenge.resultMap, "response": response.resultMap, "validation": validation.resultMap])
-                  }
-
-                  public var __typename: String {
-                    get {
-                      return resultMap["__typename"]! as! String
-                    }
-                    set {
-                      resultMap.updateValue(newValue, forKey: "__typename")
-                    }
-                  }
-
-                  public var `protocol`: `Protocol` {
-                    get {
-                      return `Protocol`(unsafeResultMap: resultMap["protocol"]! as! ResultMap)
-                    }
-                    set {
-                      resultMap.updateValue(newValue.resultMap, forKey: "protocol")
-                    }
-                  }
-
-                  public var challenge: Challenge {
-                    get {
-                      return Challenge(unsafeResultMap: resultMap["challenge"]! as! ResultMap)
-                    }
-                    set {
-                      resultMap.updateValue(newValue.resultMap, forKey: "challenge")
-                    }
-                  }
-
-                  public var response: Response {
-                    get {
-                      return Response(unsafeResultMap: resultMap["response"]! as! ResultMap)
-                    }
-                    set {
-                      resultMap.updateValue(newValue.resultMap, forKey: "response")
-                    }
-                  }
-
-                  public var validation: Validation {
-                    get {
-                      return Validation(unsafeResultMap: resultMap["validation"]! as! ResultMap)
-                    }
-                    set {
-                      resultMap.updateValue(newValue.resultMap, forKey: "validation")
-                    }
-                  }
-
-                  public struct `Protocol`: GraphQLSelectionSet {
-                    public static let possibleTypes: [String] = ["OBD2Protocol"]
-
-                    public static var selections: [GraphQLSelection] {
-                      return [
-                        GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-                        GraphQLField("elm327ProtocolPreset", type: .scalar(ELM327ProtocolPreset.self)),
-                        GraphQLField("obdLinkProtocolPreset", type: .scalar(OBDLinkProtocolPreset.self)),
-                      ]
-                    }
-
-                    public private(set) var resultMap: ResultMap
-
-                    public init(unsafeResultMap: ResultMap) {
-                      self.resultMap = unsafeResultMap
-                    }
-
-                    public init(elm327ProtocolPreset: ELM327ProtocolPreset? = nil, obdLinkProtocolPreset: OBDLinkProtocolPreset? = nil) {
-                      self.init(unsafeResultMap: ["__typename": "OBD2Protocol", "elm327ProtocolPreset": elm327ProtocolPreset, "obdLinkProtocolPreset": obdLinkProtocolPreset])
-                    }
-
-                    public var __typename: String {
-                      get {
-                        return resultMap["__typename"]! as! String
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "__typename")
-                      }
-                    }
-
-                    /// elm327ProtocolPreset will be null if obdLinkProtocolPreset doesn't map to elm327ProtocolPreset ENUM
-                    public var elm327ProtocolPreset: ELM327ProtocolPreset? {
-                      get {
-                        return resultMap["elm327ProtocolPreset"] as? ELM327ProtocolPreset
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "elm327ProtocolPreset")
-                      }
-                    }
-
-                    /// obdLinkProtocolPreset will be null if options is provided upon on creation
-                    public var obdLinkProtocolPreset: OBDLinkProtocolPreset? {
-                      get {
-                        return resultMap["obdLinkProtocolPreset"] as? OBDLinkProtocolPreset
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "obdLinkProtocolPreset")
-                      }
-                    }
-                  }
-
-                  public struct Challenge: GraphQLSelectionSet {
-                    public static let possibleTypes: [String] = ["Challenge"]
-
-                    public static var selections: [GraphQLSelection] {
-                      return [
-                        GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-                        GraphQLField("header", type: .nonNull(.scalar(String.self))),
-                        GraphQLField("pid", type: .nonNull(.scalar(String.self))),
-                        GraphQLField("flowControl", type: .object(FlowControl.selections)),
-                      ]
-                    }
-
-                    public private(set) var resultMap: ResultMap
-
-                    public init(unsafeResultMap: ResultMap) {
-                      self.resultMap = unsafeResultMap
-                    }
-
-                    public init(header: String, pid: String, flowControl: FlowControl? = nil) {
-                      self.init(unsafeResultMap: ["__typename": "Challenge", "header": header, "pid": pid, "flowControl": flowControl.flatMap { (value: FlowControl) -> ResultMap in value.resultMap }])
-                    }
-
-                    public var __typename: String {
-                      get {
-                        return resultMap["__typename"]! as! String
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "__typename")
-                      }
-                    }
-
-                    public var header: String {
-                      get {
-                        return resultMap["header"]! as! String
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "header")
-                      }
-                    }
-
-                    /// OBD-II PIDs; 8 bytes of data in hex. (Pad right if you not provided)
-                    public var pid: String {
-                      get {
-                        return resultMap["pid"]! as! String
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "pid")
-                      }
-                    }
-
-                    public var flowControl: FlowControl? {
-                      get {
-                        return (resultMap["flowControl"] as? ResultMap).flatMap { FlowControl(unsafeResultMap: $0) }
-                      }
-                      set {
-                        resultMap.updateValue(newValue?.resultMap, forKey: "flowControl")
-                      }
-                    }
-
-                    public struct FlowControl: GraphQLSelectionSet {
-                      public static let possibleTypes: [String] = ["FlowControl"]
-
-                      public static var selections: [GraphQLSelection] {
-                        return [
-                          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-                          GraphQLField("flowControlHeader", type: .nonNull(.scalar(String.self))),
-                          GraphQLField("flowControlData", type: .nonNull(.scalar(String.self))),
-                        ]
-                      }
-
-                      public private(set) var resultMap: ResultMap
-
-                      public init(unsafeResultMap: ResultMap) {
-                        self.resultMap = unsafeResultMap
-                      }
-
-                      public init(flowControlHeader: String, flowControlData: String) {
-                        self.init(unsafeResultMap: ["__typename": "FlowControl", "flowControlHeader": flowControlHeader, "flowControlData": flowControlData])
-                      }
-
-                      public var __typename: String {
-                        get {
-                          return resultMap["__typename"]! as! String
-                        }
-                        set {
-                          resultMap.updateValue(newValue, forKey: "__typename")
-                        }
-                      }
-
-                      public var flowControlHeader: String {
-                        get {
-                          return resultMap["flowControlHeader"]! as! String
-                        }
-                        set {
-                          resultMap.updateValue(newValue, forKey: "flowControlHeader")
-                        }
-                      }
-
-                      public var flowControlData: String {
-                        get {
-                          return resultMap["flowControlData"]! as! String
-                        }
-                        set {
-                          resultMap.updateValue(newValue, forKey: "flowControlData")
-                        }
-                      }
-                    }
-                  }
-
-                  public struct Response: GraphQLSelectionSet {
-                    public static let possibleTypes: [String] = ["ChallengeResponse"]
-
-                    public static var selections: [GraphQLSelection] {
-                      return [
-                        GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-                        GraphQLField("startByte", type: .nonNull(.scalar(Int.self))),
-                        GraphQLField("endByte", type: .nonNull(.scalar(Int.self))),
-                        GraphQLField("multiplier", type: .nonNull(.scalar(Double.self))),
-                        GraphQLField("constant", type: .nonNull(.scalar(Double.self))),
-                      ]
-                    }
-
-                    public private(set) var resultMap: ResultMap
-
-                    public init(unsafeResultMap: ResultMap) {
-                      self.resultMap = unsafeResultMap
-                    }
-
-                    public init(startByte: Int, endByte: Int, multiplier: Double, constant: Double) {
-                      self.init(unsafeResultMap: ["__typename": "ChallengeResponse", "startByte": startByte, "endByte": endByte, "multiplier": multiplier, "constant": constant])
-                    }
-
-                    public var __typename: String {
-                      get {
-                        return resultMap["__typename"]! as! String
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "__typename")
-                      }
-                    }
-
-                    /// The first byte of relevant data
-                    public var startByte: Int {
-                      get {
-                        return resultMap["startByte"]! as! Int
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "startByte")
-                      }
-                    }
-
-                    /// The last byte of relevant data
-                    public var endByte: Int {
-                      get {
-                        return resultMap["endByte"]! as! Int
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "endByte")
-                      }
-                    }
-
-                    /// multiplier to apply to bytes hex value.
-                    /// hexToDec(Bytes Value) * multiplier + constant = Human Readable value
-                    public var multiplier: Double {
-                      get {
-                        return resultMap["multiplier"]! as! Double
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "multiplier")
-                      }
-                    }
-
-                    /// constant to add to bytes hex value.
-                    /// hexToDec(Bytes Value) * multiplier + constant = Human Readable value
-                    public var constant: Double {
-                      get {
-                        return resultMap["constant"]! as! Double
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "constant")
-                      }
-                    }
-                  }
-
-                  public struct Validation: GraphQLSelectionSet {
-                    public static let possibleTypes: [String] = ["ChallengeValidation"]
-
-                    public static var selections: [GraphQLSelection] {
-                      return [
-                        GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-                        GraphQLField("numberOfFrames", type: .nonNull(.scalar(Int.self))),
-                        GraphQLField("lowerBounds", type: .nonNull(.scalar(Double.self))),
-                        GraphQLField("upperBounds", type: .nonNull(.scalar(Double.self))),
-                      ]
-                    }
-
-                    public private(set) var resultMap: ResultMap
-
-                    public init(unsafeResultMap: ResultMap) {
-                      self.resultMap = unsafeResultMap
-                    }
-
-                    public init(numberOfFrames: Int, lowerBounds: Double, upperBounds: Double) {
-                      self.init(unsafeResultMap: ["__typename": "ChallengeValidation", "numberOfFrames": numberOfFrames, "lowerBounds": lowerBounds, "upperBounds": upperBounds])
-                    }
-
-                    public var __typename: String {
-                      get {
-                        return resultMap["__typename"]! as! String
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "__typename")
-                      }
-                    }
-
-                    /// number of expected frames
-                    public var numberOfFrames: Int {
-                      get {
-                        return resultMap["numberOfFrames"]! as! Int
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "numberOfFrames")
-                      }
-                    }
-
-                    /// Lowest possible value after applying multiplier + constant
-                    public var lowerBounds: Double {
-                      get {
-                        return resultMap["lowerBounds"]! as! Double
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "lowerBounds")
-                      }
-                    }
-
-                    /// Highest possible value after applying multiplier + constant
-                    public var upperBounds: Double {
-                      get {
-                        return resultMap["upperBounds"]! as! Double
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "upperBounds")
-                      }
-                    }
-                  }
-                }
-
-                public struct EnergyToEmpty: GraphQLSelectionSet {
-                  public static let possibleTypes: [String] = ["ChallengeInstruction"]
-
-                  public static var selections: [GraphQLSelection] {
-                    return [
-                      GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-                      GraphQLField("protocol", type: .nonNull(.object(`Protocol`.selections))),
-                      GraphQLField("challenge", type: .nonNull(.object(Challenge.selections))),
-                      GraphQLField("response", type: .nonNull(.object(Response.selections))),
-                      GraphQLField("validation", type: .nonNull(.object(Validation.selections))),
-                    ]
-                  }
-
-                  public private(set) var resultMap: ResultMap
-
-                  public init(unsafeResultMap: ResultMap) {
-                    self.resultMap = unsafeResultMap
-                  }
-
-                  public init(`protocol`: `Protocol`, challenge: Challenge, response: Response, validation: Validation) {
-                    self.init(unsafeResultMap: ["__typename": "ChallengeInstruction", "protocol": `protocol`.resultMap, "challenge": challenge.resultMap, "response": response.resultMap, "validation": validation.resultMap])
-                  }
-
-                  public var __typename: String {
-                    get {
-                      return resultMap["__typename"]! as! String
-                    }
-                    set {
-                      resultMap.updateValue(newValue, forKey: "__typename")
-                    }
-                  }
-
-                  public var `protocol`: `Protocol` {
-                    get {
-                      return `Protocol`(unsafeResultMap: resultMap["protocol"]! as! ResultMap)
-                    }
-                    set {
-                      resultMap.updateValue(newValue.resultMap, forKey: "protocol")
-                    }
-                  }
-
-                  public var challenge: Challenge {
-                    get {
-                      return Challenge(unsafeResultMap: resultMap["challenge"]! as! ResultMap)
-                    }
-                    set {
-                      resultMap.updateValue(newValue.resultMap, forKey: "challenge")
-                    }
-                  }
-
-                  public var response: Response {
-                    get {
-                      return Response(unsafeResultMap: resultMap["response"]! as! ResultMap)
-                    }
-                    set {
-                      resultMap.updateValue(newValue.resultMap, forKey: "response")
-                    }
-                  }
-
-                  public var validation: Validation {
-                    get {
-                      return Validation(unsafeResultMap: resultMap["validation"]! as! ResultMap)
-                    }
-                    set {
-                      resultMap.updateValue(newValue.resultMap, forKey: "validation")
-                    }
-                  }
-
-                  public struct `Protocol`: GraphQLSelectionSet {
-                    public static let possibleTypes: [String] = ["OBD2Protocol"]
-
-                    public static var selections: [GraphQLSelection] {
-                      return [
-                        GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-                        GraphQLField("elm327ProtocolPreset", type: .scalar(ELM327ProtocolPreset.self)),
-                        GraphQLField("obdLinkProtocolPreset", type: .scalar(OBDLinkProtocolPreset.self)),
-                      ]
-                    }
-
-                    public private(set) var resultMap: ResultMap
-
-                    public init(unsafeResultMap: ResultMap) {
-                      self.resultMap = unsafeResultMap
-                    }
-
-                    public init(elm327ProtocolPreset: ELM327ProtocolPreset? = nil, obdLinkProtocolPreset: OBDLinkProtocolPreset? = nil) {
-                      self.init(unsafeResultMap: ["__typename": "OBD2Protocol", "elm327ProtocolPreset": elm327ProtocolPreset, "obdLinkProtocolPreset": obdLinkProtocolPreset])
-                    }
-
-                    public var __typename: String {
-                      get {
-                        return resultMap["__typename"]! as! String
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "__typename")
-                      }
-                    }
-
-                    /// elm327ProtocolPreset will be null if obdLinkProtocolPreset doesn't map to elm327ProtocolPreset ENUM
-                    public var elm327ProtocolPreset: ELM327ProtocolPreset? {
-                      get {
-                        return resultMap["elm327ProtocolPreset"] as? ELM327ProtocolPreset
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "elm327ProtocolPreset")
-                      }
-                    }
-
-                    /// obdLinkProtocolPreset will be null if options is provided upon on creation
-                    public var obdLinkProtocolPreset: OBDLinkProtocolPreset? {
-                      get {
-                        return resultMap["obdLinkProtocolPreset"] as? OBDLinkProtocolPreset
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "obdLinkProtocolPreset")
-                      }
-                    }
-                  }
-
-                  public struct Challenge: GraphQLSelectionSet {
-                    public static let possibleTypes: [String] = ["Challenge"]
-
-                    public static var selections: [GraphQLSelection] {
-                      return [
-                        GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-                        GraphQLField("header", type: .nonNull(.scalar(String.self))),
-                        GraphQLField("pid", type: .nonNull(.scalar(String.self))),
-                        GraphQLField("flowControl", type: .object(FlowControl.selections)),
-                      ]
-                    }
-
-                    public private(set) var resultMap: ResultMap
-
-                    public init(unsafeResultMap: ResultMap) {
-                      self.resultMap = unsafeResultMap
-                    }
-
-                    public init(header: String, pid: String, flowControl: FlowControl? = nil) {
-                      self.init(unsafeResultMap: ["__typename": "Challenge", "header": header, "pid": pid, "flowControl": flowControl.flatMap { (value: FlowControl) -> ResultMap in value.resultMap }])
-                    }
-
-                    public var __typename: String {
-                      get {
-                        return resultMap["__typename"]! as! String
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "__typename")
-                      }
-                    }
-
-                    public var header: String {
-                      get {
-                        return resultMap["header"]! as! String
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "header")
-                      }
-                    }
-
-                    /// OBD-II PIDs; 8 bytes of data in hex. (Pad right if you not provided)
-                    public var pid: String {
-                      get {
-                        return resultMap["pid"]! as! String
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "pid")
-                      }
-                    }
-
-                    public var flowControl: FlowControl? {
-                      get {
-                        return (resultMap["flowControl"] as? ResultMap).flatMap { FlowControl(unsafeResultMap: $0) }
-                      }
-                      set {
-                        resultMap.updateValue(newValue?.resultMap, forKey: "flowControl")
-                      }
-                    }
-
-                    public struct FlowControl: GraphQLSelectionSet {
-                      public static let possibleTypes: [String] = ["FlowControl"]
-
-                      public static var selections: [GraphQLSelection] {
-                        return [
-                          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-                          GraphQLField("flowControlHeader", type: .nonNull(.scalar(String.self))),
-                          GraphQLField("flowControlData", type: .nonNull(.scalar(String.self))),
-                        ]
-                      }
-
-                      public private(set) var resultMap: ResultMap
-
-                      public init(unsafeResultMap: ResultMap) {
-                        self.resultMap = unsafeResultMap
-                      }
-
-                      public init(flowControlHeader: String, flowControlData: String) {
-                        self.init(unsafeResultMap: ["__typename": "FlowControl", "flowControlHeader": flowControlHeader, "flowControlData": flowControlData])
-                      }
-
-                      public var __typename: String {
-                        get {
-                          return resultMap["__typename"]! as! String
-                        }
-                        set {
-                          resultMap.updateValue(newValue, forKey: "__typename")
-                        }
-                      }
-
-                      public var flowControlHeader: String {
-                        get {
-                          return resultMap["flowControlHeader"]! as! String
-                        }
-                        set {
-                          resultMap.updateValue(newValue, forKey: "flowControlHeader")
-                        }
-                      }
-
-                      public var flowControlData: String {
-                        get {
-                          return resultMap["flowControlData"]! as! String
-                        }
-                        set {
-                          resultMap.updateValue(newValue, forKey: "flowControlData")
-                        }
-                      }
-                    }
-                  }
-
-                  public struct Response: GraphQLSelectionSet {
-                    public static let possibleTypes: [String] = ["ChallengeResponse"]
-
-                    public static var selections: [GraphQLSelection] {
-                      return [
-                        GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-                        GraphQLField("startByte", type: .nonNull(.scalar(Int.self))),
-                        GraphQLField("endByte", type: .nonNull(.scalar(Int.self))),
-                        GraphQLField("multiplier", type: .nonNull(.scalar(Double.self))),
-                        GraphQLField("constant", type: .nonNull(.scalar(Double.self))),
-                      ]
-                    }
-
-                    public private(set) var resultMap: ResultMap
-
-                    public init(unsafeResultMap: ResultMap) {
-                      self.resultMap = unsafeResultMap
-                    }
-
-                    public init(startByte: Int, endByte: Int, multiplier: Double, constant: Double) {
-                      self.init(unsafeResultMap: ["__typename": "ChallengeResponse", "startByte": startByte, "endByte": endByte, "multiplier": multiplier, "constant": constant])
-                    }
-
-                    public var __typename: String {
-                      get {
-                        return resultMap["__typename"]! as! String
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "__typename")
-                      }
-                    }
-
-                    /// The first byte of relevant data
-                    public var startByte: Int {
-                      get {
-                        return resultMap["startByte"]! as! Int
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "startByte")
-                      }
-                    }
-
-                    /// The last byte of relevant data
-                    public var endByte: Int {
-                      get {
-                        return resultMap["endByte"]! as! Int
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "endByte")
-                      }
-                    }
-
-                    /// multiplier to apply to bytes hex value.
-                    /// hexToDec(Bytes Value) * multiplier + constant = Human Readable value
-                    public var multiplier: Double {
-                      get {
-                        return resultMap["multiplier"]! as! Double
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "multiplier")
-                      }
-                    }
-
-                    /// constant to add to bytes hex value.
-                    /// hexToDec(Bytes Value) * multiplier + constant = Human Readable value
-                    public var constant: Double {
-                      get {
-                        return resultMap["constant"]! as! Double
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "constant")
-                      }
-                    }
-                  }
-
-                  public struct Validation: GraphQLSelectionSet {
-                    public static let possibleTypes: [String] = ["ChallengeValidation"]
-
-                    public static var selections: [GraphQLSelection] {
-                      return [
-                        GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-                        GraphQLField("numberOfFrames", type: .nonNull(.scalar(Int.self))),
-                        GraphQLField("lowerBounds", type: .nonNull(.scalar(Double.self))),
-                        GraphQLField("upperBounds", type: .nonNull(.scalar(Double.self))),
-                      ]
-                    }
-
-                    public private(set) var resultMap: ResultMap
-
-                    public init(unsafeResultMap: ResultMap) {
-                      self.resultMap = unsafeResultMap
-                    }
-
-                    public init(numberOfFrames: Int, lowerBounds: Double, upperBounds: Double) {
-                      self.init(unsafeResultMap: ["__typename": "ChallengeValidation", "numberOfFrames": numberOfFrames, "lowerBounds": lowerBounds, "upperBounds": upperBounds])
-                    }
-
-                    public var __typename: String {
-                      get {
-                        return resultMap["__typename"]! as! String
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "__typename")
-                      }
-                    }
-
-                    /// number of expected frames
-                    public var numberOfFrames: Int {
-                      get {
-                        return resultMap["numberOfFrames"]! as! Int
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "numberOfFrames")
-                      }
-                    }
-
-                    /// Lowest possible value after applying multiplier + constant
-                    public var lowerBounds: Double {
-                      get {
-                        return resultMap["lowerBounds"]! as! Double
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "lowerBounds")
-                      }
-                    }
-
-                    /// Highest possible value after applying multiplier + constant
-                    public var upperBounds: Double {
-                      get {
-                        return resultMap["upperBounds"]! as! Double
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "upperBounds")
-                      }
-                    }
+                    resultMap.updateValue(newValue, forKey: "obdLinkProtocolPreset")
                   }
                 }
               }
 
-              public var asChallengeBmsCapacityCommands: AsChallengeBmsCapacityCommands? {
-                get {
-                  if !AsChallengeBmsCapacityCommands.possibleTypes.contains(__typename) { return nil }
-                  return AsChallengeBmsCapacityCommands(unsafeResultMap: resultMap)
-                }
-                set {
-                  guard let newValue = newValue else { return }
-                  resultMap = newValue.resultMap
-                }
-              }
-
-              public struct AsChallengeBmsCapacityCommands: GraphQLSelectionSet {
-                public static let possibleTypes: [String] = ["ChallengeBMSCapacityCommands"]
+              public struct Validation: GraphQLSelectionSet {
+                public static let possibleTypes: [String] = ["ChallengeValidation"]
 
                 public static var selections: [GraphQLSelection] {
                   return [
                     GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-                    GraphQLField("bmsCapacity", type: .object(BmsCapacity.selections)),
+                    GraphQLField("upperBounds", type: .nonNull(.scalar(Double.self))),
+                    GraphQLField("lowerBounds", type: .nonNull(.scalar(Double.self))),
+                    GraphQLField("numberOfFrames", type: .nonNull(.scalar(Int.self))),
                   ]
                 }
 
@@ -3553,8 +2884,8 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                   self.resultMap = unsafeResultMap
                 }
 
-                public init(bmsCapacity: BmsCapacity? = nil) {
-                  self.init(unsafeResultMap: ["__typename": "ChallengeBMSCapacityCommands", "bmsCapacity": bmsCapacity.flatMap { (value: BmsCapacity) -> ResultMap in value.resultMap }])
+                public init(upperBounds: Double, lowerBounds: Double, numberOfFrames: Int) {
+                  self.init(unsafeResultMap: ["__typename": "ChallengeValidation", "upperBounds": upperBounds, "lowerBounds": lowerBounds, "numberOfFrames": numberOfFrames])
                 }
 
                 public var __typename: String {
@@ -3566,25 +2897,124 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                   }
                 }
 
-                public var bmsCapacity: BmsCapacity? {
+                /// Highest possible value after applying multiplier + constant
+                public var upperBounds: Double {
                   get {
-                    return (resultMap["bmsCapacity"] as? ResultMap).flatMap { BmsCapacity(unsafeResultMap: $0) }
+                    return resultMap["upperBounds"]! as! Double
                   }
                   set {
-                    resultMap.updateValue(newValue?.resultMap, forKey: "bmsCapacity")
+                    resultMap.updateValue(newValue, forKey: "upperBounds")
                   }
                 }
 
-                public struct BmsCapacity: GraphQLSelectionSet {
-                  public static let possibleTypes: [String] = ["ChallengeInstruction"]
+                /// Lowest possible value after applying multiplier + constant
+                public var lowerBounds: Double {
+                  get {
+                    return resultMap["lowerBounds"]! as! Double
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "lowerBounds")
+                  }
+                }
+
+                /// number of expected frames
+                public var numberOfFrames: Int {
+                  get {
+                    return resultMap["numberOfFrames"]! as! Int
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "numberOfFrames")
+                  }
+                }
+              }
+
+              public struct Challenge: GraphQLSelectionSet {
+                public static let possibleTypes: [String] = ["Challenge"]
+
+                public static var selections: [GraphQLSelection] {
+                  return [
+                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("canFilter", type: .scalar(String.self)),
+                    GraphQLField("canMask", type: .scalar(String.self)),
+                    GraphQLField("header", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("pid", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("flowControl", type: .object(FlowControl.selections)),
+                  ]
+                }
+
+                public private(set) var resultMap: ResultMap
+
+                public init(unsafeResultMap: ResultMap) {
+                  self.resultMap = unsafeResultMap
+                }
+
+                public init(canFilter: String? = nil, canMask: String? = nil, header: String, pid: String, flowControl: FlowControl? = nil) {
+                  self.init(unsafeResultMap: ["__typename": "Challenge", "canFilter": canFilter, "canMask": canMask, "header": header, "pid": pid, "flowControl": flowControl.flatMap { (value: FlowControl) -> ResultMap in value.resultMap }])
+                }
+
+                public var __typename: String {
+                  get {
+                    return resultMap["__typename"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "__typename")
+                  }
+                }
+
+                public var canFilter: String? {
+                  get {
+                    return resultMap["canFilter"] as? String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "canFilter")
+                  }
+                }
+
+                public var canMask: String? {
+                  get {
+                    return resultMap["canMask"] as? String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "canMask")
+                  }
+                }
+
+                public var header: String {
+                  get {
+                    return resultMap["header"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "header")
+                  }
+                }
+
+                /// OBD-II PIDs; 8 bytes of data in hex. (Pad right if you not provided)
+                public var pid: String {
+                  get {
+                    return resultMap["pid"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "pid")
+                  }
+                }
+
+                public var flowControl: FlowControl? {
+                  get {
+                    return (resultMap["flowControl"] as? ResultMap).flatMap { FlowControl(unsafeResultMap: $0) }
+                  }
+                  set {
+                    resultMap.updateValue(newValue?.resultMap, forKey: "flowControl")
+                  }
+                }
+
+                public struct FlowControl: GraphQLSelectionSet {
+                  public static let possibleTypes: [String] = ["FlowControl"]
 
                   public static var selections: [GraphQLSelection] {
                     return [
                       GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-                      GraphQLField("challenge", type: .nonNull(.object(Challenge.selections))),
-                      GraphQLField("protocol", type: .nonNull(.object(`Protocol`.selections))),
-                      GraphQLField("response", type: .nonNull(.object(Response.selections))),
-                      GraphQLField("validation", type: .nonNull(.object(Validation.selections))),
+                      GraphQLField("flowControlHeader", type: .nonNull(.scalar(String.self))),
+                      GraphQLField("flowControlData", type: .nonNull(.scalar(String.self))),
                     ]
                   }
 
@@ -3594,8 +3024,8 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                     self.resultMap = unsafeResultMap
                   }
 
-                  public init(challenge: Challenge, `protocol`: `Protocol`, response: Response, validation: Validation) {
-                    self.init(unsafeResultMap: ["__typename": "ChallengeInstruction", "challenge": challenge.resultMap, "protocol": `protocol`.resultMap, "response": response.resultMap, "validation": validation.resultMap])
+                  public init(flowControlHeader: String, flowControlData: String) {
+                    self.init(unsafeResultMap: ["__typename": "FlowControl", "flowControlHeader": flowControlHeader, "flowControlData": flowControlData])
                   }
 
                   public var __typename: String {
@@ -3607,337 +3037,869 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                     }
                   }
 
-                  public var challenge: Challenge {
+                  public var flowControlHeader: String {
                     get {
-                      return Challenge(unsafeResultMap: resultMap["challenge"]! as! ResultMap)
+                      return resultMap["flowControlHeader"]! as! String
                     }
                     set {
-                      resultMap.updateValue(newValue.resultMap, forKey: "challenge")
+                      resultMap.updateValue(newValue, forKey: "flowControlHeader")
                     }
                   }
 
-                  public var `protocol`: `Protocol` {
+                  public var flowControlData: String {
                     get {
-                      return `Protocol`(unsafeResultMap: resultMap["protocol"]! as! ResultMap)
+                      return resultMap["flowControlData"]! as! String
                     }
                     set {
-                      resultMap.updateValue(newValue.resultMap, forKey: "protocol")
+                      resultMap.updateValue(newValue, forKey: "flowControlData")
                     }
                   }
+                }
+              }
 
-                  public var response: Response {
+              public struct Response: GraphQLSelectionSet {
+                public static let possibleTypes: [String] = ["ChallengeResponse"]
+
+                public static var selections: [GraphQLSelection] {
+                  return [
+                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("constant", type: .nonNull(.scalar(Double.self))),
+                    GraphQLField("multiplier", type: .nonNull(.scalar(Double.self))),
+                    GraphQLField("startByte", type: .nonNull(.scalar(Int.self))),
+                    GraphQLField("endByte", type: .nonNull(.scalar(Int.self))),
+                  ]
+                }
+
+                public private(set) var resultMap: ResultMap
+
+                public init(unsafeResultMap: ResultMap) {
+                  self.resultMap = unsafeResultMap
+                }
+
+                public init(constant: Double, multiplier: Double, startByte: Int, endByte: Int) {
+                  self.init(unsafeResultMap: ["__typename": "ChallengeResponse", "constant": constant, "multiplier": multiplier, "startByte": startByte, "endByte": endByte])
+                }
+
+                public var __typename: String {
+                  get {
+                    return resultMap["__typename"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "__typename")
+                  }
+                }
+
+                /// constant to add to bytes hex value.
+                /// hexToDec(Bytes Value) * multiplier + constant = Human Readable value
+                public var constant: Double {
+                  get {
+                    return resultMap["constant"]! as! Double
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "constant")
+                  }
+                }
+
+                /// multiplier to apply to bytes hex value.
+                /// hexToDec(Bytes Value) * multiplier + constant = Human Readable value
+                public var multiplier: Double {
+                  get {
+                    return resultMap["multiplier"]! as! Double
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "multiplier")
+                  }
+                }
+
+                /// The first byte of relevant data
+                public var startByte: Int {
+                  get {
+                    return resultMap["startByte"]! as! Int
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "startByte")
+                  }
+                }
+
+                /// The last byte of relevant data
+                public var endByte: Int {
+                  get {
+                    return resultMap["endByte"]! as! Int
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "endByte")
+                  }
+                }
+              }
+            }
+
+            public struct EnergyToEmpty: GraphQLSelectionSet {
+              public static let possibleTypes: [String] = ["ChallengeInstruction"]
+
+              public static var selections: [GraphQLSelection] {
+                return [
+                  GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                  GraphQLField("protocol", type: .nonNull(.object(`Protocol`.selections))),
+                  GraphQLField("challenge", type: .nonNull(.object(Challenge.selections))),
+                  GraphQLField("response", type: .nonNull(.object(Response.selections))),
+                  GraphQLField("validation", type: .nonNull(.object(Validation.selections))),
+                ]
+              }
+
+              public private(set) var resultMap: ResultMap
+
+              public init(unsafeResultMap: ResultMap) {
+                self.resultMap = unsafeResultMap
+              }
+
+              public init(`protocol`: `Protocol`, challenge: Challenge, response: Response, validation: Validation) {
+                self.init(unsafeResultMap: ["__typename": "ChallengeInstruction", "protocol": `protocol`.resultMap, "challenge": challenge.resultMap, "response": response.resultMap, "validation": validation.resultMap])
+              }
+
+              public var __typename: String {
+                get {
+                  return resultMap["__typename"]! as! String
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "__typename")
+                }
+              }
+
+              public var `protocol`: `Protocol` {
+                get {
+                  return `Protocol`(unsafeResultMap: resultMap["protocol"]! as! ResultMap)
+                }
+                set {
+                  resultMap.updateValue(newValue.resultMap, forKey: "protocol")
+                }
+              }
+
+              public var challenge: Challenge {
+                get {
+                  return Challenge(unsafeResultMap: resultMap["challenge"]! as! ResultMap)
+                }
+                set {
+                  resultMap.updateValue(newValue.resultMap, forKey: "challenge")
+                }
+              }
+
+              public var response: Response {
+                get {
+                  return Response(unsafeResultMap: resultMap["response"]! as! ResultMap)
+                }
+                set {
+                  resultMap.updateValue(newValue.resultMap, forKey: "response")
+                }
+              }
+
+              public var validation: Validation {
+                get {
+                  return Validation(unsafeResultMap: resultMap["validation"]! as! ResultMap)
+                }
+                set {
+                  resultMap.updateValue(newValue.resultMap, forKey: "validation")
+                }
+              }
+
+              public struct `Protocol`: GraphQLSelectionSet {
+                public static let possibleTypes: [String] = ["OBD2Protocol"]
+
+                public static var selections: [GraphQLSelection] {
+                  return [
+                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("elm327ProtocolPreset", type: .scalar(ELM327ProtocolPreset.self)),
+                    GraphQLField("obdLinkProtocolPreset", type: .scalar(OBDLinkProtocolPreset.self)),
+                  ]
+                }
+
+                public private(set) var resultMap: ResultMap
+
+                public init(unsafeResultMap: ResultMap) {
+                  self.resultMap = unsafeResultMap
+                }
+
+                public init(elm327ProtocolPreset: ELM327ProtocolPreset? = nil, obdLinkProtocolPreset: OBDLinkProtocolPreset? = nil) {
+                  self.init(unsafeResultMap: ["__typename": "OBD2Protocol", "elm327ProtocolPreset": elm327ProtocolPreset, "obdLinkProtocolPreset": obdLinkProtocolPreset])
+                }
+
+                public var __typename: String {
+                  get {
+                    return resultMap["__typename"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "__typename")
+                  }
+                }
+
+                /// elm327ProtocolPreset will be null if obdLinkProtocolPreset doesn't map to elm327ProtocolPreset ENUM
+                public var elm327ProtocolPreset: ELM327ProtocolPreset? {
+                  get {
+                    return resultMap["elm327ProtocolPreset"] as? ELM327ProtocolPreset
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "elm327ProtocolPreset")
+                  }
+                }
+
+                /// obdLinkProtocolPreset will be null if options is provided upon on creation
+                public var obdLinkProtocolPreset: OBDLinkProtocolPreset? {
+                  get {
+                    return resultMap["obdLinkProtocolPreset"] as? OBDLinkProtocolPreset
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "obdLinkProtocolPreset")
+                  }
+                }
+              }
+
+              public struct Challenge: GraphQLSelectionSet {
+                public static let possibleTypes: [String] = ["Challenge"]
+
+                public static var selections: [GraphQLSelection] {
+                  return [
+                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("canFilter", type: .scalar(String.self)),
+                    GraphQLField("canMask", type: .scalar(String.self)),
+                    GraphQLField("header", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("pid", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("flowControl", type: .object(FlowControl.selections)),
+                  ]
+                }
+
+                public private(set) var resultMap: ResultMap
+
+                public init(unsafeResultMap: ResultMap) {
+                  self.resultMap = unsafeResultMap
+                }
+
+                public init(canFilter: String? = nil, canMask: String? = nil, header: String, pid: String, flowControl: FlowControl? = nil) {
+                  self.init(unsafeResultMap: ["__typename": "Challenge", "canFilter": canFilter, "canMask": canMask, "header": header, "pid": pid, "flowControl": flowControl.flatMap { (value: FlowControl) -> ResultMap in value.resultMap }])
+                }
+
+                public var __typename: String {
+                  get {
+                    return resultMap["__typename"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "__typename")
+                  }
+                }
+
+                public var canFilter: String? {
+                  get {
+                    return resultMap["canFilter"] as? String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "canFilter")
+                  }
+                }
+
+                public var canMask: String? {
+                  get {
+                    return resultMap["canMask"] as? String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "canMask")
+                  }
+                }
+
+                public var header: String {
+                  get {
+                    return resultMap["header"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "header")
+                  }
+                }
+
+                /// OBD-II PIDs; 8 bytes of data in hex. (Pad right if you not provided)
+                public var pid: String {
+                  get {
+                    return resultMap["pid"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "pid")
+                  }
+                }
+
+                public var flowControl: FlowControl? {
+                  get {
+                    return (resultMap["flowControl"] as? ResultMap).flatMap { FlowControl(unsafeResultMap: $0) }
+                  }
+                  set {
+                    resultMap.updateValue(newValue?.resultMap, forKey: "flowControl")
+                  }
+                }
+
+                public struct FlowControl: GraphQLSelectionSet {
+                  public static let possibleTypes: [String] = ["FlowControl"]
+
+                  public static var selections: [GraphQLSelection] {
+                    return [
+                      GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                      GraphQLField("flowControlHeader", type: .nonNull(.scalar(String.self))),
+                      GraphQLField("flowControlData", type: .nonNull(.scalar(String.self))),
+                    ]
+                  }
+
+                  public private(set) var resultMap: ResultMap
+
+                  public init(unsafeResultMap: ResultMap) {
+                    self.resultMap = unsafeResultMap
+                  }
+
+                  public init(flowControlHeader: String, flowControlData: String) {
+                    self.init(unsafeResultMap: ["__typename": "FlowControl", "flowControlHeader": flowControlHeader, "flowControlData": flowControlData])
+                  }
+
+                  public var __typename: String {
                     get {
-                      return Response(unsafeResultMap: resultMap["response"]! as! ResultMap)
+                      return resultMap["__typename"]! as! String
                     }
                     set {
-                      resultMap.updateValue(newValue.resultMap, forKey: "response")
+                      resultMap.updateValue(newValue, forKey: "__typename")
                     }
                   }
 
-                  public var validation: Validation {
+                  public var flowControlHeader: String {
                     get {
-                      return Validation(unsafeResultMap: resultMap["validation"]! as! ResultMap)
+                      return resultMap["flowControlHeader"]! as! String
                     }
                     set {
-                      resultMap.updateValue(newValue.resultMap, forKey: "validation")
+                      resultMap.updateValue(newValue, forKey: "flowControlHeader")
                     }
                   }
 
-                  public struct Challenge: GraphQLSelectionSet {
-                    public static let possibleTypes: [String] = ["Challenge"]
-
-                    public static var selections: [GraphQLSelection] {
-                      return [
-                        GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-                        GraphQLField("header", type: .nonNull(.scalar(String.self))),
-                        GraphQLField("pid", type: .nonNull(.scalar(String.self))),
-                        GraphQLField("flowControl", type: .object(FlowControl.selections)),
-                      ]
+                  public var flowControlData: String {
+                    get {
+                      return resultMap["flowControlData"]! as! String
                     }
-
-                    public private(set) var resultMap: ResultMap
-
-                    public init(unsafeResultMap: ResultMap) {
-                      self.resultMap = unsafeResultMap
+                    set {
+                      resultMap.updateValue(newValue, forKey: "flowControlData")
                     }
+                  }
+                }
+              }
 
-                    public init(header: String, pid: String, flowControl: FlowControl? = nil) {
-                      self.init(unsafeResultMap: ["__typename": "Challenge", "header": header, "pid": pid, "flowControl": flowControl.flatMap { (value: FlowControl) -> ResultMap in value.resultMap }])
+              public struct Response: GraphQLSelectionSet {
+                public static let possibleTypes: [String] = ["ChallengeResponse"]
+
+                public static var selections: [GraphQLSelection] {
+                  return [
+                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("startByte", type: .nonNull(.scalar(Int.self))),
+                    GraphQLField("endByte", type: .nonNull(.scalar(Int.self))),
+                    GraphQLField("multiplier", type: .nonNull(.scalar(Double.self))),
+                    GraphQLField("constant", type: .nonNull(.scalar(Double.self))),
+                  ]
+                }
+
+                public private(set) var resultMap: ResultMap
+
+                public init(unsafeResultMap: ResultMap) {
+                  self.resultMap = unsafeResultMap
+                }
+
+                public init(startByte: Int, endByte: Int, multiplier: Double, constant: Double) {
+                  self.init(unsafeResultMap: ["__typename": "ChallengeResponse", "startByte": startByte, "endByte": endByte, "multiplier": multiplier, "constant": constant])
+                }
+
+                public var __typename: String {
+                  get {
+                    return resultMap["__typename"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "__typename")
+                  }
+                }
+
+                /// The first byte of relevant data
+                public var startByte: Int {
+                  get {
+                    return resultMap["startByte"]! as! Int
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "startByte")
+                  }
+                }
+
+                /// The last byte of relevant data
+                public var endByte: Int {
+                  get {
+                    return resultMap["endByte"]! as! Int
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "endByte")
+                  }
+                }
+
+                /// multiplier to apply to bytes hex value.
+                /// hexToDec(Bytes Value) * multiplier + constant = Human Readable value
+                public var multiplier: Double {
+                  get {
+                    return resultMap["multiplier"]! as! Double
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "multiplier")
+                  }
+                }
+
+                /// constant to add to bytes hex value.
+                /// hexToDec(Bytes Value) * multiplier + constant = Human Readable value
+                public var constant: Double {
+                  get {
+                    return resultMap["constant"]! as! Double
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "constant")
+                  }
+                }
+              }
+
+              public struct Validation: GraphQLSelectionSet {
+                public static let possibleTypes: [String] = ["ChallengeValidation"]
+
+                public static var selections: [GraphQLSelection] {
+                  return [
+                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("numberOfFrames", type: .nonNull(.scalar(Int.self))),
+                    GraphQLField("lowerBounds", type: .nonNull(.scalar(Double.self))),
+                    GraphQLField("upperBounds", type: .nonNull(.scalar(Double.self))),
+                  ]
+                }
+
+                public private(set) var resultMap: ResultMap
+
+                public init(unsafeResultMap: ResultMap) {
+                  self.resultMap = unsafeResultMap
+                }
+
+                public init(numberOfFrames: Int, lowerBounds: Double, upperBounds: Double) {
+                  self.init(unsafeResultMap: ["__typename": "ChallengeValidation", "numberOfFrames": numberOfFrames, "lowerBounds": lowerBounds, "upperBounds": upperBounds])
+                }
+
+                public var __typename: String {
+                  get {
+                    return resultMap["__typename"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "__typename")
+                  }
+                }
+
+                /// number of expected frames
+                public var numberOfFrames: Int {
+                  get {
+                    return resultMap["numberOfFrames"]! as! Int
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "numberOfFrames")
+                  }
+                }
+
+                /// Lowest possible value after applying multiplier + constant
+                public var lowerBounds: Double {
+                  get {
+                    return resultMap["lowerBounds"]! as! Double
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "lowerBounds")
+                  }
+                }
+
+                /// Highest possible value after applying multiplier + constant
+                public var upperBounds: Double {
+                  get {
+                    return resultMap["upperBounds"]! as! Double
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "upperBounds")
+                  }
+                }
+              }
+            }
+
+            public struct BmsCapacity: GraphQLSelectionSet {
+              public static let possibleTypes: [String] = ["ChallengeInstruction"]
+
+              public static var selections: [GraphQLSelection] {
+                return [
+                  GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                  GraphQLField("challenge", type: .nonNull(.object(Challenge.selections))),
+                  GraphQLField("protocol", type: .nonNull(.object(`Protocol`.selections))),
+                  GraphQLField("response", type: .nonNull(.object(Response.selections))),
+                  GraphQLField("validation", type: .nonNull(.object(Validation.selections))),
+                ]
+              }
+
+              public private(set) var resultMap: ResultMap
+
+              public init(unsafeResultMap: ResultMap) {
+                self.resultMap = unsafeResultMap
+              }
+
+              public init(challenge: Challenge, `protocol`: `Protocol`, response: Response, validation: Validation) {
+                self.init(unsafeResultMap: ["__typename": "ChallengeInstruction", "challenge": challenge.resultMap, "protocol": `protocol`.resultMap, "response": response.resultMap, "validation": validation.resultMap])
+              }
+
+              public var __typename: String {
+                get {
+                  return resultMap["__typename"]! as! String
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "__typename")
+                }
+              }
+
+              public var challenge: Challenge {
+                get {
+                  return Challenge(unsafeResultMap: resultMap["challenge"]! as! ResultMap)
+                }
+                set {
+                  resultMap.updateValue(newValue.resultMap, forKey: "challenge")
+                }
+              }
+
+              public var `protocol`: `Protocol` {
+                get {
+                  return `Protocol`(unsafeResultMap: resultMap["protocol"]! as! ResultMap)
+                }
+                set {
+                  resultMap.updateValue(newValue.resultMap, forKey: "protocol")
+                }
+              }
+
+              public var response: Response {
+                get {
+                  return Response(unsafeResultMap: resultMap["response"]! as! ResultMap)
+                }
+                set {
+                  resultMap.updateValue(newValue.resultMap, forKey: "response")
+                }
+              }
+
+              public var validation: Validation {
+                get {
+                  return Validation(unsafeResultMap: resultMap["validation"]! as! ResultMap)
+                }
+                set {
+                  resultMap.updateValue(newValue.resultMap, forKey: "validation")
+                }
+              }
+
+              public struct Challenge: GraphQLSelectionSet {
+                public static let possibleTypes: [String] = ["Challenge"]
+
+                public static var selections: [GraphQLSelection] {
+                  return [
+                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("canFilter", type: .scalar(String.self)),
+                    GraphQLField("canMask", type: .scalar(String.self)),
+                    GraphQLField("header", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("pid", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("flowControl", type: .object(FlowControl.selections)),
+                  ]
+                }
+
+                public private(set) var resultMap: ResultMap
+
+                public init(unsafeResultMap: ResultMap) {
+                  self.resultMap = unsafeResultMap
+                }
+
+                public init(canFilter: String? = nil, canMask: String? = nil, header: String, pid: String, flowControl: FlowControl? = nil) {
+                  self.init(unsafeResultMap: ["__typename": "Challenge", "canFilter": canFilter, "canMask": canMask, "header": header, "pid": pid, "flowControl": flowControl.flatMap { (value: FlowControl) -> ResultMap in value.resultMap }])
+                }
+
+                public var __typename: String {
+                  get {
+                    return resultMap["__typename"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "__typename")
+                  }
+                }
+
+                public var canFilter: String? {
+                  get {
+                    return resultMap["canFilter"] as? String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "canFilter")
+                  }
+                }
+
+                public var canMask: String? {
+                  get {
+                    return resultMap["canMask"] as? String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "canMask")
+                  }
+                }
+
+                public var header: String {
+                  get {
+                    return resultMap["header"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "header")
+                  }
+                }
+
+                /// OBD-II PIDs; 8 bytes of data in hex. (Pad right if you not provided)
+                public var pid: String {
+                  get {
+                    return resultMap["pid"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "pid")
+                  }
+                }
+
+                public var flowControl: FlowControl? {
+                  get {
+                    return (resultMap["flowControl"] as? ResultMap).flatMap { FlowControl(unsafeResultMap: $0) }
+                  }
+                  set {
+                    resultMap.updateValue(newValue?.resultMap, forKey: "flowControl")
+                  }
+                }
+
+                public struct FlowControl: GraphQLSelectionSet {
+                  public static let possibleTypes: [String] = ["FlowControl"]
+
+                  public static var selections: [GraphQLSelection] {
+                    return [
+                      GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                      GraphQLField("flowControlHeader", type: .nonNull(.scalar(String.self))),
+                      GraphQLField("flowControlData", type: .nonNull(.scalar(String.self))),
+                    ]
+                  }
+
+                  public private(set) var resultMap: ResultMap
+
+                  public init(unsafeResultMap: ResultMap) {
+                    self.resultMap = unsafeResultMap
+                  }
+
+                  public init(flowControlHeader: String, flowControlData: String) {
+                    self.init(unsafeResultMap: ["__typename": "FlowControl", "flowControlHeader": flowControlHeader, "flowControlData": flowControlData])
+                  }
+
+                  public var __typename: String {
+                    get {
+                      return resultMap["__typename"]! as! String
                     }
-
-                    public var __typename: String {
-                      get {
-                        return resultMap["__typename"]! as! String
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "__typename")
-                      }
-                    }
-
-                    public var header: String {
-                      get {
-                        return resultMap["header"]! as! String
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "header")
-                      }
-                    }
-
-                    /// OBD-II PIDs; 8 bytes of data in hex. (Pad right if you not provided)
-                    public var pid: String {
-                      get {
-                        return resultMap["pid"]! as! String
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "pid")
-                      }
-                    }
-
-                    public var flowControl: FlowControl? {
-                      get {
-                        return (resultMap["flowControl"] as? ResultMap).flatMap { FlowControl(unsafeResultMap: $0) }
-                      }
-                      set {
-                        resultMap.updateValue(newValue?.resultMap, forKey: "flowControl")
-                      }
-                    }
-
-                    public struct FlowControl: GraphQLSelectionSet {
-                      public static let possibleTypes: [String] = ["FlowControl"]
-
-                      public static var selections: [GraphQLSelection] {
-                        return [
-                          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-                          GraphQLField("flowControlHeader", type: .nonNull(.scalar(String.self))),
-                          GraphQLField("flowControlData", type: .nonNull(.scalar(String.self))),
-                        ]
-                      }
-
-                      public private(set) var resultMap: ResultMap
-
-                      public init(unsafeResultMap: ResultMap) {
-                        self.resultMap = unsafeResultMap
-                      }
-
-                      public init(flowControlHeader: String, flowControlData: String) {
-                        self.init(unsafeResultMap: ["__typename": "FlowControl", "flowControlHeader": flowControlHeader, "flowControlData": flowControlData])
-                      }
-
-                      public var __typename: String {
-                        get {
-                          return resultMap["__typename"]! as! String
-                        }
-                        set {
-                          resultMap.updateValue(newValue, forKey: "__typename")
-                        }
-                      }
-
-                      public var flowControlHeader: String {
-                        get {
-                          return resultMap["flowControlHeader"]! as! String
-                        }
-                        set {
-                          resultMap.updateValue(newValue, forKey: "flowControlHeader")
-                        }
-                      }
-
-                      public var flowControlData: String {
-                        get {
-                          return resultMap["flowControlData"]! as! String
-                        }
-                        set {
-                          resultMap.updateValue(newValue, forKey: "flowControlData")
-                        }
-                      }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "__typename")
                     }
                   }
 
-                  public struct `Protocol`: GraphQLSelectionSet {
-                    public static let possibleTypes: [String] = ["OBD2Protocol"]
-
-                    public static var selections: [GraphQLSelection] {
-                      return [
-                        GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-                        GraphQLField("elm327ProtocolPreset", type: .scalar(ELM327ProtocolPreset.self)),
-                        GraphQLField("obdLinkProtocolPreset", type: .scalar(OBDLinkProtocolPreset.self)),
-                      ]
+                  public var flowControlHeader: String {
+                    get {
+                      return resultMap["flowControlHeader"]! as! String
                     }
-
-                    public private(set) var resultMap: ResultMap
-
-                    public init(unsafeResultMap: ResultMap) {
-                      self.resultMap = unsafeResultMap
-                    }
-
-                    public init(elm327ProtocolPreset: ELM327ProtocolPreset? = nil, obdLinkProtocolPreset: OBDLinkProtocolPreset? = nil) {
-                      self.init(unsafeResultMap: ["__typename": "OBD2Protocol", "elm327ProtocolPreset": elm327ProtocolPreset, "obdLinkProtocolPreset": obdLinkProtocolPreset])
-                    }
-
-                    public var __typename: String {
-                      get {
-                        return resultMap["__typename"]! as! String
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "__typename")
-                      }
-                    }
-
-                    /// elm327ProtocolPreset will be null if obdLinkProtocolPreset doesn't map to elm327ProtocolPreset ENUM
-                    public var elm327ProtocolPreset: ELM327ProtocolPreset? {
-                      get {
-                        return resultMap["elm327ProtocolPreset"] as? ELM327ProtocolPreset
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "elm327ProtocolPreset")
-                      }
-                    }
-
-                    /// obdLinkProtocolPreset will be null if options is provided upon on creation
-                    public var obdLinkProtocolPreset: OBDLinkProtocolPreset? {
-                      get {
-                        return resultMap["obdLinkProtocolPreset"] as? OBDLinkProtocolPreset
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "obdLinkProtocolPreset")
-                      }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "flowControlHeader")
                     }
                   }
 
-                  public struct Response: GraphQLSelectionSet {
-                    public static let possibleTypes: [String] = ["ChallengeResponse"]
-
-                    public static var selections: [GraphQLSelection] {
-                      return [
-                        GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-                        GraphQLField("constant", type: .nonNull(.scalar(Double.self))),
-                        GraphQLField("endByte", type: .nonNull(.scalar(Int.self))),
-                        GraphQLField("startByte", type: .nonNull(.scalar(Int.self))),
-                        GraphQLField("multiplier", type: .nonNull(.scalar(Double.self))),
-                      ]
+                  public var flowControlData: String {
+                    get {
+                      return resultMap["flowControlData"]! as! String
                     }
-
-                    public private(set) var resultMap: ResultMap
-
-                    public init(unsafeResultMap: ResultMap) {
-                      self.resultMap = unsafeResultMap
-                    }
-
-                    public init(constant: Double, endByte: Int, startByte: Int, multiplier: Double) {
-                      self.init(unsafeResultMap: ["__typename": "ChallengeResponse", "constant": constant, "endByte": endByte, "startByte": startByte, "multiplier": multiplier])
-                    }
-
-                    public var __typename: String {
-                      get {
-                        return resultMap["__typename"]! as! String
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "__typename")
-                      }
-                    }
-
-                    /// constant to add to bytes hex value.
-                    /// hexToDec(Bytes Value) * multiplier + constant = Human Readable value
-                    public var constant: Double {
-                      get {
-                        return resultMap["constant"]! as! Double
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "constant")
-                      }
-                    }
-
-                    /// The last byte of relevant data
-                    public var endByte: Int {
-                      get {
-                        return resultMap["endByte"]! as! Int
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "endByte")
-                      }
-                    }
-
-                    /// The first byte of relevant data
-                    public var startByte: Int {
-                      get {
-                        return resultMap["startByte"]! as! Int
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "startByte")
-                      }
-                    }
-
-                    /// multiplier to apply to bytes hex value.
-                    /// hexToDec(Bytes Value) * multiplier + constant = Human Readable value
-                    public var multiplier: Double {
-                      get {
-                        return resultMap["multiplier"]! as! Double
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "multiplier")
-                      }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "flowControlData")
                     }
                   }
+                }
+              }
 
-                  public struct Validation: GraphQLSelectionSet {
-                    public static let possibleTypes: [String] = ["ChallengeValidation"]
+              public struct `Protocol`: GraphQLSelectionSet {
+                public static let possibleTypes: [String] = ["OBD2Protocol"]
 
-                    public static var selections: [GraphQLSelection] {
-                      return [
-                        GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-                        GraphQLField("lowerBounds", type: .nonNull(.scalar(Double.self))),
-                        GraphQLField("upperBounds", type: .nonNull(.scalar(Double.self))),
-                        GraphQLField("numberOfFrames", type: .nonNull(.scalar(Int.self))),
-                      ]
-                    }
+                public static var selections: [GraphQLSelection] {
+                  return [
+                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("elm327ProtocolPreset", type: .scalar(ELM327ProtocolPreset.self)),
+                    GraphQLField("obdLinkProtocolPreset", type: .scalar(OBDLinkProtocolPreset.self)),
+                  ]
+                }
 
-                    public private(set) var resultMap: ResultMap
+                public private(set) var resultMap: ResultMap
 
-                    public init(unsafeResultMap: ResultMap) {
-                      self.resultMap = unsafeResultMap
-                    }
+                public init(unsafeResultMap: ResultMap) {
+                  self.resultMap = unsafeResultMap
+                }
 
-                    public init(lowerBounds: Double, upperBounds: Double, numberOfFrames: Int) {
-                      self.init(unsafeResultMap: ["__typename": "ChallengeValidation", "lowerBounds": lowerBounds, "upperBounds": upperBounds, "numberOfFrames": numberOfFrames])
-                    }
+                public init(elm327ProtocolPreset: ELM327ProtocolPreset? = nil, obdLinkProtocolPreset: OBDLinkProtocolPreset? = nil) {
+                  self.init(unsafeResultMap: ["__typename": "OBD2Protocol", "elm327ProtocolPreset": elm327ProtocolPreset, "obdLinkProtocolPreset": obdLinkProtocolPreset])
+                }
 
-                    public var __typename: String {
-                      get {
-                        return resultMap["__typename"]! as! String
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "__typename")
-                      }
-                    }
+                public var __typename: String {
+                  get {
+                    return resultMap["__typename"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "__typename")
+                  }
+                }
 
-                    /// Lowest possible value after applying multiplier + constant
-                    public var lowerBounds: Double {
-                      get {
-                        return resultMap["lowerBounds"]! as! Double
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "lowerBounds")
-                      }
-                    }
+                /// elm327ProtocolPreset will be null if obdLinkProtocolPreset doesn't map to elm327ProtocolPreset ENUM
+                public var elm327ProtocolPreset: ELM327ProtocolPreset? {
+                  get {
+                    return resultMap["elm327ProtocolPreset"] as? ELM327ProtocolPreset
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "elm327ProtocolPreset")
+                  }
+                }
 
-                    /// Highest possible value after applying multiplier + constant
-                    public var upperBounds: Double {
-                      get {
-                        return resultMap["upperBounds"]! as! Double
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "upperBounds")
-                      }
-                    }
+                /// obdLinkProtocolPreset will be null if options is provided upon on creation
+                public var obdLinkProtocolPreset: OBDLinkProtocolPreset? {
+                  get {
+                    return resultMap["obdLinkProtocolPreset"] as? OBDLinkProtocolPreset
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "obdLinkProtocolPreset")
+                  }
+                }
+              }
 
-                    /// number of expected frames
-                    public var numberOfFrames: Int {
-                      get {
-                        return resultMap["numberOfFrames"]! as! Int
-                      }
-                      set {
-                        resultMap.updateValue(newValue, forKey: "numberOfFrames")
-                      }
-                    }
+              public struct Response: GraphQLSelectionSet {
+                public static let possibleTypes: [String] = ["ChallengeResponse"]
+
+                public static var selections: [GraphQLSelection] {
+                  return [
+                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("constant", type: .nonNull(.scalar(Double.self))),
+                    GraphQLField("endByte", type: .nonNull(.scalar(Int.self))),
+                    GraphQLField("startByte", type: .nonNull(.scalar(Int.self))),
+                    GraphQLField("multiplier", type: .nonNull(.scalar(Double.self))),
+                  ]
+                }
+
+                public private(set) var resultMap: ResultMap
+
+                public init(unsafeResultMap: ResultMap) {
+                  self.resultMap = unsafeResultMap
+                }
+
+                public init(constant: Double, endByte: Int, startByte: Int, multiplier: Double) {
+                  self.init(unsafeResultMap: ["__typename": "ChallengeResponse", "constant": constant, "endByte": endByte, "startByte": startByte, "multiplier": multiplier])
+                }
+
+                public var __typename: String {
+                  get {
+                    return resultMap["__typename"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "__typename")
+                  }
+                }
+
+                /// constant to add to bytes hex value.
+                /// hexToDec(Bytes Value) * multiplier + constant = Human Readable value
+                public var constant: Double {
+                  get {
+                    return resultMap["constant"]! as! Double
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "constant")
+                  }
+                }
+
+                /// The last byte of relevant data
+                public var endByte: Int {
+                  get {
+                    return resultMap["endByte"]! as! Int
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "endByte")
+                  }
+                }
+
+                /// The first byte of relevant data
+                public var startByte: Int {
+                  get {
+                    return resultMap["startByte"]! as! Int
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "startByte")
+                  }
+                }
+
+                /// multiplier to apply to bytes hex value.
+                /// hexToDec(Bytes Value) * multiplier + constant = Human Readable value
+                public var multiplier: Double {
+                  get {
+                    return resultMap["multiplier"]! as! Double
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "multiplier")
+                  }
+                }
+              }
+
+              public struct Validation: GraphQLSelectionSet {
+                public static let possibleTypes: [String] = ["ChallengeValidation"]
+
+                public static var selections: [GraphQLSelection] {
+                  return [
+                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("lowerBounds", type: .nonNull(.scalar(Double.self))),
+                    GraphQLField("upperBounds", type: .nonNull(.scalar(Double.self))),
+                    GraphQLField("numberOfFrames", type: .nonNull(.scalar(Int.self))),
+                  ]
+                }
+
+                public private(set) var resultMap: ResultMap
+
+                public init(unsafeResultMap: ResultMap) {
+                  self.resultMap = unsafeResultMap
+                }
+
+                public init(lowerBounds: Double, upperBounds: Double, numberOfFrames: Int) {
+                  self.init(unsafeResultMap: ["__typename": "ChallengeValidation", "lowerBounds": lowerBounds, "upperBounds": upperBounds, "numberOfFrames": numberOfFrames])
+                }
+
+                public var __typename: String {
+                  get {
+                    return resultMap["__typename"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "__typename")
+                  }
+                }
+
+                /// Lowest possible value after applying multiplier + constant
+                public var lowerBounds: Double {
+                  get {
+                    return resultMap["lowerBounds"]! as! Double
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "lowerBounds")
+                  }
+                }
+
+                /// Highest possible value after applying multiplier + constant
+                public var upperBounds: Double {
+                  get {
+                    return resultMap["upperBounds"]! as! Double
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "upperBounds")
+                  }
+                }
+
+                /// number of expected frames
+                public var numberOfFrames: Int {
+                  get {
+                    return resultMap["numberOfFrames"]! as! Int
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "numberOfFrames")
                   }
                 }
               }
@@ -4136,6 +4098,8 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                   public static var selections: [GraphQLSelection] {
                     return [
                       GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                      GraphQLField("canFilter", type: .scalar(String.self)),
+                      GraphQLField("canMask", type: .scalar(String.self)),
                       GraphQLField("header", type: .nonNull(.scalar(String.self))),
                       GraphQLField("pid", type: .nonNull(.scalar(String.self))),
                       GraphQLField("flowControl", type: .object(FlowControl.selections)),
@@ -4148,8 +4112,8 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                     self.resultMap = unsafeResultMap
                   }
 
-                  public init(header: String, pid: String, flowControl: FlowControl? = nil) {
-                    self.init(unsafeResultMap: ["__typename": "Challenge", "header": header, "pid": pid, "flowControl": flowControl.flatMap { (value: FlowControl) -> ResultMap in value.resultMap }])
+                  public init(canFilter: String? = nil, canMask: String? = nil, header: String, pid: String, flowControl: FlowControl? = nil) {
+                    self.init(unsafeResultMap: ["__typename": "Challenge", "canFilter": canFilter, "canMask": canMask, "header": header, "pid": pid, "flowControl": flowControl.flatMap { (value: FlowControl) -> ResultMap in value.resultMap }])
                   }
 
                   public var __typename: String {
@@ -4158,6 +4122,24 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                     }
                     set {
                       resultMap.updateValue(newValue, forKey: "__typename")
+                    }
+                  }
+
+                  public var canFilter: String? {
+                    get {
+                      return resultMap["canFilter"] as? String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "canFilter")
+                    }
+                  }
+
+                  public var canMask: String? {
+                    get {
+                      return resultMap["canMask"] as? String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "canMask")
                     }
                   }
 
@@ -4497,6 +4479,8 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                   public static var selections: [GraphQLSelection] {
                     return [
                       GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                      GraphQLField("canFilter", type: .scalar(String.self)),
+                      GraphQLField("canMask", type: .scalar(String.self)),
                       GraphQLField("header", type: .nonNull(.scalar(String.self))),
                       GraphQLField("pid", type: .nonNull(.scalar(String.self))),
                       GraphQLField("flowControl", type: .object(FlowControl.selections)),
@@ -4509,8 +4493,8 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                     self.resultMap = unsafeResultMap
                   }
 
-                  public init(header: String, pid: String, flowControl: FlowControl? = nil) {
-                    self.init(unsafeResultMap: ["__typename": "Challenge", "header": header, "pid": pid, "flowControl": flowControl.flatMap { (value: FlowControl) -> ResultMap in value.resultMap }])
+                  public init(canFilter: String? = nil, canMask: String? = nil, header: String, pid: String, flowControl: FlowControl? = nil) {
+                    self.init(unsafeResultMap: ["__typename": "Challenge", "canFilter": canFilter, "canMask": canMask, "header": header, "pid": pid, "flowControl": flowControl.flatMap { (value: FlowControl) -> ResultMap in value.resultMap }])
                   }
 
                   public var __typename: String {
@@ -4519,6 +4503,24 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                     }
                     set {
                       resultMap.updateValue(newValue, forKey: "__typename")
+                    }
+                  }
+
+                  public var canFilter: String? {
+                    get {
+                      return resultMap["canFilter"] as? String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "canFilter")
+                    }
+                  }
+
+                  public var canMask: String? {
+                    get {
+                      return resultMap["canMask"] as? String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "canMask")
                     }
                   }
 
@@ -4802,6 +4804,8 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                   public static var selections: [GraphQLSelection] {
                     return [
                       GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                      GraphQLField("canFilter", type: .scalar(String.self)),
+                      GraphQLField("canMask", type: .scalar(String.self)),
                       GraphQLField("header", type: .nonNull(.scalar(String.self))),
                       GraphQLField("pid", type: .nonNull(.scalar(String.self))),
                       GraphQLField("flowControl", type: .object(FlowControl.selections)),
@@ -4814,8 +4818,8 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                     self.resultMap = unsafeResultMap
                   }
 
-                  public init(header: String, pid: String, flowControl: FlowControl? = nil) {
-                    self.init(unsafeResultMap: ["__typename": "Challenge", "header": header, "pid": pid, "flowControl": flowControl.flatMap { (value: FlowControl) -> ResultMap in value.resultMap }])
+                  public init(canFilter: String? = nil, canMask: String? = nil, header: String, pid: String, flowControl: FlowControl? = nil) {
+                    self.init(unsafeResultMap: ["__typename": "Challenge", "canFilter": canFilter, "canMask": canMask, "header": header, "pid": pid, "flowControl": flowControl.flatMap { (value: FlowControl) -> ResultMap in value.resultMap }])
                   }
 
                   public var __typename: String {
@@ -4824,6 +4828,24 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                     }
                     set {
                       resultMap.updateValue(newValue, forKey: "__typename")
+                    }
+                  }
+
+                  public var canFilter: String? {
+                    get {
+                      return resultMap["canFilter"] as? String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "canFilter")
+                    }
+                  }
+
+                  public var canMask: String? {
+                    get {
+                      return resultMap["canMask"] as? String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "canMask")
                     }
                   }
 
@@ -5107,6 +5129,8 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                   public static var selections: [GraphQLSelection] {
                     return [
                       GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                      GraphQLField("canFilter", type: .scalar(String.self)),
+                      GraphQLField("canMask", type: .scalar(String.self)),
                       GraphQLField("header", type: .nonNull(.scalar(String.self))),
                       GraphQLField("pid", type: .nonNull(.scalar(String.self))),
                       GraphQLField("flowControl", type: .object(FlowControl.selections)),
@@ -5119,8 +5143,8 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                     self.resultMap = unsafeResultMap
                   }
 
-                  public init(header: String, pid: String, flowControl: FlowControl? = nil) {
-                    self.init(unsafeResultMap: ["__typename": "Challenge", "header": header, "pid": pid, "flowControl": flowControl.flatMap { (value: FlowControl) -> ResultMap in value.resultMap }])
+                  public init(canFilter: String? = nil, canMask: String? = nil, header: String, pid: String, flowControl: FlowControl? = nil) {
+                    self.init(unsafeResultMap: ["__typename": "Challenge", "canFilter": canFilter, "canMask": canMask, "header": header, "pid": pid, "flowControl": flowControl.flatMap { (value: FlowControl) -> ResultMap in value.resultMap }])
                   }
 
                   public var __typename: String {
@@ -5129,6 +5153,24 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                     }
                     set {
                       resultMap.updateValue(newValue, forKey: "__typename")
+                    }
+                  }
+
+                  public var canFilter: String? {
+                    get {
+                      return resultMap["canFilter"] as? String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "canFilter")
+                    }
+                  }
+
+                  public var canMask: String? {
+                    get {
+                      return resultMap["canMask"] as? String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "canMask")
                     }
                   }
 
@@ -5530,6 +5572,8 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                 public static var selections: [GraphQLSelection] {
                   return [
                     GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("canFilter", type: .scalar(String.self)),
+                    GraphQLField("canMask", type: .scalar(String.self)),
                     GraphQLField("header", type: .nonNull(.scalar(String.self))),
                     GraphQLField("pid", type: .nonNull(.scalar(String.self))),
                     GraphQLField("flowControl", type: .object(FlowControl.selections)),
@@ -5542,8 +5586,8 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                   self.resultMap = unsafeResultMap
                 }
 
-                public init(header: String, pid: String, flowControl: FlowControl? = nil) {
-                  self.init(unsafeResultMap: ["__typename": "Challenge", "header": header, "pid": pid, "flowControl": flowControl.flatMap { (value: FlowControl) -> ResultMap in value.resultMap }])
+                public init(canFilter: String? = nil, canMask: String? = nil, header: String, pid: String, flowControl: FlowControl? = nil) {
+                  self.init(unsafeResultMap: ["__typename": "Challenge", "canFilter": canFilter, "canMask": canMask, "header": header, "pid": pid, "flowControl": flowControl.flatMap { (value: FlowControl) -> ResultMap in value.resultMap }])
                 }
 
                 public var __typename: String {
@@ -5552,6 +5596,24 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                   }
                   set {
                     resultMap.updateValue(newValue, forKey: "__typename")
+                  }
+                }
+
+                public var canFilter: String? {
+                  get {
+                    return resultMap["canFilter"] as? String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "canFilter")
+                  }
+                }
+
+                public var canMask: String? {
+                  get {
+                    return resultMap["canMask"] as? String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "canMask")
                   }
                 }
 
@@ -5877,6 +5939,8 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                 public static var selections: [GraphQLSelection] {
                   return [
                     GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("canFilter", type: .scalar(String.self)),
+                    GraphQLField("canMask", type: .scalar(String.self)),
                     GraphQLField("header", type: .nonNull(.scalar(String.self))),
                     GraphQLField("pid", type: .nonNull(.scalar(String.self))),
                   ]
@@ -5888,8 +5952,8 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                   self.resultMap = unsafeResultMap
                 }
 
-                public init(header: String, pid: String) {
-                  self.init(unsafeResultMap: ["__typename": "Challenge", "header": header, "pid": pid])
+                public init(canFilter: String? = nil, canMask: String? = nil, header: String, pid: String) {
+                  self.init(unsafeResultMap: ["__typename": "Challenge", "canFilter": canFilter, "canMask": canMask, "header": header, "pid": pid])
                 }
 
                 public var __typename: String {
@@ -5898,6 +5962,24 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                   }
                   set {
                     resultMap.updateValue(newValue, forKey: "__typename")
+                  }
+                }
+
+                public var canFilter: String? {
+                  get {
+                    return resultMap["canFilter"] as? String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "canFilter")
+                  }
+                }
+
+                public var canMask: String? {
+                  get {
+                    return resultMap["canMask"] as? String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "canMask")
                   }
                 }
 
@@ -6044,6 +6126,8 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                   public static var selections: [GraphQLSelection] {
                     return [
                       GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                      GraphQLField("canFilter", type: .scalar(String.self)),
+                      GraphQLField("canMask", type: .scalar(String.self)),
                       GraphQLField("header", type: .nonNull(.scalar(String.self))),
                       GraphQLField("pid", type: .nonNull(.scalar(String.self))),
                       GraphQLField("flowControl", type: .object(FlowControl.selections)),
@@ -6056,8 +6140,8 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                     self.resultMap = unsafeResultMap
                   }
 
-                  public init(header: String, pid: String, flowControl: FlowControl? = nil) {
-                    self.init(unsafeResultMap: ["__typename": "Challenge", "header": header, "pid": pid, "flowControl": flowControl.flatMap { (value: FlowControl) -> ResultMap in value.resultMap }])
+                  public init(canFilter: String? = nil, canMask: String? = nil, header: String, pid: String, flowControl: FlowControl? = nil) {
+                    self.init(unsafeResultMap: ["__typename": "Challenge", "canFilter": canFilter, "canMask": canMask, "header": header, "pid": pid, "flowControl": flowControl.flatMap { (value: FlowControl) -> ResultMap in value.resultMap }])
                   }
 
                   public var __typename: String {
@@ -6066,6 +6150,24 @@ public final class GetBatteryTestInstructionsQuery: GraphQLQuery {
                     }
                     set {
                       resultMap.updateValue(newValue, forKey: "__typename")
+                    }
+                  }
+
+                  public var canFilter: String? {
+                    get {
+                      return resultMap["canFilter"] as? String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "canFilter")
+                    }
+                  }
+
+                  public var canMask: String? {
+                    get {
+                      return resultMap["canMask"] as? String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "canMask")
                     }
                   }
 

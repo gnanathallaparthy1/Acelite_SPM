@@ -290,8 +290,9 @@ extension VehicalVINScannerViewController: PassVehicleInformationDelegate {
 		if (viewModel.vehicleInformation?.getBatteryTestInstructions) != nil {
 			let storyBoard = UIStoryboard.init(name: "Main", bundle: nil)
 			let vehicalInformation = storyBoard.instantiateViewController(withIdentifier: "VehicalInformationViewController") as! VehicalInformationViewController
+			let isShortProfile = viewModel.vehicleInformation?.getBatteryTestInstructions?.first?.testCommands?.sampledCommands
 			if let vehicleInfo = viewModel.vehicleInformation {
-				vehicalInformation.viewModel = VehicleInformationViewModel(vinNumber: vehicleInfo.vin, vehicleInformation: vehicleInfo)
+				vehicalInformation.viewModel = VehicleInformationViewModel(vinNumber: vehicleInfo.vin, vehicleInformation: vehicleInfo, isShortProfile: isShortProfile != nil ? false : true)
 			}
 			
 			self.navigationController?.pushViewController(vehicalInformation, animated: true)

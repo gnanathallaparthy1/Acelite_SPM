@@ -200,6 +200,8 @@
 		86CDBA6929B653D400956B4C /* UploadAnimationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86CDBA6829B653D400956B4C /* UploadAnimationViewModel.swift */; };
 		86E33DFC2A1E7D3C00E2F167 /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86E33DFB2A1E7D3C00E2F167 /* ExternalAccessory.framework */; };
 		86E33DFE2A252D8700E2F167 /* ExternalAccessory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86E33DFD2A252D8700E2F167 /* ExternalAccessory.swift */; };
+		86F7C09C2AF40DD20046A0D1 /* WorkOrderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F7C09B2AF40DD20046A0D1 /* WorkOrderViewModel.swift */; };
+		86F7C09D2AF40DD20046A0D1 /* WorkOrderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F7C09B2AF40DD20046A0D1 /* WorkOrderViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -315,6 +317,7 @@
 		86CDBA6829B653D400956B4C /* UploadAnimationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadAnimationViewModel.swift; sourceTree = "<group>"; };
 		86E33DFB2A1E7D3C00E2F167 /* ExternalAccessory.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ExternalAccessory.framework; path = System/Library/Frameworks/ExternalAccessory.framework; sourceTree = SDKROOT; };
 		86E33DFD2A252D8700E2F167 /* ExternalAccessory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExternalAccessory.swift; sourceTree = "<group>"; };
+		86F7C09B2AF40DD20046A0D1 /* WorkOrderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkOrderViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -410,6 +413,7 @@
 		861E6EC82953789B00443F12 /* Acelite */ = {
 			isa = PBXGroup;
 			children = (
+				86F7C09A2AF40D930046A0D1 /* Workorder */,
 				863E76722ACF20C000CBEEEB /* OfflineVinData */,
 				8697905B2A88604300FA6440 /* Offline */,
 				864667C22A4379A300C85ABD /* Acelite.entitlements */,
@@ -441,7 +445,6 @@
 				867201092A60701D00C6CBC7 /* Firebase */,
 				867BBF7829673D7400DC4842 /* AceliteColors.swift */,
 				867BBF7A296744CD00DC4842 /* AceliteConstants.swift */,
-				86B9089F297079A9001CAB90 /* WorkOrderViewController.swift */,
 				86636DC8297B0AA2001240FB /* TerminalViewController.swift */,
 				86AF929329B585AF00FDA4C3 /* InfoPopUpViewController.swift */,
 				8609395429BF8C98001DE232 /* BatteryHealthCheck.storyboard */,
@@ -756,6 +759,15 @@
 			path = Firebases;
 			sourceTree = "<group>";
 		};
+		86F7C09A2AF40D930046A0D1 /* Workorder */ = {
+			isa = PBXGroup;
+			children = (
+				86B9089F297079A9001CAB90 /* WorkOrderViewController.swift */,
+				86F7C09B2AF40DD20046A0D1 /* WorkOrderViewModel.swift */,
+			);
+			path = Workorder;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1053,6 +1065,7 @@
 				866CDB6A298D743E00ADFB50 /* TestViewModel.swift in Sources */,
 				8632D72C2AC203A600BA612E /* CustomView.swift in Sources */,
 				8639CDB629F7FFF5004E813D /* VehicleVinScannerViewModel.swift in Sources */,
+				86F7C09C2AF40DD20046A0D1 /* WorkOrderViewModel.swift in Sources */,
 				861E6EFC29561D1A00443F12 /* VehicalInformationViewController.swift in Sources */,
 				864667A72A436C5100C85ABD /* FirebaseConstants.swift in Sources */,
 				8609395129BF898B001DE232 /* BatteryHealthCheckViewController.swift in Sources */,
@@ -1144,6 +1157,7 @@
 				869790642A89461100FA6440 /* OfflineViewController.swift in Sources */,
 				867200CB2A5F91D900C6CBC7 /* Logger.swift in Sources */,
 				8632D72D2AC203A600BA612E /* CustomView.swift in Sources */,
+				86F7C09D2AF40DD20046A0D1 /* WorkOrderViewModel.swift in Sources */,
 				867200CC2A5F91D900C6CBC7 /* TestViewModel.swift in Sources */,
 				867200CD2A5F91D900C6CBC7 /* VehicleVinScannerViewModel.swift in Sources */,
 				867200CE2A5F91D900C6CBC7 /* VehicalInformationViewController.swift in Sources */,

@@ -1,305 +1,320 @@
-query GetBatteryTestInstructions($vin: String) {
-  vehicle(vin: $vin) {
-      make
-      modelName
-      year
-      vin
-      mid
-      manufacturer
-      bodyStyle
-      bodyType
-      trimName
-      title
-      year
-      vehicleType
-    getBatteryTestInstructions {
-      testCommands {
-        ... on ChallengeTestCommands {
-          id
-          vehicleProfile {
-            nominalVoltage
-            energyAtBirth
-            batteryType
-            capacityAtBirth
-            rangeAtBirth
-            designChargeCycles
-          }
-          odometer {
-            protocol {
-              elm327ProtocolPreset
-              obdLinkProtocolPreset
-            }
-            challenge {
-              header
-              pid
-              flowControl {
-                flowControlHeader
-                flowControlData
-              }
-            }
-            response {
-              startByte
-              endByte
-              multiplier
-              constant
-            }
-            validation {
-              numberOfFrames
-              lowerBounds
-              upperBounds
-            }
-          }
-          stateOfHealthCommands {
-            ... on ChallengeStateOfChargeCommands {
-              stateOfCharge {
-                protocol {
-                  elm327ProtocolPreset
-                  obdLinkProtocolPreset
-                }
-                challenge {
-                  header
-                  pid
-                  flowControl {
-                    flowControlHeader
-                    flowControlData
-                  }
-                }
-                response {
-                  startByte
-                  endByte
-                  multiplier
-                  constant
-                }
-                validation {
-                  numberOfFrames
-                  lowerBounds
-                  upperBounds
-                }
-              }
-              energyToEmpty {
-                protocol {
-                  elm327ProtocolPreset
-                  obdLinkProtocolPreset
-                }
-                challenge {
-                  header
-                  pid
-                  flowControl {
-                    flowControlHeader
-                    flowControlData
-                  }
-                }
-                response {
-                  startByte
-                  endByte
-                  multiplier
-                  constant
-                }
-                validation {
-                  numberOfFrames
-                  lowerBounds
-                  upperBounds
-                }
-              }
-            }
-            ... on ChallengeBMSCapacityCommands {
-                bmsCapacity {
-                    challenge {
-                        header
-                        pid
-                        flowControl {
-                            flowControlHeader
-                            flowControlData
+query VehicleInfoQuery($vin: String) {
+    vehicle(vin: $vin) {
+        make
+        modelName
+        year
+        vin
+        mid
+        manufacturer
+        bodyStyle
+        bodyType
+        trimName
+        title
+        year
+        vehicleType
+        getBatteryTestInstructions {
+            testCommands {
+                ... on ChallengeTestCommands {
+                    id
+                    vehicleProfile {
+                        nominalVoltage
+                        energyAtBirth
+                        batteryType
+                        capacityAtBirth
+                        rangeAtBirth
+                        designChargeCycles
+                    }
+                    odometer {
+                        protocol {
+                            elm327ProtocolPreset
+                            obdLinkProtocolPreset
+                        }
+                        challenge {
+                            canFilter
+                            canMask
+                            header
+                            pid
+                            flowControl {
+                                flowControlHeader
+                                flowControlData
+                            }
+                        }
+                        response {
+                            startByte
+                            endByte
+                            multiplier
+                            constant
+                        }
+                        validation {
+                            numberOfFrames
+                            lowerBounds
+                            upperBounds
                         }
                     }
-                    protocol {
-                        elm327ProtocolPreset
-                        obdLinkProtocolPreset
+                    stateOfCharge {
+                        protocol {
+                            elm327ProtocolPreset
+                            obdLinkProtocolPreset
+                        }
+                        validation {
+                            upperBounds
+                            lowerBounds
+                            numberOfFrames
+                        }
+                        challenge {
+                            canFilter
+                            canMask
+                            header
+                            pid
+                            flowControl {
+                                flowControlHeader
+                                flowControlData
+                            }
+                        }
+                        response {
+                            constant
+                            multiplier
+                            startByte
+                            endByte
+                        }
                     }
-                    response {
-                        constant
-                        endByte
-                        startByte
-                        multiplier
+                    energyToEmpty {
+                        protocol {
+                            elm327ProtocolPreset
+                            obdLinkProtocolPreset
+                        }
+                        challenge {
+                            canFilter
+                            canMask
+                            header
+                            pid
+                            flowControl {
+                                flowControlHeader
+                                flowControlData
+                            }
+                        }
+                        response {
+                            startByte
+                            endByte
+                            multiplier
+                            constant
+                        }
+                        validation {
+                            numberOfFrames
+                            lowerBounds
+                            upperBounds
+                        }
                     }
-                    validation {
-                        lowerBounds
-                        upperBounds
-                        numberOfFrames
+                    bmsCapacity {
+                        challenge {
+                            canFilter
+                            canMask
+                            header
+                            pid
+                            flowControl {
+                                flowControlHeader
+                                flowControlData
+                            }
+                        }
+                        protocol {
+                            elm327ProtocolPreset
+                            obdLinkProtocolPreset
+                        }
+                        response {
+                            constant
+                            endByte
+                            startByte
+                            multiplier
+                        }
+                        validation {
+                            lowerBounds
+                            upperBounds
+                            numberOfFrames
+                        }
+                    }
+                    sampledCommands {
+                        protocol {
+                            elm327ProtocolPreset
+                            obdLinkProtocolPreset
+                        }
+                        packTemperature {
+                            challenge {
+                                canFilter
+                                canMask
+                                header
+                                pid
+                                flowControl {
+                                    flowControlHeader
+                                    flowControlData
+                                }
+                            }
+                            response {
+                                startByte
+                                endByte
+                                numberOfSensors
+                                bytesPerSensors
+                                startSensorsCount
+                                endSensorsCount
+                                bytesPaddedBetweenSensors
+                                multiplier
+                                constant
+                            }
+                            validation {
+                                numberOfFrames
+                                lowerBounds
+                                upperBounds
+                            }
+                        }
+                        packVoltage {
+                            challenge {
+                                canFilter
+                                canMask
+                                header
+                                pid
+                                flowControl {
+                                    flowControlHeader
+                                    flowControlData
+                                }
+                            }
+                            response {
+                                startByte
+                                endByte
+                                multiplier
+                                constant
+                            }
+                            validation {
+                                upperBounds
+                                lowerBounds
+                                numberOfFrames
+                            }
+                        }
+                        packCurrent {
+                            challenge {
+                                canFilter
+                                canMask
+                                header
+                                pid
+                                flowControl {
+                                    flowControlHeader
+                                    flowControlData
+                                }
+                            }
+                            response {
+                                startByte
+                                endByte
+                                multiplier
+                                constant
+                            }
+                            validation {
+                                numberOfFrames
+                                lowerBounds
+                                upperBounds
+                            }
+                        }
+                        cellVoltage {
+                            challenge {
+                                canFilter
+                                canMask
+                                header
+                                pid
+                                flowControl {
+                                    flowControlHeader
+                                    flowControlData
+                                }
+                            }
+                            response {
+                                startByte
+                                endByte
+                                numberOfCells
+                                bytesPerCell
+                                startCellCount
+                                endCellCount
+                                bytesPaddedBetweenCells
+                                multiplier
+                                constant
+                            }
+                            validation {
+                                lowerBounds
+                                upperBounds
+                                numberOfFrames
+                            }
+                        }
+                    }
+                    batteryAge {
+                        protocol {
+                            elm327ProtocolPreset
+                            obdLinkProtocolPreset
+                        }
+                        challenge {
+                            canFilter
+                            canMask
+                            header
+                            pid
+                            flowControl {
+                                flowControlHeader
+                                flowControlData
+                            }
+                        }
+                        response {
+                            startByte
+                            endByte
+                            multiplier
+                            constant
+                        }
+                        validation {
+                            numberOfFrames
+                            lowerBounds
+                            upperBounds
+                        }
+                    }
+                    diagnosticSession {
+                        protocol {
+                            elm327ProtocolPreset
+                            obdLinkProtocolPreset
+                        }
+                        challenge {
+                            canFilter
+                            canMask
+                            header
+                            pid
+                        }
+                    }
+                    miscCommands {
+                        label
+                        instruction {
+                            challenge {
+                                canFilter
+                                canMask
+                                header
+                                pid
+                                flowControl {
+                                    flowControlHeader
+                                    flowControlData
+                                }
+                            }
+                            protocol {
+                                elm327ProtocolPreset
+                                obdLinkProtocolPreset
+                            }
+                            response {
+                                constant
+                                endByte
+                                multiplier
+                                startByte
+                            }
+                            validation {
+                                numberOfFrames
+                                upperBounds
+                                lowerBounds
+                            }
+                        }
                     }
                 }
             }
-          }
-          sampledCommands {
-            
-            protocol {
-              elm327ProtocolPreset
-              obdLinkProtocolPreset
-            }
-            packTemperature {
-              challenge {
-                header
-                pid
-                flowControl {
-                  flowControlHeader
-                  flowControlData
-                }
-              }
-              response {
-                startByte
-                endByte
-                numberOfSensors
-                bytesPerSensors
-                startSensorsCount
-                endSensorsCount
-                bytesPaddedBetweenSensors
-                multiplier
-                constant
-              }
-              validation {
-                numberOfFrames
-                lowerBounds
-                upperBounds
-              }
-            }
-            packVoltage {
-                challenge {
-                    header
-                    pid
-                    flowControl {
-                        flowControlHeader
-                        flowControlData
-                    }
-                }
-              response {
-                startByte
-                endByte
-                multiplier
-                constant
-              }
-              validation {
-                  upperBounds
-                  lowerBounds
-                  numberOfFrames
-              }
-            }
-            packCurrent {
-              challenge {
-                header
-                pid
-                flowControl {
-                  flowControlHeader
-                  flowControlData
-                }
-              }
-              response {
-                startByte
-                endByte
-                multiplier
-                constant
-              }
-              validation {
-                numberOfFrames
-                lowerBounds
-                upperBounds
-              }
-            }
-            cellVoltage {
-                
-                challenge {
-                    header
-                    pid
-                    flowControl {
-                        flowControlHeader
-                        flowControlData
-                    }
-                }
-              response {
-                startByte
-                endByte
-                numberOfCells
-                bytesPerCell
-                startCellCount
-                endCellCount
-                bytesPaddedBetweenCells
-                multiplier
-                constant
-              }
-              validation {
-                  lowerBounds
-                  upperBounds
-                  numberOfFrames
-              }
-            }
-          }
-          batteryAge {
-            protocol {
-              elm327ProtocolPreset
-              obdLinkProtocolPreset
-            }
-            challenge {
-              header
-              pid
-              flowControl {
-                flowControlHeader
-                flowControlData
-              }
-            }
-            response {
-              startByte
-              endByte
-              multiplier
-              constant
-            }
-            validation {
-              numberOfFrames
-              lowerBounds
-              upperBounds
-            }
-          }
-          diagnosticSession {
-            protocol {
-              elm327ProtocolPreset
-              obdLinkProtocolPreset
-            }
-            challenge {
-              header
-              pid
-            }
-          }
-          miscCommands {
-              label
-              instruction {
-                  challenge {
-                      header
-                      pid
-                      flowControl {
-                          flowControlHeader
-                          flowControlData
-                      }
-                  }
-                  protocol {
-                      elm327ProtocolPreset
-                      obdLinkProtocolPreset
-                  }
-                  response {
-                      constant
-                      endByte
-                      multiplier
-                      startByte
-                  }
-                  validation {
-                      numberOfFrames
-                      upperBounds
-                      lowerBounds
-                  }
-              }
-          }
         }
-      }
     }
-  }
 }
+
 query getS3PreSingedURL($vin:String!){
   getS3PreSingedURL(vin:$vin){
     url

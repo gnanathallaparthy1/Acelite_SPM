@@ -159,6 +159,10 @@ class VehicalInformationViewController:  BaseViewController {
 		let storyBoard = UIStoryboard.init(name: "Main", bundle: nil)
 		let workOrderVC = storyBoard.instantiateViewController(withIdentifier: "WorkOrderViewController") as! WorkOrderViewController
 		workOrderVC.vehicleInfo = viewModel?.vehicleInformation
+		guard let vehicalInfo = viewModel?.vehicleInformation else {
+			return
+		}
+		workOrderVC.viewModel = WorkOrderViewModel(vehicleInfo: vehicalInfo, workOrder: "", isShortProfile: viewModel?.ifShortProfile ?? false)
 		self.navigationController?.pushViewController(workOrderVC, animated: true)
 	}
 }

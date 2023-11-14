@@ -17,13 +17,15 @@ protocol UpdateVehicleInformationDelegate: AnyObject {
 class VehicleInformationViewModel {
 	var vehicleInformation:  Vehicle?
 	var vinNumber: String?
+	var ifShortProfile: Bool
 	weak var delegate: UpdateVehicleInformationDelegate? = nil
-	init(vinNumber: String?, vehicleInformation: Vehicle) {
+	init(vinNumber: String?, vehicleInformation: Vehicle, isShortProfile: Bool?) {
 		self.vinNumber = vinNumber
 		self.vehicleInformation = vehicleInformation
+		self.ifShortProfile = isShortProfile ?? false
 	}
 	 func fetchVehicalInformation(vim: String)  {
-		Network.shared.apollo.fetch(query: GetBatteryTestInstructionsQuery(vin: vim)) { result in
+		 Network.shared.apollo.fetch(query: VehicleInfoQueryQuery(vin: vim)) { result in 
 			// 3
 			switch result {
 			case .success(let graphQLResult):

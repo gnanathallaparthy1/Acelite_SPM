@@ -38,7 +38,10 @@ struct TestCommands: Codable {
 	let id: String
 	let vehicleProfile: VehicleProfile?
 	let odometer: Odometer?
-	let stateOfHealthCommands: StateOfHealthCommands?
+	var stateOfCharge: StateOfCharge?
+	var bmsCapacity: BmsCapacity?
+	var energyToEmpty: BmsCapacity?
+	//let stateOfHealthCommands: StateOfHealthCommands?
 	let sampledCommands: SampledCommands
 	let diagnosticSession: DiagnosticSession?
 	let batteryAge, miscCommands: JSONNull?
@@ -158,6 +161,41 @@ struct StateOfHealthCommands: Codable {
 
 }
 
+// MARK: - BmsCapacity
+struct BmsCapacity: Codable {
+	var challenge: Challenge?
+	var bmsCapacityProtocol: ProtocolClass?
+	var response: OdometerResponse?
+	var validation: Validation?
+
+	enum CodingKeys: String, CodingKey {
+		case challenge
+		case bmsCapacityProtocol = "protocol"
+		case response, validation
+	}
+}
+
+// MARK: - State of charge
+
+struct StateOfCharge: Codable {
+	var challenge: Challenge?
+	var bmsCapacityProtocol: ProtocolClass?
+	var response: OdometerResponse?
+	var validation: Validation?
+
+	enum CodingKeys: String, CodingKey {
+		case challenge
+		case bmsCapacityProtocol = "protocol"
+		case response, validation
+	}
+}
+
+
+// MARK: - BmsCapacityResponse
+struct BmsCapacityResponse: Codable {
+	var constant, endByte, startByte: Int?
+	var multiplier: Double?
+}
 
 // MARK: - VehicleProfile
 struct VehicleProfile: Codable {

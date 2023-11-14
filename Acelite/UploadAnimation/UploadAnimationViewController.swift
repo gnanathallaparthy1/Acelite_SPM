@@ -25,7 +25,6 @@ class UploadAnimationViewController: BaseViewController {
 	private let circleB = UIView()
 	private let circleC = UIView()
 	private lazy var circles = [circleA, circleB, circleC]
-	public var viewModel: UploadAnimationViewModel?
 	public var vehicleInfo: Vehicle?
 	private let notificationCenter = NotificationCenter.default
 	public var packVoltageData = [Double]()
@@ -54,6 +53,18 @@ class UploadAnimationViewController: BaseViewController {
 	var networkStatus = NotificationCenter.default
 	let notificationName = NSNotification.Name(rawValue:"InternetObserver")
 	var errorSheetSource = ErrorSheetSource.INSTRUCTION_FLOW
+	var viewModel: UploadAnimationViewModel?
+	var delegate:ShortProfileCommandsRunDelegate?
+	
+	init(viewModel: UploadAnimationViewModel) {
+		super.init(nibName: nil, bundle: nil)
+		self.viewModel = viewModel
+		//super.init()
+	}
+
+	required init?(coder: NSCoder) {
+		super.init(coder: coder)
+	}
 	func animate() {
 		
 		let jumpDuration: Double = 0.30
@@ -74,10 +85,11 @@ class UploadAnimationViewController: BaseViewController {
 			})
 		}
 	}
-	
+
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		FirebaseLogging.instance.logScreen(screenName: ClassNames.upload)
+		viewModel?.delegate = self
 		print(Date(), "upload animation VC", to: &Log.log)
 		navigationItem.hidesBackButton = true
 		let label = UILabel(frame: CGRect(x: 0, y: 0, width: 250, height: 21))
@@ -99,8 +111,22 @@ class UploadAnimationViewController: BaseViewController {
 			$0.widthAnchor.constraint(equalToConstant: 20).isActive = true
 			$0.heightAnchor.constraint(equalTo: $0.widthAnchor).isActive = true
 		}
-		messageObserver()
-		networkStatus.addObserver(self, selector: #selector(self.handleNetworkUpdate(_:)), name: notificationName, object: nil)
+		
+	}
+	
+	override func viewWillAppear(_ animated: Bool) {
+		if viewModel?.isShortProfile == true {
+			if errorSheetSource == .OFFLINE_LIST {
+				self.viewModel?.submitBatteryDataForShortProfile()
+			} else {
+				self.viewModel?.initialCommand()
+			}
+			
+			//submitBatteryDataJsonFileWithSOCAndBMSGraphRequest(fileName: "")
+		} else {
+			messageObserver()
+			networkStatus.addObserver(self, selector: #selector(self.handleNetworkUpdate(_:)), name: notificationName, object: nil)
+		}
 	}
 	
 	override func viewDidAppear(_ animated: Bool) {
@@ -169,7 +195,38 @@ class UploadAnimationViewController: BaseViewController {
 			print("Could not save. \(error), \(error.userInfo)")
 		}
 	}
-	
+	private func saveOfflineDataForShortProfile() {
+		guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+		let managedContext = appDelegate.persistentContainer.viewContext
+		let userEntity = NSEntityDescription.entity(forEntityName: "BatteryInstructionsData", in: managedContext)!
+		
+		let workOrder = self.viewModel?.workOrder
+		
+		// Encode
+		let jsonEncoder = JSONEncoder()
+		let jsonData = try! jsonEncoder.encode(self.viewModel?.vehicleInfo)
+		let vehicalInformation = String(data: jsonData, encoding: String.Encoding.utf8)
+		//print(json)
+		let vidata = NSManagedObject(entity: userEntity, insertInto: managedContext)
+		vidata.setValue(self.getDateAndTime(), forKey: Constants.DATE_TIME)
+		//vidata.setValue("2023-10-20 13:25:22", forKey: Constants.DATE_TIME)
+		//vidata.setValue(self.finalJsonString, forKey: Constants.FINAL_JSON_DATA)
+		vidata.setValue(vehicalInformation, forKey: Constants.VEHICAL)
+		vidata.setValue(workOrder, forKey: Constants.WORK_ORDER)
+		vidata.setValue(self.viewModel?.bms, forKey: Constants.BMS)
+		//vidata.setValue(self.viewMode, forKey: Constants.NUMBER_OF_CELL)
+		vidata.setValue(self.viewModel?.stateOfCharge, forKey: Constants.STATE_OF_CHARGE)
+		vidata.setValue(self.viewModel?.odometer, forKey: Constants.ODOMETER)
+		vidata.setValue(self.viewModel?.currentEnergy, forKey: Constants.CURRENT_ENERGY)
+		
+		//Now we have set all the values. The next step is to save them inside the Core Data
+		do {
+			try managedContext.save()
+			self.navigationController?.popToRootViewController(animated: true)
+		} catch let error as NSError {
+			print("Could not save. \(error), \(error.userInfo)")
+		}
+	}
 	private func getDateAndTime() -> String {
 		let date = Date()
 		let df = DateFormatter()
@@ -186,14 +243,15 @@ class UploadAnimationViewController: BaseViewController {
 			let make = self.vehicleInfo?.make ?? ""
 			let model = self.vehicleInfo?.modelName ?? ""
 			let year = self.vehicleInfo?.year ?? 0
-			let trim = self.vehicleInfo?.trimName ?? ""
+			var trim = self.vehicleInfo?.trimName
+			trim = trim?.replacingOccurrences(of: " ", with: "_")
 			let workOrder = self.workOrder ?? ""
-			self.uploadFileName = "\(Constants.ACELITE_TEST)_\(vinNumber)_\(workOrder)_\(make)_\(model)_\(year)_\(trim)\(Constants.FILE_TYPE)"
-			let fileURL =  path.appendingPathComponent("\(Constants.ACELITE_TEST)_\(vinNumber)_\(workOrder)_\(make)_\(model)_\(year)_\(trim)\(Constants.FILE_TYPE)")
+			self.uploadFileName = "\(Constants.ACELITE_TEST)_\(vinNumber)_\(workOrder)_\(make)_\(model)_\(year)_\(trim ?? "")\(Constants.FILE_TYPE)"
+			let fileURL =  path.appendingPathComponent("\(Constants.ACELITE_TEST)_\(vinNumber)_\(workOrder)_\(make)_\(model)_\(year)_\(trim ?? "")\(Constants.FILE_TYPE)")
 			try self.finalJsonString.write(to: fileURL, atomically: true, encoding: .utf8)
 			self.jsonFilePath = fileURL.absoluteString
 			if self.currentReachabilityStatus != .notReachable {
-				getTransactionId(filePath: fileURL.absoluteString)
+				getTransactionId(filePath: self.jsonFilePath)
 			} else {
 				offlineAlertViewController()
 			}
@@ -206,13 +264,26 @@ class UploadAnimationViewController: BaseViewController {
 	private func offlineAlertViewController() {
 		let dialogMessage = UIAlertController(title: "Error", message: "Sorry,something went wrong.Please try again", preferredStyle: .alert)
 		let saveAndExit = UIAlertAction(title: "Save & Exit", style: .default, handler: { (action) -> Void in
-			self.saveOfflineData()
+			if self.viewModel?.isShortProfile == true {
+				self.saveOfflineDataForShortProfile()
+			} else {
+				self.saveOfflineData()
+			}
+			
 		})
 		let retryButton = UIAlertAction(title: "Retry", style: .default, handler: { (action) -> Void in
-			self.getTransactionId(filePath: self.jsonFilePath)
+			if self.viewModel?.isShortProfile == true {
+				self.viewModel?.submitBatteryDataForShortProfile()
+			} else {
+				self.getTransactionId(filePath: self.jsonFilePath)
+			}
 		})
-		dialogMessage.addAction(saveAndExit)
-		dialogMessage.addAction(retryButton)
+		if errorSheetSource == .OFFLINE_LIST {
+			dialogMessage.addAction(retryButton)
+		} else {
+			dialogMessage.addAction(saveAndExit)
+			dialogMessage.addAction(retryButton)
+		}
 		self.present(dialogMessage, animated: true, completion: nil)
 	}
 	
@@ -361,7 +432,7 @@ class UploadAnimationViewController: BaseViewController {
 		let pack_Current = CSVFile(fileName: "Pack_Current_\(self.vehicleInfo?.vin ?? "")")
 		let pack_CurrentFilePath = pack_Current.creatCSVForArray(data: data)
 		csvDispatchGroup.enter()
-		csvFileUploadingIntoS3Bucket(fileName: pack_CurrentFilePath.absoluteString)
+		//csvFileUploadingIntoS3Bucket(fileName: pack_CurrentFilePath.absoluteString)
 		let paramDictionary = [
 			"file_type": "PACK_CURRENT"
 		]
@@ -375,7 +446,7 @@ class UploadAnimationViewController: BaseViewController {
 		let pack_Voltage = CSVFile(fileName: "Pack_Voltage_\(self.vehicleInfo?.vin ?? "")")
 		csvDispatchGroup.enter()
 		let pack_VoltageFilePath = pack_Voltage.creatCSVForArray(data: data)
-		csvFileUploadingIntoS3Bucket(fileName: pack_VoltageFilePath.absoluteString)
+		//csvFileUploadingIntoS3Bucket(fileName: pack_VoltageFilePath.absoluteString)
 		let paramDictionary = [
 			"file_type": "PACK_VOLTAGE"
 		]
@@ -389,7 +460,7 @@ class UploadAnimationViewController: BaseViewController {
 		let cell_voltage = CSVFile(fileName: "Cell_Volt_\(self.vehicleInfo?.vin ?? "")")
 		csvDispatchGroup.enter()
 		let cellVoltageFilePath = cell_voltage.createMultiframeCSV(data: data)
-		csvFileUploadingIntoS3Bucket(fileName: cellVoltageFilePath.absoluteString)
+		//csvFileUploadingIntoS3Bucket(fileName: cellVoltageFilePath.absoluteString)
 		let paramDictionary = [
 			"file_type": "CELL_VOLTAGE"
 		]
@@ -460,42 +531,33 @@ class UploadAnimationViewController: BaseViewController {
 		}
 		print(Date(), "SOC:Vehicle Profile\(vehicleProfile)", to: &Log.log)
 		//State of Health
-		guard let stateOfHealth = batteryInstr?[0].testCommands?.stateOfHealthCommands else {
-			print(Date(), "SOC:Submit API failed due to state Of Health", to: &Log.log)
-			self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:Submit API failed due to state Of Health", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: "")
-			return
+		if let stateOfHealth = batteryInstr?[0].testCommands?.stateOfCharge {
+			print(Date(), "SOC:State of Health\(stateOfHealth)", to: &Log.log)
 		}
-		print(Date(), "SOC:State of Health\(stateOfHealth)", to: &Log.log)
-		//Nominal Volatage
-		guard let nominalVoltage: Double = vehicleProfile.nominalVoltage else {
-			print(Date(), "SOC:Submit API failed due to Nominal Volatge", to: &Log.log)
-			self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:Submit API failed due to Nominal Volatge", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: "")
-			return
-		}
-		print(Date(), "SOC:Nominal Voltage\(nominalVoltage)", to: &Log.log)
-		//EnergyAtBirth
-		guard let energyAtBirth: Double = vehicleProfile.energyAtBirth else {
-			print(Date(), "SOC:Submit API failed due to state Of energyAtBirth", to: &Log.log)
-			self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:Submit API failed due to state Of energyAtBirth", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: "")
-			return
-		}
-		print(Date(), "SOC:energyAtBirth\(energyAtBirth)", to: &Log.log)
-		//CapacityAtBirth
-		guard let capacityAtBirth: Double = vehicleProfile.capacityAtBirth else {
-			print(Date(), "SOC:Submit API failed due to state Of capacityAtBirth", to: &Log.log)
-			self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:Submit API failed due to state Of capacityAtBirth", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: "")
-			return
-		}
-		print(Date(), "SOC:capacityAtBirth\(capacityAtBirth)", to: &Log.log)
-		//Battery
-		guard let batteryType: String = vehicleProfile.batteryType else {
-			print(Date(), "SOC:Submit API failed due to BatteryType", to: &Log.log)
-			self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:Submit API failed due to state Of capacityAtBirth", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: "")
-			return
-		}
-		print(Date(), "SOC:BatteryType\(batteryType)", to: &Log.log)
 		
-		let vehicalProfile = CalculateBatteryHealthVehicleProfileInput.init(nominalVoltage: nominalVoltage, energyAtBirth: energyAtBirth, batteryType: .lithium, capacityAtBirth: capacityAtBirth)
+		
+		//Nominal Volatage
+		if let nominalVoltage: Double = vehicleProfile.nominalVoltage {
+			print(Date(), "SOC:Nominal Voltage\(nominalVoltage)", to: &Log.log)
+		}
+		
+		//EnergyAtBirth
+		if let energyAtBirth: Double = vehicleProfile.energyAtBirth {
+			print(Date(), "SOC:energyAtBirth\(energyAtBirth)", to: &Log.log)
+		}
+		
+		//CapacityAtBirth
+		if let capacityAtBirth: Double = vehicleProfile.capacityAtBirth  {
+			print(Date(), "SOC:capacityAtBirth\(capacityAtBirth)", to: &Log.log)
+		}
+		
+		//Battery
+		if let batteryType: String = vehicleProfile.batteryType {
+			print(Date(), "SOC:BatteryType\(batteryType)", to: &Log.log)
+		}
+		
+		
+		let vehicalProfile = CalculateBatteryHealthVehicleProfileInput.init(nominalVoltage: vehicleProfile.nominalVoltage, energyAtBirth: vehicleProfile.energyAtBirth , batteryType: .lithium, capacityAtBirth: vehicleProfile.capacityAtBirth)
 		
 		
 		print("vehical Profile", vehicleProfile)
@@ -622,78 +684,78 @@ class UploadAnimationViewController: BaseViewController {
 		}
 	}
 	
-	func csvFileUploadingIntoS3Bucket(fileName: String) {
-		print(Date(), "Uploading csvFileUploadingIntoS3Bucket", to: &Log.log)
-		guard let presinedData = self.preSignedData else { return }
-		var multipart = MultipartRequest()
-		for field in [
-			"key": presinedData.fields.key,
-			"AWSAccessKeyId": presinedData.fields.awsAccessKeyID,
-			"x-amz-security-token": presinedData.fields.xamzSecurityToken,
-			"policy": presinedData.fields.policy,
-			"signature": presinedData.fields.signature
-		] {
-			multipart.add(key: field.key, value: field.value)
-		}
-		let data = (try? Data(contentsOf: URL(string: fileName) ?? URL(fileURLWithPath: ""))) ?? Data()
-		multipart.add(
-			key: "file",
-			fileName: "\(fileName)",
-			fileMimeType: "text/csv",
-			fileData: data
-		)
-		let url = URL(string: "\(presinedData.url)")!
-		var request = URLRequest(url: url)
-		request.httpMethod = "POST"
-		request.setValue(multipart.httpContentTypeHeadeValue, forHTTPHeaderField: "Content-Type")
-		request.httpBody = multipart.httpBody
-		
-		/// Fire the request using URL sesson or anything else...
-		let session =  URLSession.shared
-		let dataTask = session.dataTask(with: request) { data, response, error in
-			self.csvDispatchGroup.leave()
-			guard let _ = data else {
-				print(Date(), "presinedData json data response Error", to: &Log.log)
-				return
-			}
-			
-			self.csvDispatchGroup.notify(queue: .main) {
-				if fileName.contains("Cell_Volt") {
-					print(Date(), "file uploaded succesfully...", to: &Log.log)
-					print("file uploaded succesfully...")
-					guard let testCommand = self.vehicleInfo?.getBatteryTestInstructions, testCommand.count > 0 else {
-						return
-					}
-					for command in testCommand {
-						let stateOfCharge = command.testCommands?.stateOfHealthCommands?.stateOfCharge
-						if self.currentReachabilityStatus != .notReachable {
-							if stateOfCharge != nil {
-								//self.submitBatteryDataFileWithSOCGraphRequest()
-							} else {
-								//self.submitBatteryDataFileWithBMSGraphRequest()
-							}
-						} else {
-							self.stackView.removeFromSuperview()
-							let alertViewController = UIAlertController.init(title: "Oops!", message: "Please check your network connection", preferredStyle: .alert)
-							let ok = UIAlertAction(title: "Retry", style: .default, handler: { (action) -> Void in
-								self.view.addSubview(self.stackView)
-								if stateOfCharge != nil {
-									//self.submitBatteryDataFileWithSOCGraphRequest()
-								} else {
-									//self.submitBatteryDataFileWithBMSGraphRequest()
-								}
-								
-							})
-							alertViewController.addAction(ok)
-							self.present(alertViewController, animated: true, completion: nil)
-						}
-					}
-				}
-				
-			}
-		}
-		dataTask.resume()
-	}
+//	func csvFileUploadingIntoS3Bucket(fileName: String) {
+//		print(Date(), "Uploading csvFileUploadingIntoS3Bucket", to: &Log.log)
+//		guard let presinedData = self.preSignedData else { return }
+//		var multipart = MultipartRequest()
+//		for field in [
+//			"key": presinedData.fields.key,
+//			"AWSAccessKeyId": presinedData.fields.awsAccessKeyID,
+//			"x-amz-security-token": presinedData.fields.xamzSecurityToken,
+//			"policy": presinedData.fields.policy,
+//			"signature": presinedData.fields.signature
+//		] {
+//			multipart.add(key: field.key, value: field.value)
+//		}
+//		let data = (try? Data(contentsOf: URL(string: fileName) ?? URL(fileURLWithPath: ""))) ?? Data()
+//		multipart.add(
+//			key: "file",
+//			fileName: "\(fileName)",
+//			fileMimeType: "text/csv",
+//			fileData: data
+//		)
+//		let url = URL(string: "\(presinedData.url)")!
+//		var request = URLRequest(url: url)
+//		request.httpMethod = "POST"
+//		request.setValue(multipart.httpContentTypeHeadeValue, forHTTPHeaderField: "Content-Type")
+//		request.httpBody = multipart.httpBody
+//
+//		/// Fire the request using URL sesson or anything else...
+//		let session =  URLSession.shared
+//		let dataTask = session.dataTask(with: request) { data, response, error in
+//			self.csvDispatchGroup.leave()
+//			guard let _ = data else {
+//				print(Date(), "presinedData json data response Error", to: &Log.log)
+//				return
+//			}
+//
+//			self.csvDispatchGroup.notify(queue: .main) {
+//				if fileName.contains("Cell_Volt") {
+//					print(Date(), "file uploaded succesfully...", to: &Log.log)
+//					print("file uploaded succesfully...")
+//					guard let testCommand = self.vehicleInfo?.getBatteryTestInstructions, testCommand.count > 0 else {
+//						return
+//					}
+//					for command in testCommand {
+//						let stateOfCharge = command.testCommands?.stateOfHealthCommands?.stateOfCharge
+//						if self.currentReachabilityStatus != .notReachable {
+//							if stateOfCharge != nil {
+//								//self.submitBatteryDataFileWithSOCGraphRequest()
+//							} else {
+//								//self.submitBatteryDataFileWithBMSGraphRequest()
+//							}
+//						} else {
+//							self.stackView.removeFromSuperview()
+//							let alertViewController = UIAlertController.init(title: "Oops!", message: "Please check your network connection", preferredStyle: .alert)
+//							let ok = UIAlertAction(title: "Retry", style: .default, handler: { (action) -> Void in
+//								self.view.addSubview(self.stackView)
+//								if stateOfCharge != nil {
+//									//self.submitBatteryDataFileWithSOCGraphRequest()
+//								} else {
+//									//self.submitBatteryDataFileWithBMSGraphRequest()
+//								}
+//
+//							})
+//							alertViewController.addAction(ok)
+//							self.present(alertViewController, animated: true, completion: nil)
+//						}
+//					}
+//				}
+//
+//			}
+//		}
+//		dataTask.resume()
+//	}
 	
 	func saveLogsIntoTxtFile() -> String {
 		
@@ -764,21 +826,33 @@ class UploadAnimationViewController: BaseViewController {
 					//print("Fail data saved successfully!")
 				}
 			}
+				self.stackView.removeFromSuperview()
 			
-			self.stackView.removeFromSuperview()
 			let dialogMessage = UIAlertController(title: "Error", message: "Sorry,something went wrong.Please try again", preferredStyle: .alert)
 			
 			//2 buttons - Save and Exit- save to db and Pop to root and 2. retry- gettrasactionID and upload and submit
 			let saveAndExit = UIAlertAction(title: "Save & Exit", style: .default, handler: { (action) -> Void in
-				self.saveOfflineData()
-				
+				if self.viewModel?.isShortProfile == true {
+					self.saveOfflineDataForShortProfile()
+				} else {
+					self.saveOfflineData()
+				}
 			})
 			
 			let retryButton = UIAlertAction(title: "Retry", style: .default, handler: { (action) -> Void in
-				self.getTransactionId(filePath: self.jsonFilePath)
+				if self.viewModel?.isShortProfile == true {
+					self.viewModel?.submitBatteryDataForShortProfile()
+				} else {
+					self.getTransactionId(filePath: self.jsonFilePath)
+				}
 			})
-			dialogMessage.addAction(saveAndExit)
-			dialogMessage.addAction(retryButton)
+			if errorSheetSource == .OFFLINE_LIST {
+				dialogMessage.addAction(retryButton)
+			} else {
+				dialogMessage.addAction(saveAndExit)
+				dialogMessage.addAction(retryButton)
+			}
+		
 			self.present(dialogMessage, animated: true, completion: nil)
 		}
 	}
@@ -824,5 +898,27 @@ class UploadAnimationViewController: BaseViewController {
 		self.navigationController?.popToRootViewController(animated: true)
 	}
 	
+}
+extension UploadAnimationViewController: ShortProfileCommandsRunDelegate {
+	func shortProfileCommandsCompleted(battteryHealth: BatteryScore) {
+		DispatchQueue.main.async {
+		let storyBaord = UIStoryboard.init(name: "Main", bundle: nil)
+		let vc = storyBaord.instantiateViewController(withIdentifier: "BatteryHealthViewController") as! BatteryHealthViewController
+			guard let veh = self.vehicleInfo else {return}
+			guard let vinInfo = self.vehicleInfo?.vin else { return  }
+			guard let vinMake = self.vehicleInfo?.make else { return  }
+			guard let vinYear = self.vehicleInfo?.year else {return}
+			guard let vinModels = self.vehicleInfo?.modelName else {return}
+		self.submitSuccessForSubmitAPI(transactionID: self.transactionId ?? "", vinMake: vinMake, score: "\(0)", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: vinYear)
+		self.deleteUploadedRecordInCoreData()
+		let vm = BatteryHealthViewModel(vehicleInfo: veh, transactionID: self.transactionId ?? "", testIntructionsId: self.testInstructionsId ?? "", healthScore: battteryHealth.score , grade: VehicleGrade(rawValue: VehicleGrade(rawValue: battteryHealth.grade )?.title ??  "N/A") ?? .A, health: battteryHealth.health )
+		vc.viewModel = vm
+			self.navigationController?.pushViewController(vc, animated: true)
+		}
+	}
+	
+	func showShortProfileSubmitError(transactionID: String?, vinMake: String, message: String, vinModels: String, submitType: String, vinNumber: String, year: Int, errorCode: String) {
+		self.showSubmitAPIError(transactionID: transactionID ?? "", vinMake: vinMake, message: message, vinModels: vinModels, submitType: submitType, vinNumber: vinNumber, year: year, errorCode: errorCode)
+	}
 }
 
