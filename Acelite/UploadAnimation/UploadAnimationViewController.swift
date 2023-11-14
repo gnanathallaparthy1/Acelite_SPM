@@ -58,6 +58,7 @@ class UploadAnimationViewController: BaseViewController {
 	
 	init(viewModel: UploadAnimationViewModel) {
 		super.init(nibName: nil, bundle: nil)
+		self.viewModel?.delegate = self
 		self.viewModel = viewModel
 		//super.init()
 	}
@@ -904,11 +905,11 @@ extension UploadAnimationViewController: ShortProfileCommandsRunDelegate {
 		DispatchQueue.main.async {
 		let storyBaord = UIStoryboard.init(name: "Main", bundle: nil)
 		let vc = storyBaord.instantiateViewController(withIdentifier: "BatteryHealthViewController") as! BatteryHealthViewController
-			guard let veh = self.vehicleInfo else {return}
-			guard let vinInfo = self.vehicleInfo?.vin else { return  }
-			guard let vinMake = self.vehicleInfo?.make else { return  }
-			guard let vinYear = self.vehicleInfo?.year else {return}
-			guard let vinModels = self.vehicleInfo?.modelName else {return}
+			guard let veh = self.viewModel?.vehicleInfo else {return}
+			guard let vinInfo = self.viewModel?.vehicleInfo?.vin else { return  }
+			guard let vinMake = self.viewModel?.vehicleInfo?.make else { return  }
+			guard let vinYear = self.viewModel?.vehicleInfo?.year else {return}
+			guard let vinModels = self.viewModel?.vehicleInfo?.modelName else {return}
 		self.submitSuccessForSubmitAPI(transactionID: self.transactionId ?? "", vinMake: vinMake, score: "\(0)", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: vinYear)
 		self.deleteUploadedRecordInCoreData()
 		let vm = BatteryHealthViewModel(vehicleInfo: veh, transactionID: self.transactionId ?? "", testIntructionsId: self.testInstructionsId ?? "", healthScore: battteryHealth.score , grade: VehicleGrade(rawValue: VehicleGrade(rawValue: battteryHealth.grade )?.title ??  "N/A") ?? .A, health: battteryHealth.health )

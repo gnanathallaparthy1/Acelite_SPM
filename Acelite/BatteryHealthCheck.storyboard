@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="6N5-I6-rzE">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -260,6 +261,51 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Tkv-7x-Ums" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1214.5038167938931" y="723.94366197183103"/>
+        </scene>
+        <!--Start Car View Controller-->
+        <scene sceneID="0uE-LF-po7">
+            <objects>
+                <viewController storyboardIdentifier="StartCarViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="bUb-KV-8Wd" customClass="StartCarViewController" customModule="Acelite" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="GrK-xU-r3g">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zOv-s4-tox">
+                                <rect key="frame" x="166" y="408.66666666666669" width="61.333333333333343" height="35"/>
+                                <color key="backgroundColor" red="0.35686274509999999" green="0.48627450979999998" blue="0.23137254900000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="Start">
+                                    <color key="baseForegroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </buttonConfiguration>
+                                <connections>
+                                    <action selector="startButtonAction:" destination="bUb-KV-8Wd" eventType="touchUpInside" id="mrR-Id-j1Z"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Q9h-2h-CxY">
+                                <rect key="frame" x="20" y="378.66666666666669" width="353" height="0.0"/>
+                                <fontDescription key="fontDescription" name="ArialMT" family="Arial" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="QXj-Wj-N7s"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="zOv-s4-tox" firstAttribute="centerX" secondItem="GrK-xU-r3g" secondAttribute="centerX" id="9D2-6q-ydO"/>
+                            <constraint firstItem="zOv-s4-tox" firstAttribute="top" secondItem="Q9h-2h-CxY" secondAttribute="bottom" constant="30" id="CwF-Ie-w6N"/>
+                            <constraint firstItem="Q9h-2h-CxY" firstAttribute="leading" secondItem="QXj-Wj-N7s" secondAttribute="leading" constant="20" id="Wwd-CE-RuL"/>
+                            <constraint firstItem="QXj-Wj-N7s" firstAttribute="trailing" secondItem="Q9h-2h-CxY" secondAttribute="trailing" constant="20" id="mD4-js-TSN"/>
+                            <constraint firstItem="zOv-s4-tox" firstAttribute="centerY" secondItem="GrK-xU-r3g" secondAttribute="centerY" id="uLh-8I-mOx"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="informationLabel" destination="Q9h-2h-CxY" id="xr4-8N-YdS"/>
+                        <outlet property="startButton" destination="zOv-s4-tox" id="kC4-Be-Vff"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="yfj-Sa-ZsW" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2344.2748091603053" y="711.97183098591552"/>
         </scene>
         <!--Battery Health Check View Controller-->
         <scene sceneID="5Ip-6a-bpC">

@@ -28,8 +28,11 @@ class BatteryHealthViewController: UIViewController {
 	@IBOutlet weak var modelNameLabel: UILabel!
 	
 	@IBOutlet weak var healthLabel: UILabel!
-	@IBOutlet weak var DoneBtn: UIButton!
-	
+	@IBOutlet weak var DoneBtn: UIButton! {
+		didSet {
+			DoneBtn.layer.cornerRadius = 8
+		}
+	}
 	@IBOutlet weak var scoreLabel: UILabel!
 	public var viewModel: BatteryHealthViewModel?
 	

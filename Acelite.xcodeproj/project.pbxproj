@@ -45,6 +45,10 @@
 		8632D72D2AC203A600BA612E /* CustomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8632D72B2AC203A600BA612E /* CustomView.swift */; };
 		8632D72F2AC203DC00BA612E /* CustomView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8632D72E2AC203DC00BA612E /* CustomView.xib */; };
 		8632D7302AC203DC00BA612E /* CustomView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8632D72E2AC203DC00BA612E /* CustomView.xib */; };
+		8634BE282B03DCBD006D7853 /* StartCarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8634BE272B03DCBD006D7853 /* StartCarViewController.swift */; };
+		8634BE292B03DCBD006D7853 /* StartCarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8634BE272B03DCBD006D7853 /* StartCarViewController.swift */; };
+		8634BE2B2B03DCE1006D7853 /* StartCarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8634BE2A2B03DCE1006D7853 /* StartCarViewModel.swift */; };
+		8634BE2C2B03DCE1006D7853 /* StartCarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8634BE2A2B03DCE1006D7853 /* StartCarViewModel.swift */; };
 		8636D41129CE201C0045BD53 /* ScanHistoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8636D40B29CE201B0045BD53 /* ScanHistoryTableViewCell.swift */; };
 		8636D41229CE201C0045BD53 /* ScanHistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8636D40C29CE201B0045BD53 /* ScanHistoryViewController.swift */; };
 		8636D41329CE201C0045BD53 /* TestableTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8636D40D29CE201B0045BD53 /* TestableTableViewCell.xib */; };
@@ -259,6 +263,8 @@
 		86322CD52A9CF866004E16BB /* VinData.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = VinData.xcdatamodel; sourceTree = "<group>"; };
 		8632D72B2AC203A600BA612E /* CustomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomView.swift; sourceTree = "<group>"; };
 		8632D72E2AC203DC00BA612E /* CustomView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomView.xib; sourceTree = "<group>"; };
+		8634BE272B03DCBD006D7853 /* StartCarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartCarViewController.swift; sourceTree = "<group>"; };
+		8634BE2A2B03DCE1006D7853 /* StartCarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartCarViewModel.swift; sourceTree = "<group>"; };
 		8636D40B29CE201B0045BD53 /* ScanHistoryTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanHistoryTableViewCell.swift; sourceTree = "<group>"; };
 		8636D40C29CE201B0045BD53 /* ScanHistoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanHistoryViewController.swift; sourceTree = "<group>"; };
 		8636D40D29CE201B0045BD53 /* TestableTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TestableTableViewCell.xib; sourceTree = "<group>"; };
@@ -413,6 +419,7 @@
 		861E6EC82953789B00443F12 /* Acelite */ = {
 			isa = PBXGroup;
 			children = (
+				8634BE262B03DC82006D7853 /* StartCar */,
 				86F7C09A2AF40D930046A0D1 /* Workorder */,
 				863E76722ACF20C000CBEEEB /* OfflineVinData */,
 				8697905B2A88604300FA6440 /* Offline */,
@@ -546,6 +553,15 @@
 				8632D72E2AC203DC00BA612E /* CustomView.xib */,
 			);
 			path = CustomeView;
+			sourceTree = "<group>";
+		};
+		8634BE262B03DC82006D7853 /* StartCar */ = {
+			isa = PBXGroup;
+			children = (
+				8634BE272B03DCBD006D7853 /* StartCarViewController.swift */,
+				8634BE2A2B03DCE1006D7853 /* StartCarViewModel.swift */,
+			);
+			path = StartCar;
 			sourceTree = "<group>";
 		};
 		8639CDB429F7FF75004E813D /* VehicleScan */ = {
@@ -1022,6 +1038,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8634BE2B2B03DCE1006D7853 /* StartCarViewModel.swift in Sources */,
 				8639046829940178008D5A0A /* Themes+Colors.swift in Sources */,
 				86A68D5029B108C2000F2188 /* BatteryDataFileSubmitModel.swift in Sources */,
 				867BBF7B296744CD00DC4842 /* AceliteConstants.swift in Sources */,
@@ -1030,6 +1047,7 @@
 				8621C7B62A8A8EE900CFE0DF /* BaseViewController.swift in Sources */,
 				863E76742ACF20DE00CBEEEB /* OfflineVINDataViewController.swift in Sources */,
 				8636D41629CE201C0045BD53 /* TestableTableViewCell.swift in Sources */,
+				8634BE282B03DCBD006D7853 /* StartCarViewController.swift in Sources */,
 				8636D42229DC88EE0045BD53 /* SubmitBatteryModel.swift in Sources */,
 				8636D41429CE201C0045BD53 /* TestableModelsViewController.swift in Sources */,
 				86636DC9297B0AA2001240FB /* TerminalViewController.swift in Sources */,
@@ -1121,6 +1139,7 @@
 				867200AB2A5F91D900C6CBC7 /* ScanHistoryTableViewCell.swift in Sources */,
 				867200AC2A5F91D900C6CBC7 /* BatteryHealthViewModel.swift in Sources */,
 				8621C7B72A8A8EF000CFE0DF /* BaseViewController.swift in Sources */,
+				8634BE292B03DCBD006D7853 /* StartCarViewController.swift in Sources */,
 				863E76752ACF20DE00CBEEEB /* OfflineVINDataViewController.swift in Sources */,
 				867200AD2A5F91D900C6CBC7 /* TestableTableViewCell.swift in Sources */,
 				867200AE2A5F91D900C6CBC7 /* SubmitBatteryModel.swift in Sources */,
@@ -1168,6 +1187,7 @@
 				867200D32A5F91D900C6CBC7 /* TestingViewController.swift in Sources */,
 				867200D42A5F91D900C6CBC7 /* ExportAsCSV.swift in Sources */,
 				867200D52A5F91D900C6CBC7 /* SideMenuViewController.swift in Sources */,
+				8634BE2C2B03DCE1006D7853 /* StartCarViewModel.swift in Sources */,
 				867200D62A5F91D900C6CBC7 /* MainViewController.swift in Sources */,
 				867200D72A5F91D900C6CBC7 /* ScanHistoryViewController.swift in Sources */,
 				867200D82A5F91D900C6CBC7 /* BatteryHealthViewController.swift in Sources */,

@@ -64,6 +64,13 @@ class WorkOrderViewController: BaseViewController {
 		offlineViewHeight.constant = 0
 		offlineView.isHidden = true
 		addCustomView()
+		
+	}
+	
+	private func buttonTitleUpdate() {
+		quickTextButton.setTitle( "Quick Test  10 seconds", for: .normal)
+		nextButton.setTitle("Stress Test  5 minutes", for: .normal)
+		
 	}
 	
 	private func addCustomView() {
@@ -90,6 +97,7 @@ class WorkOrderViewController: BaseViewController {
 			self.showAndHideOffline(isShowOfflineView: true)
 		}
 		networkStatus.addObserver(self, selector: #selector(self.showOffileViews(_:)), name: natificationName, object: nil)
+		self.buttonTitleUpdate()
 	}
 	@objc func showOffileViews(_ notification: Notification) {
 		
@@ -151,11 +159,11 @@ class WorkOrderViewController: BaseViewController {
 		FirebaseLogging.instance.logEvent(eventName: WorkOrderScreenEvents.workOrderInput, parameters: paramDictionary)
 		
 		if self.viewModel?.isShortProfile == true {
-			let vm = UploadAnimationViewModel(vehicleInfo: vehicleInfo, workOrder: self.barCodeTextField?.text?.description, isShortProfile: true, managedObject: NSManagedObject())
-			let uploadVC = UploadAnimationViewController(viewModel: vm)
-			uploadVC.workOrder = self.viewModel?.workOrder
-			uploadVC.vehicleInfo = self.vehicleInfo
-			self.navigationController?.pushViewController(uploadVC, animated: true)
+			let storyBoard = UIStoryboard.init(name: "BatteryHealthCheck", bundle: nil)
+			let startCarVC = storyBoard.instantiateViewController(withIdentifier: "StartCarViewController") as! StartCarViewController
+			startCarVC.startCarViewModel = StartCarViewModel(vehicalInfo: self.vehicleInfo, workOrder: self.viewModel?.workOrder)
+			self.navigationController?.pushViewController(startCarVC, animated: true)
+			
 		} else {
 			
 			let storyBoard = UIStoryboard.init(name: "BatteryHealthCheck", bundle: nil)
@@ -181,10 +189,11 @@ extension WorkOrderViewController: UITextFieldDelegate {
 	}
 	
 	private func showAlertMessage(message: String) {
+		self.buttonTitleUpdate()
 		let dialogMessage = UIAlertController(title: "Alert!", message: message, preferredStyle: .alert)
 		// Create OK button with action handler
 		let ok = UIAlertAction(title: "Ok", style: .default, handler: { (action) -> Void in
-
+			
 		})
 		dialogMessage.addAction(ok)
 		// Present Alert to
