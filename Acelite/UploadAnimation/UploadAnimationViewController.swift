@@ -627,7 +627,7 @@ class UploadAnimationViewController: BaseViewController {
 									print("battery health:: SCORE --- \(batteryHealth?.score ?? 0.0)")
 									let storyBaord = UIStoryboard.init(name: "Main", bundle: nil)
 									let vc = storyBaord.instantiateViewController(withIdentifier: "BatteryHealthViewController") as! BatteryHealthViewController
-									self.submitSuccessForSubmitAPI(transactionID: self.transactionId ?? "", vinMake: vinMake, score: "\(0)", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: vinYear)
+									//self.submitSuccessForSubmitAPI(transactionID: self.transactionId ?? "", vinMake: vinMake, score: "\(0)", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: vinYear)
 									let vm = BatteryHealthViewModel(vehicleInfo: veh, transactionID: self.transactionId ?? "", testIntructionsId: self.testInstructionsId ?? "", healthScore: batteryHealth?.score ?? 0.0, grade: VehicleGrade(rawValue: VehicleGrade(rawValue: batteryHealth?.grade ?? "N/A")?.title ??  "N/A") ?? .A, health: batteryHealth?.health ?? "N/A")
 									vc.viewModel = vm
 									self.navigationController?.pushViewController(vc, animated: true)
@@ -777,11 +777,11 @@ class UploadAnimationViewController: BaseViewController {
 	}
 	
 	
-	func submitSuccessForSubmitAPI(transactionID: String, vinMake: String, score: String, vinModels: String, submitType: String, vinNumber: String, year: Int) {
+	func submitSuccessForSubmitAPI(transactionID: String, vinMake: String, score: String, vinModels: String, submitType: String, vinNumber: String, year: Int, testProfileType: String) {
 		let paramDictionary = [
 			"submit_type": submitType,
 			"batter_test_instructions_id": "\(String(describing: self.testInstructionsId))",
-			"work_order": "\(String(describing: self.workOrder))"]
+			"work_order": "\(String(describing: self.workOrder))", "profile_test_type": testProfileType]
 		FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.submitBatteryFilesSuccess, parameters: paramDictionary)
 		let rootRef = Database.database().reference()
 		let ref = rootRef.child("successful_transaction_ids").childByAutoId()
@@ -910,10 +910,10 @@ extension UploadAnimationViewController: ShortProfileCommandsRunDelegate {
 			guard let vinMake = self.viewModel?.vehicleInfo?.make else { return  }
 			guard let vinYear = self.viewModel?.vehicleInfo?.year else {return}
 			guard let vinModels = self.viewModel?.vehicleInfo?.modelName else {return}
-		self.submitSuccessForSubmitAPI(transactionID: self.transactionId ?? "", vinMake: vinMake, score: "\(0)", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: vinYear)
+			self.submitSuccessForSubmitAPI(transactionID: self.transactionId ?? "", vinMake: vinMake, score: "\(0)", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: vinYear, testProfileType: BMSCapacityTest.quickTest)
 		self.deleteUploadedRecordInCoreData()
 		let vm = BatteryHealthViewModel(vehicleInfo: veh, transactionID: self.transactionId ?? "", testIntructionsId: self.testInstructionsId ?? "", healthScore: battteryHealth.score , grade: VehicleGrade(rawValue: VehicleGrade(rawValue: battteryHealth.grade )?.title ??  "N/A") ?? .A, health: battteryHealth.health )
-		vc.viewModel = vm
+			vc.viewModel = vm
 			self.navigationController?.pushViewController(vc, animated: true)
 		}
 	}

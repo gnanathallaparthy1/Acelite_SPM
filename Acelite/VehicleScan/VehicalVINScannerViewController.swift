@@ -207,18 +207,19 @@ extension VehicalVINScannerViewController: ScannerViewDelegate {
 }
 
 extension VehicalVINScannerViewController: UITextFieldDelegate {
-//	func textFieldDidBeginEditing(_ textField: UITextField) {
-//		self.barcodeTextField?.text = "JN1AZ0CPXCT026887"
-//		//singleframeVin
-//		//"3FA6P0LU8JR142415"
-//		//MultiFrame with BMS
-//		//"1N4BZ1CP3LC310701"
-//		//MultiFrame with SOC
-//		//old leaf
-//		//1N4BZ0CP4GC311050
-//		//1N4AZ0CP3FC331073
-//		//"1N4BZ1DP7LC310036"
-//	}
+	//func textFieldDidBeginEditing(_ textField: UITextField) {
+		//self.barcodeTextField?.text = "WBY7Z2C50JVE64998"
+		//self.barcodeTextField?.text = "1N4BZ1CP3LC310701"
+		//singleframeVin
+		//"3FA6P0LU8JR142415"
+		//MultiFrame with BMS
+		//"1N4BZ1CP3LC310701"
+		//MultiFrame with SOC
+		//old leaf
+		//1N4BZ0CP4GC311050
+		//1N4AZ0CP3FC331073
+		//"1N4BZ1DP7LC310036"
+	//}
 	
 	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
 	
@@ -288,15 +289,15 @@ extension VehicalVINScannerViewController: PassVehicleInformationDelegate {
 		nextButton.isUserInteractionEnabled = true
 		nextButton.isEnabled = true
 		if (viewModel.vehicleInformation?.getBatteryTestInstructions) != nil {
-			let storyBoard = UIStoryboard.init(name: "Main", bundle: nil)
-			let vehicalInformation = storyBoard.instantiateViewController(withIdentifier: "VehicalInformationViewController") as! VehicalInformationViewController
 			let isShortProfile = viewModel.vehicleInformation?.getBatteryTestInstructions?.first?.testCommands?.sampledCommands
 			if let vehicleInfo = viewModel.vehicleInformation {
-				vehicalInformation.viewModel = VehicleInformationViewModel(vinNumber: vehicleInfo.vin, vehicleInformation: vehicleInfo, isShortProfile: isShortProfile != nil ? false : true)
+				let storyBoard = UIStoryboard.init(name: "Main", bundle: nil)
+				let workOrderVC = storyBoard.instantiateViewController(withIdentifier: "WorkOrderViewController") as! WorkOrderViewController
+				workOrderVC.vehicleInfo = vehicleInfo
+				workOrderVC.viewModel = WorkOrderViewModel(vehicleInfo: vehicleInfo, workOrder: "", isShortProfile: isShortProfile != nil ? false : true)
+				self.navigationController?.pushViewController(workOrderVC, animated: true)
 			}
-			
-			self.navigationController?.pushViewController(vehicalInformation, animated: true)
-			
+	
 		} else {
 			let dialogMessage = UIAlertController(title: "WHOOPS!", message: "This vehicle is not supported to run the test. Check testable vehicles.", preferredStyle: .alert)
 			// Create OK button with action handler

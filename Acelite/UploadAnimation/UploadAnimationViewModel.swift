@@ -259,9 +259,7 @@ class UploadAnimationViewModel {
 					if haxValueList.count > 0 {
 						let value = self.calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
 						self.stateOfCharge = value
-						if (self.currentEnergy != nil) && (self.stateOfCharge != nil) {
-							self.submitBatteryDataForShortProfile()
-						}
+						self.sumbitApiCalling()
 						print(Date(), "Final State of Charge \(value)", to: &Log.log)
 						print("Final State of Charge \(value)")
 					}
@@ -270,9 +268,7 @@ class UploadAnimationViewModel {
 					if haxValueList.count > 0 {
 						let value = self.calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
 						self.currentEnergy = value
-						if (self.currentEnergy != nil) && (self.stateOfCharge != nil) {
-							self.submitBatteryDataForShortProfile()
-						}
+						self.sumbitApiCalling()
 						print(Date(), "Final Energy to empty \(value)", to: &Log.log)
 						print("Final Energy to empty \(value)")
 					}
@@ -281,7 +277,7 @@ class UploadAnimationViewModel {
 					if haxValueList.count > 0 {
 						let value = self.calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
 						self.bms = value
-						self.submitBatteryDataForShortProfile()
+						self.sumbitApiCalling()
 						print(Date(), "Final BMS value \(value)", to: &Log.log)
 						print("Final BMS value \(value)")
 					}
@@ -314,6 +310,17 @@ class UploadAnimationViewModel {
 			}
 		}
 	}
+	
+	private func sumbitApiCalling() {
+			if let bms = self.bms, bms != 0 {
+				self.submitBatteryDataForShortProfile()
+
+			} else {
+				if (self.currentEnergy != nil) && (self.stateOfCharge != nil) {
+					self.submitBatteryDataForShortProfile()
+				}
+			}
+		}
 	
 	//MARK: - Convert each byte as string (typecasting)
 	private func typeCastingByteToString(testCommand: TestCommandExecution?) -> [String] {
@@ -412,7 +419,7 @@ class UploadAnimationViewModel {
 		}
 		print(Date(), "SOC:BatteryType\(batteryType)", to: &Log.log)
 		
-		let vehicalProfile = CalculateBatteryHealthVehicleProfileInput.init(nominalVoltage: nominalVoltage, energyAtBirth: energyAtBirth, batteryType: .lithium, capacityAtBirth: capacityAtBirth)
+		let vehicalProfile = CalculateBatteryHealthVehicleProfileInput.init(nominalVoltage: Double(nominalVoltage), energyAtBirth: Double(energyAtBirth), batteryType: .lithium, capacityAtBirth: capacityAtBirth)
 		
 		
 		print("vehical Profile", vehicleProfile)

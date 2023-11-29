@@ -42,7 +42,7 @@ struct TestCommands: Codable {
 	var bmsCapacity: BmsCapacity?
 	var energyToEmpty: BmsCapacity?
 	//let stateOfHealthCommands: StateOfHealthCommands?
-	let sampledCommands: SampledCommands
+	let sampledCommands: SampledCommands?
 	let diagnosticSession: DiagnosticSession?
 	let batteryAge, miscCommands: JSONNull?
 }
@@ -114,7 +114,7 @@ struct Validation: Codable {
 
 // MARK: - SampledCommands
 struct SampledCommands: Codable {
-	let sampledCommandsProtocol: ProtocolClass
+	let sampledCommandsProtocol: ProtocolClass?
 	let packTemperature: [PackTemperature]
 	let packVoltage, packCurrent: Odometer
 	let cellVoltage: [CellVoltage]

@@ -16,7 +16,7 @@ class WorkOrderViewModel {
 		self.vehicleInfo = vehicleInfo
 		self.workOrder = workOrder
 		//change later
-		self.isShortProfile = true
+		self.isShortProfile = isShortProfile
 	}
 	
 }

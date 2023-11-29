@@ -808,11 +808,15 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="PQ9-w3-Nry">
-                                        <rect key="frame" x="339.5" y="25.5" width="59.5" height="35"/>
+                                        <rect key="frame" x="337" y="25.5" width="62" height="35"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="23r-g7-2y8">
-                                                <rect key="frame" x="0.0" y="0.0" width="59.5" height="35"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="62" height="35"/>
                                                 <color key="backgroundColor" red="0.35686274509999999" green="0.48627450979999998" blue="0.23137254900000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="62" id="72f-Vl-OeT"/>
+                                                    <constraint firstAttribute="height" constant="35" id="Aha-D3-FvP"/>
+                                                </constraints>
                                                 <state key="normal" title="Button"/>
                                                 <buttonConfiguration key="configuration" style="plain" title="Next">
                                                     <color key="baseForegroundColor" systemColor="labelColor"/>
@@ -1005,20 +1009,37 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="Njy-Fe-ZTw">
-                                        <rect key="frame" x="339.5" y="25.5" width="59.5" height="35"/>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="Njy-Fe-ZTw">
+                                        <rect key="frame" x="249" y="-7" width="150" height="100"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XTe-Fh-6SW">
-                                                <rect key="frame" x="0.0" y="0.0" width="59.5" height="35"/>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="Ymn-es-AfF">
+                                                <rect key="frame" x="0.0" y="0.0" width="150" height="46"/>
+                                                <color key="backgroundColor" red="0.35686274509999999" green="0.48627450979999998" blue="0.23137254900000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="150" id="7Ru-4S-dPM"/>
+                                                </constraints>
+                                                <state key="normal" title="Button"/>
+                                                <buttonConfiguration key="configuration" style="plain" title="Quick test - 10 seconds">
+                                                    <fontDescription key="titleFontDescription" name="ArialMT" family="Arial" pointSize="12"/>
+                                                    <color key="baseForegroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                </buttonConfiguration>
+                                                <connections>
+                                                    <action selector="quickTestButtonAction:" destination="xTv-NH-bsc" eventType="touchUpInside" id="zMg-RL-Rfg"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="XTe-Fh-6SW">
+                                                <rect key="frame" x="0.0" y="54" width="150" height="46"/>
                                                 <color key="backgroundColor" red="0.35686274509999999" green="0.48627450979999998" blue="0.23137254900000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <state key="normal" title="Button"/>
-                                                <buttonConfiguration key="configuration" style="plain" title="Next">
-                                                    <color key="baseForegroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <buttonConfiguration key="configuration" style="plain" title="Stress Test - 5 minutes">
+                                                    <fontDescription key="titleFontDescription" name="ArialMT" family="Arial" pointSize="12"/>
+                                                    <color key="baseForegroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 </buttonConfiguration>
                                             </button>
                                         </subviews>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="35" id="bg2-0Y-xaC"/>
+                                            <constraint firstAttribute="width" constant="150" id="BFF-RX-ays"/>
+                                            <constraint firstAttribute="height" constant="100" id="eNK-nW-vZF"/>
                                         </constraints>
                                     </stackView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RWE-oB-AmM">
@@ -1186,7 +1207,10 @@
                         <outlet property="nextButton" destination="XTe-Fh-6SW" id="UMd-ZS-goV"/>
                         <outlet property="offlineView" destination="YsK-zD-174" id="4wu-i8-ekP"/>
                         <outlet property="offlineViewHeight" destination="C8I-Zr-wPZ" id="Mh7-Lz-hnN"/>
+                        <outlet property="quickTestButton" destination="Ymn-es-AfF" id="lPb-Hv-Dl7"/>
                         <outlet property="screenCountLabel" destination="v2o-PN-mga" id="2uK-tn-veK"/>
+                        <outlet property="stackViewHeightConstraint" destination="eNK-nW-vZF" id="0EA-rW-WMr"/>
+                        <outlet property="stackViewWidthConstraint" destination="BFF-RX-ays" id="Yai-19-t9w"/>
                         <outlet property="vehicleInfoLabel" destination="qYX-G1-Ila" id="WiD-GO-l6n"/>
                         <outlet property="vimBodyStyle" destination="77w-3S-dAy" id="Jhb-cd-Q0j"/>
                         <outlet property="vimModel" destination="hHO-vN-JnD" id="2VC-Q5-8Vm"/>
@@ -1228,15 +1252,18 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="Yrb-Ix-vgH">
-                                        <rect key="frame" x="341" y="25.5" width="58" height="35"/>
+                                        <rect key="frame" x="313" y="25.5" width="86" height="35"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MZ4-W9-2k3">
-                                                <rect key="frame" x="0.0" y="0.0" width="58" height="35"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="86" height="35"/>
                                                 <color key="backgroundColor" red="0.35686274509999999" green="0.48627450979999998" blue="0.23137254900000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="86" id="RQi-aD-tBx"/>
+                                                </constraints>
                                                 <state key="normal" title="Button"/>
                                                 <buttonConfiguration key="configuration" style="plain" title="Next">
                                                     <fontDescription key="titleFontDescription" type="system" pointSize="16"/>
-                                                    <color key="baseForegroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <color key="baseForegroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 </buttonConfiguration>
                                             </button>
                                         </subviews>
@@ -1453,10 +1480,10 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Y98-SC-5Z6">
-                                <rect key="frame" x="0.0" y="742" width="414" height="120"/>
+                                <rect key="frame" x="0.0" y="817" width="414" height="45"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1/5" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MFS-Ba-6Sx">
-                                        <rect key="frame" x="182" y="35" width="50" height="50"/>
+                                        <rect key="frame" x="182" y="-2.5" width="50" height="50"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="50" id="iNo-w8-0jE"/>
@@ -1467,37 +1494,27 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="NRJ-NS-JgX">
-                                        <rect key="frame" x="279" y="5" width="120" height="110"/>
+                                        <rect key="frame" x="313" y="5" width="86" height="35"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="JCP-yZ-iCo">
-                                                <rect key="frame" x="0.0" y="0.0" width="120" height="52.5"/>
-                                                <color key="backgroundColor" red="0.35686274509999999" green="0.48627450979999998" blue="0.23137254900000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <state key="normal" title="Button"/>
-                                                <buttonConfiguration key="configuration" style="plain" title="Quick Test">
-                                                    <color key="baseForegroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                </buttonConfiguration>
-                                                <connections>
-                                                    <action selector="quickTestButtonAction:" destination="DMk-XN-eF8" eventType="touchUpInside" id="zs8-lb-9JZ"/>
-                                                </connections>
-                                            </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="MmZ-M9-xeS">
-                                                <rect key="frame" x="0.0" y="57.5" width="120" height="52.5"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="86" height="35"/>
                                                 <color key="backgroundColor" red="0.35686274509999999" green="0.48627450979999998" blue="0.23137254900000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="35" id="lWQ-RJ-hZ8"/>
+                                                    <constraint firstAttribute="width" constant="86" id="ojm-Kq-9kB"/>
+                                                </constraints>
                                                 <state key="normal" title="Button"/>
-                                                <buttonConfiguration key="configuration" style="plain" title="Stress Test ">
-                                                    <color key="baseForegroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <buttonConfiguration key="configuration" style="plain" title="Next">
+                                                    <color key="baseForegroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 </buttonConfiguration>
                                                 <connections>
                                                     <action selector="nextButtonAction:" destination="DMk-XN-eF8" eventType="touchUpInside" id="ZbL-d1-vk0"/>
                                                 </connections>
                                             </button>
                                         </subviews>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="120" id="I1d-1s-RLy"/>
-                                        </constraints>
                                     </stackView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Iba-ma-ykD">
-                                        <rect key="frame" x="15" y="42.5" width="86" height="35"/>
+                                        <rect key="frame" x="15" y="5" width="86" height="35"/>
                                         <color key="backgroundColor" systemColor="systemGrayColor"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="35" id="3sD-tC-daH"/>
@@ -1520,7 +1537,6 @@
                                     <constraint firstItem="Iba-ma-ykD" firstAttribute="centerY" secondItem="MFS-Ba-6Sx" secondAttribute="centerY" id="QCT-q2-P7V"/>
                                     <constraint firstAttribute="bottom" secondItem="NRJ-NS-JgX" secondAttribute="bottom" constant="5" id="agS-U0-HW0"/>
                                     <constraint firstItem="MFS-Ba-6Sx" firstAttribute="centerX" secondItem="Y98-SC-5Z6" secondAttribute="centerX" id="jLA-CI-Nkl"/>
-                                    <constraint firstAttribute="height" constant="120" id="rv5-ak-mDl"/>
                                     <constraint firstAttribute="trailing" secondItem="NRJ-NS-JgX" secondAttribute="trailing" constant="15" id="x01-p5-fys"/>
                                 </constraints>
                             </view>
@@ -1559,7 +1575,6 @@
                         <outlet property="nextButton" destination="MmZ-M9-xeS" id="h7h-4C-VTk"/>
                         <outlet property="offlineView" destination="Qo2-3a-H0m" id="UPF-rm-ulG"/>
                         <outlet property="offlineViewHeight" destination="LM2-nL-6AO" id="Vvr-ZA-6JQ"/>
-                        <outlet property="quickTextButton" destination="JCP-yZ-iCo" id="5Ay-zw-Zu1"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="MJI-P7-t4Y" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

@@ -92,7 +92,7 @@ class BatteryHealthCheckViewModel {
 //		guard let elm327ProtoclStateChange = testCommands?.stateOfCharge?.odometerProtocol?.elm327ProtocolPreset else {
 //			return
 //		}
-		guard let elm327Sampled = testCommands?.sampledCommands.sampledCommandsProtocol.elm327ProtocolPreset else { return
+		guard let elm327Sampled = testCommands?.sampledCommands?.sampledCommandsProtocol?.elm327ProtocolPreset else { return
 		}
 		if elm327ProtocolOdometer.count > 0 {
 			self.elm327ProtocolPreset = elm327ProtocolOdometer
@@ -150,7 +150,7 @@ class BatteryHealthCheckViewModel {
 			return
 		}
 		let testCommands = testCommand[0].testCommands
-		self.numberOfCells = testCommands?.sampledCommands.cellVoltage.count
+		self.numberOfCells = testCommands?.sampledCommands?.cellVoltage.count
 
 			let elmValue = self.elm327ProtocolPreset?.replacingOccurrences(of: "_", with: "")
 			let ATSP_Command = Constants.ATSP + "\(elmValue ?? Constants.DEFAULT_PROTOCOL)" + Constants.NEW_LINE_CHARACTER

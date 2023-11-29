@@ -95,3 +95,10 @@ struct UserProperties {
 	static let flowType = "flow_type"
 }
 
+struct BMSCapacityTest {
+	static let quickTest = "quick_test"
+	static let stressTest = "stress_test"
+	static let quickTestStart = "quick_test_start"
+	
+}
+

@@ -31,15 +31,10 @@ class WorkOrderViewController: BaseViewController {
 	}
 	@IBOutlet weak var countLabel: UILabel! {
 		didSet {
-			countLabel.text = "4/5"
+			countLabel.text = "3/5"
 			countLabel.layer.cornerRadius = countLabel.frame.size.width / 2
 			countLabel.clipsToBounds = true
 			
-		}
-	}
-	@IBOutlet weak var quickTextButton: UIButton! {
-		didSet {
-			quickTextButton.layer.cornerRadius = 8
 		}
 	}
 	@IBOutlet weak var barCodeTextField: UITextField!
@@ -66,13 +61,7 @@ class WorkOrderViewController: BaseViewController {
 		addCustomView()
 		
 	}
-	
-	private func buttonTitleUpdate() {
-		quickTextButton.setTitle( "Quick Test  10 seconds", for: .normal)
-		nextButton.setTitle("Stress Test  5 minutes", for: .normal)
-		
-	}
-	
+
 	private func addCustomView() {
 		let allViewsInXibArray = Bundle.main.loadNibNamed("CustomView", owner: self, options: nil)
 		let view = allViewsInXibArray?.first as! CustomView
@@ -97,7 +86,6 @@ class WorkOrderViewController: BaseViewController {
 			self.showAndHideOffline(isShowOfflineView: true)
 		}
 		networkStatus.addObserver(self, selector: #selector(self.showOffileViews(_:)), name: natificationName, object: nil)
-		self.buttonTitleUpdate()
 	}
 	@objc func showOffileViews(_ notification: Notification) {
 		
@@ -140,40 +128,29 @@ class WorkOrderViewController: BaseViewController {
 		
 	@IBAction func quickTestButtonAction(_ sender: UIButton) {
 		self.viewModel?.isShortProfile = true
-		navigateToNextViewController()
+		
+		
+		
 	}
 	
 	@IBAction func nextButtonAction(_ sender: UIButton) {
-		self.viewModel?.isShortProfile = false
-		navigateToNextViewController()
-	}
-	
-	private func navigateToNextViewController() {
-		guard let workOrder = self.barCodeTextField?.text, workOrder.count > 0 else {
+		guard let workOrder = self.barCodeTextField.text, workOrder.count > 1 else {
 			self.showAlertMessage(message: "Please enter valid Work order number.")
 			return
 		}
+		
 		let paramDictionary = [
 			Parameters.workOrder: self.barCodeTextField?.text?.description ?? "N/A"
 		  ]
 		FirebaseLogging.instance.logEvent(eventName: WorkOrderScreenEvents.workOrderInput, parameters: paramDictionary)
 		
-		if self.viewModel?.isShortProfile == true {
-			let storyBoard = UIStoryboard.init(name: "BatteryHealthCheck", bundle: nil)
-			let startCarVC = storyBoard.instantiateViewController(withIdentifier: "StartCarViewController") as! StartCarViewController
-			startCarVC.startCarViewModel = StartCarViewModel(vehicalInfo: self.vehicleInfo, workOrder: self.viewModel?.workOrder)
-			self.navigationController?.pushViewController(startCarVC, animated: true)
-			
-		} else {
-			
-			let storyBoard = UIStoryboard.init(name: "BatteryHealthCheck", bundle: nil)
-			let testingVC = storyBoard.instantiateViewController(withIdentifier: "BatteryHealthCheckViewController") as! BatteryHealthCheckViewController
-			
-			if let vehicleInfo = self.vehicleInfo {
-				let vm = BatteryHealthCheckViewModel(vehicleInfo: vehicleInfo, workOrder: self.barCodeTextField?.text?.description)
-				testingVC.viewModel = vm
-			}
-			self.navigationController?.pushViewController(testingVC, animated: true)
+		
+		
+		if let viewModel = self.viewModel {
+			let storyBoard = UIStoryboard.init(name: "Main", bundle: nil)
+			let vehicalInformation = storyBoard.instantiateViewController(withIdentifier: "VehicalInformationViewController") as! VehicalInformationViewController
+			vehicalInformation.viewModel = VehicleInformationViewModel(vinNumber: viewModel.vehicleInfo.vin, vehicleInformation: viewModel.vehicleInfo, isShortProfile: viewModel.isShortProfile ?? false, workOrder: workOrder)
+			self.navigationController?.pushViewController(vehicalInformation, animated: true)
 		}
 	}
 }
@@ -189,7 +166,7 @@ extension WorkOrderViewController: UITextFieldDelegate {
 	}
 	
 	private func showAlertMessage(message: String) {
-		self.buttonTitleUpdate()
+	
 		let dialogMessage = UIAlertController(title: "Alert!", message: message, preferredStyle: .alert)
 		// Create OK button with action handler
 		let ok = UIAlertAction(title: "Ok", style: .default, handler: { (action) -> Void in

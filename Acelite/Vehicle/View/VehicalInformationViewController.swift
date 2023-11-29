@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import FirebaseDatabase
+import Firebase
 
 class VehicalInformationViewController:  BaseViewController {
 	
@@ -44,7 +46,7 @@ class VehicalInformationViewController:  BaseViewController {
 		didSet {
 			screenCountLabel.layer.cornerRadius = screenCountLabel.frame.size.width / 2
 			screenCountLabel.clipsToBounds = true
-			screenCountLabel.text = "3/5"
+			screenCountLabel.text = "4/5"
 		}
 	}
 	@IBOutlet weak var cancelButton: UIButton! {
@@ -59,7 +61,14 @@ class VehicalInformationViewController:  BaseViewController {
 			
 		}
 	}
+	@IBOutlet weak var stackViewHeightConstraint: NSLayoutConstraint!
 	
+	@IBOutlet weak var stackViewWidthConstraint: NSLayoutConstraint!
+	@IBOutlet weak var quickTestButton: UIButton! {
+		didSet {
+			quickTestButton.layer.cornerRadius = 8
+		}
+	}
 	@IBOutlet weak var barcodeTextField: UITextField!
 	// CardViewInfo
 	@IBOutlet weak var vimTitle: UILabel!
@@ -69,6 +78,7 @@ class VehicalInformationViewController:  BaseViewController {
 	@IBOutlet weak var vimBodyStyle: UILabel!
 	var networkStatus = NotificationCenter.default
 	let natificationName = NSNotification.Name(rawValue:"InternetObserver")
+	var remoteConfig = RemoteConfig.remoteConfig()
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -101,6 +111,32 @@ class VehicalInformationViewController:  BaseViewController {
 			self.showOffile(isShowOfflineView: true)
 		}
 		networkStatus.addObserver(self, selector: #selector(self.showOffileViews(_:)), name: natificationName, object: nil)
+		retrieveProfileConfigButtonTitles()
+	}
+	
+	private func retrieveProfileConfigButtonTitles() {
+		let profile_test_detail_information = remoteConfig.configValue(forKey: "profile_test_detail_information").jsonValue as? AnyObject
+		print(profile_test_detail_information)
+		let longProfile = profile_test_detail_information?.value(forKey: "longProfile") as? String
+		let shortProfile = profile_test_detail_information?.value(forKey: "shortProfile") as? String
+		buttonTitleUpdate(quickTestTitle: shortProfile, nextButtonTitle: longProfile)
+		print(longProfile)
+		print(shortProfile)
+	}
+	
+	private func buttonTitleUpdate(quickTestTitle: String?, nextButtonTitle: String?) {
+		quickTestButton.setTitle( quickTestTitle, for: .normal)
+		nextButton.setTitle(nextButtonTitle, for: .normal)
+		if self.viewModel?.ifShortProfile == true {
+			self.nextButton.isHidden = true
+			quickTestButton.setTitle( "Next", for: .normal)
+			stackViewHeightConstraint.constant = 35
+			stackViewWidthConstraint.constant = 86
+		} else {
+			self.nextButton.isHidden = false
+			stackViewHeightConstraint.constant = 120
+		}
+		
 	}
 	
 	private func addCustomView() {
@@ -156,15 +192,46 @@ class VehicalInformationViewController:  BaseViewController {
 	}
 	
 	@IBAction func nextButtonAction(_ sender: UIButton) {
-		let storyBoard = UIStoryboard.init(name: "Main", bundle: nil)
-		let workOrderVC = storyBoard.instantiateViewController(withIdentifier: "WorkOrderViewController") as! WorkOrderViewController
-		workOrderVC.vehicleInfo = viewModel?.vehicleInformation
-		guard let vehicalInfo = viewModel?.vehicleInformation else {
-			return
+		guard let instructions = self.viewModel?.vehicleInformation?.getBatteryTestInstructions, instructions.count > 0 else { return  }
+		let instructionId = instructions.first
+		let workorder: String = viewModel?.workOrder ?? ""
+		let paramDictionary = [
+			Parameters.workOrder: workorder,
+			Parameters.batteryTestInstructionsId: "\(instructionId?.testCommands?.id ?? "")",
+			Parameters.year: "\(self.viewModel?.vehicleInformation?.year ?? 0)", Parameters.make : self.viewModel?.vehicleInformation?.make ?? "", Parameters.model:  self.viewModel?.vehicleInformation?.modelName ?? "", Parameters.trim: self.viewModel?.vehicleInformation?.trimName ?? "" ] as [String : String]
+		FirebaseLogging.instance.logEvent(eventName:BMSCapacityTest.stressTest, parameters: paramDictionary)
+		
+		
+		let storyBoard = UIStoryboard.init(name: "BatteryHealthCheck", bundle: nil)
+		let testingVC = storyBoard.instantiateViewController(withIdentifier: "BatteryHealthCheckViewController") as! BatteryHealthCheckViewController
+		
+		if let vehicleInfo = self.viewModel?.vehicleInformation {
+			let vm = BatteryHealthCheckViewModel(vehicleInfo: vehicleInfo, workOrder: viewModel?.workOrder)
+			testingVC.viewModel = vm
 		}
-		workOrderVC.viewModel = WorkOrderViewModel(vehicleInfo: vehicalInfo, workOrder: "", isShortProfile: viewModel?.ifShortProfile ?? false)
-		self.navigationController?.pushViewController(workOrderVC, animated: true)
+		self.navigationController?.pushViewController(testingVC, animated: true)
 	}
+	
+	@IBAction func quickTestButtonAction(_ sender: UIButton) {
+		
+		guard let instructions = self.viewModel?.vehicleInformation?.getBatteryTestInstructions, instructions.count > 0 else {
+			return
+			
+		}
+		let instructionId = instructions.first
+		let workorder: String = viewModel?.workOrder ?? ""
+		let paramDictionary = [
+			Parameters.workOrder:  workorder ,
+			Parameters.batteryTestInstructionsId: "\(instructionId?.testCommands?.id ?? "")",
+			Parameters.year: "\(self.viewModel?.vehicleInformation?.year ?? 0)", Parameters.make : self.viewModel?.vehicleInformation?.make ?? "", Parameters.model:  self.viewModel?.vehicleInformation?.modelName ?? "", Parameters.trim: self.viewModel?.vehicleInformation?.trimName ?? "" ] as [String : String]
+		FirebaseLogging.instance.logEvent(eventName:BMSCapacityTest.quickTest, parameters: paramDictionary)
+		
+		let storyBoard = UIStoryboard.init(name: "BatteryHealthCheck", bundle: nil)
+		let startCarVC = storyBoard.instantiateViewController(withIdentifier: "StartCarViewController") as! StartCarViewController
+		startCarVC.startCarViewModel = StartCarViewModel(vehicalInfo: self.viewModel?.vehicleInformation, workOrder: self.viewModel?.workOrder)
+		self.navigationController?.pushViewController(startCarVC, animated: true)
+	}
+
 }
 
 extension VehicalInformationViewController: ScannerViewDelegate {

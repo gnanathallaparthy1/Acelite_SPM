@@ -91,8 +91,9 @@ class VehicleVinScannerViewModel {
 		guard let testCommand = self.vehicleInformation?.getBatteryTestInstructions, testCommand.count > 0 else {
 			return
 		}
-		
+		Network.shared.normalCommandsList.removeAll()
 		for command in testCommand {
+			if let _ = command.testCommands?.sampledCommands {
 			let odometer = command.testCommands?.odometer
 			Network.shared.batteryTestInstructionId = command.testCommands?.id
 
@@ -128,42 +129,43 @@ class VehicleVinScannerViewModel {
 			}
 
 			////////print("Normal Command List", normalCommandsList)
-			if let sp = command.testCommands?.sampledCommands {
-				//sampledCommandsList = sp
-				//WHY?????
-				//MARK: - PackVoltage
-				let packVoltage = sp.packVoltage
-				let packVoltageTestCommand = TestCommandExecution(type: .PACK_VOLTAGE, resProtocal: sp.sampledCommandsProtocol, challenge: (packVoltage.challenge)!, response: packVoltage.response, validation: packVoltage.validation)
-				packVoltageTestCommand.reqeustByteInString = packVoltage.challenge?.pid ?? ""
-				Network.shared.sampledCommandsList.append(packVoltageTestCommand)
-				
-				//MARK: - PackCurrent
-				let packCurrent = sp.packCurrent
-				let packCurrentTestCommand = TestCommandExecution(type: .PACK_CURRENT, resProtocal: sp.sampledCommandsProtocol, challenge: (packCurrent.challenge)!, response: packCurrent.response, validation: packCurrent.validation)
-				packCurrentTestCommand.reqeustByteInString = packCurrent.challenge?.pid ?? ""
-				Network.shared.sampledCommandsList.append(packCurrentTestCommand)
-				
-				//MARK: - PackTemparature
-				let packTemparature = sp.packTemperature
-				for item in packTemparature {
-					let response = OdometerResponse(startByte: item.response.startByte, endByte: item.response.endByte, numberOfCells: 0, bytesPerCell: 0, startCellCount: 0, endCellCount: 0, bytesPaddedBetweenCells: 0, multiplier: Double(item.response.multiplier), constant: item.response.constant)
+				if let sp = command.testCommands?.sampledCommands {
+					//sampledCommandsList = sp
+					//WHY?????
+					//MARK: - PackVoltage
+					let packVoltage = sp.packVoltage
+					let packVoltageTestCommand = TestCommandExecution(type: .PACK_VOLTAGE, resProtocal: sp.sampledCommandsProtocol!, challenge: (packVoltage.challenge)!, response: packVoltage.response, validation: packVoltage.validation)
+					packVoltageTestCommand.reqeustByteInString = packVoltage.challenge?.pid ?? ""
+					Network.shared.sampledCommandsList.append(packVoltageTestCommand)
 					
-					//let response = OdometerResponse(startByte: item.response.startByte, endByte: item.response.endByte, multiplier: Double(item.response.multiplier), constant: Double(item.response.constant))
+					//MARK: - PackCurrent
+					let packCurrent = sp.packCurrent
+					let packCurrentTestCommand = TestCommandExecution(type: .PACK_CURRENT, resProtocal: sp.sampledCommandsProtocol!, challenge: (packCurrent.challenge)!, response: packCurrent.response, validation: packCurrent.validation)
+					packCurrentTestCommand.reqeustByteInString = packCurrent.challenge?.pid ?? ""
+					Network.shared.sampledCommandsList.append(packCurrentTestCommand)
 					
-					let packTempTestCommand = TestCommandExecution(type: .PACK_TEMPERATURE, resProtocal: sp.sampledCommandsProtocol, challenge: item.challenge, response: response, validation: item.validation)
-					packTempTestCommand.reqeustByteInString = item.challenge.pid
-					Network.shared.sampledCommandsList.append(packTempTestCommand)
-				}
-				
-				//MARK: - CellVoltage
-				let cellVoltage = sp.cellVoltage
-				for item in cellVoltage {
-					let response = OdometerResponse(startByte: item.response.startByte, endByte: item.response.endByte, numberOfCells: item.response.numberOfCells, bytesPerCell: item.response.bytesPerCell, startCellCount: item.response.startCellCount, endCellCount: item.response.endCellCount, bytesPaddedBetweenCells: item.response.bytesPaddedBetweenCells, multiplier: Double(item.response.multiplier), constant: item.response.constant)
-					//let response = OdometerResponse(startByte: item.response.startByte, endByte: item.response.endByte, multiplier: Double(item.response.multiplier), constant: Double(item.response.constant))
-					let cellVoltageTestCommand = TestCommandExecution(type: .CELL_VOLTAGE, resProtocal: sp.sampledCommandsProtocol, challenge: item.challenge, response: response, validation: item.validation)
-					//self.numberOfCells = response.numberOfCells
-					cellVoltageTestCommand.reqeustByteInString = item.challenge.pid
-					Network.shared.sampledCommandsList.append(cellVoltageTestCommand)
+					//MARK: - PackTemparature
+					let packTemparature = sp.packTemperature
+					for item in packTemparature {
+						let response = OdometerResponse(startByte: item.response.startByte, endByte: item.response.endByte, numberOfCells: 0, bytesPerCell: 0, startCellCount: 0, endCellCount: 0, bytesPaddedBetweenCells: 0, multiplier: Double(item.response.multiplier), constant: item.response.constant)
+						
+						//let response = OdometerResponse(startByte: item.response.startByte, endByte: item.response.endByte, multiplier: Double(item.response.multiplier), constant: Double(item.response.constant))
+						
+						let packTempTestCommand = TestCommandExecution(type: .PACK_TEMPERATURE, resProtocal: sp.sampledCommandsProtocol!, challenge: item.challenge, response: response, validation: item.validation)
+						packTempTestCommand.reqeustByteInString = item.challenge.pid
+						Network.shared.sampledCommandsList.append(packTempTestCommand)
+					}
+					
+					//MARK: - CellVoltage
+					let cellVoltage = sp.cellVoltage
+					for item in cellVoltage {
+						let response = OdometerResponse(startByte: item.response.startByte, endByte: item.response.endByte, numberOfCells: item.response.numberOfCells, bytesPerCell: item.response.bytesPerCell, startCellCount: item.response.startCellCount, endCellCount: item.response.endCellCount, bytesPaddedBetweenCells: item.response.bytesPaddedBetweenCells, multiplier: Double(item.response.multiplier), constant: item.response.constant)
+						//let response = OdometerResponse(startByte: item.response.startByte, endByte: item.response.endByte, multiplier: Double(item.response.multiplier), constant: Double(item.response.constant))
+						let cellVoltageTestCommand = TestCommandExecution(type: .CELL_VOLTAGE, resProtocal: sp.sampledCommandsProtocol!, challenge: item.challenge, response: response, validation: item.validation)
+						//self.numberOfCells = response.numberOfCells
+						cellVoltageTestCommand.reqeustByteInString = item.challenge.pid
+						Network.shared.sampledCommandsList.append(cellVoltageTestCommand)
+					}
 				}
 				
 			}

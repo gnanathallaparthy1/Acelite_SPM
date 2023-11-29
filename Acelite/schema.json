@@ -4244,6 +4244,12 @@
             "deprecationReason": null
           },
           {
+            "name": "ESTIMATED_RANGE_GT_RANGE_AT_BIRTH",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "MISSING_REQUIRED_FILENAME",
             "description": null,
             "isDeprecated": false,
@@ -4251,6 +4257,18 @@
           },
           {
             "name": "INVALID_INSTRUCTION_SET_ID",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "SOC_OR_BMS_REQUIRED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "NOT_ENOUGH_INFORMATION",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
