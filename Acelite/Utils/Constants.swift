@@ -33,6 +33,7 @@ class Constants {
 	static let SEVEN_FFF = "7FFF"
 	static let ALL_F = "FFFF"
 	static let NO_DATA = "NO DATA"
+	static let NO_DATA_R = "NO DATA\r\r>"
 	static let OK = "OK"
 	
 	static let DELAY_BETWEEN_COMMANDS = 50

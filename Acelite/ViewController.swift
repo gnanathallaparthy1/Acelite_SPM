@@ -99,9 +99,7 @@ class ViewController: BaseViewController {
 		}
 		remoteConfig.activate()
 		let number = remoteConfig.configValue(forKey: "json_files_deletion_interval_in_hours").numberValue
-		print(Date(), "Firebase json delete time interval\(number)", to: &Log.log)
 		self.offlineHrsLimit = Int(truncating: number)
-		print(Date(), "Firebase json delete time interval\(self.offlineHrsLimit)", to: &Log.log)
 	}
 	
 	private func addCustomView() {

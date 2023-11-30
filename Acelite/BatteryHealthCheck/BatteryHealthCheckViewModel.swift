@@ -16,6 +16,7 @@ protocol GetPreSignedUrlDelegate: AnyObject {
 
 protocol UploadAndSubmitDataDelegate: AnyObject {
 	func navigateToHealthScoreVC()
+	func showNoDataFromCommandsAlert()
 }
 
 class BatteryHealthCheckViewModel {
@@ -320,6 +321,7 @@ class BatteryHealthCheckViewModel {
 			//		guard let reponseData = testCommand?.deviceData, reponseData.count > 0 else { return  }
 		
 			if parseData.contains(Constants.QUESTION_MARK) || parseData.contains(Constants.NODATA) || parseData.contains(Constants.NO_DATA) || parseData.contains(Constants.ERROR) {
+				self.uploadAndSubmitDelegate?.showNoDataFromCommandsAlert()
 			return
 		}
 			var responseDataInString: String = "" // local variable

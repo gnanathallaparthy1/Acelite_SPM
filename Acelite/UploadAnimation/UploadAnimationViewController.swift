@@ -901,6 +901,13 @@ class UploadAnimationViewController: BaseViewController {
 	
 }
 extension UploadAnimationViewController: ShortProfileCommandsRunDelegate {
+	func shortProfileCommandExecutionError() {
+		//if ((self.viewModel?.isShortProfile) != nil) {
+			print("short profile error")
+		showDataInsufficientError()
+		//}
+	}
+	
 	func shortProfileCommandsCompleted(battteryHealth: BatteryScore) {
 		DispatchQueue.main.async {
 		let storyBaord = UIStoryboard.init(name: "Main", bundle: nil)

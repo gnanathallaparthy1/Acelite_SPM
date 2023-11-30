@@ -93,12 +93,14 @@ class VehicleVinScannerViewModel {
 		}
 		Network.shared.normalCommandsList.removeAll()
 		for command in testCommand {
-			if let _ = command.testCommands?.sampledCommands {
-			let odometer = command.testCommands?.odometer
-			Network.shared.batteryTestInstructionId = command.testCommands?.id
+		
+			if let odometer = command.testCommands?.odometer {
+				Network.shared.batteryTestInstructionId = command.testCommands?.id
 
-			let odo = TestCommandExecution(type: .ODOMETER , resProtocal: (odometer?.odometerProtocol)!, challenge: (odometer?.challenge)!, response: odometer!.response, validation: odometer!.validation)
-			Network.shared.normalCommandsList.append(odo)
+				let odo = TestCommandExecution(type: .ODOMETER , resProtocal: (odometer.odometerProtocol), challenge: odometer.challenge, response: odometer.response, validation: odometer.validation)
+				Network.shared.normalCommandsList.append(odo)
+			}
+			
 			let stateOfCharge = command.testCommands?.stateOfCharge
 			let bms = command.testCommands?.bmsCapacity
 			let energyToEmpty = command.testCommands?.energyToEmpty
@@ -129,7 +131,7 @@ class VehicleVinScannerViewModel {
 			}
 
 			////////print("Normal Command List", normalCommandsList)
-				if let sp = command.testCommands?.sampledCommands {
+			if let sp = command.testCommands?.sampledCommands {
 					//sampledCommandsList = sp
 					//WHY?????
 					//MARK: - PackVoltage
@@ -169,6 +171,6 @@ class VehicleVinScannerViewModel {
 				}
 				
 			}
-		}
+		
 	}
 }

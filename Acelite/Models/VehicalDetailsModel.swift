@@ -72,8 +72,8 @@ enum ItemType: String, Decodable {
 struct Odometer: Codable {
 	let odometerProtocol: ProtocolClass?
 	let challenge: Challenge?
-	let response: OdometerResponse
-	let validation: Validation
+	let response: OdometerResponse?
+	let validation: Validation?
 
 	enum CodingKeys: String, CodingKey {
 		case odometerProtocol = "protocol"

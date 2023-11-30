@@ -478,27 +478,36 @@ class BatteryHealthCheckViewController:  BaseViewController {
 	
 }
 extension BatteryHealthCheckViewController: GetPreSignedUrlDelegate, UploadAndSubmitDataDelegate {
+	func showNoDataFromCommandsAlert() {
+		let dialogMessage = UIAlertController(title: "Error", message: "Sorry,something went wrong.Please try again", preferredStyle: .alert)
+		let ok = UIAlertAction(title: "GOT IT", style: .default, handler: { (action) -> Void in
+			self.navigationController?.popToRootViewController(animated: true)
+		})
+		dialogMessage.addAction(ok)
+		self.present(dialogMessage, animated: true, completion: nil)
+	}
+	
 	@objc func navigateToHealthScoreVC() {
 		self.notificationCenter.post(name: NSNotification.Name(rawValue: "GotAllData"), object: nil)
-   }
-   
+	}
+	
 	func navigateToAnimationVC() {
-	   timer?.invalidate()
-	   timer = nil
-	   var jsonString = ""
+		timer?.invalidate()
+		timer = nil
+		var jsonString = ""
 		let vm = UploadAnimationViewModel(vehicleInfo: (self.viewModel?.vehicleInfo)!, workOrder: self.viewModel?.workOrder, isShortProfile: false, managedObject: NSManagedObject())
 		let vc = UploadAnimationViewController(viewModel: vm)
 		vc.errorSheetSource = .INSTRUCTION_FLOW
 		if self.viewModel?.isJSON == true {
 			var minVlaue: Int = 0
 			let listCount: [Int] = [self.viewModel?.packVoltageArray.count ?? 0,  self.viewModel?.packCurrentArray.count ?? 0, ((self.viewModel?.multiCellVoltageArray.count ?? 0) / (self.viewModel?.numberOfCells ?? 0)) ]
-		   
+			
 			minVlaue = listCount.min() ?? 0
 			if minVlaue == 0 {
 				print(Date(), "Min Count of the Data Files Not Fullfilled", to: &Log.log)
 				return
 			}
-		 
+			
 			if self.viewModel?.packVoltageArray.count ?? 0 > minVlaue {
 				var pvDiff =  (self.viewModel?.packVoltageArray.count ?? 0) - minVlaue
 				self.viewModel?.packVoltageArray.removeLast(pvDiff)
@@ -513,14 +522,14 @@ extension BatteryHealthCheckViewController: GetPreSignedUrlDelegate, UploadAndSu
 				let cvDiff = (self.viewModel?.multiCellVoltageArray.count ?? 0) - minVlaue
 				self.viewModel?.multiCellVoltageArray.removeLast(cvDiff)
 			}
-		
+			
 			let packVoltageScan = ["packVoltageScan": self.viewModel?.packVoltageArray]
 			let packCurrentScan = ["packCurrentScan": self.viewModel?.packCurrentArray]
 			let packCellVoltageScan = ["packCellVoltageScan": self.viewModel?.multiCellVoltageArray]
 			
 			let mergedDictionary = packVoltageScan.merged(with: packCurrentScan)
 			let finalDictionary = mergedDictionary.merged(with: packCellVoltageScan)
-
+			
 			jsonString = self.convertToJSONString(value: finalDictionary as AnyObject) ?? ""
 			
 			let finalDictJSON = self.convertToJSONString(value: finalDictionary as AnyObject) ?? ""
@@ -533,67 +542,67 @@ extension BatteryHealthCheckViewController: GetPreSignedUrlDelegate, UploadAndSu
 			let _ = packVoltageScanString + "," + packCurrentScanString + "," + packCellVoltageScanString
 			
 			vc.finalJsonString = jsonString
-
+			
 		}
-	  
+		
 		vc.vehicleInfo = viewModel?.vehicleInfo
 		vc.sampledCommandsList = Network.shared.sampledCommandsList
 		vc.isJsonEnabled = self.viewModel?.isJSON ?? false
 		vc.workOrder = self.viewModel?.workOrder
-	   if let pc = viewModel?.packCurrentData {
-		   vc.packCurrentData = pc
-	   }
-	   if let pv = viewModel?.packVoltageData {
-		   vc.packVoltageData = pv
-	   }
-	   if let cv = viewModel?.cellVoltageData {
-		   vc.cellVoltageData = cv
-	   }
-	   if let soc = viewModel?.stateOfCharge {
-		   vc.stateOfCharge = soc
-	   }
-	   if let bms = viewModel?.bms {
-		   vc.bmsCapacity = bms
-	   }
-	   if let odometer = viewModel?.odometer {
-		   vc.odometer = odometer
-	   }
-	   if let currentEnergey = viewModel?.currentEnergy {
-		   vc.currentEnerygy = currentEnergey
-	   }
-			
-	   if let numberofCell = viewModel?.numberOfCells {
-		   vc.numberofCells = numberofCell
-	   }
-	   if let multiCellVoltageData = viewModel?.multiCellVoltageData {
-		   vc.multiCellVoltageData = multiCellVoltageData
-	   }
-	   if let batteryInstrucId = Network.shared.batteryTestInstructionId {
-		   vc.testInstructionsId = batteryInstrucId
-	   }
-	   if let workOrd = viewModel?.workOrder {
-		   vc.workOrder = workOrd
-	   }
-	   let dialogMessage = UIAlertController(title: "TURN OFF THE CAR", message: "Turn off the car and disconnect the OBD-II cable.", preferredStyle: .alert)
-	   // Create OK button with action handler
-	   let ok = UIAlertAction(title: "Done", style: .default, handler: { (action) -> Void in
-		   self.endBackgroundTask()
-		   self.navigationController?.pushViewController(vc, animated: true)
-	   })
-	   //Add OK button to a dialog message
-	   dialogMessage.addAction(ok)
-	   // Present Alert to
-	   self.present(dialogMessage, animated: true, completion: nil)
-
-	   }
-   
-   func getTransactionIdInfo(viewModel: BatteryHealthCheckViewModel) {
-	   
-   }
-   
-   func handleErrorTransactionID() {
-	   
-   }
+		if let pc = viewModel?.packCurrentData {
+			vc.packCurrentData = pc
+		}
+		if let pv = viewModel?.packVoltageData {
+			vc.packVoltageData = pv
+		}
+		if let cv = viewModel?.cellVoltageData {
+			vc.cellVoltageData = cv
+		}
+		if let soc = viewModel?.stateOfCharge {
+			vc.stateOfCharge = soc
+		}
+		if let bms = viewModel?.bms {
+			vc.bmsCapacity = bms
+		}
+		if let odometer = viewModel?.odometer {
+			vc.odometer = odometer
+		}
+		if let currentEnergey = viewModel?.currentEnergy {
+			vc.currentEnerygy = currentEnergey
+		}
+		
+		if let numberofCell = viewModel?.numberOfCells {
+			vc.numberofCells = numberofCell
+		}
+		if let multiCellVoltageData = viewModel?.multiCellVoltageData {
+			vc.multiCellVoltageData = multiCellVoltageData
+		}
+		if let batteryInstrucId = Network.shared.batteryTestInstructionId {
+			vc.testInstructionsId = batteryInstrucId
+		}
+		if let workOrd = viewModel?.workOrder {
+			vc.workOrder = workOrd
+		}
+		let dialogMessage = UIAlertController(title: "TURN OFF THE CAR", message: "Turn off the car and disconnect the OBD-II cable.", preferredStyle: .alert)
+		// Create OK button with action handler
+		let ok = UIAlertAction(title: "Done", style: .default, handler: { (action) -> Void in
+			self.endBackgroundTask()
+			self.navigationController?.pushViewController(vc, animated: true)
+		})
+		//Add OK button to a dialog message
+		dialogMessage.addAction(ok)
+		// Present Alert to
+		self.present(dialogMessage, animated: true, completion: nil)
+		
+	}
+	
+	func getTransactionIdInfo(viewModel: BatteryHealthCheckViewModel) {
+		
+	}
+	
+	func handleErrorTransactionID() {
+		
+	}
 	
 	func deleteExistingLogFile() {
 		
@@ -612,19 +621,19 @@ extension BatteryHealthCheckViewController: GetPreSignedUrlDelegate, UploadAndSu
 	}
 	
 	func convertToJSONString(value: AnyObject) -> String? {
-			if JSONSerialization.isValidJSONObject(value) {
-				do{
-					let data = try JSONSerialization.data(withJSONObject: value, options:  [.prettyPrinted])
-					if let string = NSString(data: data, encoding: String.Encoding.utf8.rawValue) {
-						return string as String
-					}
-				}catch{
-					print("error")
+		if JSONSerialization.isValidJSONObject(value) {
+			do{
+				let data = try JSONSerialization.data(withJSONObject: value, options:  [.prettyPrinted])
+				if let string = NSString(data: data, encoding: String.Encoding.utf8.rawValue) {
+					return string as String
 				}
+			}catch{
+				print("error")
 			}
-			print("nil")
-			return nil
 		}
+		print("nil")
+		return nil
+	}
 	
 }
 extension Dictionary {

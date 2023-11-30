@@ -230,13 +230,13 @@ class TestCommandExecution {
 	var deviceData: Data?
 	var instructionType: InstructionType = .NONE
 	
-	init(type: CommandType, resProtocal: ProtocolClass, challenge: Challenge, response: OdometerResponse, validation: Validation) {
+	init(type: CommandType, resProtocal: ProtocolClass?, challenge: Challenge?, response: OdometerResponse?, validation: Validation?) {
 		self.type = type
 		self.resProtocol = resProtocal
 		self.challenge = challenge
 		self.response = response
 		self.validation = validation
-		if challenge.flowControl != nil {
+		if challenge?.flowControl != nil {
 			self.isFlowController = true
 		}
 	}

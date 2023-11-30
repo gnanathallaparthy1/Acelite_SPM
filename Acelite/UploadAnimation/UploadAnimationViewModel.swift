@@ -16,6 +16,7 @@ import Apollo
 protocol ShortProfileCommandsRunDelegate: AnyObject {
 	func shortProfileCommandsCompleted(battteryHealth: BatteryScore)
 	func showShortProfileSubmitError(transactionID: String?, vinMake: String, message: String, vinModels: String, submitType: String, vinNumber: String, year: Int, errorCode: String)
+	func shortProfileCommandExecutionError()
 }
 
 class UploadAnimationViewModel {
@@ -203,11 +204,16 @@ class UploadAnimationViewModel {
 	
 	private func parseResponse(testCommand: TestCommandExecution?, index: Int) {
 		
-		self.loopDispatch.async {
+//		self.loopDispatch.async {
 			print("Commands response")
-			guard let responseData = testCommand?.deviceData else { return  }
+			guard let responseData = testCommand?.deviceData else {
+				return
+				
+			}
 			let parseData: String = String.init(data: responseData, encoding: .utf8) ?? ""
 			if parseData.contains(Constants.QUESTION_MARK) || parseData.contains(Constants.NODATA) || parseData.contains(Constants.NO_DATA) || parseData.contains(Constants.ERROR) {
+				//VC
+				self.delegate?.shortProfileCommandExecutionError()
 				return
 			}
 			var responseDataInString: String = "" // local variable
@@ -307,7 +313,7 @@ class UploadAnimationViewModel {
 				case .Other:
 					break
 				}
-			}
+//			}
 		}
 	}
 	
@@ -364,6 +370,7 @@ class UploadAnimationViewModel {
 	}
 	
 	public func submitBatteryDataForShortProfile() {
+		print("submitBatteryDataForShortProfile")
 		print(Date(), "submitBatteryDataFileWithSOCGraphRequest", to: &Log.log)
 		guard let veh = vehicleInfo else {return}
 		guard let vinInfo = vehicleInfo?.vin else { return  }
@@ -375,11 +382,13 @@ class UploadAnimationViewModel {
 		let vehicalBatteryDataFile = SubmitBatteryDataFilesVehicleInput.init(vin: vinInfo, make: vinMake, model: vinModels, year: years, trim: trim)
 		let batteryInstr = vehicleInfo?.getBatteryTestInstructions
 		//Vehicle Profile
+		print("vehical profile")
 		guard let vehicleProfile = batteryInstr?[0].testCommands?.vehicleProfile else {
 			print(Date(), "SOC:Submit API failed due to Vehicle Profile", to: &Log.log)
 			self.delegate?.showShortProfileSubmitError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:Submit API failed due to Vehicle Profile", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: "")
 			return
 		}
+		print("data 1::::::")
 		print(Date(), "SOC:Vehicle Profile\(vehicleProfile)", to: &Log.log)
 //		//State of Health
 //		if let stateOfHealth = batteryInstr?[0].testCommands?.stateOfCharge {
@@ -496,7 +505,7 @@ class UploadAnimationViewModel {
 						
 					}
 				} else {
-					
+				print("ele condition::::::::::")
 				}
 				break
 			case .failure(let error):
