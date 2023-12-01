@@ -403,3 +403,40 @@ mutation SubmitBatteryDataFilesWithBmsCapacity(
         }
     }
 }
+
+query CalculateBatteryHealth($calculateBatteryHealthInput: CalculateBatteryHealthInput!, $vin: String) {
+  vehicle(vin: $vin) {
+      year
+      make
+      modelName
+      electricComponentInformation {
+          batteryRange
+          batteryCapacity
+          batteryEnergyCapacity
+          batteryType
+      }
+    calculateBatteryHealth(calculateBatteryHealthInput: $calculateBatteryHealthInput) {
+    code
+    success
+    message
+    calculatedBatteryHealth {
+      batteryScore {
+        score
+        rating
+        grade
+        health
+        factorsUsed {
+          name
+          type
+        }
+        transactionId
+        instructionSetId
+      }
+      estimatedRange {
+        estimatedRangeMin
+        estimatedRangeMax
+      }
+    }
+  }
+}
+}

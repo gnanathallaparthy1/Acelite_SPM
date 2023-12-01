@@ -7630,3 +7630,581 @@ public final class SubmitBatteryDataFilesWithBmsCapacityMutation: GraphQLMutatio
     }
   }
 }
+
+public final class CalculateBatteryHealthQuery: GraphQLQuery {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition: String =
+    """
+    query CalculateBatteryHealth($calculateBatteryHealthInput: CalculateBatteryHealthInput!, $vin: String) {
+      vehicle(vin: $vin) {
+        __typename
+        year
+        make
+        modelName
+        electricComponentInformation {
+          __typename
+          batteryRange
+          batteryCapacity
+          batteryEnergyCapacity
+          batteryType
+        }
+        calculateBatteryHealth(
+          calculateBatteryHealthInput: $calculateBatteryHealthInput
+        ) {
+          __typename
+          code
+          success
+          message
+          calculatedBatteryHealth {
+            __typename
+            batteryScore {
+              __typename
+              score
+              rating
+              grade
+              health
+              factorsUsed {
+                __typename
+                name
+                type
+              }
+              transactionId
+              instructionSetId
+            }
+            estimatedRange {
+              __typename
+              estimatedRangeMin
+              estimatedRangeMax
+            }
+          }
+        }
+      }
+    }
+    """
+
+  public let operationName: String = "CalculateBatteryHealth"
+
+  public var calculateBatteryHealthInput: CalculateBatteryHealthInput
+  public var vin: String?
+
+  public init(calculateBatteryHealthInput: CalculateBatteryHealthInput, vin: String? = nil) {
+    self.calculateBatteryHealthInput = calculateBatteryHealthInput
+    self.vin = vin
+  }
+
+  public var variables: GraphQLMap? {
+    return ["calculateBatteryHealthInput": calculateBatteryHealthInput, "vin": vin]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Query"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("vehicle", arguments: ["vin": GraphQLVariable("vin")], type: .object(Vehicle.selections)),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(vehicle: Vehicle? = nil) {
+      self.init(unsafeResultMap: ["__typename": "Query", "vehicle": vehicle.flatMap { (value: Vehicle) -> ResultMap in value.resultMap }])
+    }
+
+    /// Retrieve attributes for a given vehicle using the Catalog API or the NHTSA API by passing one of following:
+    /// VIN, MID, Catalog ID, or Chrome Style ID. For fields retrieved from the NHTSA API, VIN is the only valid input.
+    public var vehicle: Vehicle? {
+      get {
+        return (resultMap["vehicle"] as? ResultMap).flatMap { Vehicle(unsafeResultMap: $0) }
+      }
+      set {
+        resultMap.updateValue(newValue?.resultMap, forKey: "vehicle")
+      }
+    }
+
+    public struct Vehicle: GraphQLSelectionSet {
+      public static let possibleTypes: [String] = ["Vehicle"]
+
+      public static var selections: [GraphQLSelection] {
+        return [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("year", type: .scalar(Int.self)),
+          GraphQLField("make", type: .scalar(String.self)),
+          GraphQLField("modelName", type: .scalar(String.self)),
+          GraphQLField("electricComponentInformation", type: .object(ElectricComponentInformation.selections)),
+          GraphQLField("calculateBatteryHealth", arguments: ["calculateBatteryHealthInput": GraphQLVariable("calculateBatteryHealthInput")], type: .object(CalculateBatteryHealth.selections)),
+        ]
+      }
+
+      public private(set) var resultMap: ResultMap
+
+      public init(unsafeResultMap: ResultMap) {
+        self.resultMap = unsafeResultMap
+      }
+
+      public init(year: Int? = nil, make: String? = nil, modelName: String? = nil, electricComponentInformation: ElectricComponentInformation? = nil, calculateBatteryHealth: CalculateBatteryHealth? = nil) {
+        self.init(unsafeResultMap: ["__typename": "Vehicle", "year": year, "make": make, "modelName": modelName, "electricComponentInformation": electricComponentInformation.flatMap { (value: ElectricComponentInformation) -> ResultMap in value.resultMap }, "calculateBatteryHealth": calculateBatteryHealth.flatMap { (value: CalculateBatteryHealth) -> ResultMap in value.resultMap }])
+      }
+
+      public var __typename: String {
+        get {
+          return resultMap["__typename"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      /// A four-digit number to describe approximately when a catalog vehicle was produced and/or sold as 'New' in the market.
+      public var year: Int? {
+        get {
+          return resultMap["year"] as? Int
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "year")
+        }
+      }
+
+      /// The brand or marquee used to describe the catalog vehicle made by an automotive manufacturer.
+      public var make: String? {
+        get {
+          return resultMap["make"] as? String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "make")
+        }
+      }
+
+      /// A standardized version of the Proposed Marketing Model Name that maintains consistency year over year.
+      public var modelName: String? {
+        get {
+          return resultMap["modelName"] as? String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "modelName")
+        }
+      }
+
+      /// An ElectricComponentInformation object, which contains attributes for electric vehicles
+      public var electricComponentInformation: ElectricComponentInformation? {
+        get {
+          return (resultMap["electricComponentInformation"] as? ResultMap).flatMap { ElectricComponentInformation(unsafeResultMap: $0) }
+        }
+        set {
+          resultMap.updateValue(newValue?.resultMap, forKey: "electricComponentInformation")
+        }
+      }
+
+      public var calculateBatteryHealth: CalculateBatteryHealth? {
+        get {
+          return (resultMap["calculateBatteryHealth"] as? ResultMap).flatMap { CalculateBatteryHealth(unsafeResultMap: $0) }
+        }
+        set {
+          resultMap.updateValue(newValue?.resultMap, forKey: "calculateBatteryHealth")
+        }
+      }
+
+      public struct ElectricComponentInformation: GraphQLSelectionSet {
+        public static let possibleTypes: [String] = ["ElectricComponentInformation"]
+
+        public static var selections: [GraphQLSelection] {
+          return [
+            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+            GraphQLField("batteryRange", type: .scalar(Int.self)),
+            GraphQLField("batteryCapacity", type: .scalar(Double.self)),
+            GraphQLField("batteryEnergyCapacity", type: .scalar(Double.self)),
+            GraphQLField("batteryType", type: .scalar(String.self)),
+          ]
+        }
+
+        public private(set) var resultMap: ResultMap
+
+        public init(unsafeResultMap: ResultMap) {
+          self.resultMap = unsafeResultMap
+        }
+
+        public init(batteryRange: Int? = nil, batteryCapacity: Double? = nil, batteryEnergyCapacity: Double? = nil, batteryType: String? = nil) {
+          self.init(unsafeResultMap: ["__typename": "ElectricComponentInformation", "batteryRange": batteryRange, "batteryCapacity": batteryCapacity, "batteryEnergyCapacity": batteryEnergyCapacity, "batteryType": batteryType])
+        }
+
+        public var __typename: String {
+          get {
+            return resultMap["__typename"]! as! String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        /// Unit of Measure: miles
+        public var batteryRange: Int? {
+          get {
+            return resultMap["batteryRange"] as? Int
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "batteryRange")
+          }
+        }
+
+        /// Unit of Measure: kilowatt hours
+        public var batteryCapacity: Double? {
+          get {
+            return resultMap["batteryCapacity"] as? Double
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "batteryCapacity")
+          }
+        }
+
+        /// Unit of Measure: ampere-hours
+        public var batteryEnergyCapacity: Double? {
+          get {
+            return resultMap["batteryEnergyCapacity"] as? Double
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "batteryEnergyCapacity")
+          }
+        }
+
+        public var batteryType: String? {
+          get {
+            return resultMap["batteryType"] as? String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "batteryType")
+          }
+        }
+      }
+
+      public struct CalculateBatteryHealth: GraphQLSelectionSet {
+        public static let possibleTypes: [String] = ["CalculateBatteryHealthResponse"]
+
+        public static var selections: [GraphQLSelection] {
+          return [
+            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+            GraphQLField("code", type: .nonNull(.scalar(String.self))),
+            GraphQLField("success", type: .nonNull(.scalar(Bool.self))),
+            GraphQLField("message", type: .nonNull(.scalar(String.self))),
+            GraphQLField("calculatedBatteryHealth", type: .object(CalculatedBatteryHealth.selections)),
+          ]
+        }
+
+        public private(set) var resultMap: ResultMap
+
+        public init(unsafeResultMap: ResultMap) {
+          self.resultMap = unsafeResultMap
+        }
+
+        public init(code: String, success: Bool, message: String, calculatedBatteryHealth: CalculatedBatteryHealth? = nil) {
+          self.init(unsafeResultMap: ["__typename": "CalculateBatteryHealthResponse", "code": code, "success": success, "message": message, "calculatedBatteryHealth": calculatedBatteryHealth.flatMap { (value: CalculatedBatteryHealth) -> ResultMap in value.resultMap }])
+        }
+
+        public var __typename: String {
+          get {
+            return resultMap["__typename"]! as! String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        public var code: String {
+          get {
+            return resultMap["code"]! as! String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "code")
+          }
+        }
+
+        public var success: Bool {
+          get {
+            return resultMap["success"]! as! Bool
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "success")
+          }
+        }
+
+        public var message: String {
+          get {
+            return resultMap["message"]! as! String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "message")
+          }
+        }
+
+        public var calculatedBatteryHealth: CalculatedBatteryHealth? {
+          get {
+            return (resultMap["calculatedBatteryHealth"] as? ResultMap).flatMap { CalculatedBatteryHealth(unsafeResultMap: $0) }
+          }
+          set {
+            resultMap.updateValue(newValue?.resultMap, forKey: "calculatedBatteryHealth")
+          }
+        }
+
+        public struct CalculatedBatteryHealth: GraphQLSelectionSet {
+          public static let possibleTypes: [String] = ["CalculatedBatteryHealth"]
+
+          public static var selections: [GraphQLSelection] {
+            return [
+              GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+              GraphQLField("batteryScore", type: .object(BatteryScore.selections)),
+              GraphQLField("estimatedRange", type: .object(EstimatedRange.selections)),
+            ]
+          }
+
+          public private(set) var resultMap: ResultMap
+
+          public init(unsafeResultMap: ResultMap) {
+            self.resultMap = unsafeResultMap
+          }
+
+          public init(batteryScore: BatteryScore? = nil, estimatedRange: EstimatedRange? = nil) {
+            self.init(unsafeResultMap: ["__typename": "CalculatedBatteryHealth", "batteryScore": batteryScore.flatMap { (value: BatteryScore) -> ResultMap in value.resultMap }, "estimatedRange": estimatedRange.flatMap { (value: EstimatedRange) -> ResultMap in value.resultMap }])
+          }
+
+          public var __typename: String {
+            get {
+              return resultMap["__typename"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "__typename")
+            }
+          }
+
+          public var batteryScore: BatteryScore? {
+            get {
+              return (resultMap["batteryScore"] as? ResultMap).flatMap { BatteryScore(unsafeResultMap: $0) }
+            }
+            set {
+              resultMap.updateValue(newValue?.resultMap, forKey: "batteryScore")
+            }
+          }
+
+          public var estimatedRange: EstimatedRange? {
+            get {
+              return (resultMap["estimatedRange"] as? ResultMap).flatMap { EstimatedRange(unsafeResultMap: $0) }
+            }
+            set {
+              resultMap.updateValue(newValue?.resultMap, forKey: "estimatedRange")
+            }
+          }
+
+          public struct BatteryScore: GraphQLSelectionSet {
+            public static let possibleTypes: [String] = ["BatteryScore"]
+
+            public static var selections: [GraphQLSelection] {
+              return [
+                GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                GraphQLField("score", type: .nonNull(.scalar(Double.self))),
+                GraphQLField("rating", type: .nonNull(.scalar(Int.self))),
+                GraphQLField("grade", type: .nonNull(.scalar(Grade.self))),
+                GraphQLField("health", type: .nonNull(.scalar(Health.self))),
+                GraphQLField("factorsUsed", type: .nonNull(.list(.object(FactorsUsed.selections)))),
+                GraphQLField("transactionId", type: .scalar(GraphQLID.self)),
+                GraphQLField("instructionSetId", type: .scalar(GraphQLID.self)),
+              ]
+            }
+
+            public private(set) var resultMap: ResultMap
+
+            public init(unsafeResultMap: ResultMap) {
+              self.resultMap = unsafeResultMap
+            }
+
+            public init(score: Double, rating: Int, grade: Grade, health: Health, factorsUsed: [FactorsUsed?], transactionId: GraphQLID? = nil, instructionSetId: GraphQLID? = nil) {
+              self.init(unsafeResultMap: ["__typename": "BatteryScore", "score": score, "rating": rating, "grade": grade, "health": health, "factorsUsed": factorsUsed.map { (value: FactorsUsed?) -> ResultMap? in value.flatMap { (value: FactorsUsed) -> ResultMap in value.resultMap } }, "transactionId": transactionId, "instructionSetId": instructionSetId])
+            }
+
+            public var __typename: String {
+              get {
+                return resultMap["__typename"]! as! String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "__typename")
+              }
+            }
+
+            /// The given vehicle's battery score value, on a scale of 1.0 to 5.0 inclusive
+            public var score: Double {
+              get {
+                return resultMap["score"]! as! Double
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "score")
+              }
+            }
+
+            /// The given vehicle's battery rating value, on a scale of 0 to 100 inclusive
+            public var rating: Int {
+              get {
+                return resultMap["rating"]! as! Int
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "rating")
+              }
+            }
+
+            /// The given vehicle's battery score grade value
+            public var grade: Grade {
+              get {
+                return resultMap["grade"]! as! Grade
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "grade")
+              }
+            }
+
+            /// The given vehicle's battery score health value
+            public var health: Health {
+              get {
+                return resultMap["health"]! as! Health
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "health")
+              }
+            }
+
+            /// The list of Factor objects used in the Battery Score calculation
+            public var factorsUsed: [FactorsUsed?] {
+              get {
+                return (resultMap["factorsUsed"] as! [ResultMap?]).map { (value: ResultMap?) -> FactorsUsed? in value.flatMap { (value: ResultMap) -> FactorsUsed in FactorsUsed(unsafeResultMap: value) } }
+              }
+              set {
+                resultMap.updateValue(newValue.map { (value: FactorsUsed?) -> ResultMap? in value.flatMap { (value: FactorsUsed) -> ResultMap in value.resultMap } }, forKey: "factorsUsed")
+              }
+            }
+
+            /// Transaction Id
+            public var transactionId: GraphQLID? {
+              get {
+                return resultMap["transactionId"] as? GraphQLID
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "transactionId")
+              }
+            }
+
+            /// Challenge Instruction Set Id
+            public var instructionSetId: GraphQLID? {
+              get {
+                return resultMap["instructionSetId"] as? GraphQLID
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "instructionSetId")
+              }
+            }
+
+            public struct FactorsUsed: GraphQLSelectionSet {
+              public static let possibleTypes: [String] = ["Factor"]
+
+              public static var selections: [GraphQLSelection] {
+                return [
+                  GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                  GraphQLField("name", type: .nonNull(.scalar(String.self))),
+                  GraphQLField("type", type: .nonNull(.scalar(TypeSource.self))),
+                ]
+              }
+
+              public private(set) var resultMap: ResultMap
+
+              public init(unsafeResultMap: ResultMap) {
+                self.resultMap = unsafeResultMap
+              }
+
+              public init(name: String, type: TypeSource) {
+                self.init(unsafeResultMap: ["__typename": "Factor", "name": name, "type": type])
+              }
+
+              public var __typename: String {
+                get {
+                  return resultMap["__typename"]! as! String
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "__typename")
+                }
+              }
+
+              /// The given factor's name.
+              public var name: String {
+                get {
+                  return resultMap["name"]! as! String
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "name")
+                }
+              }
+
+              /// The given factor's type.
+              public var type: TypeSource {
+                get {
+                  return resultMap["type"]! as! TypeSource
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "type")
+                }
+              }
+            }
+          }
+
+          public struct EstimatedRange: GraphQLSelectionSet {
+            public static let possibleTypes: [String] = ["EstimatedRange"]
+
+            public static var selections: [GraphQLSelection] {
+              return [
+                GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                GraphQLField("estimatedRangeMin", type: .scalar(Double.self)),
+                GraphQLField("estimatedRangeMax", type: .scalar(Double.self)),
+              ]
+            }
+
+            public private(set) var resultMap: ResultMap
+
+            public init(unsafeResultMap: ResultMap) {
+              self.resultMap = unsafeResultMap
+            }
+
+            public init(estimatedRangeMin: Double? = nil, estimatedRangeMax: Double? = nil) {
+              self.init(unsafeResultMap: ["__typename": "EstimatedRange", "estimatedRangeMin": estimatedRangeMin, "estimatedRangeMax": estimatedRangeMax])
+            }
+
+            public var __typename: String {
+              get {
+                return resultMap["__typename"]! as! String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "__typename")
+              }
+            }
+
+            /// The given vehicle's minimum estimated range calculation.
+            public var estimatedRangeMin: Double? {
+              get {
+                return resultMap["estimatedRangeMin"] as? Double
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "estimatedRangeMin")
+              }
+            }
+
+            /// The given vehicle's maximum estimated range calculation.
+            public var estimatedRangeMax: Double? {
+              get {
+                return resultMap["estimatedRangeMax"] as? Double
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "estimatedRangeMax")
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
