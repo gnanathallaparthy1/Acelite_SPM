@@ -128,6 +128,8 @@ class BatteryHealthCheckViewController:  BaseViewController {
 		offlineViewHeight.constant = 0
 		offlineView.isHidden = true
 		addCustomView()
+		Network.shared.bluetoothService?.bleNonResponseDelegate = self
+		wrongCommand()
 	}
 	
 	private func addCustomView() {
@@ -142,6 +144,12 @@ class BatteryHealthCheckViewController:  BaseViewController {
 		view.backgroundColor = .white
 		view.setupView(message: Constants.APP_RECONNECT_INTERNET_MESSAGE)
 		self.offlineView.addSubview(view)
+	}
+	
+	private func wrongCommand() {
+		Network.shared.bluetoothService?.writeByteDataOnDevice(commandType: .Other, data: "ATZ00", completionHandler: { data in
+			print("NOOO data")
+		})
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {
@@ -583,6 +591,7 @@ extension BatteryHealthCheckViewController: GetPreSignedUrlDelegate, UploadAndSu
 		if let workOrd = viewModel?.workOrder {
 			vc.workOrder = workOrd
 		}
+
 		let dialogMessage = UIAlertController(title: "TURN OFF THE CAR", message: "Turn off the car and disconnect the OBD-II cable.", preferredStyle: .alert)
 		// Create OK button with action handler
 		let ok = UIAlertAction(title: "Done", style: .default, handler: { (action) -> Void in
@@ -636,6 +645,15 @@ extension BatteryHealthCheckViewController: GetPreSignedUrlDelegate, UploadAndSu
 	}
 	
 }
+
+extension BatteryHealthCheckViewController: BLENonResponsiveDelegate {
+	func showBleNonResponsiveError() {
+		print("showBleNonResponsiveError")
+	}
+	
+	
+}
+
 extension Dictionary {
 	var jsonData: Data? {
 		return try? JSONSerialization.data(withJSONObject: self, options: [.prettyPrinted])

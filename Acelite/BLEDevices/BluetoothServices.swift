@@ -29,6 +29,10 @@ protocol BLEPermissionDelegate: AnyObject {
 	func handleBleCommandError()
 }
 
+protocol BLENonResponsiveDelegate: AnyObject {
+	func showBleNonResponsiveError()
+}
+
 class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegate {
 	private var bleDevicesArray = [CBPeripheral]()
 	public var centralManager: CBCentralManager!
@@ -55,41 +59,21 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 	//var emptyArray : Int[] = []
 	private var fromDate = Date()
 	weak var delegate: BLEPermissionDelegate?
-
+	weak var bleNonResponseDelegate: BLENonResponsiveDelegate?
 
 	var commandType: CommandType = .Other
 	var instructionType: InstructionType = .NONE
 
 	var reqestDataTime = Date()
 	var responseDateTime = Date()
+	var isBLEResponse: Bool = false
+	var retryCount: Int = 0
 	
 	override init() {
 		super.init()
 		self.centralManager = CBCentralManager(delegate: self, queue: DispatchQueue.main)
-		////print("delegate:::::", self.delegate)
-	
-		
 	}
-		
 	
-	
-//	func setDelegateChange(delegate: BleWriteReadProtocal?) {
-//		self.delegate = delegate
-//	}
-	
-//	public func writeBytesDatas(data: String, completionHandler: ((String)->())?, delegate: BleWriteReadProtocal?, commandType: CommandType ) {
-////		self.delegate = delegate
-//		self.commandType = commandType
-//		self.completionHandler = completionHandler
-//		guard let characterstics = txCharacteristic else {
-//			return
-//		}
-//		print("request data:::::", data)
-//		let dataToSend: Data = data.data(using: .utf8)!
-//		bluetoothPeripheral!.writeValue(dataToSend, for: characterstics, type: .withResponse)
-//		bluetoothPeripheral?.setNotifyValue(true, for: rxCharacteristic!)
-//	} 	public func writeBytesData(flowControl: FlowControlInstructionType, commandType: CommandType, data: String, completionHandler: ((String)->())?) {
-
 	//MARK: - WriteByteArrayToDevice
 	
 	func writeByteData(data: String) {
@@ -119,9 +103,20 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 		self.fromDate = Date()
 		self.commandType = commandType
 		self.instructionType = instructionType
+		// codition isCommand = false
 		bluetoothPeripheral?.writeValue(dataToSend, for: characterstics, type: .withResponse)
-
 		bluetoothPeripheral?.setNotifyValue(true, for: rxCharacteristic!)
+		
+		DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2), execute: {
+			if self.isBLEResponse == false && self.retryCount <= 3 {
+				self.retryCount += 1
+				self.writeBytesData(instructionType: instructionType, commandType: commandType, data: data, completionHandler: completionHandler)
+			} else {
+				//delegate
+				self.bleNonResponseDelegate?.showBleNonResponsiveError()
+			}
+			
+		})
 	}
 	
 	public func connectDevices(peripheral: CBPeripheral) {
@@ -152,9 +147,7 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 			delegate?.blePermissionDelegate()
    }
 		else {
-			//print("Something wrong with BLE")
 			NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "BLEResponse"), object: ["BLEResponse": "Something wrong with BLE"], userInfo: nil)
-			// Not on, but can have different issues
 		}
 	}
 	
@@ -211,48 +204,20 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 	}
 	
 	func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
+		isBLEResponse = true
+		
 		if let value = characteristic.value {
 			
 			let parseData: String = String.init(data: value, encoding: .utf8) ?? ""
-			//check if needed
-			//Network.shared.bleData.append(parseData)
 			NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "BLEResponse"), object: ["BLEResponse": parseData], userInfo: nil)
 			Network.shared.bleData.append(value)
-			//let byteArray: [UInt8] = Array(value)
 			print(Date(), "notify obtained bytes : \(parseData)", to: &Log.log)
-			//print("byteArray",byteArray)
-           //print("Parse data", parseData)
-//			if  parseData.contains(":") {
-//				let removeSpaces = parseData.trimmingCharacters(in: .whitespacesAndNewlines)
-//				let splitString = removeSpaces.components(separatedBy: "\r")
-//				for item in splitString {
-//					let newitem = item.trimmingCharacters(in: .whitespacesAndNewlines)
-//					let sliptWithColen = newitem.components(separatedBy: ":")
-//
-//					if sliptWithColen.count == 2 {
-//						Network.shared.arrayOfBytesData.append(sliptWithColen[1])
-//					} else {
-//
-//					}
-//				}
-//
-//			} else {
-//				let removeSpaces = parseData.trimmingCharacters(in: .whitespacesAndNewlines)
-//				Network.shared.arrayOfBytesData.append(removeSpaces)
-//
-//			}
-			
 			if  parseData.count != 0 {
 				if  parseData.contains(Constants.CARET) {
-					//print(Date(), "Caret", to: &Log.log)
-					//print("Parse data", parseData)
 					print(Date(), "parseData \(parseData)", to: &Log.log)
-					//Network.shared.bleData.append(value)
 					self.calculateCommandRequestAndResponseTimeDuration(startDate: self.fromDate, endDate: Date())
-
 					self.completionHandler?(Network.shared.bleData)
 					Network.shared.bleData.removeAll()
-				
 				} else if parseData.contains(Constants.QUESTION_MARK) || parseData.contains(Constants.NODATA) || parseData.contains(Constants.NO_DATA) || parseData.contains(Constants.ERROR)   {
 					Network.shared.bleData.removeAll()
 					print(Date(), "Write Data Error)", to: &Log.log)
@@ -275,21 +240,11 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 	
 	private func calculateCommandRequestAndResponseTimeDuration(startDate: Date, endDate: Date)  {
 			let seconds = Calendar.current.dateComponents([.nanosecond], from: startDate, to: endDate).nanosecond ?? 0
-		let milliSec = round(Double(seconds / 1000000))
+		let _ = round(Double(seconds / 1000000))
 	//	print("timeDifference - Command \(self.commandType) - Flow Control \(self.flowControlType) :amount of time taken from start to end is \(milliSec) milli ec.")
 			
 		//print(Date(), "timeDifference -  Command \(self.commandType) - Flow Control \(self.flowControlType) :amount of time taken from start to end is \(milliSec) milli sec.", to: &Log.log)
 		}
-
-	
-//	public func writeBytesData(data: String) {
-//		guard let characterstics = txCharacteristic else {
-//			return
-//		}
-//		let dataToSend: Data = data.data(using: .utf8)!
-//		bluetoothPeripheral!.writeValue(dataToSend, for: characterstics, type: .withResponse)
-//		bluetoothPeripheral?.setNotifyValue(true, for: rxCharacteristic!)
-//	}
 	
 	func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
 		//print(characteristic)
@@ -314,15 +269,7 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 		self.blePeripheralDevice = uniquePosts
 		self.callBack?(uniquePosts)
 	}
-	
-//	private func calculateCommandRequestAndResponseTimeDuration(startDate: Date, endDate: Date)  {
-//			let seconds = Calendar.current.dateComponents([.nanosecond], from: startDate, to: endDate).nanosecond ?? 0
-//		let milliSec = round(Double(seconds / 1000000))
-//		print("timeDifference  :amount of time taken from start to end is \(milliSec) milli ec.")
-//
-//		print(Date(), "timeDifference :amount of time taken from start to end is \(milliSec) milli sec.", to: &Log.log)
-//
-//		}
+
 
 }
 

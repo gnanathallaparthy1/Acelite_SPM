@@ -434,7 +434,6 @@
 				866CDB66298D73A000ADFB50 /* TestingViewController */,
 				866CDB63298CAFF100ADFB50 /* ResusableComponents */,
 				866CDB5D298C202600ADFB50 /* Vehicle */,
-				866CDB522982FD1700ADFB50 /* Services */,
 				866CDB4D2982FC0600ADFB50 /* Utils */,
 				866CDB4A2982F60300ADFB50 /* Models */,
 				861E6F0E295E0F6F00443F12 /* BLEDevices */,
@@ -633,13 +632,6 @@
 				8697905E2A88624600FA6440 /* NetworkManager.swift */,
 			);
 			path = Utils;
-			sourceTree = "<group>";
-		};
-		866CDB522982FD1700ADFB50 /* Services */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Services;
 			sourceTree = "<group>";
 		};
 		866CDB58298AD41600ADFB50 /* GraphQL */ = {
