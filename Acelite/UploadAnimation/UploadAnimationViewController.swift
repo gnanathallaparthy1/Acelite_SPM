@@ -558,7 +558,7 @@ class UploadAnimationViewController: BaseViewController {
 		}
 		
 		
-		let vehicalProfile = CalculateBatteryHealthVehicleProfileInput.init(nominalVoltage: vehicleProfile.nominalVoltage, energyAtBirth: vehicleProfile.energyAtBirth , batteryType: .lithium, capacityAtBirth: vehicleProfile.capacityAtBirth)
+		let vehicalProfile = CalculateBatteryHealthVehicleProfileInput.init(nominalVoltage: vehicleProfile.nominalVoltage, energyAtBirth: vehicleProfile.energyAtBirth , batteryType: .lithium, capacityAtBirth: vehicleProfile.capacityAtBirth, rangeAtBirth: vehicleProfile.rangeAtBirth)
 		
 		
 		print("vehical Profile", vehicleProfile)
@@ -582,7 +582,6 @@ class UploadAnimationViewController: BaseViewController {
 		print(Date(), "calculatedBetteryHealth: \(String(describing: calculatedBetteryHealth))", to: &Log.log)
 		//
 		let submitScoreQuery = CalculateBatteryHealthQuery(calculateBatteryHealthInput: calculatedBetteryHealth ?? CalculateBatteryHealthInput(), vin: vinInfo)
-		//let jsonMutation = SubmitBatteryJsonFilesWithStateOfChargeMutation(Vehicle: vehicalBatteryDataFile, calculateBatteryHealthInput: calculatedBetteryHealth ?? CalculateBatteryHealthInput())
 		
 		Network.shared.apollo.fetch(query: submitScoreQuery) { result in
 			switch result {
@@ -625,11 +624,12 @@ class UploadAnimationViewController: BaseViewController {
 									} else {
 										self.deleteUploadedRecordInCoreData()
 										let batteryHealth = submitBatteryData.calculatedBatteryHealth?.batteryScore
+										let minEstRange = try Float(jsonValue: submitBatteryData.calculatedBatteryHealth?.estimatedRange?.estimatedRangeMin as JSONValue)
+										let maxEstRange = try Float(jsonValue: submitBatteryData.calculatedBatteryHealth?.estimatedRange?.estimatedRangeMax as JSONValue)
 										print("battery health:: SCORE --- \(batteryHealth?.score ?? 0.0)")
 										let storyBaord = UIStoryboard.init(name: "Main", bundle: nil)
 										let vc = storyBaord.instantiateViewController(withIdentifier: "BatteryHealthViewController") as! BatteryHealthViewController
-										//self.submitSuccessForSubmitAPI(transactionID: self.transactionId ?? "", vinMake: vinMake, score: "\(0)", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: vinYear)
-										let vm = BatteryHealthViewModel(vehicleInfo: veh, transactionID: self.transactionId ?? "", testIntructionsId: self.testInstructionsId ?? "", healthScore: batteryHealth?.score ?? 0.0, grade: VehicleGrade(rawValue: VehicleGrade(rawValue: batteryHealth?.grade ?? "N/A")?.title ??  "N/A") ?? .A, health: batteryHealth?.health ?? "N/A")
+										let vm = BatteryHealthViewModel(vehicleInfo: veh, transactionID: self.transactionId ?? "", testIntructionsId: self.testInstructionsId ?? "", healthScore: batteryHealth?.score ?? 0.0, grade: VehicleGrade(rawValue: VehicleGrade(rawValue: batteryHealth?.grade ?? "N/A")?.title ??  "N/A") ?? .A, health: batteryHealth?.health ?? "N/A", rangeAtBirth: vehicalProfile.rangeAtBirth ?? 0 , minEstimatedRnge: minEstRange , maxEstimatedRnge: maxEstRange)
 										vc.viewModel = vm
 										self.navigationController?.pushViewController(vc, animated: true)
 									}
@@ -978,14 +978,7 @@ class UploadAnimationViewController: BaseViewController {
 	
 }
 extension UploadAnimationViewController: ShortProfileCommandsRunDelegate {
-	func shortProfileCommandExecutionError() {
-		//if ((self.viewModel?.isShortProfile) != nil) {
-			print("short profile error")
-		showDataInsufficientError()
-		//}
-	}
-	
-	func shortProfileCommandsCompleted(battteryHealth: BatteryScore) {
+	func shortProfileCommandsCompleted(battteryHealth: BatteryScore, minRange: Float?, maxRange: Float?) {
 		DispatchQueue.main.async {
 		let storyBaord = UIStoryboard.init(name: "Main", bundle: nil)
 		let vc = storyBaord.instantiateViewController(withIdentifier: "BatteryHealthViewController") as! BatteryHealthViewController
@@ -994,12 +987,20 @@ extension UploadAnimationViewController: ShortProfileCommandsRunDelegate {
 			guard let vinMake = self.viewModel?.vehicleInfo?.make else { return  }
 			guard let vinYear = self.viewModel?.vehicleInfo?.year else {return}
 			guard let vinModels = self.viewModel?.vehicleInfo?.modelName else {return}
+			guard let vehicleProfile = self.viewModel?.vehicleInfo?.getBatteryTestInstructions?.first?.testCommands?.vehicleProfile else {return}
 			self.submitSuccessForSubmitAPI(transactionID: self.transactionId ?? "", vinMake: vinMake, score: "\(0)", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: vinYear, testProfileType: BMSCapacityTest.quickTest)
 		self.deleteUploadedRecordInCoreData()
-		let vm = BatteryHealthViewModel(vehicleInfo: veh, transactionID: self.transactionId ?? "", testIntructionsId: self.testInstructionsId ?? "", healthScore: battteryHealth.score , grade: VehicleGrade(rawValue: VehicleGrade(rawValue: battteryHealth.grade )?.title ??  "N/A") ?? .A, health: battteryHealth.health )
+			let vm = BatteryHealthViewModel(vehicleInfo: veh, transactionID: self.transactionId ?? "", testIntructionsId: self.testInstructionsId ?? "", healthScore: battteryHealth.score , grade: VehicleGrade(rawValue: VehicleGrade(rawValue: battteryHealth.grade )?.title ??  "N/A") ?? .A, health: battteryHealth.health, rangeAtBirth: vehicleProfile.rangeAtBirth, minEstimatedRnge: minRange, maxEstimatedRnge: maxRange )
 			vc.viewModel = vm
 			self.navigationController?.pushViewController(vc, animated: true)
 		}
+	}
+	
+	func shortProfileCommandExecutionError() {
+		//if ((self.viewModel?.isShortProfile) != nil) {
+			print("short profile error")
+		showDataInsufficientError()
+		//}
 	}
 	
 	func showShortProfileSubmitError(transactionID: String?, vinMake: String, message: String, vinModels: String, submitType: String, vinNumber: String, year: Int, errorCode: String) {

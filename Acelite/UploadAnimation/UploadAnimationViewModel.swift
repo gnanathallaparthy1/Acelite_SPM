@@ -14,7 +14,7 @@ import CoreData
 import Apollo
 
 protocol ShortProfileCommandsRunDelegate: AnyObject {
-	func shortProfileCommandsCompleted(battteryHealth: BatteryScore)
+	func shortProfileCommandsCompleted(battteryHealth: BatteryScore, minRange: Float?, maxRange: Float?)
 	func showShortProfileSubmitError(transactionID: String?, vinMake: String, message: String, vinModels: String, submitType: String, vinNumber: String, year: Int, errorCode: String)
 	func shortProfileCommandExecutionError()
 }
@@ -450,8 +450,10 @@ class UploadAnimationViewModel {
 			
 		}
 		print(Date(), "calculatedBetteryHealth: \(String(describing: calculatedBetteryHealth))", to: &Log.log)
-		let jsonMutation = SubmitBatteryJsonFilesWithStateOfChargeMutation(Vehicle: vehicalBatteryDataFile, calculateBatteryHealthInput: calculatedBetteryHealth ?? CalculateBatteryHealthInput())
-		Network.shared.apollo.perform(mutation: jsonMutation) { result in
+		let submitScoreQuery = CalculateBatteryHealthQuery(calculateBatteryHealthInput: calculatedBetteryHealth ?? CalculateBatteryHealthInput(), vin: vinInfo)
+
+//		let jsonMutation = SubmitBatteryJsonFilesWithStateOfChargeMutation(Vehicle: vehicalBatteryDataFile, calculateBatteryHealthInput: calculatedBetteryHealth ?? CalculateBatteryHealthInput())
+		Network.shared.apollo.fetch(query: submitScoreQuery) { result in
 			switch result {
 			case .success(let graphQLResults):
 				guard let _ = try? result.get().data else { return }
@@ -489,8 +491,14 @@ class UploadAnimationViewModel {
 									self.delegate?.showShortProfileSubmitError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "Battery Score is Null", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: submitBatteryData.code ?? "")
 									return
 								} else {
-									let bt = submitBatteryData.calculatedBatteryHealth?.batteryScore
-									self.delegate?.shortProfileCommandsCompleted(battteryHealth: (submitBatteryData.calculatedBatteryHealth?.batteryScore)!)
+									//check
+									let bt = submitBatteryData.calculatedBatteryHealth
+									let minEstRange = try Float(jsonValue: submitBatteryData.calculatedBatteryHealth?.estimatedRange?.estimatedRangeMin as JSONValue)
+									let maxEstRange = try Float(jsonValue: submitBatteryData.calculatedBatteryHealth?.estimatedRange?.estimatedRangeMax as JSONValue)
+									//									self.delegate?.shortProfileCommandsCompleted(battteryHealth: (submitBatteryData.calculatedBatteryHealth?.batteryScore)!)
+
+									self.delegate?.shortProfileCommandsCompleted(battteryHealth: (submitBatteryData.calculatedBatteryHealth?.batteryScore)!, minRange: minEstRange, maxRange: maxEstRange)
+									//self.delegate?.shortProfileCommandsCompleted(battteryHealth: bt?.batteryScore ?? 0, minRange: bt?.estimatedRange?.estimatedRangeMin, maxRange: bt?.estimatedRange?.estimatedRangeMax)
 								}
 								
 							} catch DecodingError.dataCorrupted(let context) {

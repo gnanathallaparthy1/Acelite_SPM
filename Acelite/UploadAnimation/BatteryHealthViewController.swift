@@ -47,6 +47,9 @@ class BatteryHealthViewController: UIViewController {
 		self.navigationController?.popToRootViewController(animated: true)
 	}
 	
+	@IBOutlet weak var estRangeLabel: UILabel!	
+	@IBOutlet weak var rangeNewValueLabel: UILabel!
+	
 	override func viewDidLoad() {
         super.viewDidLoad()
 		FirebaseLogging.instance.logScreen(screenName: ClassNames.confirmation)
@@ -57,6 +60,11 @@ class BatteryHealthViewController: UIViewController {
 		let testInstruc = viewModel?.testInstructionsId
 		self.scoreLabel.text = "\(healthScore)"
 		self.healthLabel.text = viewModel?.health ?? ""
+		let rangeAtBirth = viewModel?.rangeAtBirth
+		self.rangeNewValueLabel.text = "\(String(describing: rangeAtBirth))"
+		let minRange = viewModel?.minEstimatedRange
+		let maxRange = viewModel?.maxEstimatedRange
+		self.estRangeLabel.text = "\(String(describing: minRange)) - \(String(describing: maxRange))"
 		let paramDictionary = [
 		   "score": "\(healthScore)",
 		   "batter_test_instructions_id": "\(String(describing: testInstruc))"]

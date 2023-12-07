@@ -210,7 +210,7 @@ extension VehicalVINScannerViewController: ScannerViewDelegate {
 extension VehicalVINScannerViewController: UITextFieldDelegate {
 	func textFieldDidBeginEditing(_ textField: UITextField) {
 		//self.barcodeTextField?.text = "1FT6W1EV5PWG14455"
-		//self.barcodeTextField?.text = "1N4BZ1CP3LC310701"
+		self.barcodeTextField?.text = "1N4BZ1CP3LC310701"
 		//singleframeVin
 		//"3FA6P0LU8JR142415"
 		//MultiFrame with BMS
