@@ -206,11 +206,18 @@
                     <connections>
                         <outlet property="DoneBtn" destination="XlP-LR-VHN" id="600-gZ-5P0"/>
                         <outlet property="estRangeLabel" destination="okS-LG-iXJ" id="HwL-VQ-Tb3"/>
+                        <outlet property="estRangeTextLabel" destination="okS-LG-iXJ" id="KZF-1z-0aN"/>
+                        <outlet property="estTextHeightConstraint" destination="hz4-a8-rLq" id="bd6-Yw-Xbk"/>
+                        <outlet property="estValueHeightConstraint" destination="4UX-C4-dJF" id="x7i-MR-FEW"/>
+                        <outlet property="estViewHeightConstraint" destination="9r1-3H-Fd9" id="V8I-UO-Fft"/>
                         <outlet property="gaugeView" destination="6kC-FT-UkB" id="6zE-FB-6qu"/>
                         <outlet property="healthLabel" destination="DPa-us-tfh" id="2D1-NR-eXd"/>
                         <outlet property="imageView" destination="pwO-b2-OVY" id="co0-8H-z7Z"/>
                         <outlet property="modelNameLabel" destination="hs8-sL-bCM" id="1Fg-F7-C9L"/>
+                        <outlet property="newValueLabelHeightConstraint" destination="y96-xF-h8p" id="hF6-K5-dgT"/>
                         <outlet property="rangeNewValueLabel" destination="qTi-88-sL5" id="RGV-bw-6TA"/>
+                        <outlet property="rangeNewValueLabelHeightConstraint" destination="irM-LO-bUY" id="qFa-TL-Tzq"/>
+                        <outlet property="rangeNewValueTextlabel" destination="qTi-88-sL5" id="drR-Un-seG"/>
                         <outlet property="scoreLabel" destination="9jG-Vq-fJv" id="hRA-p7-ooR"/>
                         <outlet property="vinLabel" destination="sSg-AJ-wyI" id="sn4-CA-6CJ"/>
                     </connections>

@@ -25,33 +25,33 @@ struct SubmitBatteryDataFilesWithStateOfCharge: Codable {
 
 // MARK: - BatteryScore
 struct BatteryScore: Codable {
-	let score: Float
-	let grade, health: String
+	let score: Float?
+	let grade, health: String?
 	let factorsUsed: [FactorsUsed]
 }
 
 // MARK: - FactorsUsed
 struct FactorsUsed: Codable {
-	let name, type: String
+	let name, type: String?
 }
 
 // MARK: - EstimatedRange
 struct EstimatedRange: Codable {
-	let estimatedRangeMin, estimatedRangeMax: JSONNull?
+	let estimatedRangeMin, estimatedRangeMax: Double?
 }
 
 
 
 
 // MARK: - Welcome
-struct SubmitJsonData: Codable {
-	var data: JSONDataClass?
-}
+//struct SubmitJsonData: Codable {
+//	var data: JSONDataClass?
+//}
 
 // MARK: - DataClass
-struct JSONDataClass: Codable {
-	var calculateBatteryHealth: NewCalculateBatteryHealth?
-}
+//struct JSONDataClass: Codable {
+//	var calculateBatteryHealth: NewCalculateBatteryHealth?
+//}
 
 // MARK: - CalculateBatteryHealth
 struct NewCalculateBatteryHealth: Codable {

@@ -21,11 +21,29 @@ struct DataClass: Codable {
 
 // MARK: - Vehicle
 struct Vehicle: Codable {
-	let make, modelName: String
-	let year: Int
-	let vin, mid, manufacturer, bodyStyle: String
-	let bodyType, trimName, title, vehicleType: String
+	let make, modelName: String?
+	let year: Int?
+	let vin, mid, manufacturer, bodyStyle: String?
+	let bodyType, trimName, title, vehicleType: String?
 	let getBatteryTestInstructions: [GetBatteryTestInstruction]?
+	let electricComponentInformation: ElectricComponentInformation?
+	let calculateBatteryHealth: CalculateBatteryHealth?
+}
+
+
+// MARK: - CalculateBatteryHealth
+struct CalculateBatteryHealth: Codable {
+	let code: String?
+	let success: Bool?
+	let message: String?
+	let calculatedBatteryHealth: CalculatedBatteryHealth?
+}
+
+
+struct ElectricComponentInformation: Codable {
+	let batteryRange: Int?
+	let batteryCapacity, batteryEnergyCapacity: Double?
+	let batteryType: String?
 }
 
 // MARK: - GetBatteryTestInstruction

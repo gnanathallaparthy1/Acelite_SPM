@@ -31,11 +31,19 @@ class VINDataTableViewCell: UITableViewCell {
 		let stringToDataConversion = Data(vehicalInformation.utf8)
 		let vehicalData = try! jsonDecoder.decode(Vehicle.self, from: stringToDataConversion)
 
-		let vinData = vehicalData.vin
+		let vinData = vehicalData.vin ?? ""
 		let dateTime = data.value(forKey: Constants.DATE_TIME)
 		let workOrder = data.value(forKey: Constants.WORK_ORDER)
-		let ymmt = "\(vehicalData.year)" + " " + vehicalData.make + " " + vehicalData.modelName + " " + vehicalData.trimName
-		vinLabel.text = "Vin: " + "\(vinData )"
+		let year = vehicalData.year ?? 0
+		let make = vehicalData.make ?? ""
+		let model = vehicalData.modelName ?? ""
+		let trimName = vehicalData.trimName ?? ""
+		var ymmt = "\(year)" + " "
+		ymmt += make + " "
+		ymmt += model + " "
+		ymmt += trimName
+		
+		vinLabel.text = "Vin: " + "\(vinData)"
 		dateTimeLable.text = "Date-Time: " + "\(dateTime ?? "")"
 		workOrderLabel.text = "Woker Order: " + "\(workOrder ?? "")"
 		ymmtLabel.text = "YMMT: " + "\(ymmt )"
