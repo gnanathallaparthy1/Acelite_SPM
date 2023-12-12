@@ -125,10 +125,10 @@ class BatteryHealthCheckViewController:  BaseViewController {
 		self.navigationItem.hidesBackButton = true
 		self.viewModel?.preSignedDelegate = self
 		self.viewModel?.uploadAndSubmitDelegate = self
+		Network.shared.bluetoothService?.bleNonResponseDelegate = self
 		offlineViewHeight.constant = 0
 		offlineView.isHidden = true
 		addCustomView()
-		Network.shared.bluetoothService?.bleNonResponseDelegate = self
 		wrongCommand()
 	}
 	
@@ -648,7 +648,15 @@ extension BatteryHealthCheckViewController: GetPreSignedUrlDelegate, UploadAndSu
 
 extension BatteryHealthCheckViewController: BLENonResponsiveDelegate {
 	func showBleNonResponsiveError() {
-		print("showBleNonResponsiveError")
+		let dialogMessage = UIAlertController(title: "Error", message: "Sorry,something went wrong.Please try again", preferredStyle: .alert)
+		let ok = UIAlertAction(title: "GOT IT", style: .default, handler: { (action) -> Void in
+			if let pheriPheral = Network.shared.myPeripheral {
+				Network.shared.bluetoothService?.disconnectDevice(peripheral: pheriPheral)
+			}
+			self.navigationController?.popToRootViewController(animated: true)
+		})
+		dialogMessage.addAction(ok)
+		self.present(dialogMessage, animated: true, completion: nil)
 	}
 	
 	

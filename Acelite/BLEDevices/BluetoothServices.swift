@@ -8,6 +8,7 @@
 import Foundation
 import CoreBluetooth
 import UIKit
+import FirebaseRemoteConfig
 
 
 //protocol BleWriteReadProtocal: AnyObject {
@@ -46,6 +47,7 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 	var txCharacteristic: CBCharacteristic? = nil
 	var rxCharacteristic: CBCharacteristic? = nil
 	var callBack: (([DeviceModel]) -> Void)?
+	var secoonds : Int = 0
 //	var delegate: BleWriteReadProtocal? = nil
 
 	//	 var commandCallBack: (((Data, BLECommand))->Void)?
@@ -106,17 +108,31 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 		// codition isCommand = false
 		bluetoothPeripheral?.writeValue(dataToSend, for: characterstics, type: .withResponse)
 		bluetoothPeripheral?.setNotifyValue(true, for: rxCharacteristic!)
-		
-		DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2), execute: {
-			if self.isBLEResponse == false && self.retryCount <= 3 {
-				self.retryCount += 1
-				self.writeBytesData(instructionType: instructionType, commandType: commandType, data: data, completionHandler: completionHandler)
-			} else {
-				//delegate
-				self.bleNonResponseDelegate?.showBleNonResponsiveError()
+		if self.isBLEResponse == true  {
+			print(Date(), "Received BLE response", to: &Log.log)
+			return
+		} else {
+			var timerValue: NSNumber?
+			timerValue = RemoteConfig.remoteConfig().configValue(forKey: "ping_retry_interval_ms").numberValue
+			if let timer =  timerValue {
+				secoonds = Int(truncating: timer) / 1000
 			}
-			
-		})
+			DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(secoonds), execute: {
+				print(Date(), "Retreived timer data from Firebse", self.secoonds, to: &Log.log)
+				if self.isBLEResponse == true  {
+					print(Date(), "Received BLE response after wait", to: &Log.log)
+					return
+				} else if self.isBLEResponse == false && self.retryCount <= 2 {
+					print(Date(), "Triggering Retry: Count is ",self.retryCount, to: &Log.log)
+					self.retryCount += 1
+					self.writeBytesData(instructionType: instructionType, commandType: commandType, data: data, completionHandler: completionHandler)
+				} else {
+					print(Date(), "All retries done triggering Alert ",self.retryCount, to: &Log.log)
+					self.bleNonResponseDelegate?.showBleNonResponsiveError()
+				}
+				
+			})
+		}
 	}
 	
 	public func connectDevices(peripheral: CBPeripheral) {
@@ -204,33 +220,33 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 	}
 	
 	func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
-		isBLEResponse = true
-		
-		if let value = characteristic.value {
-			
-			let parseData: String = String.init(data: value, encoding: .utf8) ?? ""
-			NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "BLEResponse"), object: ["BLEResponse": parseData], userInfo: nil)
-			Network.shared.bleData.append(value)
-			print(Date(), "notify obtained bytes : \(parseData)", to: &Log.log)
-			if  parseData.count != 0 {
-				if  parseData.contains(Constants.CARET) {
-					print(Date(), "parseData \(parseData)", to: &Log.log)
-					self.calculateCommandRequestAndResponseTimeDuration(startDate: self.fromDate, endDate: Date())
-					self.completionHandler?(Network.shared.bleData)
-					Network.shared.bleData.removeAll()
-				} else if parseData.contains(Constants.QUESTION_MARK) || parseData.contains(Constants.NODATA) || parseData.contains(Constants.NO_DATA) || parseData.contains(Constants.ERROR)   {
-					Network.shared.bleData.removeAll()
-					print(Date(), "Write Data Error)", to: &Log.log)
-				} else if parseData.contains(Constants.OK) {
-					self.completionHandler?(Network.shared.bleData)
-					Network.shared.bleData.removeAll()
-				} else {
-					
+			if let value = characteristic.value {
+				isBLEResponse = true
+				let parseData: String = String.init(data: value, encoding: .utf8) ?? ""
+				NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "BLEResponse"), object: ["BLEResponse": parseData], userInfo: nil)
+				Network.shared.bleData.append(value)
+				print("BLE::::::",parseData)
+				print(Date(), "notify obtained bytes : \(parseData)", to: &Log.log)
+				if  parseData.count != 0 {
+					if  parseData.contains(Constants.CARET) {
+						print(Date(), "parseData \(parseData)", to: &Log.log)
+						self.calculateCommandRequestAndResponseTimeDuration(startDate: self.fromDate, endDate: Date())
+						self.completionHandler?(Network.shared.bleData)
+						Network.shared.bleData.removeAll()
+					} else if parseData.contains(Constants.QUESTION_MARK) || parseData.contains(Constants.NODATA) || parseData.contains(Constants.NO_DATA) || parseData.contains(Constants.ERROR)   {
+						Network.shared.bleData.removeAll()
+						print(Date(), "Write Data Error)", to: &Log.log)
+					} else if parseData.contains(Constants.OK) {
+						self.completionHandler?(Network.shared.bleData)
+						Network.shared.bleData.removeAll()
+					} else {
+						
+					}
 				}
+				
 			}
-
-			}
-	}
+		}
+	
 	private func typeCastingByteToString(testCommand: String) -> String {
 
 		let splitString = testCommand.pairs.joined(separator: " ")
@@ -269,8 +285,6 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 		self.blePeripheralDevice = uniquePosts
 		self.callBack?(uniquePosts)
 	}
-
-
 }
 
 extension Collection {
