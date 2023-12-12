@@ -120,8 +120,6 @@ class VehicalInformationViewController:  BaseViewController {
 		let longProfile = profile_test_detail_information?.value(forKey: "longProfile") as? String
 		let shortProfile = profile_test_detail_information?.value(forKey: "shortProfile") as? String
 		buttonTitleUpdate(quickTestTitle: shortProfile, nextButtonTitle: longProfile)
-		print(longProfile)
-		print(shortProfile)
 	}
 	
 	private func buttonTitleUpdate(quickTestTitle: String?, nextButtonTitle: String?) {

@@ -559,7 +559,7 @@ class UploadAnimationViewController: BaseViewController {
 		}
 		
 		
-		let vehicalProfile = CalculateBatteryHealthVehicleProfileInput.init(nominalVoltage: vehicleProfile.nominalVoltage, energyAtBirth: vehicleProfile.energyAtBirth , batteryType: .lithium, capacityAtBirth: vehicleProfile.capacityAtBirth)
+		let vehicalProfile = CalculateBatteryHealthVehicleProfileInput.init(nominalVoltage: vehicleProfile.nominalVoltage, energyAtBirth: vehicleProfile.energyAtBirth , batteryType: .lithium, capacityAtBirth: vehicleProfile.capacityAtBirth, rangeAtBirth: vehicleProfile.rangeAtBirth)
 		
 		
 		print("vehical Profile", vehicleProfile)
@@ -583,157 +583,86 @@ class UploadAnimationViewController: BaseViewController {
 		print(Date(), "calculatedBetteryHealth: \(String(describing: calculatedBetteryHealth))", to: &Log.log)
 		//
 		let submitScoreQuery = CalculateBatteryHealthQuery(calculateBatteryHealthInput: calculatedBetteryHealth ?? CalculateBatteryHealthInput(), vin: vinInfo)
-		//let jsonMutation = SubmitBatteryJsonFilesWithStateOfChargeMutation(Vehicle: vehicalBatteryDataFile, calculateBatteryHealthInput: calculatedBetteryHealth ?? CalculateBatteryHealthInput())
 		
 		Network.shared.apollo.fetch(query: submitScoreQuery) { result in
 			switch result {
-				case .success(let graphQLResults):
-					guard let _ = try? result.get().data else { return }
-					if graphQLResults.data != nil {
-						print("JSON query success case")
-						if graphQLResults.errors?.count ?? 0 > 0 {
-							print(Date(), "SOC:submit API Error :\(String(describing: graphQLResults.errors))", to: &Log.log)
-							self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:submit API Error :\(String(describing: graphQLResults.errors))", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: "")
-							return
-						}
+			case .success(let graphQLResults):
+				guard let _ = try? result.get().data else { return }
+				if graphQLResults.data != nil {
+					print("JSON query success case")
+					if graphQLResults.errors?.count ?? 0 > 0 {
+						print(Date(), "SOC:submit API Error 1:\(String(describing: graphQLResults.errors))", to: &Log.log)
+						self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "\(String(describing: graphQLResults.errors))", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: "")
+						let paramDictionary = [
+							"submit_type": "STATE_OF_CHARGE",
+							"batter_test_instructions_id": "\(String(describing: self.testInstructionsId))",
+							"errorCode":"\(String(describing: graphQLResults.errors))",
+							"work_order": "\(String(describing: self.workOrder))"]
+						FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.submitBatteryFilesError, parameters: paramDictionary)
+						return
 						
-						let submitData =  graphQLResults.data?.resultMap["calculateBatteryHealth"]
-						if submitData == nil {
-							print("CALCULATE BATTERY HEALTH")
-							print(Date(), "SOC:submit API result Map Error :\(String(describing: graphQLResults.errors))", to: &Log.log)
-							self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "\(String(describing: graphQLResults.errors))", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: "")
-							let paramDictionary = [
-								"submit_type": "STATE_OF_CHARGE",
-								"batter_test_instructions_id": "\(String(describing: self.testInstructionsId))",
-								"errorCode":"\(String(describing: graphQLResults.errors))",
-								"work_order": "\(String(describing: self.workOrder))"]
-							FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.submitBatteryFilesError, parameters: paramDictionary)
-							return
-						} else {
-							let jsonObject = submitData.jsonValue
-							do {
-								let  preSignedData = try JSONSerialization.data(withJSONObject: jsonObject)
-								print(Date(), "SOC:submit Battery Data succesfully :\(String(describing: jsonObject))", to: &Log.log)
-								do {
-									let decoder = JSONDecoder()
-									let submitBatteryData = try decoder.decode(NewCalculateBatteryHealth.self, from: preSignedData)
-									print(Date(), "SOC:submit API Decode Sucessful :\(String(describing: submitBatteryData))", to: &Log.log)
-									if submitBatteryData.success == false {
-										print("JSON IS DATA OBJECT")
-										print(Date(), "SOC:battery Score is Null :\(String(describing: graphQLResults.errors))", to: &Log.log)
-										self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "Battery Score is Null", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: submitBatteryData.code ?? "")
-										return
-									} else {
-										self.deleteUploadedRecordInCoreData()
-										let batteryHealth = submitBatteryData.calculatedBatteryHealth?.batteryScore
-										print("battery health:: SCORE --- \(batteryHealth?.score ?? 0.0)")
-										let storyBaord = UIStoryboard.init(name: "Main", bundle: nil)
-										let vc = storyBaord.instantiateViewController(withIdentifier: "BatteryHealthViewController") as! BatteryHealthViewController
-										//self.submitSuccessForSubmitAPI(transactionID: self.transactionId ?? "", vinMake: vinMake, score: "\(0)", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: vinYear)
-										let vm = BatteryHealthViewModel(vehicleInfo: veh, transactionID: self.transactionId ?? "", testIntructionsId: self.testInstructionsId ?? "", healthScore: batteryHealth?.score ?? 0.0, grade: VehicleGrade(rawValue: VehicleGrade(rawValue: batteryHealth?.grade ?? "N/A")?.title ??  "N/A") ?? .A, health: batteryHealth?.health ?? "N/A")
-										vc.viewModel = vm
-										self.navigationController?.pushViewController(vc, animated: true)
-									}
-									
-								} catch DecodingError.dataCorrupted(let context) {
-									print(Date(), "SOC:submit API Error :\(context)", to: &Log.log)
-									self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:submit API Error :\(context)", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: "")
-									return
-								}
-							} catch {
-								self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:submit API Error :\(error)", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: "")
-								print(Date(), "SOC:submit API Error :\(error)", to: &Log.log)
-							}
-							
-						}
+					}
+					
+					let submitData =  graphQLResults.data?.resultMap["vehicle"]
+					if submitData == nil {
+						print("CALCULATE BATTERY HEALTH")
+						print(Date(), "SOC:submit API result Map Error :\(String(describing: graphQLResults.errors))", to: &Log.log)
+						self.delegate?.showShortProfileSubmitError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "\(String(describing: graphQLResults.errors))", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: "")
+						let paramDictionary = [
+							"submit_type": "STATE_OF_CHARGE",
+							"errorCode":"\(String(describing: graphQLResults.errors))",
+							"work_order": "\(String(describing: self.workOrder))"]
+						FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.submitBatteryFilesError, parameters: paramDictionary)
+						return
 					} else {
-						
+						let jsonObject = submitData.jsonValue
+						do {
+							let  preSignedData = try JSONSerialization.data(withJSONObject: jsonObject)
+							print(Date(), "SOC:submit Battery Data succesfully :\(String(describing: jsonObject))", to: &Log.log)
+							do {
+								let decoder = JSONDecoder()
+								let submitBatteryData = try decoder.decode(Vehicle.self, from: preSignedData)
+								print(Date(), "SOC:submit API Decode Sucessful :\(String(describing: submitBatteryData))", to: &Log.log)
+								if submitBatteryData.calculateBatteryHealth?.success == false {
+									print("JSON IS DATA OBJECT")
+									print(Date(), "SOC:battery Score is Null :\(String(describing: graphQLResults.errors))", to: &Log.log)
+									self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "Battery Score is Null", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: submitBatteryData.calculateBatteryHealth?.code ?? "")
+									return
+								} else {
+									//check
+									let bt = submitBatteryData.calculateBatteryHealth?.calculatedBatteryHealth
+									let minEstRange = bt?.estimatedRange?.estimatedRangeMin
+									let maxEstRange = bt?.estimatedRange?.estimatedRangeMax
+									
+									self.deleteUploadedRecordInCoreData()
+									let batteryHealth = submitBatteryData.calculateBatteryHealth?.calculatedBatteryHealth?.batteryScore
+									print("battery health:: SCORE --- \(batteryHealth?.score ?? 0.0)")
+									let storyBaord = UIStoryboard.init(name: "Main", bundle: nil)
+									let vc = storyBaord.instantiateViewController(withIdentifier: "BatteryHealthViewController") as! BatteryHealthViewController
+									let vm = BatteryHealthViewModel(vehicleInfo: veh, transactionID: self.transactionId ?? "", testIntructionsId: self.testInstructionsId ?? "", healthScore: batteryHealth?.score ?? 0.0, grade: VehicleGrade(rawValue: VehicleGrade(rawValue: batteryHealth?.grade ?? "N/A")?.title ??  "N/A") ?? .A, health: batteryHealth?.health ?? "N/A", rangeAtBirth: vehicalProfile.rangeAtBirth ?? 0 , minEstimatedRnge: minEstRange , maxEstimatedRnge: maxEstRange)
+									vc.viewModel = vm
+									self.navigationController?.pushViewController(vc, animated: true)
+									
+								}
+								
+							}
+						}
+						catch {
+							self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:submit API Error :\(error)", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: "")
+							print(Date(), "SOC:submit API Error :\(error)", to: &Log.log)
+						}
 					}
-					break
-				case .failure(let error):
-					if let transactionId = self.preSignedData?.transactionID {
-						self.showSubmitAPIError(transactionID: transactionId , vinMake: vinMake, message: error.localizedDescription, vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode:  "")
-					}
-					print(Date(), "SOC:submit API Error :\(error)", to: &Log.log)
-					break
+				} 
+				break
+			case .failure(let error):
+				if let transactionId = self.preSignedData?.transactionID {
+					self.showSubmitAPIError(transactionID: transactionId , vinMake: vinMake, message: error.localizedDescription, vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode:  "")
 				}
-			
+				print(Date(), "SOC:submit API Error :\(error)", to: &Log.log)
+				
+				break
+			}
 		}
-		
-//		Network.shared.apollo.perform(mutation: jsonMutation) { result in
-//			
-//			switch result {
-//			case .success(let graphQLResults):
-//				guard let _ = try? result.get().data else { return }
-//				if graphQLResults.data != nil {
-//					print("JSON query success case")
-//					if graphQLResults.errors?.count ?? 0 > 0 {
-//						print(Date(), "SOC:submit API Error :\(String(describing: graphQLResults.errors))", to: &Log.log)
-//						self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:submit API Error :\(String(describing: graphQLResults.errors))", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: "")
-//						return
-//					}
-//					
-//					let submitData =  graphQLResults.data?.resultMap["calculateBatteryHealth"]
-//					if submitData == nil {
-//						print("CALCULATE BATTERY HEALTH")
-//						print(Date(), "SOC:submit API result Map Error :\(String(describing: graphQLResults.errors))", to: &Log.log)
-//						self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "\(String(describing: graphQLResults.errors))", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: "")
-//						let paramDictionary = [
-//							"submit_type": "STATE_OF_CHARGE",
-//							"batter_test_instructions_id": "\(String(describing: self.testInstructionsId))",
-//							"errorCode":"\(String(describing: graphQLResults.errors))",
-//							"work_order": "\(String(describing: self.workOrder))"]
-//						FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.submitBatteryFilesError, parameters: paramDictionary)
-//						return
-//					} else {
-//						let jsonObject = submitData.jsonValue
-//						do {
-//							let  preSignedData = try JSONSerialization.data(withJSONObject: jsonObject)
-//							print(Date(), "SOC:submit Battery Data succesfully :\(String(describing: jsonObject))", to: &Log.log)
-//							do {
-//								let decoder = JSONDecoder()
-//								let submitBatteryData = try decoder.decode(NewCalculateBatteryHealth.self, from: preSignedData)
-//								print(Date(), "SOC:submit API Decode Sucessful :\(String(describing: submitBatteryData))", to: &Log.log)
-//								if submitBatteryData.success == false {
-//									print("JSON IS DATA OBJECT")
-//									print(Date(), "SOC:battery Score is Null :\(String(describing: graphQLResults.errors))", to: &Log.log)
-//									self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "Battery Score is Null", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: submitBatteryData.code ?? "")
-//									return
-//								} else {
-//									self.deleteUploadedRecordInCoreData()
-//									let batteryHealth = submitBatteryData.calculatedBatteryHealth?.batteryScore
-//									print("battery health:: SCORE --- \(batteryHealth?.score ?? 0.0)")
-//									let storyBaord = UIStoryboard.init(name: "Main", bundle: nil)
-//									let vc = storyBaord.instantiateViewController(withIdentifier: "BatteryHealthViewController") as! BatteryHealthViewController
-//									//self.submitSuccessForSubmitAPI(transactionID: self.transactionId ?? "", vinMake: vinMake, score: "\(0)", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: vinYear)
-//									let vm = BatteryHealthViewModel(vehicleInfo: veh, transactionID: self.transactionId ?? "", testIntructionsId: self.testInstructionsId ?? "", healthScore: batteryHealth?.score ?? 0.0, grade: VehicleGrade(rawValue: VehicleGrade(rawValue: batteryHealth?.grade ?? "N/A")?.title ??  "N/A") ?? .A, health: batteryHealth?.health ?? "N/A")
-//									vc.viewModel = vm
-//									self.navigationController?.pushViewController(vc, animated: true)
-//								}
-//								
-//							} catch DecodingError.dataCorrupted(let context) {
-//								print(Date(), "SOC:submit API Error :\(context)", to: &Log.log)
-//								self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:submit API Error :\(context)", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: "")
-//								return
-//							}
-//						} catch {
-//							self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:submit API Error :\(error)", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: "")
-//							print(Date(), "SOC:submit API Error :\(error)", to: &Log.log)
-//						}
-//						
-//					}
-//				} else {
-//					
-//				}
-//				break
-//			case .failure(let error):
-//				if let transactionId = self.preSignedData?.transactionID {
-//					self.showSubmitAPIError(transactionID: transactionId , vinMake: vinMake, message: error.localizedDescription, vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode:  "")
-//				}
-//				print(Date(), "SOC:submit API Error :\(error)", to: &Log.log)
-//				break
-//			}
-//		}
 	}
 	
 	private func deleteUploadedRecordInCoreData() {
@@ -763,78 +692,6 @@ class UploadAnimationViewController: BaseViewController {
 		}
 	}
 	
-//	func csvFileUploadingIntoS3Bucket(fileName: String) {
-//		print(Date(), "Uploading csvFileUploadingIntoS3Bucket", to: &Log.log)
-//		guard let presinedData = self.preSignedData else { return }
-//		var multipart = MultipartRequest()
-//		for field in [
-//			"key": presinedData.fields.key,
-//			"AWSAccessKeyId": presinedData.fields.awsAccessKeyID,
-//			"x-amz-security-token": presinedData.fields.xamzSecurityToken,
-//			"policy": presinedData.fields.policy,
-//			"signature": presinedData.fields.signature
-//		] {
-//			multipart.add(key: field.key, value: field.value)
-//		}
-//		let data = (try? Data(contentsOf: URL(string: fileName) ?? URL(fileURLWithPath: ""))) ?? Data()
-//		multipart.add(
-//			key: "file",
-//			fileName: "\(fileName)",
-//			fileMimeType: "text/csv",
-//			fileData: data
-//		)
-//		let url = URL(string: "\(presinedData.url)")!
-//		var request = URLRequest(url: url)
-//		request.httpMethod = "POST"
-//		request.setValue(multipart.httpContentTypeHeadeValue, forHTTPHeaderField: "Content-Type")
-//		request.httpBody = multipart.httpBody
-//
-//		/// Fire the request using URL sesson or anything else...
-//		let session =  URLSession.shared
-//		let dataTask = session.dataTask(with: request) { data, response, error in
-//			self.csvDispatchGroup.leave()
-//			guard let _ = data else {
-//				print(Date(), "presinedData json data response Error", to: &Log.log)
-//				return
-//			}
-//
-//			self.csvDispatchGroup.notify(queue: .main) {
-//				if fileName.contains("Cell_Volt") {
-//					print(Date(), "file uploaded succesfully...", to: &Log.log)
-//					print("file uploaded succesfully...")
-//					guard let testCommand = self.vehicleInfo?.getBatteryTestInstructions, testCommand.count > 0 else {
-//						return
-//					}
-//					for command in testCommand {
-//						let stateOfCharge = command.testCommands?.stateOfHealthCommands?.stateOfCharge
-//						if self.currentReachabilityStatus != .notReachable {
-//							if stateOfCharge != nil {
-//								//self.submitBatteryDataFileWithSOCGraphRequest()
-//							} else {
-//								//self.submitBatteryDataFileWithBMSGraphRequest()
-//							}
-//						} else {
-//							self.stackView.removeFromSuperview()
-//							let alertViewController = UIAlertController.init(title: "Oops!", message: "Please check your network connection", preferredStyle: .alert)
-//							let ok = UIAlertAction(title: "Retry", style: .default, handler: { (action) -> Void in
-//								self.view.addSubview(self.stackView)
-//								if stateOfCharge != nil {
-//									//self.submitBatteryDataFileWithSOCGraphRequest()
-//								} else {
-//									//self.submitBatteryDataFileWithBMSGraphRequest()
-//								}
-//
-//							})
-//							alertViewController.addAction(ok)
-//							self.present(alertViewController, animated: true, completion: nil)
-//						}
-//					}
-//				}
-//
-//			}
-//		}
-//		dataTask.resume()
-//	}
 	
 	func saveLogsIntoTxtFile() -> String {
 		
@@ -878,9 +735,6 @@ class UploadAnimationViewController: BaseViewController {
 		let rootRef = Database.database().reference()
 		let ref = rootRef.child("submit_error_details").childByAutoId()
 		let vinBatteryInfo: [String: String?] = ["battery_test_instructions_id": self.testInstructionsId,"make": vinMake, "message": message, "model": vinModels, "platform": "iOS", "submit_type": submitType, "time_stamp": Constants().currentDateTime(), "transaction_id": transactionID, "vin_number": vinNumber, "year": String(year), "work_order": "\(String(describing: self.workOrder))"]
-		// online - submit api fail- show new sheet
-		//404/ reachabiloty
-		//Based on error code-> sheet - ok- homepage
 		
 		print("errorCode:::::", errorCode)
 		if errorCode != "" {
@@ -979,14 +833,7 @@ class UploadAnimationViewController: BaseViewController {
 	
 }
 extension UploadAnimationViewController: ShortProfileCommandsRunDelegate {
-	func shortProfileCommandExecutionError() {
-		//if ((self.viewModel?.isShortProfile) != nil) {
-			print("short profile error")
-		showDataInsufficientError()
-		//}
-	}
-	
-	func shortProfileCommandsCompleted(battteryHealth: BatteryScore) {
+	func shortProfileCommandsCompleted(battteryHealth: BatteryScore?, minRange: Double?, maxRange: Double?) {
 		DispatchQueue.main.async {
 		let storyBaord = UIStoryboard.init(name: "Main", bundle: nil)
 		let vc = storyBaord.instantiateViewController(withIdentifier: "BatteryHealthViewController") as! BatteryHealthViewController
@@ -995,12 +842,20 @@ extension UploadAnimationViewController: ShortProfileCommandsRunDelegate {
 			guard let vinMake = self.viewModel?.vehicleInfo?.make else { return  }
 			guard let vinYear = self.viewModel?.vehicleInfo?.year else {return}
 			guard let vinModels = self.viewModel?.vehicleInfo?.modelName else {return}
+			guard let vehicleProfile = self.viewModel?.vehicleInfo?.getBatteryTestInstructions?.first?.testCommands?.vehicleProfile else {return}
 			self.submitSuccessForSubmitAPI(transactionID: self.transactionId ?? "", vinMake: vinMake, score: "\(0)", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: vinYear, testProfileType: BMSCapacityTest.quickTest)
 		self.deleteUploadedRecordInCoreData()
-		let vm = BatteryHealthViewModel(vehicleInfo: veh, transactionID: self.transactionId ?? "", testIntructionsId: self.testInstructionsId ?? "", healthScore: battteryHealth.score , grade: VehicleGrade(rawValue: VehicleGrade(rawValue: battteryHealth.grade )?.title ??  "N/A") ?? .A, health: battteryHealth.health )
+			let vm = BatteryHealthViewModel(vehicleInfo: veh, transactionID: self.transactionId ?? "", testIntructionsId: self.testInstructionsId ?? "", healthScore: battteryHealth?.score ?? 0.0 , grade: VehicleGrade(rawValue: VehicleGrade(rawValue: battteryHealth?.grade ?? "N/A" )?.title ??  "N/A") ?? .A, health: battteryHealth?.health ?? "N/A", rangeAtBirth: vehicleProfile.rangeAtBirth, minEstimatedRnge: minRange, maxEstimatedRnge: maxRange )
 			vc.viewModel = vm
 			self.navigationController?.pushViewController(vc, animated: true)
 		}
+	}
+	
+	func shortProfileCommandExecutionError() {
+		//if ((self.viewModel?.isShortProfile) != nil) {
+			print("short profile error")
+		showDataInsufficientError()
+		//}
 	}
 	
 	func showShortProfileSubmitError(transactionID: String?, vinMake: String, message: String, vinModels: String, submitType: String, vinNumber: String, year: Int, errorCode: String) {

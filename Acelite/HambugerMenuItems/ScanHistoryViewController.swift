@@ -86,9 +86,8 @@ class ScanHistoryViewController: UIViewController, UITableViewDelegate, UITableV
 		cell?.healthLabelValue.text = vinData["Health"]
 		cell?.vehicleTitleLabel.text = vinData["Title"]
 		cell?.scoreLabelValue.text = vinData["Score"]
+		cell?.estimateRangeOnFullChargeValue.text = vinData["Est. Range on Full Charge"]
+		cell?.rangeWhenNewValueLabel.text = vinData["Range When New"]
         return cell ?? UITableViewCell()
-        
     }
-    
-    
 }

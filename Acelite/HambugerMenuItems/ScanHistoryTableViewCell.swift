@@ -9,12 +9,13 @@ import UIKit
 
 class ScanHistoryTableViewCell: UITableViewCell {
 
+	@IBOutlet weak var rangeWhenNewValueLabel: UILabel!
 	@IBOutlet weak var vehicleTitleLabel: UILabel!
 	@IBOutlet weak var healthLabelValue: UILabel!
 	@IBOutlet weak var bodyStyleLabelValue: UILabel!
 	@IBOutlet weak var modelLabelValue: UILabel!
 	@IBOutlet weak var transectionIdLabelValue: UILabel!
-	@IBOutlet weak var gradeLabelValue: UILabel!
+	@IBOutlet weak var estimateRangeOnFullChargeValue: UILabel!
 	@IBOutlet weak var scoreLabelValue: UILabel!
 	@IBOutlet weak var dateTimeLabelValue: UILabel!
 	@IBOutlet weak var workOrderLabelValue: UILabel!

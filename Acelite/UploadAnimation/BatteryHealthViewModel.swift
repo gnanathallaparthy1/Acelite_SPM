@@ -15,14 +15,20 @@ class BatteryHealthViewModel {
 	public var health: String?
 	public var grade: VehicleGrade?
 	public var healthScore : Float?
+	public var rangeAtBirth : Double?
+	public var minEstimatedRange : Double?
+	public var maxEstimatedRange : Double?
 	
-	init(vehicleInfo: Vehicle, transactionID: String, testIntructionsId: String, healthScore: Float, grade: VehicleGrade, health: String) {
+	init(vehicleInfo: Vehicle, transactionID: String, testIntructionsId: String, healthScore: Float, grade: VehicleGrade, health: String, rangeAtBirth: Double?, minEstimatedRnge: Double?, maxEstimatedRnge: Double?) {
 		self.vehicleInfo = vehicleInfo
 		self.transactionId = transactionID
 		self.testInstructionsId = testIntructionsId
 		self.healthScore = healthScore
 		self.grade = grade
 		self.health = health
+		self.rangeAtBirth = rangeAtBirth
+		self.minEstimatedRange = minEstimatedRnge
+		self.maxEstimatedRange = maxEstimatedRnge
 	}
 //	init(healthScore: Float) {
 //		// grade: VehicleGrade) {

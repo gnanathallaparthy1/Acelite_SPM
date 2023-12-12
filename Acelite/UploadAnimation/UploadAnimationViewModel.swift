@@ -14,7 +14,7 @@ import CoreData
 import Apollo
 
 protocol ShortProfileCommandsRunDelegate: AnyObject {
-	func shortProfileCommandsCompleted(battteryHealth: BatteryScore)
+	func shortProfileCommandsCompleted(battteryHealth: BatteryScore?, minRange: Double?, maxRange: Double?)
 	func showShortProfileSubmitError(transactionID: String?, vinMake: String, message: String, vinModels: String, submitType: String, vinNumber: String, year: Int, errorCode: String)
 	func shortProfileCommandExecutionError()
 }
@@ -450,8 +450,11 @@ class UploadAnimationViewModel {
 			
 		}
 		print(Date(), "calculatedBetteryHealth: \(String(describing: calculatedBetteryHealth))", to: &Log.log)
-		let jsonMutation = SubmitBatteryJsonFilesWithStateOfChargeMutation(Vehicle: vehicalBatteryDataFile, calculateBatteryHealthInput: calculatedBetteryHealth ?? CalculateBatteryHealthInput())
-		Network.shared.apollo.perform(mutation: jsonMutation) { result in
+//		let jsonMutation = SubmitBatteryJsonFilesWithStateOfChargeMutation(Vehicle: vehicalBatteryDataFile, calculateBatteryHealthInput: calculatedBetteryHealth ?? CalculateBatteryHealthInput())
+//		Network.shared.apollo.perform(mutation: jsonMutation) { result in
+		let submitScoreQuery = CalculateBatteryHealthQuery(calculateBatteryHealthInput: calculatedBetteryHealth ?? CalculateBatteryHealthInput(), vin: vinInfo)
+		
+		Network.shared.apollo.fetch(query: submitScoreQuery) { result in
 			switch result {
 			case .success(let graphQLResults):
 				guard let _ = try? result.get().data else { return }
@@ -463,7 +466,7 @@ class UploadAnimationViewModel {
 						return
 					}
 					
-					let submitData =  graphQLResults.data?.resultMap["calculateBatteryHealth"]
+					let submitData =  graphQLResults.data?.resultMap["vehicle"]
 					if submitData == nil {
 						print("CALCULATE BATTERY HEALTH")
 						print(Date(), "SOC:submit API result Map Error :\(String(describing: graphQLResults.errors))", to: &Log.log)
@@ -481,16 +484,20 @@ class UploadAnimationViewModel {
 							print(Date(), "SOC:submit Battery Data succesfully :\(String(describing: jsonObject))", to: &Log.log)
 							do {
 								let decoder = JSONDecoder()
-								let submitBatteryData = try decoder.decode(NewCalculateBatteryHealth.self, from: preSignedData)
+								let submitBatteryData = try decoder.decode(Vehicle.self, from: preSignedData)
 								print(Date(), "SOC:submit API Decode Sucessful :\(String(describing: submitBatteryData))", to: &Log.log)
-								if submitBatteryData.success == false {
+								if submitBatteryData.calculateBatteryHealth?.success == false {
 									print("JSON IS DATA OBJECT")
 									print(Date(), "SOC:battery Score is Null :\(String(describing: graphQLResults.errors))", to: &Log.log)
-									self.delegate?.showShortProfileSubmitError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "Battery Score is Null", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: submitBatteryData.code ?? "")
+									self.delegate?.showShortProfileSubmitError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "Battery Score is Null", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: submitBatteryData.calculateBatteryHealth?.code ?? "")
 									return
 								} else {
-									let bt = submitBatteryData.calculatedBatteryHealth?.batteryScore
-									self.delegate?.shortProfileCommandsCompleted(battteryHealth: (submitBatteryData.calculatedBatteryHealth?.batteryScore)!)
+									//check
+									let bt = submitBatteryData.calculateBatteryHealth?.calculatedBatteryHealth
+									let minEstRange = bt?.estimatedRange?.estimatedRangeMin
+									let maxEstRange = bt?.estimatedRange?.estimatedRangeMax
+
+									self.delegate?.shortProfileCommandsCompleted(battteryHealth: bt?.batteryScore , minRange: minEstRange, maxRange: maxEstRange)
 								}
 								
 							} catch DecodingError.dataCorrupted(let context) {
