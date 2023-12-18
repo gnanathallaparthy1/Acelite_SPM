@@ -154,7 +154,7 @@ class VehicleVinScannerViewModel {
 						//let response = OdometerResponse(startByte: item.response.startByte, endByte: item.response.endByte, multiplier: Double(item.response.multiplier), constant: Double(item.response.constant))
 						
 						let packTempTestCommand = TestCommandExecution(type: .PACK_TEMPERATURE, resProtocal: sp.sampledCommandsProtocol!, challenge: item.challenge, response: response, validation: item.validation)
-						packTempTestCommand.reqeustByteInString = item.challenge.pid
+						packTempTestCommand.reqeustByteInString = item.challenge.pid ?? ""
 						Network.shared.sampledCommandsList.append(packTempTestCommand)
 					}
 					
@@ -165,7 +165,7 @@ class VehicleVinScannerViewModel {
 						//let response = OdometerResponse(startByte: item.response.startByte, endByte: item.response.endByte, multiplier: Double(item.response.multiplier), constant: Double(item.response.constant))
 						let cellVoltageTestCommand = TestCommandExecution(type: .CELL_VOLTAGE, resProtocal: sp.sampledCommandsProtocol!, challenge: item.challenge, response: response, validation: item.validation)
 						//self.numberOfCells = response.numberOfCells
-						cellVoltageTestCommand.reqeustByteInString = item.challenge.pid
+						cellVoltageTestCommand.reqeustByteInString = item.challenge.pid ?? ""
 						Network.shared.sampledCommandsList.append(cellVoltageTestCommand)
 					}
 				}

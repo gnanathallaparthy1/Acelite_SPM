@@ -39,6 +39,7 @@ class UploadAnimationViewModel {
 	private var previousFlowControlData: String? = nil
 	public var isShortProfile: Bool?
 	weak var delegate: ShortProfileCommandsRunDelegate? = nil
+	var previousHeader: String = ""
 	
 	init(vehicleInfo: Vehicle?, workOrder: String?, isShortProfile: Bool, managedObject: NSManagedObject) {
 		self.vehicleInfo = vehicleInfo
@@ -143,21 +144,39 @@ class UploadAnimationViewModel {
 	private func executeNormalHeaderAndPidCommands(testCommand: TestCommandExecution, onCompletion: ((_ command : TestCommandExecution?) -> ())?) {
 		if let header = testCommand.challenge?.header {
 			guard let pid = testCommand.challenge?.pid else { return }
-			
-			let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
-			print("Command", ATSHOdometer_Command)
-			
-			Network.shared.bluetoothService?.writeBytesData(instructionType: .HEADER, commandType: testCommand.type, data: ATSHOdometer_Command, completionHandler: { data in
-				let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
-				print("odometer PID command", odometerPIDCommand)
-				Network.shared.bluetoothService?.writeBytesData(instructionType: .PID, commandType: .ODOMETER, data: odometerPIDCommand, completionHandler: { data1 in
-					testCommand.deviceData = data1
-					print("Command:  \(testCommand.type) - Response: \(data1)")
-					print(Date(), "Command:  \(testCommand.type) - Response: \(data1)", to: &Log.log)
-					onCompletion!(testCommand)
-				})
+			if previousHeader == header {
+				let pidCommand = pid + Constants.NEW_LINE_CHARACTER
 				
-			})
+				Network.shared.bluetoothService?.writeBytesData(instructionType: .PID, commandType: .ODOMETER, data: pidCommand, completionHandler: { data1 in
+							testCommand.deviceData = data1
+					print(Date(), "Command:  \(testCommand.type) - Response: \(data1)", to: &Log.log)
+							onCompletion!(testCommand)
+						})
+			} else {
+				let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
+				Network.shared.bluetoothService?.writeBytesData(instructionType: .HEADER, commandType: testCommand.type, data: ATSHOdometer_Command, completionHandler: { data in
+					let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
+					self.previousHeader = header
+					if let canCommand = testCommand.challenge?.canMask, let canFilterCommand = testCommand.challenge?.canFilter {
+						let canMask =  Constants.ATCM + canCommand + Constants.NEW_LINE_CHARACTER
+						Network.shared.bluetoothService?.writeBytesData(instructionType: .NONE, commandType: testCommand.type, data: canMask, completionHandler: { data in
+							let canFilter = Constants.ATCF + canFilterCommand + Constants.NEW_LINE_CHARACTER
+							
+							Network.shared.bluetoothService?.writeBytesData(instructionType: .NONE, commandType: .ODOMETER, data: canFilter, completionHandler: { data1 in
+								testCommand.deviceData = data1
+								print(Date(), "Command:  \(testCommand.type) - Response: \(data1)", to: &Log.log)
+								Network.shared.bluetoothService?.writeBytesData(instructionType: .PID, commandType: .ODOMETER, data: odometerPIDCommand, completionHandler: { data1 in
+									testCommand.deviceData = data1
+									print(Date(), "Command:  \(testCommand.type) - Response: \(data1)", to: &Log.log)
+									onCompletion!(testCommand)
+								})
+							})
+							
+						})
+					}
+									
+				})
+			}
 			
 		}
 	}
@@ -443,9 +462,15 @@ class UploadAnimationViewModel {
 			calculatedBetteryHealth = CalculateBatteryHealthInput.init(vehicleProfile: vehicalProfile, obd2Test: obd2Test, dashData: dashDataInput, locationCode: LocationCode.aaa, workOrderNumber: self.workOrder ?? "", totalNumberOfCharges: 1, lifetimeCharge: 2.0 , lifetimeDischarge: 2.0)
 		} else {
 			// With BMS
-			//let dashDataInput = DashDataInput.init(odometer: Int(odometer ?? 0), stateOfCharge: stateOfCharge)
-			//print("dashDataInput", dashDataInput)
-			let bmsObdTest = OBD2TestInput.init(odometer: Int(self.odometer ?? 0), bmsCapacity: bms)
+			let expectedCapacityAtBirth: Double = (vehicalProfile.capacityAtBirth ?? Double(0.0))!
+			let calculateddCapacityAtBirth = self.bms ?? 0.0
+			var bmsCapacity: Double = 0.0
+			if calculateddCapacityAtBirth > expectedCapacityAtBirth {
+				bmsCapacity = expectedCapacityAtBirth
+			} else {
+				bmsCapacity = calculateddCapacityAtBirth
+			}
+			let bmsObdTest = OBD2TestInput.init(odometer: Int(self.odometer ?? 0), bmsCapacity: bmsCapacity)
 			calculatedBetteryHealth = CalculateBatteryHealthInput.init(vehicleProfile: vehicalProfile, obd2Test: bmsObdTest, locationCode: LocationCode.aaa, workOrderNumber: self.workOrder ?? "", totalNumberOfCharges: 1, lifetimeCharge: 2.0 , lifetimeDischarge: 2.0)
 			
 		}

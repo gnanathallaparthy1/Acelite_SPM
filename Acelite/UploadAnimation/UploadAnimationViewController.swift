@@ -569,7 +569,15 @@ class UploadAnimationViewController: BaseViewController {
 			//With BMS
 			let stateOfCharge = self.stateOfCharge
 			let dashDataInput = DashDataInput.init(odometer: Int(odometer ?? 0), stateOfCharge: stateOfCharge)
-			let bmsObdTest = OBD2TestInput.init(filename: self.uploadFileName, transactionId: self.preSignedData!.transactionID, instructionSetId: veh.getBatteryTestInstructions?[0].testCommands?.id, odometer: Int(self.odometer ?? 0) ,  bmsCapacity: bms)
+			let expectedCapacityAtBirth: Double = (vehicalProfile.capacityAtBirth ?? Double(0.0))!
+			let calculateddCapacityAtBirth = self.bmsCapacity ?? 0.0
+			var bmsCapacity: Double = 0.0
+			if calculateddCapacityAtBirth > expectedCapacityAtBirth {
+				bmsCapacity = expectedCapacityAtBirth
+			} else {
+				bmsCapacity = calculateddCapacityAtBirth
+			}
+			let bmsObdTest = OBD2TestInput.init(filename: self.uploadFileName, transactionId: self.preSignedData!.transactionID, instructionSetId: veh.getBatteryTestInstructions?[0].testCommands?.id, odometer: Int(self.odometer ?? 0) ,  bmsCapacity: bmsCapacity)
 			calculatedBetteryHealth = CalculateBatteryHealthInput.init(vehicleProfile: vehicalProfile, obd2Test: bmsObdTest, dashData: dashDataInput, locationCode: LocationCode.aaa, workOrderNumber: self.workOrder ?? "", totalNumberOfCharges: 1, lifetimeCharge: 2.0 , lifetimeDischarge: 2.0)
 		} else {
 			// Without BMS

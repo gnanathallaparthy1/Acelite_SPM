@@ -487,12 +487,17 @@ class BatteryHealthCheckViewController:  BaseViewController {
 }
 extension BatteryHealthCheckViewController: GetPreSignedUrlDelegate, UploadAndSubmitDataDelegate {
 	func showNoDataFromCommandsAlert() {
-		let dialogMessage = UIAlertController(title: "Error", message: "Sorry,something went wrong.Please try again", preferredStyle: .alert)
-		let ok = UIAlertAction(title: "GOT IT", style: .default, handler: { (action) -> Void in
-			self.navigationController?.popToRootViewController(animated: true)
-		})
-		dialogMessage.addAction(ok)
-		self.present(dialogMessage, animated: true, completion: nil)
+		DispatchQueue.main.async  {
+			let dialogMessage = UIAlertController(title: "Error", message: "Sorry,something went wrong.Please try again", preferredStyle: .alert)
+			let ok = UIAlertAction(title: "GOT IT", style: .default, handler: { (action) -> Void in
+				self.navigationController?.popToRootViewController(animated: true)
+				if let pheriPheral = Network.shared.myPeripheral {
+					Network.shared.bluetoothService?.disconnectDevice(peripheral: pheriPheral)
+				}
+			})
+			dialogMessage.addAction(ok)
+			self.present(dialogMessage, animated: true, completion: nil)
+		}
 	}
 	
 	@objc func navigateToHealthScoreVC() {

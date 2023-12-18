@@ -101,8 +101,8 @@ struct Odometer: Codable {
 
 // MARK: - Challenge
 struct Challenge: Codable {
-	let header, pid: String
 	let flowControl: FlowControl?
+	var canFilter, canMask, header, pid: String?
 }
 
 // MARK: - FlowControl

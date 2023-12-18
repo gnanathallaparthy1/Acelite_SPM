@@ -24,6 +24,8 @@ class Constants {
 	static let ATS0 = "ATS0"
 	static let ATSP = "ATSP"
 	static let ATSH = "ATSH"
+	static let ATCF = "ATCF"
+	static let ATCM = "ATCM"
 
 	static let ATFCSH = "ATFCSH"
 	static let ATFCSD = "ATFCSD"
