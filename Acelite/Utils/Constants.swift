@@ -52,7 +52,7 @@ class Constants {
 	static let FILE_TYPE = ".json"
 	static let ACELITE_TEST = "AceLite_Test"
 	static let OFFLINE_MESSAGE = "Looks like there is no internet connection. Please connect to Mobile data or Wifi."
-	static let APP_UNSUBMITTED = "You have unsubmitted test results from runnning tests in offline mode."
+	static let APP_UNSUBMITTED = "You have unsubmitted test results from running tests in offline mode."
 	static let APP_RECONNECT_INTERNET_MESSAGE = "Internet connection is not available, but data will be retained and uploaded when connection is re-established."
 	static let BATTERY_INSTRUCTIONS_DATA = "BatteryInstructionsData"
 

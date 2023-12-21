@@ -14,7 +14,7 @@ import CoreData
 import Apollo
 
 protocol ShortProfileCommandsRunDelegate: AnyObject {
-	func shortProfileCommandsCompleted(battteryHealth: BatteryScore?, minRange: Double?, maxRange: Double?)
+	func shortProfileCommandsCompleted(battteryHealth: BatteryScore?, minRange: Double?, maxRange: Double?, rangeAtBirth: Double?)
 	func showShortProfileSubmitError(transactionID: String?, vinMake: String, message: String, vinModels: String, submitType: String, vinNumber: String, year: Int, errorCode: String)
 	func shortProfileCommandExecutionError()
 }
@@ -407,16 +407,7 @@ class UploadAnimationViewModel {
 			self.delegate?.showShortProfileSubmitError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:Submit API failed due to Vehicle Profile", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: "")
 			return
 		}
-		print("data 1::::::")
 		print(Date(), "SOC:Vehicle Profile\(vehicleProfile)", to: &Log.log)
-//		//State of Health
-//		if let stateOfHealth = batteryInstr?[0].testCommands?.stateOfCharge {
-//			print(Date(), "SOC:State of Health\(stateOfHealth)", to: &Log.log)
-//		} else {
-//			print(Date(), "SOC:Submit API failed due to state Of Health", to: &Log.log)
-//			self.delegate?.showShortProfileSubmitError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:Submit API failed due to state Of Health", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: "")
-//		}
-		
 		
 		//Nominal Volatage
 		guard let nominalVoltage: Double = vehicleProfile.nominalVoltage else {
@@ -439,6 +430,13 @@ class UploadAnimationViewModel {
 			return
 		}
 		print(Date(), "SOC:capacityAtBirth\(capacityAtBirth)", to: &Log.log)
+		
+		guard let rangeAtBirth: Double = vehicleProfile.rangeAtBirth else {
+			print(Date(), "SOC:Submit API failed due to state Of rangeAtBirth", to: &Log.log)
+			self.delegate?.showShortProfileSubmitError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:Submit API failed due to state Of rangeAtBirth", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: "")
+			return
+		}
+		print(Date(), "SOC:capacityAtBirth\(rangeAtBirth)", to: &Log.log)
 		//Battery
 		guard let batteryType: String = vehicleProfile.batteryType else {
 			print(Date(), "SOC:Submit API failed due to BatteryType", to: &Log.log)
@@ -447,10 +445,8 @@ class UploadAnimationViewModel {
 		}
 		print(Date(), "SOC:BatteryType\(batteryType)", to: &Log.log)
 		
-		let vehicalProfile = CalculateBatteryHealthVehicleProfileInput.init(nominalVoltage: Double(nominalVoltage), energyAtBirth: Double(energyAtBirth), batteryType: .lithium, capacityAtBirth: capacityAtBirth)
-		
-		
-		print("vehical Profile", vehicleProfile)
+		let vehicalProfile = CalculateBatteryHealthVehicleProfileInput.init(nominalVoltage: Double(nominalVoltage), energyAtBirth: Double(energyAtBirth), batteryType: .lithium, capacityAtBirth: capacityAtBirth, rangeAtBirth: rangeAtBirth)
+
 		print(Date(), "vehicalProfile : \(vehicalProfile)", to: &Log.log)
 		var calculatedBetteryHealth : CalculateBatteryHealthInput?
 		if let soc = self.stateOfCharge, soc != 0 {
@@ -522,7 +518,7 @@ class UploadAnimationViewModel {
 									let minEstRange = bt?.estimatedRange?.estimatedRangeMin
 									let maxEstRange = bt?.estimatedRange?.estimatedRangeMax
 
-									self.delegate?.shortProfileCommandsCompleted(battteryHealth: bt?.batteryScore , minRange: minEstRange, maxRange: maxEstRange)
+									self.delegate?.shortProfileCommandsCompleted(battteryHealth: bt?.batteryScore , minRange: minEstRange, maxRange: maxEstRange, rangeAtBirth: rangeAtBirth)
 								}
 								
 							} catch DecodingError.dataCorrupted(let context) {

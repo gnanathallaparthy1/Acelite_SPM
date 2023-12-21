@@ -252,6 +252,7 @@ extension VehicalVINScannerViewController: UITextFieldDelegate {
 			self.nextButton.isUserInteractionEnabled = true
 			self.nextButton.isEnabled = true
 			self.view.activityStartAnimating(activityColor: UIColor.white, backgroundColor: UIColor.black.withAlphaComponent(0.5))
+			print(Date(), "VIN Being Tested",vin , to: &Log.log)
 			self.viewModel?.fetchVehicalInformation(vim: vin)
 		} else {
 			let alertViewController = UIAlertController.init(title: "Oops!", message: "Please check your network connection", preferredStyle: .alert)

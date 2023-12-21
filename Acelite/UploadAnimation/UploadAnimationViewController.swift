@@ -841,10 +841,10 @@ class UploadAnimationViewController: BaseViewController {
 	
 }
 extension UploadAnimationViewController: ShortProfileCommandsRunDelegate {
-	func shortProfileCommandsCompleted(battteryHealth: BatteryScore?, minRange: Double?, maxRange: Double?) {
+	func shortProfileCommandsCompleted(battteryHealth: BatteryScore?, minRange: Double?, maxRange: Double?, rangeAtBirth: Double?) {
 		DispatchQueue.main.async {
-		let storyBaord = UIStoryboard.init(name: "Main", bundle: nil)
-		let vc = storyBaord.instantiateViewController(withIdentifier: "BatteryHealthViewController") as! BatteryHealthViewController
+			let storyBaord = UIStoryboard.init(name: "Main", bundle: nil)
+			let vc = storyBaord.instantiateViewController(withIdentifier: "BatteryHealthViewController") as! BatteryHealthViewController
 			guard let veh = self.viewModel?.vehicleInfo else {return}
 			guard let vinInfo = self.viewModel?.vehicleInfo?.vin else { return  }
 			guard let vinMake = self.viewModel?.vehicleInfo?.make else { return  }
@@ -852,18 +852,17 @@ extension UploadAnimationViewController: ShortProfileCommandsRunDelegate {
 			guard let vinModels = self.viewModel?.vehicleInfo?.modelName else {return}
 			guard let vehicleProfile = self.viewModel?.vehicleInfo?.getBatteryTestInstructions?.first?.testCommands?.vehicleProfile else {return}
 			self.submitSuccessForSubmitAPI(transactionID: self.transactionId ?? "", vinMake: vinMake, score: "\(0)", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: vinYear, testProfileType: BMSCapacityTest.quickTest)
-		self.deleteUploadedRecordInCoreData()
-			let vm = BatteryHealthViewModel(vehicleInfo: veh, transactionID: self.transactionId ?? "", testIntructionsId: self.testInstructionsId ?? "", healthScore: battteryHealth?.score ?? 0.0 , grade: VehicleGrade(rawValue: VehicleGrade(rawValue: battteryHealth?.grade ?? "N/A" )?.title ??  "N/A") ?? .A, health: battteryHealth?.health ?? "N/A", rangeAtBirth: vehicleProfile.rangeAtBirth, minEstimatedRnge: minRange, maxEstimatedRnge: maxRange )
+			self.deleteUploadedRecordInCoreData()
+			let vm = BatteryHealthViewModel(vehicleInfo: veh, transactionID: self.transactionId ?? "", testIntructionsId: self.testInstructionsId ?? "", healthScore: battteryHealth?.score ?? 0.0 , grade: VehicleGrade(rawValue: VehicleGrade(rawValue: battteryHealth?.grade ?? "N/A" )?.title ??  "N/A") ?? .A, health: battteryHealth?.health ?? "N/A", rangeAtBirth: rangeAtBirth, minEstimatedRnge: minRange, maxEstimatedRnge: maxRange )
 			vc.viewModel = vm
 			self.navigationController?.pushViewController(vc, animated: true)
 		}
 	}
 	
+	
 	func shortProfileCommandExecutionError() {
-		//if ((self.viewModel?.isShortProfile) != nil) {
-			print("short profile error")
+		print("short profile error")
 		showDataInsufficientError()
-		//}
 	}
 	
 	func showShortProfileSubmitError(transactionID: String?, vinMake: String, message: String, vinModels: String, submitType: String, vinNumber: String, year: Int, errorCode: String) {
