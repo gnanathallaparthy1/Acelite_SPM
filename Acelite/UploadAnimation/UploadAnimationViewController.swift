@@ -873,7 +873,7 @@ extension UploadAnimationViewController: ShortProfileCommandsRunDelegate {
 extension UploadAnimationViewController: BLENonResponsiveDelegate {
 	func showBleNonResponsiveError() {
 		self.stackView.removeFromSuperview()
-		let dialogMessage = UIAlertController(title: "Error", message: "Sorry,something went wrong.Please try again", preferredStyle: .alert)
+		let dialogMessage = UIAlertController(title: "Error", message: "OBD2 device is not responding. Please retry the test.", preferredStyle: .alert)
 		let ok = UIAlertAction(title: "GOT IT", style: .default, handler: { (action) -> Void in
 			if let pheriPheral = Network.shared.myPeripheral {
 				Network.shared.bluetoothService?.disconnectDevice(peripheral: pheriPheral)

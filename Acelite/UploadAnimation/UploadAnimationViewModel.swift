@@ -244,7 +244,7 @@ class UploadAnimationViewModel {
 					let sliptWithColen = newitem.components(separatedBy: ":")
 					if sliptWithColen.count == 2 {
 						responseDataInString.append(sliptWithColen[1])
-						print("responseDataInString \(responseDataInString)")
+						//print("responseDataInString \(responseDataInString)")
 					} else {
 					}
 				}

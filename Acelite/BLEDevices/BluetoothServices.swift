@@ -48,6 +48,7 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 	var rxCharacteristic: CBCharacteristic? = nil
 	var callBack: (([DeviceModel]) -> Void)?
 	var secoonds : Int = 0
+	var retries : Int = 0
 //	var delegate: BleWriteReadProtocal? = nil
 
 	//	 var commandCallBack: (((Data, BLECommand))->Void)?
@@ -101,7 +102,7 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 		//print("request data:::::", data)
 		let dataToSend: Data = data.data(using: .utf8)!
 		print(Date(), "About to write: \(data)", to: &Log.log)
-		self.reqestDataTime = Date()
+	 	self.reqestDataTime = Date()
 		self.fromDate = Date()
 		self.commandType = commandType
 		self.instructionType = instructionType
@@ -113,18 +114,21 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 			return
 		} else {
 			var timerValue: NSNumber?
+			var retryValue: NSNumber?
 			timerValue = RemoteConfig.remoteConfig().configValue(forKey: "ping_retry_interval_ms").numberValue
 			if let timer =  timerValue {
 				secoonds = Int(truncating: timer) / 1000
 			}
+			retryValue = RemoteConfig.remoteConfig().configValue(forKey: "ping_max_retries").numberValue
+			self.retries = retryValue as! Int
 			DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(secoonds), execute: {
-				print(Date(), "Retreived timer data from Firebse", self.secoonds, to: &Log.log)
+				print(Date(), "Retreived timer data from Firebse", to: &Log.log)
 				if self.isBLEResponse == true  {
 					print(Date(), "Received BLE response after wait", to: &Log.log)
 					return
-				} else if self.isBLEResponse == false && self.retryCount <= 2 {
-					print(Date(), "Triggering Retry: Count is ",self.retryCount, to: &Log.log)
+				} else if self.isBLEResponse == false && self.retryCount <= self.retries {
 					self.retryCount += 1
+					print(Date(), "Triggering Retry: Count is ",self.retryCount, to: &Log.log)
 					self.writeBytesData(instructionType: instructionType, commandType: commandType, data: data, completionHandler: completionHandler)
 				} else {
 					print(Date(), "All retries done triggering Alert ",self.retryCount, to: &Log.log)
