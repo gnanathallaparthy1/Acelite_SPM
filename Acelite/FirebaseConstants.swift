@@ -67,6 +67,11 @@ struct ConfirmationScreenEvents {
 	static let confirmation = "confirmation"
 }
 
+struct RetryPingEvents {
+	static let retryDeviceNotResponded = "retry_device_not_responded"
+	static let maxRetriesDeviceNotResponded = "max_retries_device_not_responded"
+}
+
 struct OfflineEvents {
 	static let offlineUploadTest = "upload_offline_test"
 	static let offlineBannerVisible = "offline_banner_visible"

@@ -200,6 +200,7 @@
 		86B908A0297079A9001CAB90 /* WorkOrderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86B9089F297079A9001CAB90 /* WorkOrderViewController.swift */; };
 		86B908A22970854A001CAB90 /* TestingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86B908A12970854A001CAB90 /* TestingViewController.swift */; };
 		86C2BB9A29F19310004D4D42 /* schema.json in Resources */ = {isa = PBXBuildFile; fileRef = 86C2BB9929F19310004D4D42 /* schema.json */; };
+		86CD9E852B56E6FC009BCC63 /* iOSDropDown in Frameworks */ = {isa = PBXBuildFile; productRef = 86CD9E842B56E6FC009BCC63 /* iOSDropDown */; };
 		86CDBA6629B632D600956B4C /* UploadAnimationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86CDBA6529B632D600956B4C /* UploadAnimationViewController.swift */; };
 		86CDBA6929B653D400956B4C /* UploadAnimationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86CDBA6829B653D400956B4C /* UploadAnimationViewModel.swift */; };
 		86E33DFC2A1E7D3C00E2F167 /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86E33DFB2A1E7D3C00E2F167 /* ExternalAccessory.framework */; };
@@ -336,6 +337,7 @@
 				86E33DFC2A1E7D3C00E2F167 /* ExternalAccessory.framework in Frameworks */,
 				864667B92A436D4500C85ABD /* FirebaseMessaging in Frameworks */,
 				861E6F11295E118000443F12 /* CoreBluetooth.framework in Frameworks */,
+				86CD9E852B56E6FC009BCC63 /* iOSDropDown in Frameworks */,
 				864667AD2A436D4500C85ABD /* FirebaseAnalytics in Frameworks */,
 				864667B12A436D4500C85ABD /* FirebaseCrashlytics in Frameworks */,
 				866CDB492982E80400ADFB50 /* Apollo in Frameworks */,
@@ -805,6 +807,7 @@
 				864667BC2A436D4500C85ABD /* FirebaseRemoteConfigSwift */,
 				869790612A88630400FA6440 /* Reachability */,
 				8621C7B82A8BFA6800CFE0DF /* FirebaseInAppMessagingSwift-Beta */,
+				86CD9E842B56E6FC009BCC63 /* iOSDropDown */,
 			);
 			productName = Acelite;
 			productReference = 861E6EC62953789B00443F12 /* Acelite.app */;
@@ -913,6 +916,7 @@
 				866CDB472982E80400ADFB50 /* XCRemoteSwiftPackageReference "apollo-ios" */,
 				864667AB2A436D4500C85ABD /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				869790602A88630300FA6440 /* XCRemoteSwiftPackageReference "Reachability" */,
+				86CD9E832B56E6FC009BCC63 /* XCRemoteSwiftPackageReference "iOSDropDown" */,
 			);
 			productRefGroup = 861E6EC72953789B00443F12 /* Products */;
 			projectDirPath = "";
@@ -1681,6 +1685,14 @@
 				kind = branch;
 			};
 		};
+		86CD9E832B56E6FC009BCC63 /* XCRemoteSwiftPackageReference "iOSDropDown" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/jriosdev/iOSDropDown.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.4.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1793,6 +1805,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 869790602A88630300FA6440 /* XCRemoteSwiftPackageReference "Reachability" */;
 			productName = Reachability;
+		};
+		86CD9E842B56E6FC009BCC63 /* iOSDropDown */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 86CD9E832B56E6FC009BCC63 /* XCRemoteSwiftPackageReference "iOSDropDown" */;
+			productName = iOSDropDown;
 		};
 /* End XCSwiftPackageProductDependency section */
 

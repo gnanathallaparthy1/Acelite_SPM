@@ -7,9 +7,12 @@
 
 import UIKit
 import CoreData
+import iOSDropDown
+
 
 class WorkOrderViewController: BaseViewController {
-	
+	@IBOutlet var mainDropDown: DropDown!
+
 	@IBOutlet weak var offlineViewHeight: NSLayoutConstraint!
 	@IBOutlet weak var offlineView: UIView!
 	public var vehicleInfo: Vehicle?
@@ -58,8 +61,7 @@ class WorkOrderViewController: BaseViewController {
 		barCodeTextField.delegate = self
 		offlineViewHeight.constant = 0
 		offlineView.isHidden = true
-		addCustomView()
-		
+		addDropDownValues()
 	}
 
 	private func addCustomView() {
@@ -86,6 +88,7 @@ class WorkOrderViewController: BaseViewController {
 			self.showAndHideOffline(isShowOfflineView: true)
 		}
 		networkStatus.addObserver(self, selector: #selector(self.showOffileViews(_:)), name: natificationName, object: nil)
+		
 	}
 	@objc func showOffileViews(_ notification: Notification) {
 		
@@ -151,6 +154,29 @@ class WorkOrderViewController: BaseViewController {
 			let vehicalInformation = storyBoard.instantiateViewController(withIdentifier: "VehicalInformationViewController") as! VehicalInformationViewController
 			vehicalInformation.viewModel = VehicleInformationViewModel(vinNumber: viewModel.vehicleInfo.vin, vehicleInformation: viewModel.vehicleInfo, isShortProfile: viewModel.isShortProfile ?? false, workOrder: workOrder)
 			self.navigationController?.pushViewController(vehicalInformation, animated: true)
+		}
+	}
+	
+	private func addDropDownValues() {
+	  
+		let color = ["blue","brown","clear","cyan","gray","green","lightGray","orange","purple","red","white","yellow","black"]
+		mainDropDown.optionArray = color
+		mainDropDown.arrowSize = 20
+		mainDropDown.checkMarkEnabled = false
+		mainDropDown.semanticContentAttribute = .forceLeftToRight
+		mainDropDown.textColor = .black
+		mainDropDown.listHeight = 120
+		mainDropDown.rowHeight = 35
+		mainDropDown.selectedRowColor = .lightGray
+		
+		let previousLocation = UserDefaults.standard.string(forKey: "selectedLocation")
+		if previousLocation != nil {
+			mainDropDown.text = "\(previousLocation ?? "")"
+		}
+		
+		mainDropDown.didSelect { selectedText, index, id in
+			print("Selected String: \(selectedText) \n index: \(index) \n Id: \(id)")
+			UserDefaults.standard.set(selectedText, forKey: "selectedLocation")
 		}
 	}
 }

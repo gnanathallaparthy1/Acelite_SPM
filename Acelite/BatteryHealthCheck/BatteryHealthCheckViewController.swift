@@ -652,7 +652,20 @@ extension BatteryHealthCheckViewController: GetPreSignedUrlDelegate, UploadAndSu
 }
 
 extension BatteryHealthCheckViewController: BLENonResponsiveDelegate {
+	func recordFirstNonResponsiveBleAttempt() {
+		if let veh = viewModel?.vehicleInfo {
+			let paramDictionary = [
+				Parameters.year: "\(String(describing: veh.year))", Parameters.make : veh.make ?? "", Parameters.model:  veh.modelName ?? "", Parameters.trim: veh.trimName ?? "", Parameters.vinNumber: veh.vin ?? ""]  as [String : String]
+			FirebaseLogging.instance.logEvent(eventName:RetryPingEvents.retryDeviceNotResponded, parameters: paramDictionary)
+		}
+	}
+	
 	func showBleNonResponsiveError() {
+		if let veh = viewModel?.vehicleInfo {
+			let paramDictionary = [
+				Parameters.year: "\(String(describing: veh.year))", Parameters.make : veh.make ?? "", Parameters.model:  veh.modelName ?? "", Parameters.trim: veh.trimName ?? "", Parameters.vinNumber: veh.vin ?? ""]  as [String : String]
+			FirebaseLogging.instance.logEvent(eventName:RetryPingEvents.maxRetriesDeviceNotResponded, parameters: paramDictionary)
+		}
 		let dialogMessage = UIAlertController(title: "Error", message: "OBD2 device is not responding. Please retry the test.", preferredStyle: .alert)
 		let ok = UIAlertAction(title: "GOT IT", style: .default, handler: { (action) -> Void in
 			if let pheriPheral = Network.shared.myPeripheral {

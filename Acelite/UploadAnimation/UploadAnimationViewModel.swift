@@ -14,8 +14,8 @@ import CoreData
 import Apollo
 
 protocol ShortProfileCommandsRunDelegate: AnyObject {
-	func shortProfileCommandsCompleted(battteryHealth: BatteryScore?, minRange: Double?, maxRange: Double?, rangeAtBirth: Double?)
-	func showShortProfileSubmitError(transactionID: String?, vinMake: String, message: String, vinModels: String, submitType: String, vinNumber: String, year: Int, errorCode: String)
+	func shortProfileCommandsCompleted(battteryHealth: BatteryScore?, minRange: Double?, maxRange: Double?, rangeAtBirth: Double?, submittedBms: Double?, expectedBms: Double?, submitedType: String, workOrder: String)
+	func showShortProfileSubmitError(transactionID: String?, vinMake: String, message: String, vinModels: String, submitType: String, vinNumber: String, year: Int, errorCode: String, submittedBms: Double?, expectedBms: Double?)
 	func shortProfileCommandExecutionError()
 }
 
@@ -24,6 +24,7 @@ class UploadAnimationViewModel {
 	var vehicleInfo:  Vehicle?
 	public var stateOfCharge: Double?
 	public var bms: Double?
+	public var calculatedBms: Double = 0.0
 	public var currentEnergy: Double?
 	public var workOrder: String?
 	public var odometer: Double?
@@ -404,7 +405,7 @@ class UploadAnimationViewModel {
 		print("vehical profile")
 		guard let vehicleProfile = batteryInstr?[0].testCommands?.vehicleProfile else {
 			print(Date(), "SOC:Submit API failed due to Vehicle Profile", to: &Log.log)
-			self.delegate?.showShortProfileSubmitError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:Submit API failed due to Vehicle Profile", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: "")
+			self.delegate?.showShortProfileSubmitError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:Submit API failed due to Vehicle Profile", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: "", submittedBms: 0.0, expectedBms: 0.0)
 			return
 		}
 		print(Date(), "SOC:Vehicle Profile\(vehicleProfile)", to: &Log.log)
@@ -412,35 +413,35 @@ class UploadAnimationViewModel {
 		//Nominal Volatage
 		guard let nominalVoltage: Double = vehicleProfile.nominalVoltage else {
 			print(Date(), "SOC:Submit API failed due to Nominal Volatge", to: &Log.log)
-			self.delegate?.showShortProfileSubmitError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:Submit API failed due to Nominal Volatge", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: "")
+			self.delegate?.showShortProfileSubmitError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:Submit API failed due to Nominal Volatge", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: "", submittedBms: 0.0, expectedBms: 0.0)
 			return
 		}
 		print(Date(), "SOC:Nominal Voltage\(nominalVoltage)", to: &Log.log)
 		//EnergyAtBirth
 		guard let energyAtBirth: Double = vehicleProfile.energyAtBirth else {
 			print(Date(), "SOC:Submit API failed due to state Of energyAtBirth", to: &Log.log)
-			self.delegate?.showShortProfileSubmitError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:Submit API failed due to state Of energyAtBirth", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: "")
+			self.delegate?.showShortProfileSubmitError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:Submit API failed due to state Of energyAtBirth", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: "", submittedBms: 0.0, expectedBms: 0.0)
 			return
 		}
 		print(Date(), "SOC:energyAtBirth\(energyAtBirth)", to: &Log.log)
 		//CapacityAtBirth
 		guard let capacityAtBirth: Double = vehicleProfile.capacityAtBirth else {
 			print(Date(), "SOC:Submit API failed due to state Of capacityAtBirth", to: &Log.log)
-			self.delegate?.showShortProfileSubmitError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:Submit API failed due to state Of capacityAtBirth", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: "")
+			self.delegate?.showShortProfileSubmitError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:Submit API failed due to state Of capacityAtBirth", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: "", submittedBms: 0.0, expectedBms: 0.0)
 			return
 		}
 		print(Date(), "SOC:capacityAtBirth\(capacityAtBirth)", to: &Log.log)
 		
 		guard let rangeAtBirth: Double = vehicleProfile.rangeAtBirth else {
 			print(Date(), "SOC:Submit API failed due to state Of rangeAtBirth", to: &Log.log)
-			self.delegate?.showShortProfileSubmitError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:Submit API failed due to state Of rangeAtBirth", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: "")
+			self.delegate?.showShortProfileSubmitError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:Submit API failed due to state Of rangeAtBirth", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: "", submittedBms: 0.0, expectedBms: 0.0)
 			return
 		}
 		print(Date(), "SOC:capacityAtBirth\(rangeAtBirth)", to: &Log.log)
 		//Battery
 		guard let batteryType: String = vehicleProfile.batteryType else {
 			print(Date(), "SOC:Submit API failed due to BatteryType", to: &Log.log)
-			self.delegate?.showShortProfileSubmitError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:Submit API failed due to state Of capacityAtBirth", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: "")
+			self.delegate?.showShortProfileSubmitError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:Submit API failed due to state Of capacityAtBirth", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: "", submittedBms: 0.0, expectedBms: 0.0)
 			return
 		}
 		print(Date(), "SOC:BatteryType\(batteryType)", to: &Log.log)
@@ -454,25 +455,22 @@ class UploadAnimationViewModel {
 			let stateOfCharge = self.stateOfCharge
 			let dashDataInput = DashDataInput.init(odometer: Int(odometer ?? 0), stateOfCharge: stateOfCharge)
 			let obd2Test = OBD2TestInput.init(odometer: Int(self.odometer ?? 0) , currentEnergy: currentEnergy, stateOfCharge: stateOfCharge)
-			print("OBD2TEST", obd2Test)
 			calculatedBetteryHealth = CalculateBatteryHealthInput.init(vehicleProfile: vehicalProfile, obd2Test: obd2Test, dashData: dashDataInput, locationCode: LocationCode.aaa, workOrderNumber: self.workOrder ?? "", totalNumberOfCharges: 1, lifetimeCharge: 2.0 , lifetimeDischarge: 2.0)
 		} else {
 			// With BMS
-			let expectedCapacityAtBirth: Double = (vehicalProfile.capacityAtBirth ?? Double(0.0))!
-			let calculateddCapacityAtBirth = self.bms ?? 0.0
-			var bmsCapacity: Double = 0.0
-			if calculateddCapacityAtBirth > expectedCapacityAtBirth {
-				bmsCapacity = expectedCapacityAtBirth
+			let expectedBms = (vehicalProfile.capacityAtBirth ?? Double(0.0))!
+			self.calculatedBms = self.bms ?? 0.0
+			if calculatedBms > expectedBms {
+				bms = expectedBms
 			} else {
-				bmsCapacity = calculateddCapacityAtBirth
+				bms = calculatedBms
 			}
-			let bmsObdTest = OBD2TestInput.init(odometer: Int(self.odometer ?? 0), bmsCapacity: bmsCapacity)
+			let bmsObdTest = OBD2TestInput.init(odometer: Int(self.odometer ?? 0), bmsCapacity: bms)
 			calculatedBetteryHealth = CalculateBatteryHealthInput.init(vehicleProfile: vehicalProfile, obd2Test: bmsObdTest, locationCode: LocationCode.aaa, workOrderNumber: self.workOrder ?? "", totalNumberOfCharges: 1, lifetimeCharge: 2.0 , lifetimeDischarge: 2.0)
 			
 		}
 		print(Date(), "calculatedBetteryHealth: \(String(describing: calculatedBetteryHealth))", to: &Log.log)
-//		let jsonMutation = SubmitBatteryJsonFilesWithStateOfChargeMutation(Vehicle: vehicalBatteryDataFile, calculateBatteryHealthInput: calculatedBetteryHealth ?? CalculateBatteryHealthInput())
-//		Network.shared.apollo.perform(mutation: jsonMutation) { result in
+
 		let submitScoreQuery = CalculateBatteryHealthQuery(calculateBatteryHealthInput: calculatedBetteryHealth ?? CalculateBatteryHealthInput(), vin: vinInfo)
 		
 		Network.shared.apollo.fetch(query: submitScoreQuery) { result in
@@ -483,7 +481,7 @@ class UploadAnimationViewModel {
 					print("JSON query success case")
 					if graphQLResults.errors?.count ?? 0 > 0 {
 						print(Date(), "SOC:submit API Error 1:\(String(describing: graphQLResults.errors))", to: &Log.log)
-						self.delegate?.showShortProfileSubmitError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:submit API Error66 :\(String(describing: graphQLResults.errors))", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: "")
+						self.delegate?.showShortProfileSubmitError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:submit API Error66 :\(String(describing: graphQLResults.errors))", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: "", submittedBms: 0.0, expectedBms: 0.0)
 						return
 					}
 					
@@ -491,7 +489,7 @@ class UploadAnimationViewModel {
 					if submitData == nil {
 						print("CALCULATE BATTERY HEALTH")
 						print(Date(), "SOC:submit API result Map Error :\(String(describing: graphQLResults.errors))", to: &Log.log)
-						self.delegate?.showShortProfileSubmitError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "\(String(describing: graphQLResults.errors))", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: "")
+						self.delegate?.showShortProfileSubmitError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "\(String(describing: graphQLResults.errors))", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: "", submittedBms: self.bms, expectedBms: self.calculatedBms)
 						let paramDictionary = [
 							"submit_type": "STATE_OF_CHARGE",
 							"errorCode":"\(String(describing: graphQLResults.errors))",
@@ -510,35 +508,35 @@ class UploadAnimationViewModel {
 								if submitBatteryData.calculateBatteryHealth?.success == false {
 									print("JSON IS DATA OBJECT")
 									print(Date(), "SOC:battery Score is Null :\(String(describing: graphQLResults.errors))", to: &Log.log)
-									self.delegate?.showShortProfileSubmitError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "Battery Score is Null", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: submitBatteryData.calculateBatteryHealth?.code ?? "")
+									self.delegate?.showShortProfileSubmitError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "Battery Score is Null", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: submitBatteryData.calculateBatteryHealth?.code ?? "", submittedBms: self.bms, expectedBms: self.calculatedBms)
 									return
 								} else {
 									//check
 									let bt = submitBatteryData.calculateBatteryHealth?.calculatedBatteryHealth
 									let minEstRange = bt?.estimatedRange?.estimatedRangeMin
 									let maxEstRange = bt?.estimatedRange?.estimatedRangeMax
+									print("SCORE:::",bt?.batteryScore?.score)
 
-									self.delegate?.shortProfileCommandsCompleted(battteryHealth: bt?.batteryScore , minRange: minEstRange, maxRange: maxEstRange, rangeAtBirth: rangeAtBirth)
+									self.delegate?.shortProfileCommandsCompleted(battteryHealth: bt?.batteryScore , minRange: minEstRange, maxRange: maxEstRange, rangeAtBirth: rangeAtBirth, submittedBms: self.bms, expectedBms: self.calculatedBms, submitedType: "BMS", workOrder: self.workOrder ?? "")
 								}
 								
 							} catch DecodingError.dataCorrupted(let context) {
 								//print(Date(), "SOC:submit API Error :\(context)", to: &Log.log)
-								self.delegate?.showShortProfileSubmitError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:submit API Error2 :\(context)", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: "")
+								self.delegate?.showShortProfileSubmitError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:submit API Error2 :\(context)", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: "", submittedBms: self.bms, expectedBms: self.calculatedBms)
 								return
 							}
 						} catch {
-							self.delegate?.showShortProfileSubmitError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:submit API Error3 :\(error)", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: "")
+							self.delegate?.showShortProfileSubmitError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:submit API Error3 :\(error)", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: "", submittedBms: self.bms, expectedBms: self.calculatedBms)
 							//print(Date(), "SOC:submit API Error :\(error)", to: &Log.log)
 						}
 						
 					}
 				} else {
-				print("ele condition::::::::::")
 				}
 				break
 			case .failure(let error):
 				//if let transactionId = self.preSignedData?.transactionID {
-				self.delegate?.showShortProfileSubmitError(transactionID: nil , vinMake: vinMake, message: error.localizedDescription, vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode:  "")
+				self.delegate?.showShortProfileSubmitError(transactionID: nil , vinMake: vinMake, message: error.localizedDescription, vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode:  "",submittedBms: self.bms, expectedBms: self.calculatedBms)
 				//}
 				print(Date(), "SOC:submit API Error :\(error)", to: &Log.log)
 				break

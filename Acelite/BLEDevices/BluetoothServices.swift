@@ -9,6 +9,7 @@ import Foundation
 import CoreBluetooth
 import UIKit
 import FirebaseRemoteConfig
+import Firebase
 
 
 //protocol BleWriteReadProtocal: AnyObject {
@@ -32,6 +33,7 @@ protocol BLEPermissionDelegate: AnyObject {
 
 protocol BLENonResponsiveDelegate: AnyObject {
 	func showBleNonResponsiveError()
+	func recordFirstNonResponsiveBleAttempt()
 }
 
 class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegate {
@@ -126,7 +128,12 @@ class BluetoothServices: NSObject, CBPeripheralDelegate, CBCentralManagerDelegat
 				if self.isBLEResponse == true  {
 					print(Date(), "Received BLE response after wait", to: &Log.log)
 					return
-				} else if self.isBLEResponse == false && self.retryCount <= self.retries {
+				} 
+				else if self.isBLEResponse == false && self.retryCount <= self.retries {
+					if self.retryCount == 1 {
+						self.bleNonResponseDelegate?.recordFirstNonResponsiveBleAttempt()
+				
+					}
 					self.retryCount += 1
 					print(Date(), "Triggering Retry: Count is ",self.retryCount, to: &Log.log)
 					self.writeBytesData(instructionType: instructionType, commandType: commandType, data: data, completionHandler: completionHandler)
