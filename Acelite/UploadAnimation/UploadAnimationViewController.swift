@@ -189,6 +189,7 @@ class UploadAnimationViewController: BaseViewController {
 		vidata.setValue(stateOfCharge, forKey: Constants.STATE_OF_CHARGE)
 		vidata.setValue(odometer, forKey: Constants.ODOMETER)
 		vidata.setValue(currentEnerygy, forKey: Constants.CURRENT_ENERGY)
+		vidata.setValue(self.viewModel?.locationCode, forKey: Constants.LOCATION_CODE)
 		
 		//Now we have set all the values. The next step is to save them inside the Core Data
 		do {
@@ -581,7 +582,7 @@ class UploadAnimationViewController: BaseViewController {
 				self.bmsCapacity = calculateddCapacityAtBirth
 			}
 			let bmsObdTest = OBD2TestInput.init(filename: self.uploadFileName, transactionId: self.preSignedData!.transactionID, instructionSetId: veh.getBatteryTestInstructions?[0].testCommands?.id, odometer: Int(self.odometer ?? 0) ,  bmsCapacity: self.bmsCapacity)
-			calculatedBetteryHealth = CalculateBatteryHealthInput.init(vehicleProfile: vehicalProfile, obd2Test: bmsObdTest, dashData: dashDataInput, locationCode: LocationCode.aaa, workOrderNumber: self.workOrder ?? "", totalNumberOfCharges: 1, lifetimeCharge: 2.0 , lifetimeDischarge: 2.0)
+			calculatedBetteryHealth = CalculateBatteryHealthInput.init(vehicleProfile: vehicalProfile, obd2Test: bmsObdTest, dashData: dashDataInput, locationCode: self.viewModel?.location, workOrderNumber: self.workOrder ?? "", totalNumberOfCharges: 1, lifetimeCharge: 2.0 , lifetimeDischarge: 2.0)
 		} else {
 			// Without BMS
 			let stateOfCharge = self.stateOfCharge
@@ -589,7 +590,7 @@ class UploadAnimationViewController: BaseViewController {
 			let dashDataInput = DashDataInput.init(odometer: Int(odometer ?? 0), stateOfCharge: stateOfCharge)
 			let obd2Test = OBD2TestInput.init(filename: self.uploadFileName, transactionId: self.preSignedData!.transactionID, instructionSetId: veh.getBatteryTestInstructions?[0].testCommands?.id, odometer: Int(self.odometer ?? 0) , currentEnergy: currentEnergy, stateOfCharge: stateOfCharge)
 			print("OBD2TEST", obd2Test)
-			calculatedBetteryHealth = CalculateBatteryHealthInput.init(vehicleProfile: vehicalProfile, obd2Test: obd2Test, dashData: dashDataInput, locationCode: LocationCode.aaa, workOrderNumber: self.workOrder ?? "", totalNumberOfCharges: 1, lifetimeCharge: 2.0 , lifetimeDischarge: 2.0)
+			calculatedBetteryHealth = CalculateBatteryHealthInput.init(vehicleProfile: vehicalProfile, obd2Test: obd2Test, dashData: dashDataInput, locationCode: self.viewModel?.location, workOrderNumber: self.workOrder ?? "", totalNumberOfCharges: 1, lifetimeCharge: 2.0 , lifetimeDischarge: 2.0)
 		}
 		print(Date(), "calculatedBetteryHealth: \(String(describing: calculatedBetteryHealth))", to: &Log.log)
 		//
@@ -730,12 +731,12 @@ class UploadAnimationViewController: BaseViewController {
 		let paramDictionary = [
 			"submit_type": submitType,
 			"batter_test_instructions_id": "\(String(describing: self.testInstructionsId))",
-			"work_order": "\(String(describing: self.workOrder))", "profile_test_type": testProfileType, "bms_capacity": "\(String(describing: BMSCapacity))" ] as [String : String]
+			"work_order": "\(String(describing: self.workOrder))", "profile_test_type": testProfileType, "bms_capacity": "\(String(describing: BMSCapacity))", "location_code": self.viewModel?.locationCode ?? "" ] as [String : String]
 		FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.submitBatteryFilesSuccess, parameters: paramDictionary)
 		let rootRef = Database.database().reference()
 		let ref = rootRef.child("successful_transaction_ids").childByAutoId()
 		if let transectionId = self.testInstructionsId, transectionId.count > 0 {
-			let vinBatteryInfo: [String: String?] = ["battery_test_instructions_id": self.testInstructionsId,"make": vinMake, "score": score, "model": vinModels, "platform": "iOS", "submit_type": submitType, "time_stamp": Constants().currentDateTime(), "transaction_id": transectionId, "vin_number": vinNumber, "year": String(year), "work_order": workOrder, "bms_value_calculated": "\(expectedBms)", "bms_value_submitted": "\(BMSCapacity)", "profile_test_type": testProfileType]
+			let vinBatteryInfo: [String: String?] = ["battery_test_instructions_id": self.testInstructionsId,"make": vinMake, "score": score, "model": vinModels, "platform": "iOS", "submit_type": submitType, "time_stamp": Constants().currentDateTime(), "transaction_id": transectionId, "vin_number": vinNumber, "year": String(year), "work_order": workOrder, "bms_value_calculated": "\(expectedBms)", "bms_value_submitted": "\(BMSCapacity)", "profile_test_type": testProfileType, "location_code": self.viewModel?.locationCode ?? ""]
 			ref.setValue(vinBatteryInfo) {
 				(error:Error?, ref:DatabaseReference) in
 				if let _ = error {
@@ -745,7 +746,7 @@ class UploadAnimationViewController: BaseViewController {
 				}
 			}
 		} else {
-			let vinBatteryInfo: [String: String?] = ["battery_test_instructions_id": self.testInstructionsId, "make": vinMake, "score": score, "model": vinModels, "platform": "iOS", "submit_type": submitType, "time_stamp": Constants().currentDateTime(), "vin_number": vinNumber, "year": String(year), "work_order": workOrder, "bms_value_calculated": "\(expectedBms)", "bms_value_submitted": "\(BMSCapacity)", "profile_test_type": testProfileType]
+			let vinBatteryInfo: [String: String?] = ["battery_test_instructions_id": self.testInstructionsId, "make": vinMake, "score": score, "model": vinModels, "platform": "iOS", "submit_type": submitType, "time_stamp": Constants().currentDateTime(), "vin_number": vinNumber, "year": String(year), "work_order": workOrder, "bms_value_calculated": "\(expectedBms)", "bms_value_submitted": "\(BMSCapacity)", "profile_test_type": testProfileType, "location_code": self.viewModel?.locationCode ?? ""]
 			ref.setValue(vinBatteryInfo) {
 				(error:Error?, ref:DatabaseReference) in
 				if let _ = error {
@@ -763,7 +764,7 @@ class UploadAnimationViewController: BaseViewController {
 		//BMSCapacity: self.bmsCapacity ?? 0.0, expectedBms: self.calculateddCapacityAtBirth, workOrder: self.workOrder ?? ""
 		let rootRef = Database.database().reference()
 		let ref = rootRef.child("submit_error_details").childByAutoId()
-		let vinBatteryInfo: [String: String?] = ["battery_test_instructions_id": self.testInstructionsId,"make": vinMake, "message": message, "model": vinModels, "platform": "iOS", "submit_type": submitType, "time_stamp": Constants().currentDateTime(), "transaction_id": transactionID, "vin_number": vinNumber, "year": String(year), "work_order": workOrder, "bms_value_calculated": "\(expectedBMS)", "bms_value_submitted": "\(bmsCapacity)", "profile_test_type": BMSCapacityTest.stressTest]
+		let vinBatteryInfo: [String: String?] = ["battery_test_instructions_id": self.testInstructionsId,"make": vinMake, "message": message, "model": vinModels, "platform": "iOS", "submit_type": submitType, "time_stamp": Constants().currentDateTime(), "transaction_id": transactionID, "vin_number": vinNumber, "year": String(year), "work_order": workOrder, "bms_value_calculated": "\(expectedBMS)", "bms_value_submitted": "\(bmsCapacity)", "profile_test_type": BMSCapacityTest.stressTest, "location_code": "\(self.viewModel?.locationCode ?? "")" ]
 		
 		ref.setValue(vinBatteryInfo) {
 			(error:Error?, ref:DatabaseReference) in
@@ -822,7 +823,7 @@ class UploadAnimationViewController: BaseViewController {
 	func showDataInsufficientError() {
 		let rootRef = Database.database().reference()
 		let ref = rootRef.child("submit_error_details").childByAutoId()
-		let vinBatteryInfo: [String: String?] = ["battery_test_instructions_id": self.testInstructionsId,"make": "", "message": "Min Count of the Data Files Not Fullfilled", "model": "", "platform": "iOS", "submit_type": "", "time_stamp": Constants().currentDateTime(), "transaction_id": self.transactionId, "vin_number": "", "year": "","work_order": "\(String(describing: self.workOrder))"]
+		let vinBatteryInfo: [String: String?] = ["battery_test_instructions_id": self.testInstructionsId,"make": "", "message": "Min Count of the Data Files Not Fullfilled", "model": "", "platform": "iOS", "submit_type": "", "time_stamp": Constants().currentDateTime(), "transaction_id": self.transactionId, "vin_number": "", "year": "","work_order": "\(String(describing: self.workOrder))","location_code": "\(self.viewModel?.locationCode ?? "")"]
 		ref.setValue(vinBatteryInfo) {
 			(error:Error?, ref:DatabaseReference) in
 			if let error = error {
@@ -893,7 +894,7 @@ extension UploadAnimationViewController: BLENonResponsiveDelegate {
 	func recordFirstNonResponsiveBleAttempt() {
 		if let veh = viewModel?.vehicleInfo {
 			let paramDictionary = [
-				Parameters.year: "\(String(describing: veh.year))", Parameters.make : veh.make ?? "", Parameters.model:  veh.modelName ?? "", Parameters.trim: veh.trimName ?? "", Parameters.vinNumber: veh.vin ?? ""]  as [String : String]
+				Parameters.year: "\(String(describing: veh.year))", Parameters.make : veh.make ?? "", Parameters.model:  veh.modelName ?? "", Parameters.trim: veh.trimName ?? "", Parameters.vinNumber: veh.vin ?? "", Parameters.locationCode: "\(self.viewModel?.locationCode ?? "")" ]  as [String : String]
 			FirebaseLogging.instance.logEvent(eventName:RetryPingEvents.retryDeviceNotResponded, parameters: paramDictionary)
 		}
 	}
@@ -901,7 +902,7 @@ extension UploadAnimationViewController: BLENonResponsiveDelegate {
 	func showBleNonResponsiveError() {
 		if let veh = viewModel?.vehicleInfo {
 			let paramDictionary = [
-				Parameters.year: "\(String(describing: veh.year))", Parameters.make : veh.make ?? "", Parameters.model:  veh.modelName ?? "", Parameters.trim: veh.trimName ?? "", Parameters.vinNumber: veh.vin ?? ""]  as [String : String]
+				Parameters.year: "\(String(describing: veh.year))", Parameters.make : veh.make ?? "", Parameters.model:  veh.modelName ?? "", Parameters.trim: veh.trimName ?? "", Parameters.vinNumber: veh.vin ?? "", Parameters.locationCode: "\(self.viewModel?.locationCode ?? "")"]  as [String : String]
 			FirebaseLogging.instance.logEvent(eventName:RetryPingEvents.maxRetriesDeviceNotResponded, parameters: paramDictionary)
 		}
 		self.stackView.removeFromSuperview()

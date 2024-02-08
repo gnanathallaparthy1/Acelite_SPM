@@ -73,6 +73,7 @@ class Constants {
 	static let BATTERY_INSTRUCTION_ID = "batteryInstructionId"
 	static let CURRENT_ENERGY = "currentEnergy"
 	static let NUMBER_OF_CELL = "numberOfCell"
+	static let LOCATION_CODE = "locationCode"
 	
 	
 	func currentDateTime() -> String {

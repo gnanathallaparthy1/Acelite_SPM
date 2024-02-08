@@ -103,8 +103,8 @@ extension OfflineVINDataViewController: UITableViewDataSource, UITableViewDelega
 			let data = Data(vehicalInformation.utf8)
 			let jsonDecoder = JSONDecoder()
 			let vehicalInfo = try! jsonDecoder.decode(Vehicle.self, from: data)
-			
-			let viewModel = UploadAnimationViewModel.init(vehicleInfo: vehicalInfo, workOrder: "", isShortProfile: finalJsonData.isEmpty ? true : false, managedObject: dataObject)
+			let locationCode: String = cellData[Constants.LOCATION_CODE] as? String ?? ""
+			let viewModel = UploadAnimationViewModel.init(vehicleInfo: vehicalInfo, workOrder: "", isShortProfile: finalJsonData.isEmpty ? true : false, managedObject: dataObject, locationCode: "\(locationCode)")
 			let vc = UploadAnimationViewController(viewModel: viewModel)
 			vc.errorSheetSource  = .OFFLINE_LIST
 			

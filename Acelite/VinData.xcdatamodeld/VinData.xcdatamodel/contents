@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21513" systemVersion="22G120" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22225" systemVersion="23C64" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="BatteryInstructionsData" representedClassName="BatteryInstructionsData" syncable="YES" codeGenerationType="class">
         <attribute name="batteryInstructionId" optional="YES" attributeType="String"/>
         <attribute name="bms" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="currentEnergy" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="dateAndTime" optional="YES" attributeType="String"/>
         <attribute name="finalJsonData" optional="YES" attributeType="String"/>
+        <attribute name="locationCode" optional="YES" attributeType="String"/>
         <attribute name="numberOfCell" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="odometer" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="stateOfCharge" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>

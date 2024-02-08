@@ -508,7 +508,7 @@ extension BatteryHealthCheckViewController: GetPreSignedUrlDelegate, UploadAndSu
 		timer?.invalidate()
 		timer = nil
 		var jsonString = ""
-		let vm = UploadAnimationViewModel(vehicleInfo: (self.viewModel?.vehicleInfo)!, workOrder: self.viewModel?.workOrder, isShortProfile: false, managedObject: NSManagedObject())
+		let vm = UploadAnimationViewModel(vehicleInfo: (self.viewModel?.vehicleInfo)!, workOrder: self.viewModel?.workOrder, isShortProfile: false, managedObject: NSManagedObject(), locationCode: self.viewModel?.locationCode ?? "aaa")
 		let vc = UploadAnimationViewController(viewModel: vm)
 		vc.errorSheetSource = .INSTRUCTION_FLOW
 		if self.viewModel?.isJSON == true {
@@ -655,7 +655,7 @@ extension BatteryHealthCheckViewController: BLENonResponsiveDelegate {
 	func recordFirstNonResponsiveBleAttempt() {
 		if let veh = viewModel?.vehicleInfo {
 			let paramDictionary = [
-				Parameters.year: "\(String(describing: veh.year))", Parameters.make : veh.make ?? "", Parameters.model:  veh.modelName ?? "", Parameters.trim: veh.trimName ?? "", Parameters.vinNumber: veh.vin ?? ""]  as [String : String]
+				Parameters.year: "\(String(describing: veh.year))", Parameters.make : veh.make ?? "", Parameters.model:  veh.modelName ?? "", Parameters.trim: veh.trimName ?? "", Parameters.vinNumber: veh.vin ?? "", Parameters.locationCode: "\(self.viewModel?.locationCode ?? "")"]  as [String : String]
 			FirebaseLogging.instance.logEvent(eventName:RetryPingEvents.retryDeviceNotResponded, parameters: paramDictionary)
 		}
 	}
@@ -663,7 +663,7 @@ extension BatteryHealthCheckViewController: BLENonResponsiveDelegate {
 	func showBleNonResponsiveError() {
 		if let veh = viewModel?.vehicleInfo {
 			let paramDictionary = [
-				Parameters.year: "\(String(describing: veh.year))", Parameters.make : veh.make ?? "", Parameters.model:  veh.modelName ?? "", Parameters.trim: veh.trimName ?? "", Parameters.vinNumber: veh.vin ?? ""]  as [String : String]
+				Parameters.year: "\(String(describing: veh.year))", Parameters.make : veh.make ?? "", Parameters.model:  veh.modelName ?? "", Parameters.trim: veh.trimName ?? "", Parameters.vinNumber: veh.vin ?? "", Parameters.locationCode: "\(self.viewModel?.locationCode ?? "")"]  as [String : String]
 			FirebaseLogging.instance.logEvent(eventName:RetryPingEvents.maxRetriesDeviceNotResponded, parameters: paramDictionary)
 		}
 		let dialogMessage = UIAlertController(title: "Error", message: "OBD2 device is not responding. Please retry the test.", preferredStyle: .alert)

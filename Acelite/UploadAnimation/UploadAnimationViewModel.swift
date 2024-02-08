@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import FirebaseDatabase
 import Firebase
+import FirebaseCrashlytics
 import CoreData
 import Apollo
 
@@ -41,12 +42,40 @@ class UploadAnimationViewModel {
 	public var isShortProfile: Bool?
 	weak var delegate: ShortProfileCommandsRunDelegate? = nil
 	var previousHeader: String = ""
+
+	var location: LocationCode? = nil
+	var locationCode: String?
 	
-	init(vehicleInfo: Vehicle?, workOrder: String?, isShortProfile: Bool, managedObject: NSManagedObject) {
+	init(vehicleInfo: Vehicle?, workOrder: String?, isShortProfile: Bool, managedObject: NSManagedObject, locationCode: String) {
 		self.vehicleInfo = vehicleInfo
 		self.workOrder = workOrder
 		self.isShortProfile = isShortProfile
 		self.managedObject = managedObject
+		self.locationCode = locationCode
+		//UserDefaults.standard.set("xyzwsf", forKey: "locationCode")
+		previousSelectedLocationCode()
+	}
+	
+	private func previousSelectedLocationCode() {
+		//let previousLCode = UserDefaults.standard.string(forKey: "locationCode")
+		if let locationCode = locationCode {
+			let locationAllCases = LocationCode.allCases
+			for item in locationAllCases {
+				if item.rawValue.lowercased() == locationCode.lowercased() {
+					print(Date(), "location code available",item.rawValue, to: &Log.log)
+					location = item
+					return
+				}
+			}
+			if location == nil {
+				print(Date(), "location code not available, Sending default aaa", to: &Log.log)
+				// Log a non-fatal error for Crashlytics
+				let error = NSError(domain: NSCocoaErrorDomain, code: -1001, userInfo: ["message": "selected location is not available in CADS submit API"])
+				Crashlytics.crashlytics().record(error: error)
+				location = LocationCode.aaa
+			}
+			
+		}
 	}
 	
 	
@@ -455,7 +484,7 @@ class UploadAnimationViewModel {
 			let stateOfCharge = self.stateOfCharge
 			let dashDataInput = DashDataInput.init(odometer: Int(odometer ?? 0), stateOfCharge: stateOfCharge)
 			let obd2Test = OBD2TestInput.init(odometer: Int(self.odometer ?? 0) , currentEnergy: currentEnergy, stateOfCharge: stateOfCharge)
-			calculatedBetteryHealth = CalculateBatteryHealthInput.init(vehicleProfile: vehicalProfile, obd2Test: obd2Test, dashData: dashDataInput, locationCode: LocationCode.aaa, workOrderNumber: self.workOrder ?? "", totalNumberOfCharges: 1, lifetimeCharge: 2.0 , lifetimeDischarge: 2.0)
+			calculatedBetteryHealth = CalculateBatteryHealthInput.init(vehicleProfile: vehicalProfile, obd2Test: obd2Test, dashData: dashDataInput, locationCode: location, workOrderNumber: self.workOrder ?? "", totalNumberOfCharges: 1, lifetimeCharge: 2.0 , lifetimeDischarge: 2.0)
 		} else {
 			// With BMS
 			let expectedBms = (vehicalProfile.capacityAtBirth ?? Double(0.0))!
@@ -466,7 +495,7 @@ class UploadAnimationViewModel {
 				bms = calculatedBms
 			}
 			let bmsObdTest = OBD2TestInput.init(odometer: Int(self.odometer ?? 0), bmsCapacity: bms)
-			calculatedBetteryHealth = CalculateBatteryHealthInput.init(vehicleProfile: vehicalProfile, obd2Test: bmsObdTest, locationCode: LocationCode.aaa, workOrderNumber: self.workOrder ?? "", totalNumberOfCharges: 1, lifetimeCharge: 2.0 , lifetimeDischarge: 2.0)
+			calculatedBetteryHealth = CalculateBatteryHealthInput.init(vehicleProfile: vehicalProfile, obd2Test: bmsObdTest, locationCode: self.location, workOrderNumber: self.workOrder ?? "", totalNumberOfCharges: 1, lifetimeCharge: 2.0 , lifetimeDischarge: 2.0)
 			
 		}
 		print(Date(), "calculatedBetteryHealth: \(String(describing: calculatedBetteryHealth))", to: &Log.log)
@@ -515,7 +544,6 @@ class UploadAnimationViewModel {
 									let bt = submitBatteryData.calculateBatteryHealth?.calculatedBatteryHealth
 									let minEstRange = bt?.estimatedRange?.estimatedRangeMin
 									let maxEstRange = bt?.estimatedRange?.estimatedRangeMax
-									print("SCORE:::",bt?.batteryScore?.score)
 
 									self.delegate?.shortProfileCommandsCompleted(battteryHealth: bt?.batteryScore , minRange: minEstRange, maxRange: maxEstRange, rangeAtBirth: rangeAtBirth, submittedBms: self.bms, expectedBms: self.calculatedBms, submitedType: "BMS", workOrder: self.workOrder ?? "")
 								}

@@ -66,9 +66,11 @@ class BatteryHealthCheckViewModel {
 	
 	let loopDispatch = DispatchQueue.global(qos: .userInitiated)
 	var previousHeader = ""
-	init(vehicleInfo: Vehicle, workOrder: String?) {
+	var locationCode: String = ""
+	init(vehicleInfo: Vehicle, workOrder: String?, locationCode: String) {
 		self.vehicleInfo = vehicleInfo
 		self.workOrder = workOrder
+		self.locationCode = locationCode
 	}
 	
 	

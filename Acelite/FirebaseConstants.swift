@@ -92,6 +92,7 @@ struct Parameters {
 	static let trim = "trim"
 	static let code = "code"
 	static let source = "source"
+	static let locationCode = "location_code"
 	
 	
 }

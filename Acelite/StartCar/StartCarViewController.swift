@@ -37,12 +37,12 @@ class StartCarViewController: UIViewController {
 		let paramDictionary = [
 			Parameters.workOrder: "\(String(describing: startCarViewModel?.workOrder))",
 			Parameters.batteryTestInstructionsId: "\(instructionId?.testCommands?.id ?? "")",
-			Parameters.year: "\(self.startCarViewModel?.vehicalInfo?.year ?? 0)", Parameters.make : self.startCarViewModel?.vehicalInfo?.make ?? "", Parameters.model:  self.startCarViewModel?.vehicalInfo?.modelName ?? "", Parameters.trim: self.startCarViewModel?.vehicalInfo?.trimName ?? "" ] as [String : String]
+			Parameters.year: "\(self.startCarViewModel?.vehicalInfo?.year ?? 0)", Parameters.make : self.startCarViewModel?.vehicalInfo?.make ?? "", Parameters.model:  self.startCarViewModel?.vehicalInfo?.modelName ?? "", Parameters.trim: self.startCarViewModel?.vehicalInfo?.trimName ?? "", Parameters.locationCode: self.startCarViewModel?.locationCode ?? "" ] as [String : String]
 		FirebaseLogging.instance.logEvent(eventName:BMSCapacityTest.quickTestStart, parameters: paramDictionary)
 		
 		DispatchQueue.main.async {
 			self.startButton.isUserInteractionEnabled = false
-			let vm = UploadAnimationViewModel(vehicleInfo: self.startCarViewModel?.vehicalInfo, workOrder: self.startCarViewModel?.workOrder, isShortProfile: true, managedObject: NSManagedObject())
+			let vm = UploadAnimationViewModel(vehicleInfo: self.startCarViewModel?.vehicalInfo, workOrder: self.startCarViewModel?.workOrder, isShortProfile: true, managedObject: NSManagedObject(), locationCode: self.startCarViewModel?.locationCode ?? "")
 			let uploadVC = UploadAnimationViewController(viewModel: vm)
 			self.navigationController?.pushViewController(uploadVC, animated: true)
 		}

@@ -196,7 +196,7 @@ class VehicalInformationViewController:  BaseViewController {
 		let paramDictionary = [
 			Parameters.workOrder: workorder,
 			Parameters.batteryTestInstructionsId: "\(instructionId?.testCommands?.id ?? "")",
-			Parameters.year: "\(self.viewModel?.vehicleInformation?.year ?? 0)", Parameters.make : self.viewModel?.vehicleInformation?.make ?? "", Parameters.model:  self.viewModel?.vehicleInformation?.modelName ?? "", Parameters.trim: self.viewModel?.vehicleInformation?.trimName ?? "" ] as [String : String]
+			Parameters.year: "\(self.viewModel?.vehicleInformation?.year ?? 0)", Parameters.make : self.viewModel?.vehicleInformation?.make ?? "", Parameters.model:  self.viewModel?.vehicleInformation?.modelName ?? "", Parameters.trim: self.viewModel?.vehicleInformation?.trimName ?? "" , Parameters.locationCode: "\(self.viewModel?.locationCode ?? "")"] as [String : String]
 		FirebaseLogging.instance.logEvent(eventName:BMSCapacityTest.stressTest, parameters: paramDictionary)
 		
 		
@@ -204,7 +204,7 @@ class VehicalInformationViewController:  BaseViewController {
 		let testingVC = storyBoard.instantiateViewController(withIdentifier: "BatteryHealthCheckViewController") as! BatteryHealthCheckViewController
 		
 		if let vehicleInfo = self.viewModel?.vehicleInformation {
-			let vm = BatteryHealthCheckViewModel(vehicleInfo: vehicleInfo, workOrder: viewModel?.workOrder)
+			let vm = BatteryHealthCheckViewModel(vehicleInfo: vehicleInfo, workOrder: viewModel?.workOrder, locationCode: self.viewModel?.locationCode ?? "aaa")
 			testingVC.viewModel = vm
 		}
 		self.navigationController?.pushViewController(testingVC, animated: true)
@@ -221,12 +221,12 @@ class VehicalInformationViewController:  BaseViewController {
 		let paramDictionary = [
 			Parameters.workOrder:  workorder ,
 			Parameters.batteryTestInstructionsId: "\(instructionId?.testCommands?.id ?? "")",
-			Parameters.year: "\(self.viewModel?.vehicleInformation?.year ?? 0)", Parameters.make : self.viewModel?.vehicleInformation?.make ?? "", Parameters.model:  self.viewModel?.vehicleInformation?.modelName ?? "", Parameters.trim: self.viewModel?.vehicleInformation?.trimName ?? "" ] as [String : String]
+			Parameters.year: "\(self.viewModel?.vehicleInformation?.year ?? 0)", Parameters.make : self.viewModel?.vehicleInformation?.make ?? "", Parameters.model:  self.viewModel?.vehicleInformation?.modelName ?? "", Parameters.trim: self.viewModel?.vehicleInformation?.trimName ?? "", Parameters.locationCode: "\(self.viewModel?.locationCode ?? "")" ] as [String : String]
 		FirebaseLogging.instance.logEvent(eventName:BMSCapacityTest.quickTest, parameters: paramDictionary)
 		
 		let storyBoard = UIStoryboard.init(name: "BatteryHealthCheck", bundle: nil)
 		let startCarVC = storyBoard.instantiateViewController(withIdentifier: "StartCarViewController") as! StartCarViewController
-		startCarVC.startCarViewModel = StartCarViewModel(vehicalInfo: self.viewModel?.vehicleInformation, workOrder: self.viewModel?.workOrder)
+		startCarVC.startCarViewModel = StartCarViewModel(vehicalInfo: self.viewModel?.vehicleInformation, workOrder: self.viewModel?.workOrder, locationCode:  self.viewModel?.locationCode ?? "")
 		self.navigationController?.pushViewController(startCarVC, animated: true)
 	}
 

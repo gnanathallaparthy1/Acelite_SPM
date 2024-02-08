@@ -20,12 +20,14 @@ class VehicleInformationViewModel {
 	var ifShortProfile: Bool = false
 	weak var delegate: UpdateVehicleInformationDelegate? = nil
 	var workOrder: String?
+	var locationCode: String = ""
 	
-	init(vinNumber: String?, vehicleInformation: Vehicle, isShortProfile: Bool?, workOrder: String) {
+	init(vinNumber: String?, vehicleInformation: Vehicle, isShortProfile: Bool?, workOrder: String, locationCode: String) {
 		self.vinNumber = vinNumber
 		self.vehicleInformation = vehicleInformation
 		self.ifShortProfile = isShortProfile ?? false
 		self.workOrder = workOrder
+		self.locationCode = locationCode
 	}
 	 func fetchVehicalInformation(vim: String)  {
 		 Network.shared.apollo.fetch(query: VehicleInfoQueryQuery(vin: vim)) { result in 

@@ -92,6 +92,7 @@
 		866CDB61298C206E00ADFB50 /* VehicleInformationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866CDB60298C206E00ADFB50 /* VehicleInformationViewModel.swift */; };
 		866CDB65298CB02700ADFB50 /* SpinnerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866CDB64298CB02700ADFB50 /* SpinnerViewController.swift */; };
 		866CDB6A298D743E00ADFB50 /* TestViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866CDB69298D743E00ADFB50 /* TestViewModel.swift */; };
+		8670C17A2B6D7EB40095C85C /* DropDownViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8670C1792B6D7EB40095C85C /* DropDownViewController.swift */; };
 		867200A82A5F91D900C6CBC7 /* Themes+Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8639046729940178008D5A0A /* Themes+Colors.swift */; };
 		867200A92A5F91D900C6CBC7 /* BatteryDataFileSubmitModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A68D4F29B108C2000F2188 /* BatteryDataFileSubmitModel.swift */; };
 		867200AA2A5F91D900C6CBC7 /* AceliteConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867BBF7A296744CD00DC4842 /* AceliteConstants.swift */; };
@@ -298,6 +299,7 @@
 		866CDB60298C206E00ADFB50 /* VehicleInformationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleInformationViewModel.swift; sourceTree = "<group>"; };
 		866CDB64298CB02700ADFB50 /* SpinnerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinnerViewController.swift; sourceTree = "<group>"; };
 		866CDB69298D743E00ADFB50 /* TestViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestViewModel.swift; sourceTree = "<group>"; };
+		8670C1792B6D7EB40095C85C /* DropDownViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropDownViewController.swift; sourceTree = "<group>"; };
 		867201032A5F91D900C6CBC7 /* Acelite_Prod.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Acelite_Prod.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8672010B2A60701D00C6CBC7 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		8672010D2A60701D00C6CBC7 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -457,6 +459,7 @@
 				86AF929329B585AF00FDA4C3 /* InfoPopUpViewController.swift */,
 				8609395429BF8C98001DE232 /* BatteryHealthCheck.storyboard */,
 				86322CD42A9CF866004E16BB /* VinData.xcdatamodeld */,
+				8670C1792B6D7EB40095C85C /* DropDownViewController.swift */,
 			);
 			path = Acelite;
 			sourceTree = "<group>";
@@ -789,6 +792,7 @@
 				861E6EC22953789B00443F12 /* Sources */,
 				861E6EC32953789B00443F12 /* Frameworks */,
 				861E6EC42953789B00443F12 /* Resources */,
+				863C39A12B681C4F00AD7AA2 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -991,6 +995,28 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		863C39A12B681C4F00AD7AA2 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}",
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${PRODUCT_NAME}",
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist",
+				"$(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/GoogleService-Info.plist",
+				"$(TARGET_BUILD_DIR)/$(EXECUTABLE_PATH)",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${BUILD_DIR%/Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run\"\n";
+		};
 		866CDB55298AD34600ADFB50 /* Apollo */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 12;
@@ -1085,6 +1111,7 @@
 				8609395129BF898B001DE232 /* BatteryHealthCheckViewController.swift in Sources */,
 				861E6F0D295E08B300443F12 /* ScannerViewController.swift in Sources */,
 				861E6ECC2953789B00443F12 /* SceneDelegate.swift in Sources */,
+				8670C17A2B6D7EB40095C85C /* DropDownViewController.swift in Sources */,
 				86B908A22970854A001CAB90 /* TestingViewController.swift in Sources */,
 				867B608029A937CE0050411C /* ExportAsCSV.swift in Sources */,
 				861E6F012957736700443F12 /* SideMenuViewController.swift in Sources */,
@@ -1356,6 +1383,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = QMYQQM43B7;
 				GCC_OPTIMIZATION_LEVEL = s;
 				GENERATE_INFOPLIST_FILE = YES;
