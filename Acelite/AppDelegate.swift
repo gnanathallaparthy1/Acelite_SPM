@@ -25,7 +25,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
 		)
 		
 		application.registerForRemoteNotifications()
-		FirebaseApp.configure()
+		
+#if DEV
+		setupFirebaseConfigFiles(fileName: "GoogleService-Info_Dev")
+#else
+		setupFirebaseConfigFiles(fileName: "GoogleService-Info")
+#endif
+		//setupFirebaseConfigFiles(fileName: "GoogleService-Info")
+		
+	
 		
 		//Messaging
 		Messaging.messaging().delegate = self

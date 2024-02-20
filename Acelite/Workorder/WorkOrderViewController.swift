@@ -91,6 +91,7 @@ class WorkOrderViewController: BaseViewController, UIGestureRecognizerDelegate {
 			 iconImage.image = dropDownImage
 			 leftVeiwView.addSubview(iconImage)
 		locationCodeTextFiled.delegate = self
+		previousLocationCode = UserDefaults.standard.string(forKey: "locationCode") ?? "aaa"
 		fetchLocationCodes()
 	}
 	
