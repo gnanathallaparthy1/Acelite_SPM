@@ -17,6 +17,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
 	let notificationCenter = UNUserNotificationCenter.current()
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 		
+		print(BuildConfig().getXapiKey())
+		print(BuildConfig().getBaseUrl())
 		
 		let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound, .sound]
 		UNUserNotificationCenter.current().requestAuthorization(

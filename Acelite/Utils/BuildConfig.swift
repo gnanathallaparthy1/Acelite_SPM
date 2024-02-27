@@ -22,4 +22,27 @@ public final class BuildConfig {
   static  let GRAPHQL_SCHEME = "https://"
   // Field from product flavor: nonprod
    static  let HEADER_GRAPHQL = "0FPKgwbkWP6wkOov1jTFO2BLfWhesqBY8dPBZB45"
+	
+	
+	
+	static let PROD_GRAPHQL_BASE_URL = "api.fleet.io.caioptimizations.com"
+	static let PROD_HEADER_GRAPHQL = "xZx5AtQHzY05ZzUgZpQitRYYVc9XjTtV3Un9Ow3Pm3DRuzjt"
+	
+	
+	func getBaseUrl() -> String {
+	#if DEV
+		return "\(BuildConfig.GRAPHQL_SCHEME + BuildConfig.GRAPHQL_BASE_URL + BuildConfig.GRAPHQL_ENDPOINT)"
+	#else
+		return "\(BuildConfig.GRAPHQL_SCHEME + BuildConfig.PROD_GRAPHQL_BASE_URL + BuildConfig.GRAPHQL_ENDPOINT)"
+	#endif
+	}
+	
+	func getXapiKey() -> String {
+		#if DEV
+			return "\(BuildConfig.HEADER_GRAPHQL)"
+		#else
+			return "\(BuildConfig.PROD_HEADER_GRAPHQL)"
+		#endif
+	}
+	
 }

@@ -32,7 +32,7 @@ class Network {
 
 	   let cache = InMemoryNormalizedCache()
 	   let store1 = ApolloStore(cache: cache)
-	   let authPayloads = ["x-api-key": "0FPKgwbkWP6wkOov1jTFO2BLfWhesqBY8dPBZB45"]
+		let authPayloads = ["x-api-key": BuildConfig().getXapiKey()]
 	   let configuration = URLSessionConfiguration.default
 	   configuration.httpAdditionalHeaders = authPayloads
 		configuration.timeoutIntervalForRequest = 30.0
@@ -41,7 +41,7 @@ class Network {
 	   let client1 = URLSessionClient(sessionConfiguration: configuration, callbackQueue: nil)
 	   let provider = NetworkInterceptorProvider(client: client1, shouldInvalidateClientOnDeinit: true, store: store1)
 	   
-	   let url = URL(string: "https://api.fleet.io.nonprod.caioptimizations.com/graphql")!
+		let url = URL(string: BuildConfig().getBaseUrl())!
 	   
 	   let requestChainTransport = RequestChainNetworkTransport(interceptorProvider: provider,
 																endpointURL: url)
@@ -68,7 +68,7 @@ class CustomInterceptor: ApolloInterceptor {
 		request: HTTPRequest<Operation>,
 		response: HTTPResponse<Operation>?,
 		completion: @escaping (Swift.Result<GraphQLResult<Operation.Data>, Error>) -> Void) {
-			request.addHeader(name: "x-api-key", value: "0FPKgwbkWP6wkOov1jTFO2BLfWhesqBY8dPBZB45")
+			request.addHeader(name: "x-api-key", value: BuildConfig().getXapiKey())
 			
 			print("request :\(request)")
 			print("response :\(String(describing: response))")
