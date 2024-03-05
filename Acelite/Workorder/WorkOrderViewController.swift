@@ -9,12 +9,14 @@ import UIKit
 import CoreData
 import FirebaseDatabase
 import Firebase
-
+import ExternalAccessory
 
 class WorkOrderViewController: BaseViewController, UIGestureRecognizerDelegate {
-	@IBOutlet weak var locationCodeTextFiled: UITextField!
-  
 	
+//	var sessionController:              SessionController!
+//	var selectedAccessory:              EAAccessory?
+	
+	@IBOutlet weak var locationCodeTextFiled: UITextField!
 	@IBOutlet weak var dropDownView: UIView!
 	private let tableView = UITableView()
 	private let transparentView = UIView()
@@ -61,9 +63,10 @@ class WorkOrderViewController: BaseViewController, UIGestureRecognizerDelegate {
 	let natificationName = NSNotification.Name(rawValue:"InternetObserver")
 	var viewModel: WorkOrderViewModel?
 	var previousLocationCode = ""
-
+	var interfaceType: DeviceInterfaceType = .BLEUTOOTH_LOW_ENERGY
 	init(viewModel: WorkOrderViewModel) {
 		super.init(nibName: nil, bundle: nil)
+	
 		self.viewModel = viewModel
 		self.viewModel?.delegate = self
 		//super.init()
@@ -277,7 +280,9 @@ class WorkOrderViewController: BaseViewController, UIGestureRecognizerDelegate {
 			if let viewModel = self.viewModel {
 				let storyBoard = UIStoryboard.init(name: "Main", bundle: nil)
 				let vehicalInformation = storyBoard.instantiateViewController(withIdentifier: "VehicalInformationViewController") as! VehicalInformationViewController
+				vehicalInformation.interfaceType = self.interfaceType
 				vehicalInformation.viewModel = VehicleInformationViewModel(vinNumber: viewModel.vehicleInfo.vin, vehicleInformation: viewModel.vehicleInfo, isShortProfile: viewModel.isShortProfile ?? false, workOrder: workOrder, locationCode: previousLocationCode)
+			
 				self.navigationController?.pushViewController(vehicalInformation, animated: true)
 			}
 		}

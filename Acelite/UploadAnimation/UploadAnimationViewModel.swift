@@ -13,6 +13,7 @@ import Firebase
 import FirebaseCrashlytics
 import CoreData
 import Apollo
+import ExternalAccessory
 
 protocol ShortProfileCommandsRunDelegate: AnyObject {
 	func shortProfileCommandsCompleted(battteryHealth: BatteryScore?, minRange: Double?, maxRange: Double?, rangeAtBirth: Double?, submittedBms: Double?, expectedBms: Double?, submitedType: String, workOrder: String)
@@ -46,7 +47,14 @@ class UploadAnimationViewModel {
 	var location: LocationCode? = nil
 	var locationCode: String?
 	
-	init(vehicleInfo: Vehicle?, workOrder: String?, isShortProfile: Bool, managedObject: NSManagedObject, locationCode: String) {
+	var sessionController: SessionController?
+	var selectedAccessory: EAAccessory?
+	var interfaceType: DeviceInterfaceType = .BLUETOOTH_CLASSIC
+	
+	
+	init(vehicleInfo: Vehicle?, workOrder: String?, isShortProfile: Bool, managedObject: NSManagedObject, locationCode: String, interfaceType: DeviceInterfaceType) {
+		//sessionController = SessionController.sharedController
+		self.interfaceType = interfaceType
 		self.vehicleInfo = vehicleInfo
 		self.workOrder = workOrder
 		self.isShortProfile = isShortProfile
@@ -54,6 +62,14 @@ class UploadAnimationViewModel {
 		self.locationCode = locationCode
 		//UserDefaults.standard.set("xyzwsf", forKey: "locationCode")
 		previousSelectedLocationCode()
+		//_ = sessionController?.openSession()
+	}
+	
+	func configureAccessoryWithString(instructionType: InstructionType, commandType: CommandType, string: String, completionHandler: ((Data)->())?) {
+		
+		let data = string.data(using: .utf8)
+		sessionController?.writeData(instructionType: instructionType, commandType: commandType, data: data!, completionHandler: completionHandler)
+	
 	}
 	
 	private func previousSelectedLocationCode() {
@@ -81,73 +97,112 @@ class UploadAnimationViewModel {
 	
 	// Executing Commands
 	func initialCommand() {
-		
 		let ATZ_Command = Constants.ATZ + Constants.NEW_LINE_CHARACTER
-		print(Date(), "Inital Commands", to: &Log.log)
-		Network.shared.bluetoothService?.writeBytesData(instructionType: .NONE, commandType: .Other, data: ATZ_Command, completionHandler: { data in
-			print("Inital command ATZ")
-			self.runATE0Command()
-		})
-		
+		if interfaceType == .BLUETOOTH_CLASSIC {
+			self.configureAccessoryWithString(instructionType: .NONE, commandType: .Other, string: ATZ_Command, completionHandler: { data in
+				let responseString: String = String.init(data: data, encoding: .utf8) ?? ""
+				print("ATZ Response:", responseString)
+				self.runATE0Command()
+			})
+		} else {
+			Network.shared.bluetoothService?.writeBytesData(instructionType: .NONE, commandType: .Other, data: ATZ_Command, completionHandler: { data in
+				self.runATE0Command()
+			})
+		}
 	}
 	
 	private func runATE0Command() {
 		let ATE0_Command = Constants.ATE0 + Constants.NEW_LINE_CHARACTER
-		Network.shared.bluetoothService?.writeBytesData(instructionType: .NONE, commandType: .Other, data: ATE0_Command, completionHandler: { data in
-			print("Inital command ATE0")
-			self.runATS0Command()
-		})
+		if interfaceType == .BLUETOOTH_CLASSIC {
+			self.configureAccessoryWithString(instructionType: .NONE, commandType: .Other, string: ATE0_Command, completionHandler: { data in
+				let responseString: String = String.init(data: data, encoding: .utf8) ?? ""
+				print("ATE0 Response:", responseString)
+				self.runATS0Command()
+			})
+		} else {
+			Network.shared.bluetoothService?.writeBytesData(instructionType: .NONE, commandType: .Other, data: ATE0_Command, completionHandler: { data in
+				self.runATS0Command()
+			})
+		}
+			
 	}
+	
 	
 	private func runATS0Command() {
 		
 		let ATS0_Command =  Constants.ATS0 + Constants.NEW_LINE_CHARACTER
-		Network.shared.bluetoothService?.writeBytesData(instructionType: .NONE, commandType: .Other, data: ATS0_Command, completionHandler: { data in
-			print("Inital command ATS0")
-			self.runProtocolCommand()
-		})
-		
+		if interfaceType == .BLUETOOTH_CLASSIC {
+			self.configureAccessoryWithString(instructionType: .NONE, commandType: .Other, string: ATS0_Command, completionHandler: { data in
+				let responseString: String = String.init(data: data, encoding: .utf8) ?? ""
+				print("ATS0 Response:", responseString)
+				self.runProtocolCommand()
+			})
+		} else {
+			Network.shared.bluetoothService?.writeBytesData(instructionType: .NONE, commandType: .Other, data: ATS0_Command, completionHandler: { data in
+				//print(Date(), "about to perform ATS0 command write", to: &Log.log)
+				self.runProtocolCommand()
+			})
+		}
 	}
 	
 	private func runProtocolCommand() {
-		//		guard let testCommand = vehicleInfo?.getBatteryTestInstructions, testCommand.count > 0 else {
-		//			return
-		//		}
-		//		let testCommands = testCommand[0].testCommands
-		
+		guard let testCommand = vehicleInfo?.getBatteryTestInstructions, testCommand.count > 0 else {
+			return
+		}
+		let testCommands = testCommand[0].testCommands
+		self.numberOfCells = testCommands?.sampledCommands?.cellVoltage.count
 		
 		let elmValue = self.elm327ProtocolPreset?.replacingOccurrences(of: "_", with: "")
 		let ATSP_Command = Constants.ATSP + "\(elmValue ?? Constants.DEFAULT_PROTOCOL)" + Constants.NEW_LINE_CHARACTER
-		Network.shared.bluetoothService?.writeBytesData(instructionType: .NONE, commandType: .Other, data: ATSP_Command, completionHandler: { data in
-			print("about to perform protocol command write")
-			print(Date(), "about to perform protocol command write", to: &Log.log)
-			if Network.shared.isDiagnosticSession == true {
-				self.runDiagnosticCommand()
-			} else {
-				self.runNormalCommands()
-			}
-			
-		})
-		
+
+		if interfaceType == .BLUETOOTH_CLASSIC {
+			self.configureAccessoryWithString(instructionType: .NONE, commandType: .Other, string: ATSP_Command, completionHandler: { data in
+				print(Date(), "about to perform protocol command write", to: &Log.log)
+				let responseString: String = String.init(data: data, encoding: .utf8) ?? ""
+				print("ATSP Response:", responseString)
+				if Network.shared.isDiagnosticSession == true {
+					self.runDiagnosticCommand()
+				} else {
+					self.runNormalCommands()
+				}
+			})
+		} else {
+			Network.shared.bluetoothService?.writeBytesData(instructionType: .NONE, commandType: .Other, data: ATSP_Command, completionHandler: { data in
+				print(Date(), "about to perform protocol command write", to: &Log.log)
+				if Network.shared.isDiagnosticSession == true {
+					self.runDiagnosticCommand()
+				} else {
+					self.runNormalCommands()
+				}
+			})
+		}
 	}
 	
 	private func runDiagnosticCommand() {
 		if let header = Network.shared.diagnosticCommand?.challenge?.header {
 			guard let pid = Network.shared.diagnosticCommand?.challenge?.pid else { return }
-			
 			let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
-			Network.shared.bluetoothService?.writeBytesData(instructionType: .NONE, commandType: .DIAGNOSTIC_SESSION, data: ATSHOdometer_Command, completionHandler: { data in
-				let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
-				Network.shared.bluetoothService?.writeBytesData(instructionType: .NONE, commandType: .DIAGNOSTIC_SESSION, data: odometerPIDCommand, completionHandler: { data1 in
-					Network.shared.isDiagnosticSession  = false
-					print("RUN Normal commands")
-					self.runNormalCommands()
-					return
-					
+			if interfaceType == .BLUETOOTH_CLASSIC {
+				self.configureAccessoryWithString(instructionType: .NONE, commandType: .DIAGNOSTIC_SESSION, string: ATSHOdometer_Command, completionHandler: { data in
+					let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
+					self.configureAccessoryWithString(instructionType: .NONE, commandType: .DIAGNOSTIC_SESSION, string: odometerPIDCommand, completionHandler: { data in
+						Network.shared.isDiagnosticSession  = false
+						let responseString: String = String.init(data: data, encoding: .utf8) ?? ""
+						print("Odometer PID Response:", responseString)
+						self.runNormalCommands()
+					})
 				})
-				
-			})
-			
+			} else {
+				Network.shared.bluetoothService?.writeBytesData(instructionType: .NONE, commandType: .DIAGNOSTIC_SESSION, data: ATSHOdometer_Command, completionHandler: { data in
+					//print(Date(), "about to perform Diagnostic command write", to: &Log.log)
+					let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
+					Network.shared.bluetoothService?.writeBytesData(instructionType: .NONE, commandType: .DIAGNOSTIC_SESSION, data: odometerPIDCommand, completionHandler: { data1 in
+						Network.shared.isDiagnosticSession  = false
+						self.runNormalCommands()
+						return
+					})
+				})
+			}
 		}
 	}
 	// MARK: - Normal Commands
@@ -176,38 +231,68 @@ class UploadAnimationViewModel {
 			guard let pid = testCommand.challenge?.pid else { return }
 			if previousHeader == header {
 				let pidCommand = pid + Constants.NEW_LINE_CHARACTER
-				
-				Network.shared.bluetoothService?.writeBytesData(instructionType: .PID, commandType: .ODOMETER, data: pidCommand, completionHandler: { data1 in
-							testCommand.deviceData = data1
-					print(Date(), "Command:  \(testCommand.type) - Response: \(data1)", to: &Log.log)
-							onCompletion!(testCommand)
-						})
+				//self.startTime = self.getStartTime()
+				if interfaceType == .BLUETOOTH_CLASSIC {
+					self.configureAccessoryWithString(instructionType: .PID, commandType: .ODOMETER, string: pidCommand, completionHandler: { data in
+						print(Date(), "Command:  \(testCommand.type) - Response: \(data)", to: &Log.log)
+						testCommand.deviceData = data
+								onCompletion!(testCommand)
+					})
+				} else {
+					Network.shared.bluetoothService?.writeBytesData(instructionType: .PID, commandType: .ODOMETER, data: pidCommand, completionHandler: { data1 in
+								testCommand.deviceData = data1
+						print(Date(), "Command:  \(testCommand.type) - Response: \(data1)", to: &Log.log)
+								onCompletion!(testCommand)
+							})
+				}
+						
 			} else {
 				let ATSHOdometer_Command =  Constants.ATSH + header + Constants.NEW_LINE_CHARACTER
-				Network.shared.bluetoothService?.writeBytesData(instructionType: .HEADER, commandType: testCommand.type, data: ATSHOdometer_Command, completionHandler: { data in
-					let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
-					self.previousHeader = header
-					if let canCommand = testCommand.challenge?.canMask, let canFilterCommand = testCommand.challenge?.canFilter {
-						let canMask =  Constants.ATCM + canCommand + Constants.NEW_LINE_CHARACTER
-						Network.shared.bluetoothService?.writeBytesData(instructionType: .NONE, commandType: testCommand.type, data: canMask, completionHandler: { data in
-							let canFilter = Constants.ATCF + canFilterCommand + Constants.NEW_LINE_CHARACTER
-							
-							Network.shared.bluetoothService?.writeBytesData(instructionType: .NONE, commandType: .ODOMETER, data: canFilter, completionHandler: { data1 in
-								testCommand.deviceData = data1
-								print(Date(), "Command:  \(testCommand.type) - Response: \(data1)", to: &Log.log)
-								Network.shared.bluetoothService?.writeBytesData(instructionType: .PID, commandType: .ODOMETER, data: odometerPIDCommand, completionHandler: { data1 in
+				if interfaceType == .BLUETOOTH_CLASSIC {
+					self.configureAccessoryWithString(instructionType: .HEADER, commandType: testCommand.type, string: ATSHOdometer_Command, completionHandler: { data in
+						let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
+						self.configureAccessoryWithString(instructionType: .NONE, commandType: testCommand.type, string: ATSHOdometer_Command, completionHandler: { data in
+							if let canCommand = testCommand.challenge?.canMask, let canFilterCommand = testCommand.challenge?.canFilter {
+								let canMask =  Constants.ATCM + canCommand + Constants.NEW_LINE_CHARACTER
+								self.configureAccessoryWithString(instructionType: .NONE, commandType: .ODOMETER, string: canMask, completionHandler: { data in
+									let canFilter = Constants.ATCF + canFilterCommand + Constants.NEW_LINE_CHARACTER
+									//self.startTime = self.getStartTime()
+									self.configureAccessoryWithString(instructionType: .NONE, commandType: .ODOMETER, string: canFilter, completionHandler: { data in
+										self.configureAccessoryWithString(instructionType: .PID, commandType: .ODOMETER, string: odometerPIDCommand, completionHandler: { data in
+											let dataString: String = String.init(data: data, encoding: .utf8) ?? ""
+											print("Odometer PID resopnse", dataString)
+											testCommand.deviceData = data
+											onCompletion!(testCommand)
+										})
+									})
+								})
+							}
+						})
+					})
+				} else {
+					Network.shared.bluetoothService?.writeBytesData(instructionType: .HEADER, commandType: testCommand.type, data: ATSHOdometer_Command, completionHandler: { data in
+						let odometerPIDCommand = pid + Constants.NEW_LINE_CHARACTER
+						self.previousHeader = header
+						if let canCommand = testCommand.challenge?.canMask, let canFilterCommand = testCommand.challenge?.canFilter {
+							let canMask =  Constants.ATCM + canCommand + Constants.NEW_LINE_CHARACTER
+							Network.shared.bluetoothService?.writeBytesData(instructionType: .NONE, commandType: testCommand.type, data: canMask, completionHandler: { data in
+								let canFilter = Constants.ATCF + canFilterCommand + Constants.NEW_LINE_CHARACTER
+								//self.startTime = self.getStartTime()
+								Network.shared.bluetoothService?.writeBytesData(instructionType: .NONE, commandType: .ODOMETER, data: canFilter, completionHandler: { data1 in
 									testCommand.deviceData = data1
 									print(Date(), "Command:  \(testCommand.type) - Response: \(data1)", to: &Log.log)
-									onCompletion!(testCommand)
+									Network.shared.bluetoothService?.writeBytesData(instructionType: .PID, commandType: .ODOMETER, data: odometerPIDCommand, completionHandler: { data1 in
+										testCommand.deviceData = data1
+										print(Date(), "Command:  \(testCommand.type) - Response: \(data1)", to: &Log.log)
+										onCompletion!(testCommand)
+									})
 								})
+								
 							})
-							
-						})
-					}
-									
-				})
+						}
+					})
+				}
 			}
-			
 		}
 	}
 	
@@ -225,30 +310,56 @@ class UploadAnimationViewModel {
 	
 	private func excecuteFlowControlHeaderAndData(flowControl: FlowControl, testCommand: TestCommandExecution , onCompletion: ((_ command : TestCommandExecution?) -> ())?) {
 		var isFlowControlChanged: Bool = false
-		print("RUN flow commands")
 		let flowcontrolHeader = Constants.ATFCSH + flowControl.flowControlHeader! + Constants.NEW_LINE_CHARACTER
-		
-		Network.shared.bluetoothService?.writeBytesData(instructionType: .FLOW_CONTROL_HEADER, commandType: testCommand.type,  data: flowcontrolHeader, completionHandler: { data in
-			if self.previousFlowControlData ==  flowControl.flowControlData {
-				isFlowControlChanged = false
-			} else {
-				isFlowControlChanged = true
-				self.previousFlowControlData = flowControl.flowControlData
-			}
-			let flowControlData = Constants.ATFCSD + flowControl.flowControlData! + Constants.NEW_LINE_CHARACTER
-			Network.shared.bluetoothService?.writeBytesData(instructionType: .FLOW_CONTROL_DATA, commandType: testCommand.type,   data: flowControlData, completionHandler: { data in
-				if isFlowControlChanged {
-					let flowControlChangedCommand = Constants.ATFCSM1 + Constants.NEW_LINE_CHARACTER
-					Network.shared.bluetoothService?.writeBytesData(instructionType: .FLOW_CONTROL_NORMAL_COMMAND, commandType: testCommand.type,   data: flowControlChangedCommand, completionHandler: { data in
-						print("RUN flow commands \(data)")
-						testCommand.deviceData = data
-						onCompletion!(testCommand)
-					})
+		if interfaceType == .BLUETOOTH_CLASSIC {
+			self.configureAccessoryWithString(instructionType: .FLOW_CONTROL_HEADER, commandType: testCommand.type,  string: flowcontrolHeader, completionHandler: { data in
+				let responseString: String = String.init(data: data, encoding: .utf8) ?? ""
+				print("FlowControl Response:", responseString)
+				if self.previousFlowControlData ==  flowControl.flowControlData {
+					isFlowControlChanged = false
 				} else {
-					onCompletion!(testCommand)
+					isFlowControlChanged = true
+					self.previousFlowControlData = flowControl.flowControlData
 				}
+				let flowControlData = Constants.ATFCSD + flowControl.flowControlData! + Constants.NEW_LINE_CHARACTER
+				//self.startTime = self.getStartTime()
+				self.configureAccessoryWithString(instructionType: .FLOW_CONTROL_DATA, commandType: testCommand.type, string: flowControlData, completionHandler: { data in
+					if isFlowControlChanged {
+						let flowControlChangedCommand = Constants.ATFCSM1 + Constants.NEW_LINE_CHARACTER
+						self.configureAccessoryWithString(instructionType: .FLOW_CONTROL_NORMAL_COMMAND, commandType: testCommand.type, string: flowControlChangedCommand, completionHandler: { data in
+							let responseString: String = String.init(data: data, encoding: .utf8) ?? ""
+							print("FlowControl Data Response:", responseString)
+							testCommand.deviceData = data
+							onCompletion!(testCommand)
+						})
+					} else {
+						onCompletion!(testCommand)
+					}
+				})
 			})
-		})
+		} else {
+			Network.shared.bluetoothService?.writeBytesData(instructionType: .FLOW_CONTROL_HEADER, commandType: testCommand.type,  data: flowcontrolHeader, completionHandler: { data in
+				if self.previousFlowControlData ==  flowControl.flowControlData {
+					isFlowControlChanged = false
+				} else {
+					isFlowControlChanged = true
+					self.previousFlowControlData = flowControl.flowControlData
+				}
+				let flowControlData = Constants.ATFCSD + flowControl.flowControlData! + Constants.NEW_LINE_CHARACTER
+				//self.startTime = self.getStartTime()
+				Network.shared.bluetoothService?.writeBytesData(instructionType: .FLOW_CONTROL_DATA, commandType: testCommand.type,   data: flowControlData, completionHandler: { data in
+					if isFlowControlChanged {
+						let flowControlChangedCommand = Constants.ATFCSM1 + Constants.NEW_LINE_CHARACTER
+						Network.shared.bluetoothService?.writeBytesData(instructionType: .FLOW_CONTROL_NORMAL_COMMAND, commandType: testCommand.type,   data: flowControlChangedCommand, completionHandler: { data in
+							testCommand.deviceData = data
+							onCompletion!(testCommand)
+						})
+					} else {
+						onCompletion!(testCommand)
+					}
+				})
+			})
+		}
 	}
 	
 	private func parseResponse(testCommand: TestCommandExecution?, index: Int) {
@@ -260,11 +371,13 @@ class UploadAnimationViewModel {
 				
 			}
 			let parseData: String = String.init(data: responseData, encoding: .utf8) ?? ""
+		if interfaceType == .BLEUTOOTH_LOW_ENERGY {
 			if parseData.contains(Constants.QUESTION_MARK) || parseData.contains(Constants.NODATA) || parseData.contains(Constants.NO_DATA) || parseData.contains(Constants.ERROR) {
 				//VC
 				self.delegate?.shortProfileCommandExecutionError()
 				return
 			}
+		}
 			var responseDataInString: String = "" // local variable
 			if  parseData.contains(":") {
 				let removeSpaces = parseData.trimmingCharacters(in: .whitespacesAndNewlines)

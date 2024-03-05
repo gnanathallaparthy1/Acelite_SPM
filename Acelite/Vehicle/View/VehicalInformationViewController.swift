@@ -8,8 +8,12 @@
 import UIKit
 import FirebaseDatabase
 import Firebase
+import ExternalAccessory
 
 class VehicalInformationViewController:  BaseViewController {
+	
+	var sessionController:              SessionController!
+	var selectedAccessory:              EAAccessory?
 	
 	@IBOutlet weak var offlineView: UIView!
 	@IBOutlet weak var offlineViewHeight: NSLayoutConstraint!
@@ -79,7 +83,7 @@ class VehicalInformationViewController:  BaseViewController {
 	var networkStatus = NotificationCenter.default
 	let natificationName = NSNotification.Name(rawValue:"InternetObserver")
 	var remoteConfig = RemoteConfig.remoteConfig()
-	
+	var interfaceType: DeviceInterfaceType = .BLUETOOTH_CLASSIC
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		FirebaseLogging.instance.logScreen(screenName: ClassNames.vehicleInformation)
@@ -202,9 +206,10 @@ class VehicalInformationViewController:  BaseViewController {
 		
 		let storyBoard = UIStoryboard.init(name: "BatteryHealthCheck", bundle: nil)
 		let testingVC = storyBoard.instantiateViewController(withIdentifier: "BatteryHealthCheckViewController") as! BatteryHealthCheckViewController
-		
+		testingVC.selectedAccessory = self.selectedAccessory
+		testingVC.sessionController = self.sessionController
 		if let vehicleInfo = self.viewModel?.vehicleInformation {
-			let vm = BatteryHealthCheckViewModel(vehicleInfo: vehicleInfo, workOrder: viewModel?.workOrder, locationCode: self.viewModel?.locationCode ?? "aaa")
+			let vm = BatteryHealthCheckViewModel(vehicleInfo: vehicleInfo, workOrder: viewModel?.workOrder, locationCode: self.viewModel?.locationCode ?? "aaa", selectedSession: self.sessionController, selectedAccessory: self.selectedAccessory!, interfaceType: self.interfaceType)
 			testingVC.viewModel = vm
 		}
 		self.navigationController?.pushViewController(testingVC, animated: true)
@@ -226,7 +231,8 @@ class VehicalInformationViewController:  BaseViewController {
 		
 		let storyBoard = UIStoryboard.init(name: "BatteryHealthCheck", bundle: nil)
 		let startCarVC = storyBoard.instantiateViewController(withIdentifier: "StartCarViewController") as! StartCarViewController
-		startCarVC.startCarViewModel = StartCarViewModel(vehicalInfo: self.viewModel?.vehicleInformation, workOrder: self.viewModel?.workOrder, locationCode:  self.viewModel?.locationCode ?? "")
+		
+		startCarVC.startCarViewModel = StartCarViewModel(vehicalInfo: self.viewModel?.vehicleInformation, workOrder: self.viewModel?.workOrder, locationCode:  self.viewModel?.locationCode ?? "", interfaceType: self.interfaceType)
 		self.navigationController?.pushViewController(startCarVC, animated: true)
 	}
 

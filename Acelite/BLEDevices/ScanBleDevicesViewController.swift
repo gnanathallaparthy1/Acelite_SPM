@@ -253,6 +253,7 @@ extension ScanBleDevicesViewController: UITableViewDelegate, UITableViewDataSour
 		let vm = VehicleVinScannerViewModel()
 		let vehicleVinScan = storyboard.instantiateViewController(withIdentifier: "VehicalVINScannerViewController") as! VehicalVINScannerViewController
 		vehicleVinScan.viewModel = vm
+		vehicleVinScan.interfaceType = .BLEUTOOTH_LOW_ENERGY
 		self.navigationController?.pushViewController(vehicleVinScan, animated: true)
 	}
 }

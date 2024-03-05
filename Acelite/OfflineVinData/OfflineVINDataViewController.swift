@@ -18,6 +18,7 @@ class OfflineVINDataViewController: UIViewController {
 	var batteryInstructionArray = [[String: Any]]()
 	var isShowOfflineView: Bool = false
 	var managedObject = [NSManagedObject]()
+	var interfaceType: DeviceInterfaceType = .BLEUTOOTH_LOW_ENERGY
     override func viewDidLoad() {
         super.viewDidLoad()
 		//log
@@ -104,7 +105,7 @@ extension OfflineVINDataViewController: UITableViewDataSource, UITableViewDelega
 			let jsonDecoder = JSONDecoder()
 			let vehicalInfo = try! jsonDecoder.decode(Vehicle.self, from: data)
 			let locationCode: String = cellData[Constants.LOCATION_CODE] as? String ?? ""
-			let viewModel = UploadAnimationViewModel.init(vehicleInfo: vehicalInfo, workOrder: "", isShortProfile: finalJsonData.isEmpty ? true : false, managedObject: dataObject, locationCode: "\(locationCode)")
+			let viewModel = UploadAnimationViewModel.init(vehicleInfo: vehicalInfo, workOrder: "", isShortProfile: finalJsonData.isEmpty ? true : false, managedObject: dataObject, locationCode: "\(locationCode)", interfaceType: interfaceType)
 			let vc = UploadAnimationViewController(viewModel: viewModel)
 			vc.errorSheetSource  = .OFFLINE_LIST
 			

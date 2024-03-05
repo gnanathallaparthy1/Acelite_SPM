@@ -21,7 +21,7 @@ print("Connected/Disconnected notification centers")
     @objc func accessoryConnected(notification: NSNotification) {
 		print("connected notification called")
         if let accessory = notification.userInfo?[EAAccessoryKey] as? EAAccessory {
-            let session = EASession(accessory: accessory, forProtocol: "com.acelite.protocol")
+            let session = EASession(accessory: accessory, forProtocol: "com.obdlink")
             if let inputStream = session?.inputStream, let outputStream = session?.outputStream {
                 // Open the input and output streams and start communication
                 inputStream.open()

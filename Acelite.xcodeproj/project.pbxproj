@@ -11,6 +11,18 @@
 		8609395129BF898B001DE232 /* BatteryHealthCheckViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8609395029BF898B001DE232 /* BatteryHealthCheckViewController.swift */; };
 		8609395329BF89A3001DE232 /* BatteryHealthCheckViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8609395229BF89A3001DE232 /* BatteryHealthCheckViewModel.swift */; };
 		8609395529BF8C98001DE232 /* BatteryHealthCheck.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8609395429BF8C98001DE232 /* BatteryHealthCheck.storyboard */; };
+		861125D82B8E5A900039B2E0 /* AccessoryDetectionTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861125D72B8E5A900039B2E0 /* AccessoryDetectionTableViewController.swift */; };
+		861125D92B8E5A900039B2E0 /* AccessoryDetectionTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861125D72B8E5A900039B2E0 /* AccessoryDetectionTableViewController.swift */; };
+		861125DB2B8E5AC00039B2E0 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861125DA2B8E5AC00039B2E0 /* Extensions.swift */; };
+		861125DC2B8E5AC00039B2E0 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861125DA2B8E5AC00039B2E0 /* Extensions.swift */; };
+		861125DE2B8E5AED0039B2E0 /* SessionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861125DD2B8E5AED0039B2E0 /* SessionController.swift */; };
+		861125DF2B8E5AED0039B2E0 /* SessionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861125DD2B8E5AED0039B2E0 /* SessionController.swift */; };
+		861125E12B8E5B2B0039B2E0 /* ConfigurationTerminalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861125E02B8E5B2B0039B2E0 /* ConfigurationTerminalViewController.swift */; };
+		861125E22B8E5B2B0039B2E0 /* ConfigurationTerminalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861125E02B8E5B2B0039B2E0 /* ConfigurationTerminalViewController.swift */; };
+		861125E42B8E5B4E0039B2E0 /* InformationTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861125E32B8E5B4E0039B2E0 /* InformationTableViewController.swift */; };
+		861125E52B8E5B4E0039B2E0 /* InformationTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861125E32B8E5B4E0039B2E0 /* InformationTableViewController.swift */; };
+		861125E72B8E5B870039B2E0 /* BluetoothClassic.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 861125E62B8E5B870039B2E0 /* BluetoothClassic.storyboard */; };
+		861125E82B8E5B870039B2E0 /* BluetoothClassic.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 861125E62B8E5B870039B2E0 /* BluetoothClassic.storyboard */; };
 		861E6ECA2953789B00443F12 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861E6EC92953789B00443F12 /* AppDelegate.swift */; };
 		861E6ECC2953789B00443F12 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861E6ECB2953789B00443F12 /* SceneDelegate.swift */; };
 		861E6ECE2953789B00443F12 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861E6ECD2953789B00443F12 /* ViewController.swift */; };
@@ -97,8 +109,8 @@
 		86A68D4C29AD2A3C000F2188 /* GetS3PreSingedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A68D4B29AD2A3C000F2188 /* GetS3PreSingedViewModel.swift */; };
 		86A68D4E29B0350D000F2188 /* MultipartRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A68D4D29B0350D000F2188 /* MultipartRequest.swift */; };
 		86A68D5029B108C2000F2188 /* BatteryDataFileSubmitModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A68D4F29B108C2000F2188 /* BatteryDataFileSubmitModel.swift */; };
-		86A703182B83E29F00127707 /* Acelite_dev_Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86F4E8552B827BEF00E51E84 /* Acelite_dev_Info.plist */; };
-		86A703192B83E2A000127707 /* Acelite_dev_Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86F4E8552B827BEF00E51E84 /* Acelite_dev_Info.plist */; };
+		86A703182B83E29F00127707 /* Acelite_Dev_Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86F4E8552B827BEF00E51E84 /* Acelite_Dev_Info.plist */; };
+		86A703192B83E2A000127707 /* Acelite_Dev_Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86F4E8552B827BEF00E51E84 /* Acelite_Dev_Info.plist */; };
 		86A703202B83E58C00127707 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86A7031F2B83E58C00127707 /* GoogleService-Info.plist */; };
 		86A703222B83E59E00127707 /* GoogleService-Info_Dev.plist in Resources */ = {isa = PBXBuildFile; fileRef = 86A703212B83E59E00127707 /* GoogleService-Info_Dev.plist */; };
 		86AF929429B585AF00FDA4C3 /* InfoPopUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86AF929329B585AF00FDA4C3 /* InfoPopUpViewController.swift */; };
@@ -239,6 +251,12 @@
 		8609395029BF898B001DE232 /* BatteryHealthCheckViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryHealthCheckViewController.swift; sourceTree = "<group>"; };
 		8609395229BF89A3001DE232 /* BatteryHealthCheckViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryHealthCheckViewModel.swift; sourceTree = "<group>"; };
 		8609395429BF8C98001DE232 /* BatteryHealthCheck.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = BatteryHealthCheck.storyboard; sourceTree = "<group>"; };
+		861125D72B8E5A900039B2E0 /* AccessoryDetectionTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessoryDetectionTableViewController.swift; sourceTree = "<group>"; };
+		861125DA2B8E5AC00039B2E0 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		861125DD2B8E5AED0039B2E0 /* SessionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionController.swift; sourceTree = "<group>"; };
+		861125E02B8E5B2B0039B2E0 /* ConfigurationTerminalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationTerminalViewController.swift; sourceTree = "<group>"; };
+		861125E32B8E5B4E0039B2E0 /* InformationTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InformationTableViewController.swift; sourceTree = "<group>"; };
+		861125E62B8E5B870039B2E0 /* BluetoothClassic.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = BluetoothClassic.storyboard; sourceTree = "<group>"; };
 		861E6EC62953789B00443F12 /* Acelite.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Acelite.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		861E6EC92953789B00443F12 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		861E6ECB2953789B00443F12 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -333,7 +351,7 @@
 		86E33DFB2A1E7D3C00E2F167 /* ExternalAccessory.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ExternalAccessory.framework; path = System/Library/Frameworks/ExternalAccessory.framework; sourceTree = SDKROOT; };
 		86E33DFD2A252D8700E2F167 /* ExternalAccessory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExternalAccessory.swift; sourceTree = "<group>"; };
 		86F4E7D32B827B0400E51E84 /* Acelite_Prod.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Acelite_Prod.plist; sourceTree = "<group>"; };
-		86F4E8552B827BEF00E51E84 /* Acelite_dev_Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Acelite_dev_Info.plist; path = /Users/Gnana.Thallaparthy/Documents/Acelite/Acelite_dev_Info.plist; sourceTree = "<absolute>"; };
+		86F4E8552B827BEF00E51E84 /* Acelite_Dev_Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Acelite_Dev_Info.plist; path = /Users/Gnana.Thallaparthy/Documents/Acelite/Acelite_Dev_Info.plist; sourceTree = "<absolute>"; };
 		86F4E8D42B827FF300E51E84 /* AceliteDev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AceliteDev.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		86F7C09B2AF40DD20046A0D1 /* WorkOrderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkOrderViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -408,6 +426,19 @@
 			path = BatteryHealthCheck;
 			sourceTree = "<group>";
 		};
+		861125D62B8E59B20039B2E0 /* BluetoothClassic */ = {
+			isa = PBXGroup;
+			children = (
+				861125D72B8E5A900039B2E0 /* AccessoryDetectionTableViewController.swift */,
+				861125DA2B8E5AC00039B2E0 /* Extensions.swift */,
+				861125DD2B8E5AED0039B2E0 /* SessionController.swift */,
+				861125E02B8E5B2B0039B2E0 /* ConfigurationTerminalViewController.swift */,
+				861125E32B8E5B4E0039B2E0 /* InformationTableViewController.swift */,
+				861125E62B8E5B870039B2E0 /* BluetoothClassic.storyboard */,
+			);
+			path = BluetoothClassic;
+			sourceTree = "<group>";
+		};
 		861E6EBD2953789B00443F12 = {
 			isa = PBXGroup;
 			children = (
@@ -416,7 +447,7 @@
 				861E6EE92953789D00443F12 /* AceliteUITests */,
 				861E6EC72953789B00443F12 /* Products */,
 				861E6F0F295E118000443F12 /* Frameworks */,
-				86F4E8552B827BEF00E51E84 /* Acelite_dev_Info.plist */,
+				86F4E8552B827BEF00E51E84 /* Acelite_Dev_Info.plist */,
 				86F4E7D32B827B0400E51E84 /* Acelite_Prod.plist */,
 			);
 			sourceTree = "<group>";
@@ -435,6 +466,7 @@
 		861E6EC82953789B00443F12 /* Acelite */ = {
 			isa = PBXGroup;
 			children = (
+				861125D62B8E59B20039B2E0 /* BluetoothClassic */,
 				86AF52F12B7EFFB2000A8836 /* AceliteDev Debug.entitlements */,
 				8634BE262B03DC82006D7853 /* StartCar */,
 				86F7C09A2AF40D930046A0D1 /* Workorder */,
@@ -935,7 +967,7 @@
 				861E6ED62953789D00443F12 /* LaunchScreen.storyboard in Resources */,
 				866CDB5A298AD44400ADFB50 /* Queries.graphql in Resources */,
 				86C2BB9A29F19310004D4D42 /* schema.json in Resources */,
-				86A703182B83E29F00127707 /* Acelite_dev_Info.plist in Resources */,
+				86A703182B83E29F00127707 /* Acelite_Dev_Info.plist in Resources */,
 				86B169E529B549E80024EFFF /* CustomAlertView.xib in Resources */,
 				8632D72F2AC203DC00BA612E /* CustomView.xib in Resources */,
 				86A703202B83E58C00127707 /* GoogleService-Info.plist in Resources */,
@@ -944,6 +976,7 @@
 				861E6F0A295778A100443F12 /* Main.storyboard in Resources */,
 				861E6ED32953789D00443F12 /* Assets.xcassets in Resources */,
 				861E6F08295773C100443F12 /* SideMenuCell.xib in Resources */,
+				861125E72B8E5B870039B2E0 /* BluetoothClassic.storyboard in Resources */,
 				8636D41529CE201C0045BD53 /* ScanHistoryTableViewCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -971,7 +1004,8 @@
 				86F4E8C32B827FF300E51E84 /* TestableTableViewCell.xib in Resources */,
 				86F4E8C42B827FF300E51E84 /* LaunchScreen.storyboard in Resources */,
 				86F4E8C52B827FF300E51E84 /* Queries.graphql in Resources */,
-				86A703192B83E2A000127707 /* Acelite_dev_Info.plist in Resources */,
+				86A703192B83E2A000127707 /* Acelite_Dev_Info.plist in Resources */,
+				861125E82B8E5B870039B2E0 /* BluetoothClassic.storyboard in Resources */,
 				86F4E8C62B827FF300E51E84 /* schema.json in Resources */,
 				86F4E8C82B827FF300E51E84 /* CustomAlertView.xib in Resources */,
 				86F4E8C92B827FF300E51E84 /* CustomView.xib in Resources */,
@@ -1080,6 +1114,7 @@
 				8639046829940178008D5A0A /* Themes+Colors.swift in Sources */,
 				86A68D5029B108C2000F2188 /* BatteryDataFileSubmitModel.swift in Sources */,
 				867BBF7B296744CD00DC4842 /* AceliteConstants.swift in Sources */,
+				861125DE2B8E5AED0039B2E0 /* SessionController.swift in Sources */,
 				8636D41129CE201C0045BD53 /* ScanHistoryTableViewCell.swift in Sources */,
 				8636D41829D1430D0045BD53 /* BatteryHealthViewModel.swift in Sources */,
 				8621C7B62A8A8EE900CFE0DF /* BaseViewController.swift in Sources */,
@@ -1114,6 +1149,7 @@
 				861EDE7329B7AFC0003A1C81 /* ArcModel.swift in Sources */,
 				866CDB4C2982F63700ADFB50 /* VehicalDetailsModel.swift in Sources */,
 				86B908A0297079A9001CAB90 /* WorkOrderViewController.swift in Sources */,
+				861125E12B8E5B2B0039B2E0 /* ConfigurationTerminalViewController.swift in Sources */,
 				861E6ECA2953789B00443F12 /* AppDelegate.swift in Sources */,
 				86AF929429B585AF00FDA4C3 /* InfoPopUpViewController.swift in Sources */,
 				8697905F2A88624600FA6440 /* NetworkManager.swift in Sources */,
@@ -1127,6 +1163,7 @@
 				8609395129BF898B001DE232 /* BatteryHealthCheckViewController.swift in Sources */,
 				861E6F0D295E08B300443F12 /* ScannerViewController.swift in Sources */,
 				861E6ECC2953789B00443F12 /* SceneDelegate.swift in Sources */,
+				861125DB2B8E5AC00039B2E0 /* Extensions.swift in Sources */,
 				8670C17A2B6D7EB40095C85C /* DropDownViewController.swift in Sources */,
 				86B908A22970854A001CAB90 /* TestingViewController.swift in Sources */,
 				867B608029A937CE0050411C /* ExportAsCSV.swift in Sources */,
@@ -1144,8 +1181,10 @@
 				86A68D4E29B0350D000F2188 /* MultipartRequest.swift in Sources */,
 				86CDBA6629B632D600956B4C /* UploadAnimationViewController.swift in Sources */,
 				861E6F07295773C100443F12 /* SideMenuCell.swift in Sources */,
+				861125E42B8E5B4E0039B2E0 /* InformationTableViewController.swift in Sources */,
 				867BBF7929673D7400DC4842 /* AceliteColors.swift in Sources */,
 				861E6F13295E11BE00443F12 /* ScanBleDevicesViewController.swift in Sources */,
+				861125D82B8E5A900039B2E0 /* AccessoryDetectionTableViewController.swift in Sources */,
 				8680BF2D2AB3659800A370F9 /* API.swift in Sources */,
 				861EDE7429B7AFC0003A1C81 /* ColorX.swift in Sources */,
 			);
@@ -1176,6 +1215,7 @@
 				86F4E86A2B827FF300E51E84 /* Themes+Colors.swift in Sources */,
 				86F4E86B2B827FF300E51E84 /* BatteryDataFileSubmitModel.swift in Sources */,
 				86F4E86C2B827FF300E51E84 /* AceliteConstants.swift in Sources */,
+				861125DF2B8E5AED0039B2E0 /* SessionController.swift in Sources */,
 				86F4E86D2B827FF300E51E84 /* ScanHistoryTableViewCell.swift in Sources */,
 				86F4E86E2B827FF300E51E84 /* BatteryHealthViewModel.swift in Sources */,
 				86F4E86F2B827FF300E51E84 /* BaseViewController.swift in Sources */,
@@ -1210,6 +1250,7 @@
 				86F4E88C2B827FF300E51E84 /* ArcModel.swift in Sources */,
 				86F4E88D2B827FF300E51E84 /* VehicalDetailsModel.swift in Sources */,
 				86F4E88E2B827FF300E51E84 /* WorkOrderViewController.swift in Sources */,
+				861125E22B8E5B2B0039B2E0 /* ConfigurationTerminalViewController.swift in Sources */,
 				86F4E88F2B827FF300E51E84 /* AppDelegate.swift in Sources */,
 				86F4E8902B827FF300E51E84 /* InfoPopUpViewController.swift in Sources */,
 				86F4E8912B827FF300E51E84 /* NetworkManager.swift in Sources */,
@@ -1223,6 +1264,7 @@
 				86F4E8992B827FF300E51E84 /* BatteryHealthCheckViewController.swift in Sources */,
 				86F4E89A2B827FF300E51E84 /* ScannerViewController.swift in Sources */,
 				86F4E89B2B827FF300E51E84 /* SceneDelegate.swift in Sources */,
+				861125DC2B8E5AC00039B2E0 /* Extensions.swift in Sources */,
 				86F4E89C2B827FF300E51E84 /* DropDownViewController.swift in Sources */,
 				86F4E89D2B827FF300E51E84 /* TestingViewController.swift in Sources */,
 				86F4E89E2B827FF300E51E84 /* ExportAsCSV.swift in Sources */,
@@ -1240,8 +1282,10 @@
 				86F4E8AA2B827FF300E51E84 /* MultipartRequest.swift in Sources */,
 				86F4E8AB2B827FF300E51E84 /* UploadAnimationViewController.swift in Sources */,
 				86F4E8AC2B827FF300E51E84 /* SideMenuCell.swift in Sources */,
+				861125E52B8E5B4E0039B2E0 /* InformationTableViewController.swift in Sources */,
 				86F4E8AD2B827FF300E51E84 /* AceliteColors.swift in Sources */,
 				86F4E8AE2B827FF300E51E84 /* ScanBleDevicesViewController.swift in Sources */,
+				861125D92B8E5A900039B2E0 /* AccessoryDetectionTableViewController.swift in Sources */,
 				86F4E8AF2B827FF300E51E84 /* API.swift in Sources */,
 				86F4E8B02B827FF300E51E84 /* ColorX.swift in Sources */,
 			);

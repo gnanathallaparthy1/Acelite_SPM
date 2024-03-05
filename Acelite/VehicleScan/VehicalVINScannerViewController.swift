@@ -6,11 +6,17 @@
 //
 
 import UIKit
+import ExternalAccessory
 
 class VehicalVINScannerViewController:  BaseViewController {
 		
+	
+	var sessionController:              SessionController!
+	var selectedAccessory:              EAAccessory?
+	
 	@IBOutlet weak var offlineView: UIView!
 	@IBOutlet weak var offlineViewHeight: NSLayoutConstraint!
+	var interfaceType: DeviceInterfaceType = .BLUETOOTH_CLASSIC
 	
 	init(viewModel: VehicleVinScannerViewModel) {
 		super.init(nibName: nil, bundle: nil)
@@ -297,6 +303,8 @@ extension VehicalVINScannerViewController: PassVehicleInformationDelegate {
 				let storyBoard = UIStoryboard.init(name: "Main", bundle: nil)
 				let workOrderVC = storyBoard.instantiateViewController(withIdentifier: "WorkOrderViewController") as! WorkOrderViewController
 				workOrderVC.vehicleInfo = vehicleInfo
+
+				workOrderVC.interfaceType = self.interfaceType
 				workOrderVC.viewModel = WorkOrderViewModel(vehicleInfo: vehicleInfo, workOrder: "", isShortProfile: isShortProfile != nil ? false : true)
 				self.navigationController?.pushViewController(workOrderVC, animated: true)
 			}

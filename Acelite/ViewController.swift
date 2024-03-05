@@ -61,6 +61,7 @@ class ViewController: BaseViewController {
 	var managedObject = [NSManagedObject]()
 	var offlineHrsLimit: Int = 0
 	var remoteConfig = RemoteConfig.remoteConfig()
+	var interfaceType: DeviceInterfaceType = .BLUETOOTH_CLASSIC
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		accessoryManger = EAAccessoryManager.shared()
@@ -207,7 +208,7 @@ class ViewController: BaseViewController {
 	@objc func accessoryConnected(notification: NSNotification) {
 		print("connected notification called")
 		if let accessory = notification.userInfo?[EAAccessoryKey] as? EAAccessory {
-			let session = EASession(accessory: accessory, forProtocol: "com.acelite.protocol")
+			let session = EASession(accessory: accessory, forProtocol: "com.obdlink")
 			if let inputStream = session?.inputStream, let outputStream = session?.outputStream {
 				// Open the input and output streams and start communication
 				inputStream.open()
@@ -280,10 +281,15 @@ class ViewController: BaseViewController {
 	}
 	
 	@IBAction func nextButtonAction(_ sender: UIButton) {
-		
-		let storyBoard = UIStoryboard.init(name: "Main", bundle: nil)
-		let vehicalVC = storyBoard.instantiateViewController(withIdentifier: "ScanBleDevicesViewController") as! ScanBleDevicesViewController
-		self.navigationController?.pushViewController(vehicalVC, animated: false)
+		if interfaceType == .BLEUTOOTH_LOW_ENERGY {
+			let storyBoard = UIStoryboard.init(name: "Main", bundle: nil)
+			let vehicalVC = storyBoard.instantiateViewController(withIdentifier: "ScanBleDevicesViewController") as! ScanBleDevicesViewController
+			self.navigationController?.pushViewController(vehicalVC, animated: false)
+		} else {
+			let storyboard = UIStoryboard.init(name: "BluetoothClassic", bundle: nil)
+			let vehicalVC = storyboard.instantiateViewController(withIdentifier: "AccessoryDetectionTableViewController") as! AccessoryDetectionTableViewController
+			self.navigationController?.pushViewController(vehicalVC, animated: false)
+		}
 	}
 	
 	//MARK: - Logic : Based on time difference condition removed DB data

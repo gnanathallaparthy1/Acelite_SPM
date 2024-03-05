@@ -11,6 +11,7 @@ import FirebaseDatabase
 import Firebase
 import CoreData
 import Apollo
+import ExternalAccessory
 
 class UploadAnimationViewController: BaseViewController {
 	private let stackView: UIStackView = {
@@ -57,13 +58,25 @@ class UploadAnimationViewController: BaseViewController {
 	var viewModel: UploadAnimationViewModel?
 	var delegate:ShortProfileCommandsRunDelegate?
 	
+	var sessionController: SessionController!
+	var accessory: EAAccessory?
+	
 	init(viewModel: UploadAnimationViewModel) {
 		super.init(nibName: nil, bundle: nil)
 		self.viewModel?.delegate = self
 		self.viewModel = viewModel
+		if self.viewModel?.interfaceType == .BLUETOOTH_CLASSIC {
+			sessionController = SessionController.sharedController
+			
+			accessory = sessionController._accessory
+			_ = sessionController.openSession()
+		}
+	
+		self.viewModel?.sessionController = sessionController
+		self.viewModel?.selectedAccessory = accessory
 		//super.init()
 	}
-
+	
 	required init?(coder: NSCoder) {
 		super.init(coder: coder)
 	}
@@ -87,7 +100,7 @@ class UploadAnimationViewController: BaseViewController {
 			})
 		}
 	}
-
+	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		FirebaseLogging.instance.logScreen(screenName: ClassNames.upload)
@@ -118,6 +131,10 @@ class UploadAnimationViewController: BaseViewController {
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {
+		if self.viewModel?.interfaceType == .BLUETOOTH_CLASSIC {
+			NotificationCenter.default.addObserver(self, selector: #selector(sessionDataReceived), name: NSNotification.Name(rawValue: "BESessionDataReceivedNotification"), object: nil)
+			NotificationCenter.default.addObserver(self, selector: #selector(accessoryDidDisconnect), name: NSNotification.Name.EAAccessoryDidDisconnect, object: nil)
+		}
 		if viewModel?.isShortProfile == true {
 			if errorSheetSource == .OFFLINE_LIST {
 				self.viewModel?.submitBatteryDataForShortProfile()
@@ -129,6 +146,42 @@ class UploadAnimationViewController: BaseViewController {
 		} else {
 			messageObserver()
 			networkStatus.addObserver(self, selector: #selector(self.handleNetworkUpdate(_:)), name: notificationName, object: nil)
+		}
+		
+	}
+	
+	override func viewWillDisappear(_ animated: Bool) {
+		if self.viewModel?.interfaceType == .BLUETOOTH_CLASSIC {
+			NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "BESessionDataReceivedNotification"), object: nil)
+			NotificationCenter.default.removeObserver(self, name: NSNotification.Name.EAAccessoryDidDisconnect, object: nil)
+			
+			sessionController.closeSession()
+		}
+		super.viewWillDisappear(animated)
+	}
+	
+	
+	// MARK: - Session Updates
+	
+	@objc func sessionDataReceived(notification: NSNotification) {
+		
+		if sessionController._dataAsString != nil {
+			if let data = sessionController._dataAsString {
+				//let responseString = String.init(data: data, encoding: .utf8)
+				print("response STRING:", data)
+			}
+		}
+	}
+	
+	// MARK: - EAAccessory Disconnection
+	
+	@objc func accessoryDidDisconnect(notification: NSNotification) {
+		
+		if navigationController?.topViewController == self {
+			let disconnectedAccessory = notification.userInfo![EAAccessoryKey]
+			if (disconnectedAccessory as! EAAccessory).connectionID == accessory?.connectionID {
+				dismiss(animated: true, completion: nil)
+			}
 		}
 	}
 	
@@ -531,7 +584,7 @@ class UploadAnimationViewController: BaseViewController {
 		guard let vehicleProfile = batteryInstr?[0].testCommands?.vehicleProfile else {
 			print(Date(), "SOC:Submit API failed due to Vehicle Profile", to: &Log.log)
 			//let expectedCapacityAtBirth: Double = (vehicalProfile.capacityAtBirth ?? Double(0.0))!
-			 calculateddCapacityAtBirth = self.bmsCapacity ?? 0.0
+			calculateddCapacityAtBirth = self.bmsCapacity ?? 0.0
 			self.showSubmitAPIError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "SOC:Submit API failed due to Vehicle Profile", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: "",  bmsCapacity: "\(String(describing: self.bmsCapacity))", expectedBMS: "\(self.calculateddCapacityAtBirth)", workOrder: self.workOrder ?? "")
 			return
 		}
@@ -574,7 +627,7 @@ class UploadAnimationViewController: BaseViewController {
 			let stateOfCharge = self.stateOfCharge
 			let dashDataInput = DashDataInput.init(odometer: Int(odometer ?? 0), stateOfCharge: stateOfCharge)
 			let expectedCapacityAtBirth: Double = (vehicalProfile.capacityAtBirth ?? Double(0.0))!
-			 calculateddCapacityAtBirth = self.bmsCapacity ?? 0.0
+			calculateddCapacityAtBirth = self.bmsCapacity ?? 0.0
 			//var bmsCapacity: Double = 0.0
 			if calculateddCapacityAtBirth > expectedCapacityAtBirth {
 				self.bmsCapacity = expectedCapacityAtBirth
@@ -667,7 +720,7 @@ class UploadAnimationViewController: BaseViewController {
 							print(Date(), "SOC:submit API Error :\(error)", to: &Log.log)
 						}
 					}
-				} 
+				}
 				break
 			case .failure(let error):
 				if let transactionId = self.preSignedData?.transactionID {
