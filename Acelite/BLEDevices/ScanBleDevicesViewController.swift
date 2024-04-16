@@ -13,6 +13,7 @@ import CoreBluetooth
 
 class ScanBleDevicesViewController: BaseViewController {
 
+	@IBOutlet weak var backButton: UIButton!
 	@IBOutlet weak var offlineView: UIView!
 	@IBOutlet weak var offlineViewHeight: NSLayoutConstraint!
 	@IBOutlet weak var scanButton: UIButton!
@@ -34,6 +35,7 @@ class ScanBleDevicesViewController: BaseViewController {
 		uiUpdates()
 		offlineViewHeight.constant = 0
 		offlineView.isHidden = true
+		backButton.layer.cornerRadius = 10
 		addCustomView()
 	}
 	
@@ -63,6 +65,9 @@ class ScanBleDevicesViewController: BaseViewController {
 		self.offlineView.addSubview(view)
 	}
 	
+	@IBAction func navigateToPreviousScreen(_ sender: UIButton) {
+		self.navigationController?.popViewController(animated: true)
+	}
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 			self.navigationItem.setHidesBackButton(true, animated:true)

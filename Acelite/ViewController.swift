@@ -26,8 +26,6 @@ enum InfoWarning {
 }
 
 class ViewController: BaseViewController {
-	
-	var accessoryManger: EAAccessoryManager!
 	@IBOutlet weak var imageTitleLabel: UILabel!
 	var screenState = ScreenState.ConnectOBDdevice
 	@IBOutlet weak var imageView: UIImageView!
@@ -64,7 +62,7 @@ class ViewController: BaseViewController {
 	var interfaceType: DeviceInterfaceType = .BLUETOOTH_CLASSIC
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		accessoryManger = EAAccessoryManager.shared()
+		
 		FirebaseLogging.instance.logScreen(screenName: ClassNames.obdiConnect)
 		FirebaseLogging.instance.setUserProperty(value: "StarCharm", forProperty: UserProperty().productType)
 		
@@ -281,15 +279,14 @@ class ViewController: BaseViewController {
 	}
 	
 	@IBAction func nextButtonAction(_ sender: UIButton) {
-		if interfaceType == .BLEUTOOTH_LOW_ENERGY {
-			let storyBoard = UIStoryboard.init(name: "Main", bundle: nil)
-			let vehicalVC = storyBoard.instantiateViewController(withIdentifier: "ScanBleDevicesViewController") as! ScanBleDevicesViewController
-			self.navigationController?.pushViewController(vehicalVC, animated: false)
-		} else {
-			let storyboard = UIStoryboard.init(name: "BluetoothClassic", bundle: nil)
-			let vehicalVC = storyboard.instantiateViewController(withIdentifier: "AccessoryDetectionTableViewController") as! AccessoryDetectionTableViewController
-			self.navigationController?.pushViewController(vehicalVC, animated: false)
-		}
+		
+		//SelectOBDDeviceViewController
+		
+		let storyBoard = UIStoryboard.init(name: "Main", bundle: nil)
+		let vehicalVC = storyBoard.instantiateViewController(withIdentifier: "SelectOBDDeviceViewController") as! SelectOBDDeviceViewController
+		let vm = SelectOBDDeviceViewModel(interfaceType: self.interfaceType)
+		vehicalVC.viewModel = vm
+		self.navigationController?.pushViewController(vehicalVC, animated: false)
 	}
 	
 	//MARK: - Logic : Based on time difference condition removed DB data

@@ -13,9 +13,6 @@ import ExternalAccessory
 
 class WorkOrderViewController: BaseViewController, UIGestureRecognizerDelegate {
 	
-//	var sessionController:              SessionController!
-//	var selectedAccessory:              EAAccessory?
-	
 	@IBOutlet weak var locationCodeTextFiled: UITextField!
 	@IBOutlet weak var dropDownView: UIView!
 	private let tableView = UITableView()
@@ -96,6 +93,9 @@ class WorkOrderViewController: BaseViewController, UIGestureRecognizerDelegate {
 		locationCodeTextFiled.delegate = self
 		previousLocationCode = UserDefaults.standard.string(forKey: "locationCode") ?? "aaa"
 		fetchLocationCodes()
+		verifyBluetoohClassicStatus()
+		let nc = NotificationCenter.default
+		nc.addObserver(self, selector: #selector(verifyBluetoohClassicStatus), name: UIApplication.willEnterForegroundNotification, object: nil)
 	}
 	
 	func setupTapPress() {
@@ -214,9 +214,32 @@ class WorkOrderViewController: BaseViewController, UIGestureRecognizerDelegate {
 		}
 		networkStatus.addObserver(self, selector: #selector(self.showOffileViews(_:)), name: natificationName, object: nil)
 		addTableView(frames: locationCodeTextFiled.frame)
-
 		
 	}
+	
+	@objc func verifyBluetoohClassicStatus() {
+		
+		if interfaceType == .BLUETOOTH_CLASSIC {
+			let accessoryList:  [EAAccessory]? = EAAccessoryManager.shared().connectedAccessories
+			if accessoryList?.count == 0 {
+				print("device disconnected")
+				DispatchQueue.main.async {
+					let viewModel = OfflineViewModel(submitApiResponse: SubmitApiResponse.BLUETOOTH_CLASSIC)
+					let storyBaord = UIStoryboard.init(name: "BatteryHealthCheck", bundle: nil)
+					let vc = storyBaord.instantiateViewController(withIdentifier: "OfflineViewController") as! OfflineViewController
+					vc.delegate = self
+					vc.viewModel = viewModel
+					vc.modalPresentationStyle = .overFullScreen
+					self.present(vc, animated: true)
+				}
+				
+			} else {
+				print("device connected")
+			
+			}
+		}
+	}
+	
 	@objc func showOffileViews(_ notification: Notification) {
 		
 		let notificationobject = notification.object as? [String: Any] ?? [:]

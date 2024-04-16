@@ -17,8 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
 	let gcmMessageIDKey = "gcm.Message_ID"
 	let notificationCenter = UNUserNotificationCenter.current()
 	
-	var sessionController: SessionController?
-	var selectedAccessory: EAAccessory?
+
 	
 	
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {

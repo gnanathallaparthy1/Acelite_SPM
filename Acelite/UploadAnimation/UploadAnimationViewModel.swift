@@ -46,11 +46,12 @@ class UploadAnimationViewModel {
 
 	var location: LocationCode? = nil
 	var locationCode: String?
-	
 	var sessionController: SessionController?
-	var selectedAccessory: EAAccessory?
+//	var selectedAccessory: EAAccessory?
 	var interfaceType: DeviceInterfaceType = .BLUETOOTH_CLASSIC
+	let appDelegate = UIApplication.shared.delegate as! AppDelegate
 	
+	var accessoryViewModel = AccessoryDetectionViewModel()
 	
 	init(vehicleInfo: Vehicle?, workOrder: String?, isShortProfile: Bool, managedObject: NSManagedObject, locationCode: String, interfaceType: DeviceInterfaceType) {
 		//sessionController = SessionController.sharedController
@@ -60,20 +61,26 @@ class UploadAnimationViewModel {
 		self.isShortProfile = isShortProfile
 		self.managedObject = managedObject
 		self.locationCode = locationCode
-		//UserDefaults.standard.set("xyzwsf", forKey: "locationCode")
 		previousSelectedLocationCode()
-		//_ = sessionController?.openSession()
+		configBluetoothClassicSession()
+	}
+	
+	func configBluetoothClassicSession(){
+		sessionController = BluetoothClassicSharedInstance.sharedInstance.sessionController
+	   sessionController?._accessory = BluetoothClassicSharedInstance.sharedInstance.selectedAccessory
+	   let protocolStringName = BluetoothClassicSharedInstance.sharedInstance.protocolStringName ?? ""
+	   sessionController?.setupController(forAccessory: BluetoothClassicSharedInstance.sharedInstance.selectedAccessory, withProtocolString: protocolStringName)
+	   _ = sessionController?.openSession()
 	}
 	
 	func configureAccessoryWithString(instructionType: InstructionType, commandType: CommandType, string: String, completionHandler: ((Data)->())?) {
-		
+
 		let data = string.data(using: .utf8)
 		sessionController?.writeData(instructionType: instructionType, commandType: commandType, data: data!, completionHandler: completionHandler)
 	
 	}
 	
 	private func previousSelectedLocationCode() {
-		//let previousLCode = UserDefaults.standard.string(forKey: "locationCode")
 		if let locationCode = locationCode {
 			let locationAllCases = LocationCode.allCases
 			for item in locationAllCases {
@@ -90,7 +97,6 @@ class UploadAnimationViewModel {
 				Crashlytics.crashlytics().record(error: error)
 				location = LocationCode.aaa
 			}
-			
 		}
 	}
 	
@@ -139,7 +145,7 @@ class UploadAnimationViewModel {
 			})
 		} else {
 			Network.shared.bluetoothService?.writeBytesData(instructionType: .NONE, commandType: .Other, data: ATS0_Command, completionHandler: { data in
-				//print(Date(), "about to perform ATS0 command write", to: &Log.log)
+				print(Date(), "about to perform ATS0 command write", to: &Log.log)
 				self.runProtocolCommand()
 			})
 		}
@@ -407,8 +413,8 @@ class UploadAnimationViewModel {
 				print(Date(), "End Byte\(endByte)", to: &Log.log)
 				print("End Byte\(endByte)")
 				let haxValueList = self.typeCastingByteToString(testCommand: testCommand)
-				print(Date(), "Haxa list\(haxValueList)", to: &Log.log)
-				print("Haxa list\(haxValueList)")
+				//print(Date(), "Haxa list\(haxValueList)", to: &Log.log)
+				//print("Haxa list\(haxValueList)")
 				if (haxValueList.count - 1) < endByte {
 					return
 				}
@@ -419,7 +425,7 @@ class UploadAnimationViewModel {
 						let value = self.calculateValueFromStartEndByte(command: testCommand, hexValuesList: haxValueList)
 						self.odometer = value
 						print(Date(), "Final Odmeter \(value)", to: &Log.log)
-						print("Final Odmeter \(value)")
+						///print("Final Odmeter \(value)")
 					}
 					
 					break

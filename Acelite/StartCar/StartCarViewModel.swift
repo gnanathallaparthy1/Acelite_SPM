@@ -14,11 +14,12 @@ class StartCarViewModel {
 	var labelText = "Please turn on the car before proceeding in the testing process"
 	var transactionId: String?
 	var locationCode: String = ""
-	
-	init(vehicalInfo: Vehicle? = nil, workOrder: String? = nil, transactionId: String? = nil, locationCode: String) {
+	var interfaceType: DeviceInterfaceType = .BLUETOOTH_CLASSIC
+	init(vehicalInfo: Vehicle? = nil, workOrder: String? = nil, transactionId: String? = nil, locationCode: String, interfaceType: DeviceInterfaceType) {
 		self.vehicalInfo = vehicalInfo
 		self.workOrder = workOrder
 		self.transactionId = transactionId
 		self.locationCode = locationCode
+		self.interfaceType = interfaceType
 	}
 }

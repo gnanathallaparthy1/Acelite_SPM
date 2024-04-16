@@ -8,6 +8,7 @@
 import UIKit
 import Firebase
 import CoreData
+import ExternalAccessory
 
 enum BatteryHealthInstruction: Int {
    case startTheCar = 0
@@ -71,6 +72,10 @@ enum BatteryHealthInstruction: Int {
 }
 class BatteryHealthCheckViewController:  BaseViewController {
 	
+	var sessionController:              SessionController!
+	var selectedAccessory:              EAAccessory?
+	var accessory: EAAccessory?
+	
 	@IBOutlet weak var offlineView: UIView!
 	
 	@IBOutlet weak var offlineViewHeight: NSLayoutConstraint!
@@ -103,9 +108,11 @@ class BatteryHealthCheckViewController:  BaseViewController {
 	public var viewModel: BatteryHealthCheckViewModel?
 	var networkStatus = NotificationCenter.default
 	let natificationName = NSNotification.Name(rawValue:"InternetObserver")
+	var interfaceType: DeviceInterfaceType = .BLUETOOTH_CLASSIC
 	
-	init(viewModel: BatteryHealthCheckViewModel) {
+	init(viewModel: BatteryHealthCheckViewModel, interfaceType: DeviceInterfaceType) {
 		super.init(nibName: nil, bundle: nil)
+		self.interfaceType = interfaceType
 		self.viewModel = viewModel
 		//super.init()
 	}
@@ -161,8 +168,58 @@ class BatteryHealthCheckViewController:  BaseViewController {
 			self.showAndHideOffline(isShowOfflineView: true)
 		}
 		networkStatus.addObserver(self, selector: #selector(self.showOffileViews(_:)), name: natificationName, object: nil)
+
+		if self.viewModel?.interfaceType == .BLUETOOTH_CLASSIC {
+			NotificationCenter.default.addObserver(self, selector: #selector(sessionDataReceived), name: NSNotification.Name(rawValue: "BESessionDataReceivedNotification"), object: nil)
+			NotificationCenter.default.addObserver(self, selector: #selector(accessoryDidDisconnect), name: NSNotification.Name.EAAccessoryDidDisconnect, object: nil)
+			
+			sessionController = BluetoothClassicSharedInstance.sharedInstance.sessionController
+			accessory = BluetoothClassicSharedInstance.sharedInstance.selectedAccessory
+			let protocolString = self.viewModel?.getSelectedAccessoryProtocolString() ?? ""
+			if let accessory = accessory {
+				sessionController.setupController(forAccessory: accessory, withProtocolString: protocolString)
+			
+				self.viewModel?.sessionController = sessionController
+				self.viewModel?.selectedAccessory = accessory
+				_ = sessionController.openSession()
+			}
+		}
+		
 	}
 	
+	override func viewWillDisappear(_ animated: Bool) {
+		if self.viewModel?.interfaceType == .BLUETOOTH_CLASSIC {
+			NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "BESessionDataReceivedNotification"), object: nil)
+			NotificationCenter.default.removeObserver(self, name: NSNotification.Name.EAAccessoryDidDisconnect, object: nil)
+		}
+		super.viewWillDisappear(animated)
+	}
+	
+	
+	// MARK: - Session Updates
+	
+	@objc func sessionDataReceived(notification: NSNotification) {
+		
+		if sessionController._dataAsString != nil {
+//			if let data = sessionController._dataAsString {
+//				//let responseString = String.init(data: data, encoding: .utf8)
+//				print("response STRING:", data)
+//			}
+		}
+	}
+	
+	// MARK: - EAAccessory Disconnection
+	
+	@objc func accessoryDidDisconnect(notification: NSNotification) {
+		
+		if navigationController?.topViewController == self {
+			let disconnectedAccessory = notification.userInfo![EAAccessoryKey]
+			if (disconnectedAccessory as! EAAccessory).connectionID == accessory?.connectionID {
+				dismiss(animated: true, completion: nil)
+			}
+		}
+	}
+
 	@objc func showOffileViews(_ notification: Notification) {
 		
 		let notificationobject = notification.object as? [String: Any] ?? [:]
@@ -508,7 +565,7 @@ extension BatteryHealthCheckViewController: GetPreSignedUrlDelegate, UploadAndSu
 		timer?.invalidate()
 		timer = nil
 		var jsonString = ""
-		let vm = UploadAnimationViewModel(vehicleInfo: (self.viewModel?.vehicleInfo)!, workOrder: self.viewModel?.workOrder, isShortProfile: false, managedObject: NSManagedObject(), locationCode: self.viewModel?.locationCode ?? "aaa")
+		let vm = UploadAnimationViewModel(vehicleInfo: (self.viewModel?.vehicleInfo)!, workOrder: self.viewModel?.workOrder, isShortProfile: false, managedObject: NSManagedObject(), locationCode: self.viewModel?.locationCode ?? "aaa", interfaceType: interfaceType)
 		let vc = UploadAnimationViewController(viewModel: vm)
 		vc.errorSheetSource = .INSTRUCTION_FLOW
 		if self.viewModel?.isJSON == true {
@@ -544,16 +601,6 @@ extension BatteryHealthCheckViewController: GetPreSignedUrlDelegate, UploadAndSu
 			let finalDictionary = mergedDictionary.merged(with: packCellVoltageScan)
 			
 			jsonString = self.convertToJSONString(value: finalDictionary as AnyObject) ?? ""
-			
-			let finalDictJSON = self.convertToJSONString(value: finalDictionary as AnyObject) ?? ""
-			
-			print(finalDictJSON)
-			
-			let packVoltageScanString =  self.convertToJSONString(value: packVoltageScan as AnyObject) ?? ""
-			let packCurrentScanString = self.convertToJSONString(value: packCurrentScan as AnyObject) ?? ""
-			let packCellVoltageScanString = self.convertToJSONString(value: packCellVoltageScan as AnyObject) ?? ""
-			let _ = packVoltageScanString + "," + packCurrentScanString + "," + packCellVoltageScanString
-			
 			vc.finalJsonString = jsonString
 			
 		}
@@ -596,17 +643,24 @@ extension BatteryHealthCheckViewController: GetPreSignedUrlDelegate, UploadAndSu
 		if let workOrd = viewModel?.workOrder {
 			vc.workOrder = workOrd
 		}
-
-		let dialogMessage = UIAlertController(title: "TURN OFF THE CAR", message: "Turn off the car and disconnect the OBD-II cable.", preferredStyle: .alert)
-		// Create OK button with action handler
-		let ok = UIAlertAction(title: "Done", style: .default, handler: { (action) -> Void in
-			self.endBackgroundTask()
-			self.navigationController?.pushViewController(vc, animated: true)
-		})
-		//Add OK button to a dialog message
-		dialogMessage.addAction(ok)
-		// Present Alert to
-		self.present(dialogMessage, animated: true, completion: nil)
+		DispatchQueue.main.async {
+			let _ = self.sessionController.closeSession()
+			BluetoothClassicSharedInstance.sharedInstance.sessionController?.closeSession()
+			self.viewModel?.sessionController?.closeSession()
+			self.viewModel?.isTimeInProgress = false
+			self.timer?.invalidate()
+			let dialogMessage = UIAlertController(title: "TURN OFF THE CAR", message: "Turn off the car and disconnect the OBD-II cable.", preferredStyle: .alert)
+			// Create OK button with action handler
+			let ok = UIAlertAction(title: "Done", style: .default, handler: { (action) -> Void in
+				self.endBackgroundTask()
+				self.navigationController?.pushViewController(vc, animated: true)
+			})
+			//Add OK button to a dialog message
+			dialogMessage.addAction(ok)
+			// Present Alert to
+			self.present(dialogMessage, animated: true, completion: nil)
+		}
+		
 		
 	}
 	
@@ -642,10 +696,10 @@ extension BatteryHealthCheckViewController: GetPreSignedUrlDelegate, UploadAndSu
 					return string as String
 				}
 			}catch{
-				print("error")
+				print(Date(), "Convert to JSON string error", to: &Log.log)
 			}
 		}
-		print("nil")
+		print(Date(), "json string returned nil", to: &Log.log)
 		return nil
 	}
 	

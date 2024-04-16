@@ -31,7 +31,17 @@ class OfflineViewController: UIViewController {
 		okButton.layer.cornerRadius = 10
 		bttomSheetView.layer.cornerRadius = 10
 		self.view.backgroundColor = UIColor.black.withAlphaComponent(0.5)
-		massageLabel.text = viewModel?.submitApiResponse.message
+		if self.viewModel?.submitApiResponse == .BLUETOOTH_CLASSIC {
+			var attributedText = NSMutableAttributedString(string: Constants.BLUETOOTH_CLASSIC_MESSAGE, attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14)])
+			var bleMessage = NSMutableAttributedString(string: Constants.BLUETOOTH_CLASSIC_INSTRUCTION_MESSAGE, attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14, weight: .bold)])
+			
+			let combination = NSMutableAttributedString()
+			combination.append(attributedText)
+			combination.append(bleMessage)
+			massageLabel.attributedText =  combination
+		} else {
+			massageLabel.text = viewModel?.submitApiResponse.message
+		}
 		
 	}
 	
@@ -46,7 +56,11 @@ class OfflineViewController: UIViewController {
 	@IBAction func okButtonAction(_ sender: UIButton) {
 		self.dismiss(animated: true, completion: {
 			DispatchQueue.main.async {
-				self.delegate?.navigateToRootView()
+				if self.viewModel?.submitApiResponse == .BLUETOOTH_CLASSIC {
+					UIApplication.shared.open(URL(string: "App-prefs:Bluetooth")!)
+				} else {
+					self.delegate?.navigateToRootView()
+				}
 			}
 		})
 	}

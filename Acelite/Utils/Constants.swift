@@ -55,6 +55,10 @@ class Constants {
 	static let APP_UNSUBMITTED = "You have unsubmitted test results from running tests in offline mode."
 	static let APP_RECONNECT_INTERNET_MESSAGE = "Internet connection is not available, but data will be retained and uploaded when connection is re-established."
 	static let BATTERY_INSTRUCTIONS_DATA = "BatteryInstructionsData"
+	static let BLUETOOTH_CLASSIC_STATE = "Bluetooth Classic device disconnected."
+	
+	static let BLUETOOTH_CLASSIC_MESSAGE = "Your Bluetooth Classic device has been disconnected. Clicking OK will take you to your device settings where your device connection can be re-established.\n\n"
+	static let BLUETOOTH_CLASSIC_INSTRUCTION_MESSAGE = "After connecting, please close and re-launch the app for communication with device. "
 
 	static let MAKE = "make"
 	static let TRIM = "trim"

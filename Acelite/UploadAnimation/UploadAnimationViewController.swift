@@ -65,16 +65,6 @@ class UploadAnimationViewController: BaseViewController {
 		super.init(nibName: nil, bundle: nil)
 		self.viewModel?.delegate = self
 		self.viewModel = viewModel
-		if self.viewModel?.interfaceType == .BLUETOOTH_CLASSIC {
-			sessionController = SessionController.sharedController
-			
-			accessory = sessionController._accessory
-			_ = sessionController.openSession()
-		}
-	
-		self.viewModel?.sessionController = sessionController
-		self.viewModel?.selectedAccessory = accessory
-		//super.init()
 	}
 	
 	required init?(coder: NSCoder) {
@@ -127,14 +117,6 @@ class UploadAnimationViewController: BaseViewController {
 			$0.widthAnchor.constraint(equalToConstant: 20).isActive = true
 			$0.heightAnchor.constraint(equalTo: $0.widthAnchor).isActive = true
 		}
-		
-	}
-	
-	override func viewWillAppear(_ animated: Bool) {
-		if self.viewModel?.interfaceType == .BLUETOOTH_CLASSIC {
-			NotificationCenter.default.addObserver(self, selector: #selector(sessionDataReceived), name: NSNotification.Name(rawValue: "BESessionDataReceivedNotification"), object: nil)
-			NotificationCenter.default.addObserver(self, selector: #selector(accessoryDidDisconnect), name: NSNotification.Name.EAAccessoryDidDisconnect, object: nil)
-		}
 		if viewModel?.isShortProfile == true {
 			if errorSheetSource == .OFFLINE_LIST {
 				self.viewModel?.submitBatteryDataForShortProfile()
@@ -147,42 +129,21 @@ class UploadAnimationViewController: BaseViewController {
 			messageObserver()
 			networkStatus.addObserver(self, selector: #selector(self.handleNetworkUpdate(_:)), name: notificationName, object: nil)
 		}
-		
 	}
 	
 	override func viewWillDisappear(_ animated: Bool) {
 		if self.viewModel?.interfaceType == .BLUETOOTH_CLASSIC {
 			NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "BESessionDataReceivedNotification"), object: nil)
 			NotificationCenter.default.removeObserver(self, name: NSNotification.Name.EAAccessoryDidDisconnect, object: nil)
-			
-			sessionController.closeSession()
 		}
 		super.viewWillDisappear(animated)
 	}
 	
 	
-	// MARK: - Session Updates
-	
-	@objc func sessionDataReceived(notification: NSNotification) {
-		
-		if sessionController._dataAsString != nil {
-			if let data = sessionController._dataAsString {
-				//let responseString = String.init(data: data, encoding: .utf8)
-				print("response STRING:", data)
-			}
-		}
-	}
-	
 	// MARK: - EAAccessory Disconnection
 	
 	@objc func accessoryDidDisconnect(notification: NSNotification) {
 		
-		if navigationController?.topViewController == self {
-			let disconnectedAccessory = notification.userInfo![EAAccessoryKey]
-			if (disconnectedAccessory as! EAAccessory).connectionID == accessory?.connectionID {
-				dismiss(animated: true, completion: nil)
-			}
-		}
 	}
 	
 	override func viewDidAppear(_ animated: Bool) {
@@ -207,15 +168,13 @@ class UploadAnimationViewController: BaseViewController {
 	}
 	
 	private func messageObserver()  {
+		createJsonDataFile()
 		remoteConfig.fetch(withExpirationDuration: 0) { [unowned self] (status, error) in
 			guard error == nil else {print("FBase network fail")
-				createJsonDataFile()
 				return
-				
 			}
 			remoteConfig.activate()
 			//self.isJsonEnabled = remoteConfig.configValue(forKey: "submit_json_version_enabled").boolValue
-			createJsonDataFile()
 		}
 	}
 	
@@ -297,12 +256,14 @@ class UploadAnimationViewController: BaseViewController {
 		do {
 			let path = try fileManager.url(for: .documentDirectory, in: .allDomainsMask, appropriateFor: nil, create: false)
 			let vinNumber = self.vehicleInfo?.vin ?? ""
-			let make = self.vehicleInfo?.make ?? ""
-			let model = self.vehicleInfo?.modelName ?? ""
+			var make = self.vehicleInfo?.make ?? ""
+			make = make.replacingOccurrences(of: " ", with: "_")
+			var model = self.vehicleInfo?.modelName ?? ""
+			model = model.replacingOccurrences(of: " ", with: "_")
 			let year = self.vehicleInfo?.year ?? 0
 			var trim = self.vehicleInfo?.trimName
 			trim = trim?.replacingOccurrences(of: " ", with: "_")
-			let workOrder = self.workOrder ?? ""
+			let workOrder = self.workOrder?.replacingOccurrences(of: " ", with: "_") ?? ""
 			self.uploadFileName = "\(Constants.ACELITE_TEST)_\(vinNumber)_\(workOrder)_\(make)_\(model)_\(year)_\(trim ?? "")\(Constants.FILE_TYPE)"
 			let fileURL =  path.appendingPathComponent("\(Constants.ACELITE_TEST)_\(vinNumber)_\(workOrder)_\(make)_\(model)_\(year)_\(trim ?? "")\(Constants.FILE_TYPE)")
 			try self.finalJsonString.write(to: fileURL, atomically: true, encoding: .utf8)
@@ -345,70 +306,72 @@ class UploadAnimationViewController: BaseViewController {
 	}
 	
 	func getTransactionId(filePath: String)  {
-		Network.shared.apollo.fetch(query: GetS3PreSingedUrlQuery(vin: vehicleInfo?.vin ?? "")) { result in
-			switch result {
-			case .success(let graphQLResult):
-				guard let _ = try? result.get().data else { return }
-				if graphQLResult.data != nil {
-					
-					let getS3PreSingedData = graphQLResult.data?.resultMap["getS3PreSingedURL"]?.jsonValue
-					var preSignedData : Data?
-					do {
-						preSignedData = try JSONSerialization.data(withJSONObject: getS3PreSingedData as Any)
-					} catch {
-						print(Date(), "Unexpected error: \(error).", to: &Log.log)
-						FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.s3PreSignedUrlError, parameters: nil)
-					}
-					
-					do {
-						let decoder = JSONDecoder()
-						let preSignedResponse = try decoder.decode(GetS3PreSingedURL.self, from: preSignedData!)
-						self.transactionId = preSignedResponse.transactionID
-						self.preSignedData = preSignedResponse
-						print(Date(), "preSignedResponse.", to: &Log.log)
-						if self.isJsonEnabled {
-							if self.currentReachabilityStatus != .notReachable {
-								self.jsonFileUploadingIntoS3Bucket(fileName: filePath)
-							} else {
-								self.offlineAlertViewController()
-							}
-						} else {
-							self.preparingLogicForCSVFileGeration()
+		DispatchQueue.main.async {
+			Network.shared.apollo.fetch(query: GetS3PreSingedUrlQuery(vin: self.vehicleInfo?.vin ?? "")) { result in
+				switch result {
+				case .success(let graphQLResult):
+					guard let _ = try? result.get().data else { return }
+					if graphQLResult.data != nil {
+						print(Date(), "getTransactionIdSuccess", to: &Log.log)
+						let getS3PreSingedData = graphQLResult.data?.resultMap["getS3PreSingedURL"]?.jsonValue
+						var preSignedData : Data?
+						do {
+							preSignedData = try JSONSerialization.data(withJSONObject: getS3PreSingedData as Any)
+						} catch {
+							print(Date(), "Unexpected error: \(error).", to: &Log.log)
+							FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.s3PreSignedUrlError, parameters: nil)
 						}
-						FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.s3PreSignedUrlSuccess, parameters: nil)
-					} catch DecodingError.dataCorrupted(_) {
-						self.offlineAlertViewController()
-						print(Date(), "preSignedResponse Error", to: &Log.log)
-						FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.s3PreSignedUrlError, parameters: nil)
-					} catch DecodingError.keyNotFound(let key, let context) {
-						print("Key '\(key)' not found:", context.debugDescription)
-						print("codingPath:", context.codingPath)
-						self.offlineAlertViewController()
-						print(Date(), "preSignedResponse Error", to: &Log.log)
-						FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.s3PreSignedUrlError, parameters: nil)
-					} catch DecodingError.valueNotFound(_, let context) {
-						self.offlineAlertViewController()
-						print("codingPath:", context.codingPath)
-						print(Date(), "preSignedResponse Error", to: &Log.log)
-						FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.s3PreSignedUrlError, parameters: nil)
-					} catch DecodingError.typeMismatch(let type, let context) {
-						print("Type '\(type)' mismatch:", context.debugDescription)
-						print("codingPath:", context.codingPath)
-						self.offlineAlertViewController()
-						print(Date(), "preSignedResponse Error", to: &Log.log)
-						FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.s3PreSignedUrlError, parameters: nil)
-					} catch {
-						self.offlineAlertViewController()
-						print("error: ", error)
-						print(Date(), "preSignedResponse Error", to: &Log.log)
-						FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.s3PreSignedUrlError, parameters: nil)
+						
+						do {
+							let decoder = JSONDecoder()
+							let preSignedResponse = try decoder.decode(GetS3PreSingedURL.self, from: preSignedData!)
+							self.transactionId = preSignedResponse.transactionID
+							self.preSignedData = preSignedResponse
+							print(Date(), "transection ID\(String(describing: self.transactionId))", to: &Log.log)
+							if self.isJsonEnabled {
+								if self.currentReachabilityStatus != .notReachable {
+									self.jsonFileUploadingIntoS3Bucket(fileName: filePath)
+								} else {
+									self.offlineAlertViewController()
+								}
+							} else {
+								self.preparingLogicForCSVFileGeration()
+							}
+							FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.s3PreSignedUrlSuccess, parameters: nil)
+						} catch DecodingError.dataCorrupted(_) {
+							self.offlineAlertViewController()
+							print(Date(), "preSignedResponse Error", to: &Log.log)
+							FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.s3PreSignedUrlError, parameters: nil)
+						} catch DecodingError.keyNotFound(let key, let context) {
+							print("Key '\(key)' not found:", context.debugDescription)
+							print("codingPath:", context.codingPath)
+							self.offlineAlertViewController()
+							print(Date(), "preSignedResponse Error", to: &Log.log)
+							FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.s3PreSignedUrlError, parameters: nil)
+						} catch DecodingError.valueNotFound(_, let context) {
+							self.offlineAlertViewController()
+							print("codingPath:", context.codingPath)
+							print(Date(), "preSignedResponse Error", to: &Log.log)
+							FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.s3PreSignedUrlError, parameters: nil)
+						} catch DecodingError.typeMismatch(let type, let context) {
+							print("Type '\(type)' mismatch:", context.debugDescription)
+							print("codingPath:", context.codingPath)
+							self.offlineAlertViewController()
+							print(Date(), "preSignedResponse Error", to: &Log.log)
+							FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.s3PreSignedUrlError, parameters: nil)
+						} catch {
+							self.offlineAlertViewController()
+							print("error: ", error)
+							print(Date(), "preSignedResponse Error", to: &Log.log)
+							FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.s3PreSignedUrlError, parameters: nil)
+						}
 					}
+					
+				case .failure( _):
+					self.offlineAlertViewController()
+					print(Date(), "preSignedResponse Error", to: &Log.log)
+					FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.s3PreSignedUrlError, parameters: nil)
 				}
-				
-			case .failure( _):
-				self.offlineAlertViewController()
-				print(Date(), "preSignedResponse Error", to: &Log.log)
-				FirebaseLogging.instance.logEvent(eventName:TestInstructionsScreenEvents.s3PreSignedUrlError, parameters: nil)
 			}
 		}
 	}
@@ -569,7 +532,6 @@ class UploadAnimationViewController: BaseViewController {
 	
 	// MARK: Submit Battery Data
 	private func submitBatteryDataJsonFileWithSOCAndBMSGraphRequest(fileName: String) {
-		
 		print(Date(), "submitBatteryDataFileWithSOCGraphRequest", to: &Log.log)
 		guard let veh = vehicleInfo else {return}
 		guard let vinInfo = vehicleInfo?.vin else { return  }
@@ -670,7 +632,6 @@ class UploadAnimationViewController: BaseViewController {
 					
 					let submitData =  graphQLResults.data?.resultMap["vehicle"]
 					if submitData == nil {
-						print("CALCULATE BATTERY HEALTH")
 						print(Date(), "SOC:submit API result Map Error :\(String(describing: graphQLResults.errors))", to: &Log.log)
 						self.delegate?.showShortProfileSubmitError(transactionID: self.transactionId ?? "N/A", vinMake: vinMake, message: "\(String(describing: graphQLResults.errors))", vinModels: vinModels, submitType: "STATE_OF_CHARGE", vinNumber: vinInfo, year: years, errorCode: "", submittedBms: self.bmsCapacity, expectedBms: self.calculateddCapacityAtBirth)
 						let paramDictionary = [
@@ -701,7 +662,6 @@ class UploadAnimationViewController: BaseViewController {
 									
 									self.deleteUploadedRecordInCoreData()
 									let batteryHealth = submitBatteryData.calculateBatteryHealth?.calculatedBatteryHealth?.batteryScore
-									print("battery health:: SCORE --- \(batteryHealth?.score ?? 0.0)")
 									let storyBaord = UIStoryboard.init(name: "Main", bundle: nil)
 									let vc = storyBaord.instantiateViewController(withIdentifier: "BatteryHealthViewController") as! BatteryHealthViewController
 									let vm = BatteryHealthViewModel(vehicleInfo: veh, transactionID: self.transactionId ?? "", testIntructionsId: self.testInstructionsId ?? "", healthScore: batteryHealth?.score ?? 0.0, grade: VehicleGrade(rawValue: VehicleGrade(rawValue: batteryHealth?.grade ?? "N/A")?.title ??  "N/A") ?? .A, health: batteryHealth?.health ?? "N/A", rangeAtBirth: vehicalProfile.rangeAtBirth ?? 0 , minEstimatedRnge: minEstRange , maxEstimatedRnge: maxEstRange, bmsCapacity: self.bmsCapacity)

@@ -52,6 +52,7 @@
 	<key>UISupportedExternalAccessoryProtocols</key>
 	<array>
 		<string>com.obdlink</string>
+		<string>com.vgatemall</string>
 	</array>
 </dict>
 </plist>

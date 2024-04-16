@@ -103,6 +103,9 @@ class VehicalInformationViewController:  BaseViewController {
 		offlineViewHeight.constant = 0
 		offlineView.isHidden = true
 		addCustomView()
+		verifyBluetoohClassicStatus()
+		let nc = NotificationCenter.default
+		nc.addObserver(self, selector: #selector(verifyBluetoohClassicStatus), name: UIApplication.willEnterForegroundNotification, object: nil)
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {
@@ -116,6 +119,29 @@ class VehicalInformationViewController:  BaseViewController {
 		}
 		networkStatus.addObserver(self, selector: #selector(self.showOffileViews(_:)), name: natificationName, object: nil)
 		retrieveProfileConfigButtonTitles()
+	}
+	
+	@objc func verifyBluetoohClassicStatus() {
+		
+		if interfaceType == .BLUETOOTH_CLASSIC {
+			let accessoryList:  [EAAccessory]? = EAAccessoryManager.shared().connectedAccessories
+			if accessoryList?.count == 0 {
+				print("device disconnected")
+				DispatchQueue.main.async {
+					let viewModel = OfflineViewModel(submitApiResponse: SubmitApiResponse.BLUETOOTH_CLASSIC)
+					let storyBaord = UIStoryboard.init(name: "BatteryHealthCheck", bundle: nil)
+					let vc = storyBaord.instantiateViewController(withIdentifier: "OfflineViewController") as! OfflineViewController
+					vc.delegate = self
+					vc.viewModel = viewModel
+					vc.modalPresentationStyle = .overFullScreen
+					self.present(vc, animated: true)
+				}
+				
+			} else {
+				print("device connected")
+			
+			}
+		}
 	}
 	
 	private func retrieveProfileConfigButtonTitles() {
@@ -209,7 +235,7 @@ class VehicalInformationViewController:  BaseViewController {
 		testingVC.selectedAccessory = self.selectedAccessory
 		testingVC.sessionController = self.sessionController
 		if let vehicleInfo = self.viewModel?.vehicleInformation {
-			let vm = BatteryHealthCheckViewModel(vehicleInfo: vehicleInfo, workOrder: viewModel?.workOrder, locationCode: self.viewModel?.locationCode ?? "aaa", selectedSession: self.sessionController, selectedAccessory: self.selectedAccessory!, interfaceType: self.interfaceType)
+			let vm = BatteryHealthCheckViewModel(vehicleInfo: vehicleInfo, workOrder: viewModel?.workOrder, locationCode: self.viewModel?.locationCode ?? "aaa", interfaceType: self.interfaceType)
 			testingVC.viewModel = vm
 		}
 		self.navigationController?.pushViewController(testingVC, animated: true)

@@ -52,9 +52,6 @@ class ConfigurationTerminalViewController: UIViewController {
 		
 		NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "BESessionDataReceivedNotification"), object: nil)
 		NotificationCenter.default.removeObserver(self, name: NSNotification.Name.EAAccessoryDidDisconnect, object: nil)
-		
-		sessionController.closeSession()
-		
 		super.viewWillDisappear(animated)
 	}
 

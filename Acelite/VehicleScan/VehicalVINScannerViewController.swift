@@ -11,8 +11,8 @@ import ExternalAccessory
 class VehicalVINScannerViewController:  BaseViewController {
 		
 	
-	var sessionController:              SessionController!
-	var selectedAccessory:              EAAccessory?
+	//var sessionController: SessionController!
+	//var selectedAccessory: EAAccessory?
 	
 	@IBOutlet weak var offlineView: UIView!
 	@IBOutlet weak var offlineViewHeight: NSLayoutConstraint!
@@ -101,6 +101,9 @@ class VehicalVINScannerViewController:  BaseViewController {
 		offlineViewHeight.constant = 0
 		offlineView.isHidden = true
 		addCustomView()
+		verifyBluetoohClassicStatus()
+		let nc = NotificationCenter.default
+		nc.addObserver(self, selector: #selector(verifyBluetoohClassicStatus), name: UIApplication.willEnterForegroundNotification, object: nil)
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {
@@ -112,7 +115,33 @@ class VehicalVINScannerViewController:  BaseViewController {
 		if  NetworkManager.sharedInstance.reachability.connection == .unavailable {
 			self.showAndHideOffline(isShowOfflineView: true)
 		}
+	
 		networkStatus.addObserver(self, selector: #selector(self.showOffileViews(_:)), name: natificationName, object: nil)
+		
+	}
+	
+	
+	@objc func verifyBluetoohClassicStatus() {
+		
+		if interfaceType == .BLUETOOTH_CLASSIC {
+			let accessoryList:  [EAAccessory]? = EAAccessoryManager.shared().connectedAccessories
+			if accessoryList?.count == 0 {
+				print("device disconnected")
+				DispatchQueue.main.async {
+					let viewModel = OfflineViewModel(submitApiResponse: SubmitApiResponse.BLUETOOTH_CLASSIC)
+					let storyBaord = UIStoryboard.init(name: "BatteryHealthCheck", bundle: nil)
+					let vc = storyBaord.instantiateViewController(withIdentifier: "OfflineViewController") as! OfflineViewController
+					vc.delegate = self
+					vc.viewModel = viewModel
+					vc.modalPresentationStyle = .overFullScreen
+					self.present(vc, animated: true)
+				}
+				
+			} else {
+				print("device connected")
+			
+			}
+		}
 	}
 	
 	private func addCustomView() {
@@ -313,6 +342,8 @@ extension VehicalVINScannerViewController: PassVehicleInformationDelegate {
 			let dialogMessage = UIAlertController(title: "WHOOPS!", message: "This vehicle is not supported to run the test. Check testable vehicles.", preferredStyle: .alert)
 			// Create OK button with action handler
 			let ok = UIAlertAction(title: "GOT IT", style: .default, handler: { (action) -> Void in
+				self.view.activityStopAnimating()
+				self.navigationController?.popViewController(animated: true)
 			})
 			self.nextButton.isUserInteractionEnabled = false
 			self.nextButton.isEnabled = false

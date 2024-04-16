@@ -16,6 +16,7 @@ enum SubmitApiResponse: String, CaseIterable {
 	case NO_DISCHARGE_DETECTED
 	case OUT_OF_BOUNDS_STATE_OF_CHARGE
 	case SOC_OR_BMS_CAPACITY_REQUIRED
+	case BLUETOOTH_CLASSIC
 	case NONE
 	
 	var message: String {
@@ -35,6 +36,8 @@ enum SubmitApiResponse: String, CaseIterable {
 				return "This vehicle's battery is reading at an invalid state of charge. Please alert battery health support of this vehicle's year, make, model, and trim - EVB_support@coxautoinc.com."
 			case .SOC_OR_BMS_CAPACITY_REQUIRED:
 				return "SOC_OR_BMS_CAPACITY_REQUIRED"
+			case .BLUETOOTH_CLASSIC:
+				return "blc"
 			case .NONE:
 				return ""
 			

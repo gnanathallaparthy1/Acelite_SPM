@@ -33,7 +33,7 @@ public final class BuildConfig {
 	#if DEV
 		return "\(BuildConfig.GRAPHQL_SCHEME + BuildConfig.GRAPHQL_BASE_URL + BuildConfig.GRAPHQL_ENDPOINT)"
 	#else
-		return "\(BuildConfig.GRAPHQL_SCHEME + BuildConfig.PROD_GRAPHQL_BASE_URL + BuildConfig.GRAPHQL_ENDPOINT)"
+		return "\(BuildConfig.GRAPHQL_SCHEME + BuildConfig.GRAPHQL_BASE_URL + BuildConfig.GRAPHQL_ENDPOINT)"
 	#endif
 	}
 	
@@ -41,7 +41,7 @@ public final class BuildConfig {
 		#if DEV
 			return "\(BuildConfig.HEADER_GRAPHQL)"
 		#else
-			return "\(BuildConfig.PROD_HEADER_GRAPHQL)"
+			return "\(BuildConfig.HEADER_GRAPHQL)"
 		#endif
 	}
 	
